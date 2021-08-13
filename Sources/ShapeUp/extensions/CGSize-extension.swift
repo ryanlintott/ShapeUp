@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension CGSize {
+public extension CGSize {
     // Vector negation
     static prefix func - (cgSize: CGSize) -> CGSize {
         return CGSize(width: -cgSize.width, height: -cgSize.height)
@@ -34,7 +34,7 @@ extension CGSize {
     }
 }
 
-extension CGSize {
+public extension CGSize {
     // Scalar-vector multiplication
     static func * (lhs: CGFloat, rhs: CGSize) -> CGSize {
         return CGSize(width: lhs * rhs.width, height: lhs * rhs.height)
@@ -61,7 +61,7 @@ extension CGSize {
     }
 }
 
-extension CGSize: Comparable {
+public extension CGSize {
     var min: CGFloat {
         return Swift.min(width, height)
     }
@@ -80,12 +80,14 @@ extension CGSize: Comparable {
         return CGSize(width: width / magnitude, height: height / magnitude)
     }
     
-    public static func < (lhs: CGSize, rhs: CGSize) -> Bool {
+    static func < (lhs: CGSize, rhs: CGSize) -> Bool {
         lhs.magnitude < rhs.magnitude
     }
 }
 
-extension CGSize {
+extension CGSize: Comparable { }
+
+public extension CGSize {
     var aspectRatio: CGFloat {
         width / height
     }

@@ -1,6 +1,6 @@
 //
 //  RelatableValue.swift
-//  Wordhord
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-22.
 //
@@ -11,9 +11,9 @@ public enum RelatableValue: Equatable {
     case absolute(_ value: CGFloat)
     case relative(_ value: CGFloat)
     
-    static let zero = RelatableValue.absolute(0)
+    public static let zero = RelatableValue.absolute(0)
     
-    func value(using total: CGFloat) -> CGFloat {
+    public func value(using total: CGFloat) -> CGFloat {
         switch self {
         case .absolute(let value):
             return value

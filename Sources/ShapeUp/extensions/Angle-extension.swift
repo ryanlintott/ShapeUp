@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Angle {
+public extension Angle {
     init(_ a: CGPoint, _ b: CGPoint, _ c: CGPoint) {
         self = Angle.threePoint(a, b, c)
     }

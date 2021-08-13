@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension CGRect {
+public extension CGRect {
     var points: [CGPoint] {
         [
             CGPoint(x: self.minX, y: self.minY),

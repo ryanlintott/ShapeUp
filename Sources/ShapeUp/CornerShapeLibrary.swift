@@ -1,13 +1,13 @@
 //
 //  CornerShapeLibrary.swift
-//  Wordhord
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-27.
 //
 
 import SwiftUI
 
-extension CGRect {
+public extension CGRect {
     func pentagon(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero) -> [CGPoint] {
         let rect = self
         let sidePoints = [

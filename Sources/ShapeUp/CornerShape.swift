@@ -1,23 +1,23 @@
 //
 //  CornerShape.swift
-//  Wordhord
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-23.
 //
 
 import SwiftUI
 
-struct CornerShape: InsettableShape {
-    typealias InsetShape = Self
+public struct CornerShape: InsettableShape {
+    public typealias InsetShape = Self
     var insetAmount: CGFloat = 0
     
     let corners: (CGRect) -> [Corner]
     
-    init(_ corners: @escaping (CGRect) -> [Corner]) {
+    public init(_ corners: @escaping (CGRect) -> [Corner]) {
         self.corners = corners
     }
     
-    func path(in rect: CGRect) -> Path {
+    public func path(in rect: CGRect) -> Path {
         let path = corners(rect)
             .inset(by: insetAmount)
             .path()
@@ -25,7 +25,7 @@ struct CornerShape: InsettableShape {
         return path
     }
     
-    func inset(by amount: CGFloat) -> InsetShape {
+    public func inset(by amount: CGFloat) -> InsetShape {
         var shape = self
         shape.insetAmount += amount
         return shape

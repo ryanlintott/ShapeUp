@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension CGPoint {
+public extension CGPoint {
     // Vector negation
     static prefix func - (cgPoint: CGPoint) -> CGPoint {
         return CGPoint(x: -cgPoint.x, y: -cgPoint.y)
@@ -34,7 +34,7 @@ extension CGPoint {
     }
 }
 
-extension CGPoint {
+public extension CGPoint {
     // Scalar-vector multiplication
     static func * (lhs: CGFloat, rhs: CGPoint) -> CGPoint {
         return CGPoint(x: lhs * rhs.x, y: lhs * rhs.y)
@@ -61,7 +61,7 @@ extension CGPoint {
     }
 }
 
-extension CGPoint {
+public extension CGPoint {
     // Vector magnitude (length)
     var magnitude: CGFloat {
         return sqrt(x * x + y * y)
@@ -90,12 +90,12 @@ extension CGPoint {
         return self - vectorToPoint + vectorToPoint.rotated(-angle)
     }
     
-    public static func < (lhs: CGPoint, rhs: CGPoint) -> Bool {
+    static func < (lhs: CGPoint, rhs: CGPoint) -> Bool {
         lhs.magnitude < rhs.magnitude
     }
 }
 
-extension CGPoint {
+public extension CGPoint {
     var aspectRatio: CGFloat {
         x / y
     }
@@ -105,13 +105,13 @@ extension CGPoint {
     }
 }
 
-extension CGPoint {
+public extension CGPoint {
     func corner(_ style: CornerStyle? = nil) -> Corner {
         Corner(style ?? .point, point: self)
     }
 }
     
-extension Array where Element == CGPoint {
+public extension Array where Element == CGPoint {
     var angles: [Angle] {
         guard self.count >= 3 else {
             return []

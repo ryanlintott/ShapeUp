@@ -1,13 +1,13 @@
 //
 //  CornerCutRectangle.swift
-//  Wordhord
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-22.
 //
 
 import SwiftUI
 
-extension View {
+public extension View {
     func cutCorners(topLeft: CornerStyle? = nil, topRight: CornerStyle? = nil, bottomLeft: CornerStyle? = nil, bottomRight: CornerStyle? = nil) -> some View {
         clipShape(
             CornerShape { rect in
@@ -27,15 +27,15 @@ extension View {
     #endif
 }
 
-struct CornerCutRectangle: InsettableCornerShape {
-    var insetAmount: CGFloat = 0
+public struct CornerCutRectangle: InsettableCornerShape {
+    public var insetAmount: CGFloat = 0
     
     let topLeft: CornerStyle?
     let topRight: CornerStyle?
     let bottomLeft: CornerStyle?
     let bottomRight: CornerStyle?
     
-    init(topLeft: CornerStyle? = nil, topRight: CornerStyle? = nil, bottomLeft: CornerStyle? = nil, bottomRight: CornerStyle? = nil) {
+    public init(topLeft: CornerStyle? = nil, topRight: CornerStyle? = nil, bottomLeft: CornerStyle? = nil, bottomRight: CornerStyle? = nil) {
         self.topLeft = topLeft
         self.topRight = topRight
         self.bottomLeft = bottomLeft
@@ -43,7 +43,7 @@ struct CornerCutRectangle: InsettableCornerShape {
     }
 
     #if canImport(UIKit)
-    init(_ style: CornerStyle, corners: [UIRectCorner] = [.allCorners]) {
+    public init(_ style: CornerStyle, corners: [UIRectCorner] = [.allCorners]) {
         let all = corners.contains(.allCorners)
         self.topLeft = all || corners.contains(.topLeft) ? style : nil
         self.topRight = all || corners.contains(.topRight) ? style : nil
@@ -52,7 +52,7 @@ struct CornerCutRectangle: InsettableCornerShape {
     }
     #endif
 
-    func path(in rect: CGRect) -> Path {
+    public func path(in rect: CGRect) -> Path {
         let path = rect
             .corners([
                 topLeft,

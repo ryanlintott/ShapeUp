@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Path {
+public extension Path {
     mutating func addCornerShape(_ corners: [Corner]) {
         var corners = corners.flattened
         corners.append(corners.first!)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Shape {
+public extension Shape {
     func scaleToFit(_ frame: CGSize, aspectRatio: CGFloat) -> some Shape {
         self
             .scale(x: aspectRatio > frame.aspectRatio ? 1 : frame.aspectRatio * aspectRatio, y: aspectRatio > frame.aspectRatio ? frame.aspectRatio / aspectRatio : 1, anchor: .center)
