@@ -1,6 +1,6 @@
 //
-//  Shape-extension.swift
-//  FullscreenZoom
+//  Shape+extensions.swift
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-11.
 //

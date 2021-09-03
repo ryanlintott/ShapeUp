@@ -1,13 +1,26 @@
 //
-//  Notch+ArrayMethods.swift
+//  Array-CGPoint+extensions.swift
 //  ShapeUp
 //
-//  Created by Ryan Lintott on 2021-08-13.
+//  Created by Ryan Lintott on 2021-09-03.
 //
 
 import SwiftUI
 
 public extension Array where Element == CGPoint {
+    func corners(_ style: CornerStyle? = nil) -> [Corner] {
+        self.map({ $0.corner(style) })
+    }
+    
+    func corners(_ styles: [CornerStyle?]) -> [Corner] {
+        let cornerStyles = styles + Array<CornerStyle?>(repeating: nil, count: Swift.max(self.count - styles.count, 0))
+        var corners = [Corner]()
+        for (i, point) in self.enumerated() {
+            corners.append(point.corner(cornerStyles[i]))
+        }
+        return corners
+    }
+    
     mutating func addNotches(_ notches: [Notch?]) {
         self = self.addingNotches(notches)
     }

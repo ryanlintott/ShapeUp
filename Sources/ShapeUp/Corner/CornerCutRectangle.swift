@@ -7,26 +7,6 @@
 
 import SwiftUI
 
-public extension View {
-    func cutCorners(topLeft: CornerStyle? = nil, topRight: CornerStyle? = nil, bottomLeft: CornerStyle? = nil, bottomRight: CornerStyle? = nil) -> some View {
-        clipShape(
-            CornerShape { rect in
-                rect.corners([bottomLeft, topLeft, topRight, bottomRight])
-            }
-        )
-    }
-
-    #if canImport(UIKit)
-    func cutCorners(_ style: CornerStyle, corners: [UIRectCorner]) -> some View {
-        clipShape(
-            CornerShape { rect in
-                rect.corners(style)
-            }
-        )
-    }
-    #endif
-}
-
 public struct CornerCutRectangle: InsettableCornerShape {
     public var insetAmount: CGFloat = 0
     

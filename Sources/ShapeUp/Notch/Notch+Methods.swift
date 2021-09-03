@@ -9,14 +9,14 @@ import SwiftUI
 
 public extension Notch {
     func between(start: CGPoint, end: CGPoint) -> [CGPoint] {
-        let vector = end - start
+        let vector = end.vector - start.vector
         let totalLength = vector.magnitude
         let normalizedVector = vector.normalized
         let notchLength = length.value(using: totalLength)
         let notchPosition = position.value(using: totalLength)
         let notchDepth = depth.value(using: totalLength)
         
-        let notchStartPoint = start + normalizedVector * notchPosition - normalizedVector * (notchLength / 2)
+        let notchStartPoint = start.vector + normalizedVector * notchPosition - normalizedVector * (notchLength / 2)
         let notchEndPoint = notchStartPoint + normalizedVector * notchLength
         
         var points = [CGPoint]()
@@ -27,18 +27,18 @@ public extension Notch {
                 notchStartPoint,
                 notchStartPoint + (normalizedVector * (notchLength / 2)) + (normalizedVector.rotated(.degrees(90)) * notchDepth),
                 notchEndPoint
-            ]
+            ].points
         case .rectangle:
             points += [
                 notchStartPoint,
                 notchStartPoint + (normalizedVector.rotated(.degrees(90)) * notchDepth),
                 notchEndPoint + (normalizedVector.rotated(.degrees(90)) * notchDepth),
                 notchEndPoint
-            ]
+            ].points
         case let .custom(corners):
             let rect = CGRect(x: 0, y: 0, width: notchLength, height: notchDepth)
             let angle = Angle(start, end)
-            points += corners(rect).points.map({ $0.rotated(angle).moved(notchStartPoint)})
+            points += corners(rect).map({ $0.vector.rotated(angle).moved(notchStartPoint).point })
         }
 
         return points

@@ -18,8 +18,8 @@ public struct Corner {
     var x: CGFloat { point.x }
     var y: CGFloat { point.y }
     
-    public init(_ style: CornerStyle? = nil, point: CGPoint) {
-        self.point = point
+    public init<T: Vector2Representable>(_ style: CornerStyle? = nil, point: T) {
+        self.point = point.vector.point
         self.style = style ?? .point
     }
 
@@ -29,6 +29,12 @@ public struct Corner {
     
     public func applyingStyle(_ style: CornerStyle) -> Corner {
         Corner(style, point: self.point)
+    }
+}
+
+extension Corner: Vector2Representable {
+    public var vector: Vector2 {
+        Vector2(point: point)
     }
 }
 

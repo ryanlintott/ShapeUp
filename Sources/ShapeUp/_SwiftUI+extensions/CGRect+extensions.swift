@@ -1,6 +1,6 @@
 //
-//  CGRect-extension.swift
-//  Wordhord
+//  CGRect+extensions.swift
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-23.
 //
@@ -29,5 +29,18 @@ public extension CGRect {
             corners.append(Corner(cornerStyles[i], point: point))
         }
         return corners
+    }
+    
+    func pentagon(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero) -> [CGPoint] {
+        let rect = self
+        let sidePoints = [
+            Corner(x: rect.minX + bottomTaper.value(using: rect.width / 2), y: rect.maxY),
+            Corner(x: rect.minX + topTaper.value(using: rect.width / 2), y: rect.minY + pointHeight.value(using: rect.height))
+        ]
+        let corners = sidePoints
+                    + [Corner(x: rect.midX, y: rect.minY)]
+                    + sidePoints.flipHorizontal(around: rect.midX).reversed()
+        
+        return corners.points
     }
 }

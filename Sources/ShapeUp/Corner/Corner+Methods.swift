@@ -8,16 +8,25 @@
 import SwiftUI
 
 public extension Corner {
-    func moved(_ vector: CGPoint) -> Corner {
-        Corner(self.style, point: self.point.moved(vector))
+    // repositions corner keeping style
+    func repositioned<T: Vector2Representable>(to point: T) -> Corner {
+        Corner(style, point: point)
     }
     
-    func rotated(_ angle: Angle, anchor: CGPoint = .zero) -> Corner {
-        Corner(self.style, point: self.point.rotated(angle, anchor: anchor))
+    func moved<T: Vector2Representable>(_ distance: T) -> Corner {
+        repositioned(to: vector.moved(distance.vector))
     }
     
-    func mirrored(mirrorLineStart: CGPoint, mirrorLineEnd: CGPoint) -> Corner {
-        Corner(self.style, point: self.point.mirrored(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd))
+    func rotated<T: Vector2Representable>(_ angle: Angle, anchor: T) -> Corner {
+        repositioned(to: vector.rotated(angle, anchor: anchor))
+    }
+    
+    func rotated(_ angle: Angle) -> Corner {
+        repositioned(to: vector.rotated(angle))
+    }
+    
+    func mirrored<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Corner {
+        repositioned(to: vector.mirrored(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd))
     }
     
     func inset(_ insetAmount: CGFloat, previousCorner: Corner, nextCorner: Corner) -> Corner {
@@ -26,26 +35,26 @@ public extension Corner {
         }
         let corner = self
         
-        let angle = Angle.threePoint(previousCorner.point, corner.point, nextCorner.point)
+        let angle = Angle.threePoint(previousCorner, corner, nextCorner)
         let halvedAngle = angle.interior.halved
         
         let concaveConvexMultiplier: CGFloat = angle.radians > .pi ? 1 : -1
 
-        let vector1 = (corner.point - previousCorner.point)
-        let vector2 = (corner.point - nextCorner.point)
+        let vector1 = (corner.vector - previousCorner.vector)
+        let vector2 = (corner.vector - nextCorner.vector)
         
         let maxVectorLength = min(vector1.magnitude, vector2.magnitude)
         let maxRadius = maxVectorLength * CGFloat(tan(halvedAngle.radians))
         let cornerRadius = corner.radius.value(using: maxRadius)
         let removedLength = maxVectorLength * cornerRadius / maxRadius
         
-        let cornerCutPoint1 = corner.point - vector1.normalized * removedLength
+        let cornerCutPoint1 = corner.vector - vector1.normalized * removedLength
         
         let insetLength = insetAmount * maxVectorLength / maxRadius
         let insetRadius = cornerRadius + insetAmount * concaveConvexMultiplier
         
         let insetVector = vector1.normalized * insetLength + vector1.normalized.rotated(.degrees(90)) * insetAmount * concaveConvexMultiplier
-        let insetPoint = corner.point + insetVector * concaveConvexMultiplier
+        let insetPoint = corner.vector + insetVector * concaveConvexMultiplier
         
         switch corner.style {
         case .point:
@@ -81,11 +90,11 @@ public extension Corner {
     func absolute(previousCorner: Corner, nextCorner: Corner) -> Corner {
         let corner = self
         
-        let angle = Angle.threePoint(previousCorner.point, corner.point, nextCorner.point)
+        let angle = Angle.threePoint(previousCorner, corner, nextCorner)
         let halvedAngle = angle.interior.halved
         
-        let vector1 = (corner.point - previousCorner.point)
-        let vector2 = (corner.point - nextCorner.point)
+        let vector1 = (corner.vector - previousCorner.vector)
+        let vector2 = (corner.vector - nextCorner.vector)
         
         let maxVectorLength = min(vector1.magnitude, vector2.magnitude)
         let maxRadius = maxVectorLength * CGFloat(tan(halvedAngle.radians))
@@ -112,19 +121,19 @@ public extension Corner {
         
         let corner = self
         
-        let angle = Angle.threePoint(previousCorner.point, corner.point, nextCorner.point)
+        let angle = Angle.threePoint(previousCorner, corner, nextCorner)
         let halvedAngle = angle.interior.halved
         
-        let vector1 = (corner.point - previousCorner.point)
-        let vector2 = (corner.point - nextCorner.point)
+        let vector1 = (corner.vector - previousCorner.vector)
+        let vector2 = (corner.vector - nextCorner.vector)
         
         let maxVectorLength = min(vector1.magnitude, vector2.magnitude)
         let maxRadius = maxVectorLength * CGFloat(tan(halvedAngle.radians))
         let cornerRadius = corner.radius.value(using: maxRadius)
         let removedLength = maxVectorLength * cornerRadius / maxRadius
     
-        let cornerCutPoint1 = corner.point - vector1.normalized * removedLength
-        let cornerCutPoint2 = corner.point - vector2.normalized * removedLength
+        let cornerCutPoint1 = corner.vector - vector1.normalized * removedLength
+        let cornerCutPoint2 = corner.vector - vector2.normalized * removedLength
         let cornerStyles = corner.style.cornerStyles
 
         switch corner.style {
@@ -136,16 +145,16 @@ public extension Corner {
             return [corner.applyingStyle(.concave(radius: .absolute(cornerRadius), radiusOffset: radiusOffset))]
         case .straight:
             return [
-                cornerCutPoint1,
-                cornerCutPoint2
+                cornerCutPoint1.point,
+                cornerCutPoint2.point
             ]
             .corners(cornerStyles)
             .applyingStyle(.point)
         case .cutout:
             return [
-                cornerCutPoint1,
-                cornerCutPoint1 + vector1.normalized.rotated(.degrees(90)) * cornerRadius,
-                cornerCutPoint2
+                cornerCutPoint1.point,
+                (cornerCutPoint1 + vector1.normalized.rotated(.degrees(90)) * cornerRadius).point,
+                cornerCutPoint2.point
             ]
             .corners(cornerStyles)
         }

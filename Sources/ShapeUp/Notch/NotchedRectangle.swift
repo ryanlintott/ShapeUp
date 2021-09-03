@@ -54,15 +54,3 @@ public extension NotchedRectangle {
     }
 }
 
-public extension View {
-    func notchEdges(top: Notch? = nil, bottom: Notch? = nil, left: Notch? = nil, right: Notch? = nil) -> some View {
-        clipShape(NotchedRectangle(top: top, bottom: bottom, left: left, right: right))
-    }
-    
-    #if canImport(UIKit)
-    func notchEdges(_ notch: Notch, edges: [UIRectEdge]) -> some View {
-        clipShape(NotchedRectangle(notch, edges: edges))
-    }
-    #endif
-}
-

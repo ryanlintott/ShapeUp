@@ -1,6 +1,6 @@
 //
 //  Angle-extension.swift
-//  Wordhord
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-20.
 //
@@ -8,11 +8,11 @@
 import SwiftUI
 
 public extension Angle {
-    init(_ a: CGPoint, _ b: CGPoint, _ c: CGPoint) {
+    init<T: Vector2Representable, U: Vector2Representable, V: Vector2Representable>(_ a: T, _ b: U, _ c: V) {
         self = Angle.threePoint(a, b, c)
     }
     
-    init(_ a: CGPoint, _ b: CGPoint) {
+    init<T: Vector2Representable, U: Vector2Representable>(_ a: T, _ b: U) {
         self = Angle.twoPoint(a, b)
     }
     
@@ -22,17 +22,17 @@ public extension Angle {
     ///   - b: Corner Point
     ///   - c: End Point
     /// - Returns: Angle between 3 points (always positive values)
-    static func threePoint(_ a: CGPoint, _ b: CGPoint, _ c: CGPoint) -> Angle {
-        let theta1 = atan2(Double(a.y - b.y), Double(a.x - b.x))
-        let theta2 = atan2(Double(c.y - b.y), Double(c.x - b.x))
+    static func threePoint<T: Vector2Representable, U: Vector2Representable, V: Vector2Representable>(_ a: T, _ b: U, _ c: V) -> Angle {
+        let theta1 = atan2(Double(a.vector.dy - b.vector.dy), Double(a.vector.dx - b.vector.dx))
+        let theta2 = atan2(Double(c.vector.dy - b.vector.dy), Double(c.vector.dx - b.vector.dx))
         let positiveTheta1 = theta1 >= 0 ? theta1 : .pi * 2 + theta1
         let positiveTheta2 = theta2 >= 0 ? theta2 : .pi * 2 + theta2
         let result = positiveTheta1 - positiveTheta2
         return Angle.radians(result >= 0 ? result : .pi * 2 + result)
     }
     
-    static func twoPoint(_ a: CGPoint, _ b: CGPoint) -> Angle {
-        let theta1 = atan2(Double(b.y - a.y), Double(b.x - a.x))
+    static func twoPoint<T: Vector2Representable, U: Vector2Representable>(_ a: T, _ b: U) -> Angle {
+        let theta1 = atan2(Double(b.vector.dy - a.vector.dy), Double(b.vector.dx - a.vector.dx))
         let positiveTheta1 = theta1 >= 0 ? theta1 : .pi * 2 + theta1
         return Angle.radians(positiveTheta1)
     }
@@ -46,4 +46,3 @@ public extension Angle {
         Angle.radians(self.radians / 2)
     }
 }
-

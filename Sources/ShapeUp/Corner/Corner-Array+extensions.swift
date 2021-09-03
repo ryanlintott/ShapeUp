@@ -1,5 +1,5 @@
 //
-//  Corner+ArrayMethods.swift
+//  Corner-Array+extensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-08-13.
@@ -8,10 +8,6 @@
 import SwiftUI
 
 public extension Array where Element == Corner {
-    var points: [CGPoint] {
-        self.map({ $0.point })
-    }
-    
     var cornerStyles: [CornerStyle] {
         self.map({ $0.style })
     }
@@ -45,11 +41,11 @@ public extension Array where Element == Corner {
     }
     
     var bounds: CGRect {
-        points.bounds
+        vectors.bounds
     }
     
     var center: CGPoint {
-        points.center
+        vectors.center.point
     }
     
     func flipHorizontal(around x: CGFloat? = nil) -> [Corner] {
