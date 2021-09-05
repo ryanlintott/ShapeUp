@@ -17,17 +17,25 @@ public struct CornerShape: InsettableShape {
         self.corners = corners
     }
     
-    public func path(in rect: CGRect) -> Path {
-        let path = corners(rect)
-            .inset(by: insetAmount)
-            .path()
-        
-        return path
-    }
-    
-    public func inset(by amount: CGFloat) -> InsetShape {
+    public func inset(by amount: CGFloat) -> Self {
         var shape = self
         shape.insetAmount += amount
         return shape
+    }
+
+    public func corners(in rect: CGRect) -> [Corner] {
+        corners(rect)
+            .inset(by: insetAmount)
+    }
+    
+    public func path(in rect: CGRect) -> Path {
+        corners(in: rect)
+            .path()
+    }
+}
+
+public extension CornerShape {
+    init(_ shape: ShapeLibrary) {
+        corners = shape.corners(in:)
     }
 }

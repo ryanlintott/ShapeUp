@@ -8,6 +8,14 @@
 import SwiftUI
 
 public extension Array where Element == Corner {
+    var bounds: CGRect {
+        vectors.bounds
+    }
+    
+    var center: CGPoint {
+        vectors.center.point
+    }
+    
     var cornerStyles: [CornerStyle] {
         self.map({ $0.style })
     }
@@ -38,14 +46,6 @@ public extension Array where Element == Corner {
     
     func mirrored(mirrorLineStart: CGPoint, mirrorLineEnd: CGPoint) -> [Corner] {
         self.map({ $0.mirrored(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd) })
-    }
-    
-    var bounds: CGRect {
-        vectors.bounds
-    }
-    
-    var center: CGPoint {
-        vectors.center.point
     }
     
     func flipHorizontal(around x: CGFloat? = nil) -> [Corner] {
@@ -104,6 +104,14 @@ public extension Array where Element == Corner {
     
     func applyingStyle(_ style: CornerStyle) -> [Corner] {
         self.map({$0.applyingStyle(style)})
+    }
+    
+    func applyingStyle(_ style: CornerStyle, corners indices: [Self.Index]) -> [Corner] {
+        self.enumerated().map({ indices.contains($0) ? $1.applyingStyle(style) : $1 })
+    }
+    
+    func applyingStyle(_ style: CornerStyle, corner index: Self.Index) -> [Corner] {
+        applyingStyle(style, corners: [index])
     }
     
     mutating func addNotches(_ notches: [Notch?]) {
