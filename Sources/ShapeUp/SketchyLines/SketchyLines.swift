@@ -13,8 +13,8 @@ public struct SketchyLines: Shape {
         set { self.drawAmount = newValue }
     }
     
-    var lines: [SketchyLine]
-    var drawAmount: CGFloat
+    public var lines: [SketchyLine]
+    public var drawAmount: CGFloat
     
     public init(lines: [SketchyLine], drawAmount: CGFloat = 1) {
         self.lines = lines

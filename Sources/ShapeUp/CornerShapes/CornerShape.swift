@@ -19,13 +19,6 @@ public extension CornerShape {
             .inset(by: insetAmount)
     }
     
-    var cornerShape: CSCustom {
-        CSCustom { rect in
-            insetCorners(in: rect)
-                .inset(by: insetAmount)
-        }
-    }
-    
     func path(in rect: CGRect) -> Path {
         insetCorners(in: rect)
             .path()

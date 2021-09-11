@@ -10,9 +10,9 @@ import SwiftUI
 public struct CSPentagon: CornerShape {    
     public var insetAmount: CGFloat = 0
     
-    public let pointHeight: RelatableValue
-    public let topTaper: RelatableValue
-    public let bottomTaper: RelatableValue
+    public var pointHeight: RelatableValue
+    public var topTaper: RelatableValue
+    public var bottomTaper: RelatableValue
     
     public init(pointHeight: RelatableValue, topTaper: RelatableValue, bottomTaper: RelatableValue) {
         self.pointHeight = pointHeight

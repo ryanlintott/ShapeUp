@@ -14,7 +14,9 @@ public enum CornerStyle: Equatable {
     case straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])
     case cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])
 //    case custom(radius: RelatableValue, corners: (CGRect) -> [Corner])
+}
 
+public extension CornerStyle {
     var radius: RelatableValue {
         switch self {
         case .point:
@@ -58,6 +60,21 @@ public enum CornerStyle: Equatable {
             } else {
                 return true
             }
+        }
+    }
+    
+    func changingRadius(to radius: RelatableValue) -> CornerStyle {
+        switch self {
+        case .point:
+            return self
+        case .rounded:
+            return .rounded(radius: radius)
+        case .concave(_, let radiusOffset):
+            return .concave(radius: radius, radiusOffset: radiusOffset)
+        case .straight(_, let cornerStyles):
+            return .straight(radius: radius, cornerStyles: cornerStyles)
+        case .cutout(_, let cornerStyles):
+            return .cutout(radius: radius, cornerStyles: cornerStyles)
         }
     }
 }

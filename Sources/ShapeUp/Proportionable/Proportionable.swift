@@ -12,21 +12,6 @@ public protocol Proportionable {
     var height: CGFloat { get }
 }
 
-public enum AspectFormat: CaseIterable {
-    case portrait, square, landscape
-    
-    public static func forRatio(_ aspectRatio: CGFloat) -> Self {
-        switch aspectRatio {
-        case 1:
-            return .square
-        case ..<1:
-            return .portrait
-        default:
-            return .landscape
-        }
-    }
-}
-
 public extension Proportionable {
     var aspectFormat: AspectFormat {
         .forRatio(aspectRatio)

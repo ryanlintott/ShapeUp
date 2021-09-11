@@ -10,7 +10,7 @@ import SwiftUI
 public struct CSCustom: CornerShape {
     public var insetAmount: CGFloat = 0
     
-    public var corners: (CGRect) -> [Corner]
+    internal var corners: (CGRect) -> [Corner]
     
     public init(_ corners: @escaping (CGRect) -> [Corner]) {
         self.corners = corners
@@ -19,6 +19,4 @@ public struct CSCustom: CornerShape {
     public func corners(in rect: CGRect) -> [Corner] {
         corners(rect)
     }
-    
-    
 }

@@ -23,16 +23,20 @@ extension Corner: Vector2Transformable {
     }
 }
 
-public extension Corner {
-    var radius: RelatableValue {
+extension Corner {
+    public var radius: RelatableValue {
         style.radius
     }
     
-    func applyingStyle(_ style: CornerStyle) -> Corner {
+    public func applyingStyle(_ style: CornerStyle) -> Corner {
         Corner(style, point: self.point)
     }
     
-    func inset(_ insetAmount: CGFloat, previousCorner: Corner, nextCorner: Corner) -> Corner {
+    public func changingRadius(to radius: RelatableValue) -> Corner {
+        applyingStyle(style.changingRadius(to: radius))
+    }
+    
+    internal func inset(_ insetAmount: CGFloat, previousCorner: Corner, nextCorner: Corner) -> Corner {
         guard insetAmount != 0 else {
             return self
         }
@@ -90,7 +94,7 @@ public extension Corner {
         }
     }
     
-    func absolute(previousCorner: Corner, nextCorner: Corner) -> Corner {
+    internal func absolute(previousCorner: Corner, nextCorner: Corner) -> Corner {
         let corner = self
         
         let angle = Angle.threePoint(previousCorner, corner, nextCorner)
@@ -117,7 +121,7 @@ public extension Corner {
         }
     }
     
-    func flattened(previousCorner: Corner, nextCorner: Corner) -> [Corner] {
+    internal func flattened(previousCorner: Corner, nextCorner: Corner) -> [Corner] {
         guard self.style.isFlattenable else {
             return [self]
         }

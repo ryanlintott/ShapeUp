@@ -9,7 +9,7 @@ import SwiftUI
 
 public protocol Vector2Algebraic: Vector2Representable, Comparable { }
 
-extension Vector2Algebraic {
+public extension Vector2Algebraic {
     // Vector negation
     static prefix func - (vector: Self) -> Self {
         let vector = Vector2(dx: -vector.vector.dx, dy: -vector.vector.dy)
@@ -75,7 +75,7 @@ extension Vector2Algebraic {
         return .init(vector: vector)
     }
     
-    public static func < (lhs: Self, rhs: Self) -> Bool {
+    static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.magnitude < rhs.magnitude
     }
 }

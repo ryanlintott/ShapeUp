@@ -8,10 +8,10 @@
 import SwiftUI
 
 public struct Notch {
-    let style: NotchStyle
-    let position: RelatableValue
-    let length: RelatableValue
-    let depth: RelatableValue
+    public let style: NotchStyle
+    public let position: RelatableValue
+    public let length: RelatableValue
+    public let depth: RelatableValue
     
     public init(_ style: NotchStyle, position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue) {
         self.style = style

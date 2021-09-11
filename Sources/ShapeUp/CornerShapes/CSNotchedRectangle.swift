@@ -10,11 +10,11 @@ import SwiftUI
 public struct CSNotchedRectangle: CornerShape {
     public var insetAmount: CGFloat = 0
     
-    public let top: Notch?
-    public let bottom: Notch?
-    public let left: Notch?
-    public let right: Notch?
-    public let cornerStyles: [CornerStyle?]
+    public var top: Notch?
+    public var bottom: Notch?
+    public var left: Notch?
+    public var right: Notch?
+    public var cornerStyles: [CornerStyle?]
     
     public init(top: Notch? = nil, bottom: Notch? = nil, left: Notch? = nil, right: Notch? = nil, cornerStyles: [CornerStyle?] = []) {
         self.top = top

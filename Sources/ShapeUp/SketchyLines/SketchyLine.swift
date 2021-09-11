@@ -26,12 +26,12 @@ public struct SketchyLine: Shape {
         set { self.drawAmount = newValue }
     }
     
-    let edge: SketchyEdge
-    let startExtension: RelatableValue
-    let endExtension: RelatableValue
-    let offset: RelatableValue
-    var drawAmount: CGFloat
-    let drawDirection: DrawDirection
+    public let edge: SketchyEdge
+    public let startExtension: RelatableValue
+    public let endExtension: RelatableValue
+    public let offset: RelatableValue
+    public var drawAmount: CGFloat
+    public let drawDirection: DrawDirection
     
     public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {
         self.edge = edge
