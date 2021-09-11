@@ -1,19 +1,19 @@
 //
-//  CornerCutRectangle.swift
+//  CSRectangle.swift
 //  ShapeUp
 //
-//  Created by Ryan Lintott on 2021-01-22.
+//  Created by Ryan Lintott on 2021-09-10.
 //
 
 import SwiftUI
 
-public struct CornerCutRectangle: InsettableCornerShape {
+public struct CSRectangle: CornerShape {
     public var insetAmount: CGFloat = 0
     
-    let topLeft: CornerStyle?
-    let topRight: CornerStyle?
-    let bottomLeft: CornerStyle?
-    let bottomRight: CornerStyle?
+    public let topLeft: CornerStyle?
+    public let topRight: CornerStyle?
+    public let bottomLeft: CornerStyle?
+    public let bottomRight: CornerStyle?
     
     public init(topLeft: CornerStyle? = nil, topRight: CornerStyle? = nil, bottomLeft: CornerStyle? = nil, bottomRight: CornerStyle? = nil) {
         self.topLeft = topLeft
@@ -21,7 +21,7 @@ public struct CornerCutRectangle: InsettableCornerShape {
         self.bottomLeft = bottomLeft
         self.bottomRight = bottomRight
     }
-
+    
     #if canImport(UIKit)
     public init(_ style: CornerStyle, corners: [UIRectCorner] = [.allCorners]) {
         let all = corners.contains(.allCorners)
@@ -31,18 +31,14 @@ public struct CornerCutRectangle: InsettableCornerShape {
         self.bottomRight = all || corners.contains(.bottomRight) ? style : nil
     }
     #endif
-
-    public func path(in rect: CGRect) -> Path {
-        let path = rect
+    
+    public func corners(in rect: CGRect) -> [Corner] {
+        rect
             .corners([
                 topLeft,
                 topRight,
                 bottomRight,
                 bottomLeft
             ])
-            .inset(by: insetAmount)
-            .path()
-        
-        return path
     }
 }

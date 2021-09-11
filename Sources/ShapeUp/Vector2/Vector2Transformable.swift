@@ -7,87 +7,22 @@
 
 import SwiftUI
 
-public protocol Vector2Transformable: Vector2Representable, Comparable {
-    var dx: CGFloat { get }
-    var dy: CGFloat { get }
-    init(dx: CGFloat, dy: CGFloat)
+public protocol Vector2Transformable: Vector2Representable {
+    func repositioned<T: Vector2Representable>(to point: T) -> Self
 }
 
 extension Vector2Transformable {
-    public var vector: Vector2 { Vector2(dx: dx, dy: dy) }
-}
-
-extension Vector2Transformable {
-    // Vector negation
-    static prefix func - (vector: Self) -> Self {
-        return Self(dx: -vector.dx, dy: -vector.dy)
-    }
-    
-    // Vector addition
-    static func + <T: Vector2Transformable>(lhs: Self, rhs: T) -> Self {
-        return Self(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
-    }
-    
-    // Vector subtraction
-    static func - <T: Vector2Transformable>(lhs: Self, rhs: T) -> Self {
-        return lhs + -rhs
-    }
-    
-    // Vector addition assignment
-    static func += <T: Vector2Transformable>(lhs: inout Self, rhs: T) {
-        lhs = lhs + rhs
-    }
-    
-    // Vector subtraction assignment
-    static func -= <T: Vector2Transformable>(lhs: inout Self, rhs: T) {
-        lhs = lhs - rhs
-    }
-    
-    // Scalar-vector multiplication
-    static func * (lhs: CGFloat, rhs: Self) -> Self {
-        return Self(dx: lhs * rhs.dx, dy: lhs * rhs.dy)
-    }
-    
-    static func * (lhs: Self, rhs: CGFloat) -> Self {
-        return rhs * lhs
-    }
-    
-    // Vector-scalar division
-    static func / (lhs: Self, rhs: CGFloat) -> Self {
-        guard rhs != 0 else { return Self(dx: 0, dy: 0) }
-        return Self(dx: lhs.dx / rhs, dy: lhs.dy / rhs)
-    }
-    
-    // Vector-scalar division assignment
-    static func /= (lhs: inout Self, rhs: CGFloat) {
-        lhs = lhs / rhs
-    }
-    
-    // Scalar-vector multiplication assignment
-    static func *= (lhs: inout Self, rhs: CGFloat) {
-        lhs = lhs * rhs
-    }
-    
-    // Vector magnitude (length)
-    var magnitude: CGFloat {
-        return sqrt(dx * dx + dy * dy)
-    }
-    
-    // Vector normalization
-    var normalized: Self {
-        return Self(dx: dx / magnitude, dy: dy / magnitude)
-    }
-    
     func moved<T: Vector2Representable>(_ distance: T) -> Self {
-        self + distance.vector
+        let vector = self.vector + distance.vector
+        return repositioned(to: vector)
     }
     
     func rotated<T: Vector2Representable>(_ angle: Angle, anchor: T) -> Self {
-        let p = self - anchor.vector
+        let p = self.vector - anchor.vector
         let s = CGFloat(sin(angle.radians))
         let c = CGFloat(cos(angle.radians))
-        let pRotated = Self(dx: p.dx * c - p.dy * s, dy: p.dx * s + p.dy * c)
-        return pRotated + anchor.vector
+        let pRotated = Vector2(dx: p.dx * c - p.dy * s, dy: p.dx * s + p.dy * c)
+        return repositioned(to: pRotated + anchor.vector)
     }
     
     func rotated(_ angle: Angle) -> Self {
@@ -95,12 +30,9 @@ extension Vector2Transformable {
     }
     
     func mirrored<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Self {
-        let vectorToPoint = self - mirrorLineStart.vector
+        let vector = self.vector
+        let vectorToPoint = vector - mirrorLineStart.vector
         let angle = Angle.radians(Angle(self, mirrorLineStart, mirrorLineEnd).radians * 2)
-        return self - vectorToPoint + vectorToPoint.rotated(-angle)
-    }
-
-    public static func < (lhs: Self, rhs: Self) -> Bool {
-        lhs.magnitude < rhs.magnitude
+        return repositioned(to: vector - vectorToPoint + vectorToPoint.rotated(-angle))
     }
 }

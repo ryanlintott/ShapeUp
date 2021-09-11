@@ -1,6 +1,6 @@
 //
 //  EmbossViewModifier.swift
-//  Wordhord
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-19.
 //
@@ -154,7 +154,7 @@ struct EmbossViewModifier_Previews: PreviewProvider {
                 .emboss(amount: 1, angle: angle + .degrees(180), opacity: 0.8)
                 
 
-            CornerShape(.pentagon(pointHeight: .absolute(4), topTaper: .relative(0.5), bottomTaper: .relative(0.2)))
+            CSPentagon(pointHeight: .absolute(4), topTaper: .relative(0.5), bottomTaper: .relative(0.2))
                 .embossEdges(size: size, angle: angle + .degrees(180), opacity: opacity)
         }
         .padding(50)

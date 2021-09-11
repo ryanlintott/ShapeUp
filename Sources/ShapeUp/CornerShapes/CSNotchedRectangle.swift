@@ -1,5 +1,5 @@
 //
-//  NotchedRectangle.swift
+//  CSNotchedRectangle.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-22.
@@ -7,15 +7,14 @@
 
 import SwiftUI
 
-public struct NotchedRectangle: InsettableShape {
-    public typealias InsetShape = Self
-    var insetAmount: CGFloat = 0
+public struct CSNotchedRectangle: CornerShape {
+    public var insetAmount: CGFloat = 0
     
-    let top: Notch?
-    let bottom: Notch?
-    let left: Notch?
-    let right: Notch?
-    let cornerStyles: [CornerStyle?]
+    public let top: Notch?
+    public let bottom: Notch?
+    public let left: Notch?
+    public let right: Notch?
+    public let cornerStyles: [CornerStyle?]
     
     public init(top: Notch? = nil, bottom: Notch? = nil, left: Notch? = nil, right: Notch? = nil, cornerStyles: [CornerStyle?] = []) {
         self.top = top
@@ -25,32 +24,18 @@ public struct NotchedRectangle: InsettableShape {
         self.cornerStyles = cornerStyles
     }
     
-    #if canImport(UIKit)
-    public init(_ notch: Notch, edges: [UIRectEdge], cornerStyles: [CornerStyle?] = []) {
+    public init(_ notch: Notch, edges: Set<RectEdge>, cornerStyles: [CornerStyle?] = []) {
         self.top = edges.contains(.top) ? notch : nil
         self.bottom = edges.contains(.bottom) ? notch : nil
         self.left = edges.contains(.left) ? notch : nil
         self.right = edges.contains(.right) ? notch : nil
         self.cornerStyles = cornerStyles
     }
-    #endif
-}
-
-public extension NotchedRectangle {
-    func path(in rect: CGRect) -> Path {
-        let path = rect
+    
+    public func corners(in rect: CGRect) -> [Corner] {
+        rect
             .corners(cornerStyles)
             .addingNotches([top, right, bottom, left])
-            .inset(by: insetAmount)
-            .path()
-        
-        return path
-    }
-    
-    func inset(by amount: CGFloat) -> InsetShape {
-        var insetShape = self
-        insetShape.insetAmount += amount
-        return insetShape
     }
 }
 

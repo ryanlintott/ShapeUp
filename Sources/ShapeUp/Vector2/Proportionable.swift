@@ -10,13 +10,12 @@ import SwiftUI
 public protocol Proportionable {
     var width: CGFloat { get }
     var height: CGFloat { get }
-    
 }
 
 public enum AspectFormat: CaseIterable {
     case portrait, square, landscape
     
-    static func forRatio(_ aspectRatio: CGFloat) -> Self {
+    public static func forRatio(_ aspectRatio: CGFloat) -> Self {
         switch aspectRatio {
         case 1:
             return .square

@@ -1,5 +1,5 @@
 //
-//  Corner+Methods.swift
+//  Corner+extensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-08-13.
@@ -7,26 +7,29 @@
 
 import SwiftUI
 
-public extension Corner {
-    // repositions corner keeping style
-    func repositioned<T: Vector2Representable>(to point: T) -> Corner {
+extension Corner: Vector2Transformable {
+    public var vector: Vector2 {
+        Vector2(dx: x, dy: y)
+    }
+    
+    public init(vector: Vector2) {
+        x = vector.dx
+        y = vector.dy
+        style = .point
+    }
+    
+    public func repositioned<T: Vector2Representable>(to point: T) -> Corner {
         Corner(style, point: point)
     }
-    
-    func moved<T: Vector2Representable>(_ distance: T) -> Corner {
-        repositioned(to: vector.moved(distance.vector))
+}
+
+public extension Corner {
+    var radius: RelatableValue {
+        style.radius
     }
     
-    func rotated<T: Vector2Representable>(_ angle: Angle, anchor: T) -> Corner {
-        repositioned(to: vector.rotated(angle, anchor: anchor))
-    }
-    
-    func rotated(_ angle: Angle) -> Corner {
-        repositioned(to: vector.rotated(angle))
-    }
-    
-    func mirrored<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Corner {
-        repositioned(to: vector.mirrored(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd))
+    func applyingStyle(_ style: CornerStyle) -> Corner {
+        Corner(style, point: self.point)
     }
     
     func inset(_ insetAmount: CGFloat, previousCorner: Corner, nextCorner: Corner) -> Corner {
@@ -159,6 +162,4 @@ public extension Corner {
             .corners(cornerStyles)
         }
     }
-    
-    
 }

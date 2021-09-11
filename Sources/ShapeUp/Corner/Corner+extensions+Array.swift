@@ -1,5 +1,5 @@
 //
-//  Corner-Array+extensions.swift
+//  Corner+extensions+Array.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-08-13.
@@ -8,14 +8,6 @@
 import SwiftUI
 
 public extension Array where Element == Corner {
-    var bounds: CGRect {
-        vectors.bounds
-    }
-    
-    var center: CGPoint {
-        vectors.center.point
-    }
-    
     var cornerStyles: [CornerStyle] {
         self.map({ $0.style })
     }

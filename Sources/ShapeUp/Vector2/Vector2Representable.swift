@@ -9,4 +9,12 @@ import SwiftUI
 
 public protocol Vector2Representable {
     var vector: Vector2 { get }
+    
+    init(vector: Vector2)
+}
+
+public extension Vector2Representable {
+    var point: CGPoint {
+        CGPoint(x: vector.dx, y: vector.dy)
+    }
 }

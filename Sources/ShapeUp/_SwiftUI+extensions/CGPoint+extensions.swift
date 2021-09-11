@@ -7,9 +7,17 @@
 
 import SwiftUI
 
-extension CGPoint: Vector2Representable {
+extension CGPoint: Vector2Transformable {
     public var vector: Vector2 {
         Vector2(dx: x, dy: y)
+    }
+    
+    public init(vector: Vector2) {
+        self = vector.point
+    }
+    
+    public func repositioned<T: Vector2Representable>(to point: T) -> CGPoint {
+        point.point
     }
 }
 
