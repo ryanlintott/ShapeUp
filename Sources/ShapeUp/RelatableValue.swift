@@ -22,3 +22,15 @@ public enum RelatableValue: Equatable {
         }
     }
 }
+
+extension RelatableValue: ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+    public typealias FloatLiteralType = Double
+    public typealias IntegerLiteralType = Int
+    
+    public init(floatLiteral value: Double) {
+        self = .absolute(value)
+    }
+    public init(integerLiteral value: Int) {
+        self = .absolute(CGFloat(value))
+    }
+}

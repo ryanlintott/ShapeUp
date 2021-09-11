@@ -31,24 +31,7 @@ public extension Array where Element == Corner {
         
         return newCorners
     }
-    
-    func rotated(_ angle: Angle, anchor: CGPoint = .zero) -> [Corner] {
-        self.map({ $0.rotated(angle, anchor: anchor) })
-    }
-    
-    func mirrored(mirrorLineStart: CGPoint, mirrorLineEnd: CGPoint) -> [Corner] {
-        self.map({ $0.mirrored(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd) })
-    }
-    
-    func flipHorizontal(around x: CGFloat? = nil) -> [Corner] {
-        let mirrorX = x ?? center.x
-        return mirrored(mirrorLineStart: CGPoint(x: mirrorX, y: 0), mirrorLineEnd: CGPoint(x: mirrorX, y: 1))
-    }
-    
-    func flipVertical(around y: CGFloat? = nil) -> [Corner] {
-        let mirrorY = y ?? center.y
-        return mirrored(mirrorLineStart: CGPoint(x: 0, y: mirrorY), mirrorLineEnd: CGPoint(x: 1, y: mirrorY))
-    }
+
     // Works for shapes drawn clockwise without a duplicate point at the end
     func inset(by insetAmount: CGFloat) -> [Corner] {
         guard self.count >= 3 || insetAmount != 0 else {

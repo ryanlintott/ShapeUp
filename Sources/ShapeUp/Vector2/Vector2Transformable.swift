@@ -11,7 +11,7 @@ public protocol Vector2Transformable: Vector2Representable {
     func repositioned<T: Vector2Representable>(to point: T) -> Self
 }
 
-extension Vector2Transformable {
+public extension Vector2Transformable {
     func moved<T: Vector2Representable>(_ distance: T) -> Self {
         let vector = self.vector + distance.vector
         return repositioned(to: vector)

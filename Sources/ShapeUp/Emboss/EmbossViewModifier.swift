@@ -154,7 +154,7 @@ struct EmbossViewModifier_Previews: PreviewProvider {
                 .emboss(amount: 1, angle: angle + .degrees(180), opacity: 0.8)
                 
 
-            CSPentagon(pointHeight: .absolute(4), topTaper: .relative(0.5), bottomTaper: .relative(0.2))
+            CSPentagon(pointHeight: 4, topTaper: .relative(0.5), bottomTaper: .relative(0.2))
                 .embossEdges(size: size, angle: angle + .degrees(180), opacity: opacity)
         }
         .padding(50)
