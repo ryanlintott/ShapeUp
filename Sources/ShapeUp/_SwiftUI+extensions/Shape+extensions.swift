@@ -9,7 +9,9 @@ import SwiftUI
 
 public extension Shape {
     func scaleToFit(_ frame: CGSize, aspectRatio: CGFloat) -> some Shape {
-        self
-            .scale(x: aspectRatio > frame.aspectRatio ? 1 : frame.aspectRatio * aspectRatio, y: aspectRatio > frame.aspectRatio ? frame.aspectRatio / aspectRatio : 1, anchor: .center)
+        let frameRatio = frame.width / frame.height
+        
+        return self
+            .scale(x: aspectRatio > frameRatio ? 1 : frameRatio * aspectRatio, y: aspectRatio > frameRatio ? frameRatio / aspectRatio : 1, anchor: .center)
     }
 }
