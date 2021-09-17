@@ -18,18 +18,26 @@ public extension InsettableShape {
         let almostClearBlack = Color.black.opacity(0.000001)
         let almostClearWhite = Color.white.opacity(0.000001)
         
+        var inset: CGFloat {
+            -max(1, size * 1.5)
+        }
+        
+        var lineWidth: CGFloat {
+            max(1, size)
+        }
+        
         return self
             .fill(Color.clear)
             .overlay(
                 ZStack {
                     self
-                        .inset(by: -max(1, size * 1.5))
-                        .strokeBorder(almostClearBlack, lineWidth: max(1, size))
+                        .inset(by: inset)
+                        .strokeBorder(almostClearBlack, lineWidth: lineWidth)
                         .shadow(color: Color.black.opacity(opacity), radius: size, x: -offsetX, y: -offsetY)
 
                     self
-                        .inset(by: -max(1, size * 1.5))
-                        .strokeBorder(almostClearWhite, lineWidth: max(1, size))
+                        .inset(by: inset)
+                        .strokeBorder(almostClearWhite, lineWidth: lineWidth)
                         .shadow(color: Color.white.opacity(opacity), radius: size, x: offsetX, y: offsetY)
                 }
                 .clipShape(self)

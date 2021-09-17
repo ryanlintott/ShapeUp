@@ -7,9 +7,7 @@
 
 import SwiftUI
 
-public protocol CornerShape: InsettableShape {
-    var insetAmount: CGFloat { get set }
-    
+public protocol CornerShape: InsettableShapeByProperty {
     func corners(in rect: CGRect) -> [Corner]
 }
 
@@ -22,11 +20,5 @@ public extension CornerShape {
     func path(in rect: CGRect) -> Path {
         insetCorners(in: rect)
             .path()
-    }
-    
-    func inset(by amount: CGFloat) -> Self {
-        var cornerShape = self
-        cornerShape.insetAmount = amount
-        return cornerShape
     }
 }
