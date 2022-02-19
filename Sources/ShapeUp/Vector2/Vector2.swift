@@ -7,10 +7,19 @@
 
 import SwiftUI
 
-public struct Vector2 {
+/// A vector type used as an alternative to CGPoint
+///
+/// This type is mainly used internally so that CGPoint isn't publically extended with too many functions that may conflict with other user functions.
+public struct Vector2: Equatable {
+    /// Delta x
     public let dx: CGFloat
+    /// Delta y
     public let dy: CGFloat
     
+    /// Creates a vector
+    /// - Parameters:
+    ///   - dx: The x component
+    ///   - dy: The y component
     public init(dx: CGFloat, dy: CGFloat) {
         self.dx = dx
         self.dy = dy
@@ -18,10 +27,13 @@ public struct Vector2 {
 }
 
 public extension Vector2 {
-    // Zero
+    /// The zero vector
     static var zero: Self { Self.init(dx: 0, dy: 0) }
-
+    
+    /// A CGSize representation
     var size: CGSize { CGSize(width: dx, height: dy) }
+    
+    /// A CGRect representation with the origin at zero.
     var rect: CGRect { CGRect(x: 0, y: 0, width: dx, height: dy) }
 }
 

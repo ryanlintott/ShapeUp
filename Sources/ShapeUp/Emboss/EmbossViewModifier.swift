@@ -7,18 +7,21 @@
 
 import SwiftUI
 
-struct embossViewModifier: ViewModifier {
+/// View modifier that overlays an emboss effect on a view.
+///
+/// Used in `.emboss()` and `.deboss()` view extensions
+struct EmbossViewModifier: ViewModifier {
     let baseColor: Color?
     let blur: CGFloat
     let opacity: Double
     let offsetX: CGFloat
     let offsetY: CGFloat
     
-    init(baseColor: Color? = nil, amount: CGFloat, blur: CGFloat? = nil, angle: Angle? = nil, opacity: Double? = nil) {
+    init(baseColor: Color? = nil, amount: CGFloat, blur: CGFloat? = nil, angle: Angle? = nil, opacity: Double? = nil, deboss: Bool = false) {
         self.baseColor = baseColor
         self.blur = blur ?? amount
         self.opacity = opacity ?? 1.0
-        let angle = angle ?? .degrees(45)
+        let angle = (angle ?? .degrees(45)) + (deboss ? .degrees(180) : .zero)
         self.offsetX = amount * 1.5 * CGFloat(cos(angle.radians))
         self.offsetY = amount * 1.5 * CGFloat(sin(angle.radians))
     }
@@ -47,6 +50,8 @@ struct embossViewModifier: ViewModifier {
                                 .luminanceToAlpha()
                         )
                         .opacity(opacity)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
                     
                     Color.black
                         .mask(
@@ -63,6 +68,8 @@ struct embossViewModifier: ViewModifier {
                                 .luminanceToAlpha()
                         )
                         .opacity(opacity)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
                 }
             )
             .mask(content)

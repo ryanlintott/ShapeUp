@@ -8,23 +8,20 @@
 import SwiftUI
 
 extension CGPoint: Vector2Transformable {
+    /// Vector pointing from zero to this point.
     public var vector: Vector2 {
         Vector2(dx: x, dy: y)
     }
     
+    /// Creates a point based on the supplied vector.
+    /// - Parameter vector: Vector placed at zero and used to determine point location.
     public init(vector: Vector2) {
         self = vector.point
     }
     
     public func repositioned<T: Vector2Representable>(to point: T) -> CGPoint {
+        /// This function is required for Vector2Transformable conformance. Other types (like Corner) have to pass on their other properties but CGPoint only has point information.
         point.point
     }
 }
-
-public extension CGPoint {
-    func corner(_ style: CornerStyle? = nil) -> Corner {
-        Corner(style ?? .point, point: self)
-    }
-}
-
 

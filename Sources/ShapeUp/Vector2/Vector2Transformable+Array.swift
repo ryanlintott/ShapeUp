@@ -8,29 +8,115 @@
 import SwiftUI
 
 public extension Array where Element: Vector2Transformable {
-    func rotated<T: Vector2Representable>(_ angle: Angle, anchor: T) -> Self {
-        self.map({ $0.rotated(angle, anchor: anchor) })
+    /// Moves an array of points without modifying other properties.
+    /// - Parameter distance: A vector representing the distance to move.
+    /// - Returns: The same array of points, moved by the provided distance.
+    func moved<T: Vector2Representable>(_ distance: T) -> Self {
+        map { $0.moved(distance)}
     }
-    #warning("Assumed rotation around zero, not center")
-    func rotated(_ angle: Angle) -> [Element] {
+    
+    /// Moves a Vector2Transformable type without modifying other properties.
+    /// - Parameters:
+    ///   - dx: Delta x
+    ///   - dy: Delta y
+    /// - Returns: The same object, moved by the provided distance.
+    func moved(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
+        moved(Vector2(dx: dx, dy: dy))
+    }
+    
+    /// Rotates an array of points around an anchor point.
+    /// - Parameters:
+    ///   - angle: Angle of rotation.
+    ///   - anchor: Anchor point for the rotation.
+    /// - Returns: The same array of points rotated around the provided anchor point by the provided angle.
+    func rotated<T: Vector2Representable>(_ angle: Angle, anchor: T) -> Self {
+        map { $0.rotated(angle, anchor: anchor) }
+    }
+    
+    /// Rotates an array of points around zero.
+    /// - Parameter angle: Angle of rotation.
+    /// - Returns: The same array of points rotated around zero by the provided angle.
+    func rotated(_ angle: Angle) -> Self {
         rotated(angle, anchor: Vector2.zero)
     }
-
-    func rotatedAroundCenter(_ angle: Angle) -> Self {
-        rotated(angle, anchor: center)
+    
+    /// Rotates an array of points around a frame anchor.
+    /// - Parameters:
+    ///   - angle: Angle of rotation.
+    ///   - anchor: Frame anchor point for the rotation.
+    /// - Returns: The same array of points rotated around a frame anchor by the provided angle.
+    func rotated(_ angle: Angle, anchor: RectAnchor) -> Self {
+        rotated(angle, anchor: anchorPoint(anchor))
     }
-
-    func mirrored<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> [Element] {
-        self.map({ $0.mirrored(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd) })
+    
+    #warning("Confirm what happens when start and end points are equal")
+    /// Flips an array of points across a mirror line.
+    ///
+    /// If start and end are equal, points are unchanged.
+    /// - Parameters:
+    ///   - mirrorLineStart: Start point of mirror line.
+    ///   - mirrorLineEnd: End point of mirror line.
+    /// - Returns: The same array of points flipped across a mirror line.
+    func flipped<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Self {
+        map({ $0.flipped(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd) })
     }
-    #warning("Assumed flip across center, not zero")
-    func flipHorizontal(around x: CGFloat? = nil) -> Self {
-        let mirrorX = x ?? center.vector.dx
-        return mirrored(mirrorLineStart: Vector2(dx: mirrorX, dy: .zero), mirrorLineEnd: Vector2(dx: mirrorX, dy: 1))
+    
+    #warning("Confirm what happens when start and end points are equal")
+    /// Flips an array of points across a mirror line defined by anchor points on the bounding frame.
+    ///
+    /// If start and end are equal, points are unchanged.
+    /// - Parameters:
+    ///   - mirrorLineStart: Start point of the mirror line.
+    ///   - mirrorLineEnd: End point of the mirror line.
+    /// - Returns: The same array of points flipped across a mirror line.
+    func flipped(mirrorLineStart: RectAnchor, mirrorLineEnd: RectAnchor) -> Self {
+        flipped(mirrorLineStart: anchorPoint(mirrorLineStart), mirrorLineEnd: anchorPoint(mirrorLineEnd))
     }
-
-    func flipVertical(around y: CGFloat? = nil) -> Self {
-        let mirrorY = y ?? center.vector.dy
-        return mirrored(mirrorLineStart: Vector2(dx: 0, dy: mirrorY), mirrorLineEnd: Vector2(dx: 1, dy: mirrorY))
+    
+    /// Flips an array of points horizontally.
+    /// - Parameter x: X coordinate of the vertical mirror line.
+    /// - Returns: The same array of points flipped horizontally across a vertical mirror line.
+    func flippedHorizontally(across x: CGFloat = .zero) -> Self {
+        flipped(mirrorLineStart: Vector2(dx: x, dy: .zero), mirrorLineEnd: Vector2(dx: x, dy: 1))
+    }
+    
+    /// Flips an array of points horizontally.
+    /// - Parameter anchor: This frame anchor sets the position of the vertical mirror line.
+    /// - Returns: The same array of points flipped horizontally across a vertical mirror line.
+    func flippedHorizontally(across anchor: RectAnchor) -> Self {
+        flippedHorizontally(across: anchorPoint(anchor).x)
+    }
+    
+    /// Flips an array of points vertically.
+    /// - Parameter y: Y coordinate of the horizontal mirror line.
+    /// - Returns: The same array of points flipped vertically across a horizontal mirror line.
+    func flippedVertically(across y: CGFloat = .zero) -> Self {
+        flipped(mirrorLineStart: Vector2(dx: .zero, dy: y), mirrorLineEnd: Vector2(dx: 1, dy: y))
+    }
+    
+    /// Flips an array of points vertically..
+    /// - Parameter anchor: This frame anchor sets the position of the horizontal mirror line.
+    /// - Returns: The same array of points flipped vertically across a horizontal mirror line.
+    func flippedVertically(across anchor: RectAnchor) -> Self {
+        flippedVertically(across: anchorPoint(anchor).x)
+    }
+    
+    /// Returns an array of points inset by a specified amount.
+    ///
+    /// Positive inset goes to the right of the line from previous point to this one. Points are considered an open shape so end points will be inset perpendicular to the line they're on.
+    /// - Parameters:
+    ///   - amount: Inset amount.
+    /// - Returns: Array of points after they have been inset.
+    func insetPoints(_ amount: CGFloat) -> [CGPoint] {
+        // Must be at least 2 points to inset.
+        guard self.count > 1 else { return points }
+        
+        return self.enumerated().compactMap { i, point -> CGPoint in
+            let previousPoint = i == 0 ? nil : self[i - 1].point
+            let nextPoint = i == self.count - 1 ? nil : self[i + 1].point
+            
+            let insetPoint = point.insetPoint(amount, previousPoint: previousPoint, nextPoint: nextPoint)
+            return insetPoint
+        }
     }
 }

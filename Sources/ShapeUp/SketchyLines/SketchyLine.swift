@@ -7,15 +7,22 @@
 
 import SwiftUI
 
+/// A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
 public struct SketchyLine: Shape {
+    /// Edges where the line can be drawn
     public enum SketchyEdge {
         case top, bottom, leading, trailing
+        /// The baseline of the text as defined in UIFont
         case textBaseline(font: UIFont)
+        /// The cap height of the text as defined in UIFont
         case textCapHeight(font: UIFont)
     }
     
+    /// Drawing direction
     public enum DrawDirection: CGFloat {
+        /// Drawing will start at the top or leading end and draw to the bottom or trailing end.
         case toBottomTrailing
+        /// Drawing will start at the bottom or trailing end and draw to the top or leading end.
         case toTopLeading
         
         public static let `default`: DrawDirection = .toBottomTrailing
@@ -33,6 +40,14 @@ public struct SketchyLine: Shape {
     public var drawAmount: CGFloat
     public let drawDirection: DrawDirection
     
+    /// Creates a sketchy line shape.
+    /// - Parameters:
+    ///   - edge: Edge to draw the line on. Text edges require an instance of the UIFont
+    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
+    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
+    ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
+    ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
+    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
     public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {
         self.edge = edge
         self.startExtension = startExtension
@@ -44,6 +59,7 @@ public struct SketchyLine: Shape {
 }
 
 public extension SketchyLine {
+    /// Amount to offset the edge based on the font size.
     var fontOffset: CGFloat {
         switch edge {
         case let .textBaseline(font):
@@ -55,6 +71,9 @@ public extension SketchyLine {
         }
     }
     
+    /// Determines the start point of the line.
+    /// - Parameter rect: Rectangle in which the line is drawn.
+    /// - Returns: Point where the line starts in the given rectangle.
     func startPoint(in rect: CGRect) -> CGPoint {
         switch edge {
         case .top, .textCapHeight:
@@ -68,6 +87,9 @@ public extension SketchyLine {
         }
     }
     
+    /// Determines the end point of the line.
+    /// - Parameter rect: Rectangle in which the line is drawn.
+    /// - Returns: Point where the line ends in the given rectangle.
     func endPoint(in rect: CGRect) -> CGPoint {
         switch edge {
         case .top, .textCapHeight:

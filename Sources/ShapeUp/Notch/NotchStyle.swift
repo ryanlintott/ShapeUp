@@ -7,23 +7,26 @@
 
 import SwiftUI
 
+/// An enumeration to indicate the style of a notch.
 public enum NotchStyle {
+    /// A triangular shaped notch.
+    /// - Parameters:
+    ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
     case triangle(cornerStyles: [CornerStyle?])
+    
+    /// A rectangular shaped notch.
+    /// - Parameters:
+    ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
     case rectangle(cornerStyles: [CornerStyle?])
+    
+    /// A custom shaped notch defined by corners in a reference frame equal to the notch's length and depth.
+    /// - Parameters:
+    ///   - coners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
     case custom(corners: (_ in: CGRect) -> [Corner])
 }
 
 public extension NotchStyle {
-    static let triangle = NotchStyle.triangle(cornerStyles: [])
-    static let rectangle = NotchStyle.rectangle(cornerStyles: [])
-    
-    static func triangle(cornerStyle: CornerStyle? = nil) -> NotchStyle {
-        .triangle(cornerStyles: Array<CornerStyle?>(repeating: cornerStyle, count: 3))
-    }
-    static func rectangle(cornerStyle: CornerStyle? = nil) -> NotchStyle {
-        .rectangle(cornerStyles: Array<CornerStyle?>(repeating: cornerStyle, count: 4))
-    }
-    
+    /// Corner styles for all corners of the notch.
     var cornerStyles: [CornerStyle?] {
         switch self {
         case let .triangle(cornerStyles):
@@ -32,6 +35,26 @@ public extension NotchStyle {
             return cornerStyles
         case let .custom(corners):
             return corners(.zero).cornerStyles
+        }
+    }
+    
+    func corners(in rect: CGRect) -> [Corner] {
+        switch self {
+        case .triangle(let cornerStyles):
+            return rect.anchorPoints(
+                .topLeft,
+                .bottom,
+                .topRight
+            ).corners(cornerStyles)
+        case .rectangle(let cornerStyles):
+            return rect.anchorPoints(
+                .topLeft,
+                .bottomLeft,
+                .bottomRight,
+                .topRight
+            ).corners(cornerStyles)
+        case .custom(let corners):
+            return corners(rect)
         }
     }
 }

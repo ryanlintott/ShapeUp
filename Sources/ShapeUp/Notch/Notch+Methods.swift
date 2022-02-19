@@ -8,67 +8,32 @@
 import SwiftUI
 
 public extension Notch {
-    func between(start: CGPoint, end: CGPoint) -> [CGPoint] {
+    /// Creates an array of corners describing a notch between two points.
+    ///
+    /// Although any `Vector2Representable` object can be passed in, the output is always an array of corners as notch styles can contain corner styles.
+    /// - Parameters:
+    ///  - start: Start point of the line where a notch is added.
+    ///  - end: End point of the line where a notch is added.
+    /// - Returns: An array of corners describing a notch between two points.
+    func between<T: Vector2Representable, U: Vector2Representable>(start: T, end: U) -> [Corner] {
         let vector = end.vector - start.vector
+        
+        // Check if vector has a direction. If not then a notch can't be created between these two points.
+        guard let direction = vector.direction else {
+            return []
+        }
+        
         let totalLength = vector.magnitude
         let normalizedVector = vector.normalized
-        let notchLength = length.value(using: totalLength)
         let notchPosition = position.value(using: totalLength)
+        let notchLength = length.value(using: totalLength)
         let notchDepth = depth.value(using: totalLength)
+        let notchStartPoint = start.vector + normalizedVector * (notchPosition - (notchLength / 2))
         
-        let notchStartPoint = start.vector + normalizedVector * notchPosition - normalizedVector * (notchLength / 2)
-        let notchEndPoint = notchStartPoint + normalizedVector * notchLength
-        
-        var points = [CGPoint]()
-        
-        switch style {
-        case .triangle:
-            points += [
-                notchStartPoint,
-                notchStartPoint + (normalizedVector * (notchLength / 2)) + (normalizedVector.rotated(.degrees(90)) * notchDepth),
-                notchEndPoint
-            ].points
-        case .rectangle:
-            points += [
-                notchStartPoint,
-                notchStartPoint + (normalizedVector.rotated(.degrees(90)) * notchDepth),
-                notchEndPoint + (normalizedVector.rotated(.degrees(90)) * notchDepth),
-                notchEndPoint
-            ].points
-        case let .custom(corners):
-            let rect = CGRect(x: 0, y: 0, width: notchLength, height: notchDepth)
-            let angle = Angle(start, end)
-            points += corners(rect).map({ $0.vector.rotated(angle).moved(notchStartPoint).point })
-        }
-
-        return points
-    }
-    // TODO: add corner styles
-    func between(start: Corner, end: Corner) -> [Corner] {
-        let points = between(start: start.point, end: end.point)
-        let styleCornerStyles = style.cornerStyles
-        let cornerStyles = styleCornerStyles + Array<CornerStyle?>(repeating: nil, count: Swift.max(points.count - styleCornerStyles.count, 0))
-        
-        return between(start: start.point, end: end.point).corners(cornerStyles)
-    }
-    
-    static func triangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
-        Notch(.triangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)
-    }
-    
-    static func triangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
-        Notch(.triangle(cornerStyles: cornerStyles), position: position, length: length, depth: depth)
-    }
-    
-    static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
-        Notch(.rectangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)
-    }
-    
-    static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
-        Notch(.rectangle(cornerStyles: cornerStyles), position: position, length: length, depth: depth)
-    }
-    
-    static func custom(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, corners: @escaping (CGRect) -> [Corner]) -> Notch {
-        Notch(.custom(corners: corners), position: position, length: length, depth: depth)
+        let rect = CGRect(x: 0, y: 0, width: notchLength, height: notchDepth)
+        return style
+            .corners(in: rect)
+            .rotated(direction)
+            .moved(notchStartPoint)
     }
 }

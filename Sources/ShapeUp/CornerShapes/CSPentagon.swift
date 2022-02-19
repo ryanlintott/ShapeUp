@@ -7,6 +7,22 @@
 
 import SwiftUI
 
+/// A pentagon shape pointing upwards with individually stylable corners, aligned inside the frame of the view containing it.
+///
+/// This shape can either be used in a SwiftUI View directly (similar to `RoundedRectangle`)
+///
+///     CSPentagon(pointHeight: .relative(0.2), topTaper: .relative(0.15), bottomTaper: .zero)
+///         .fill()
+///
+/// Or the corners can be accessed directly for use in a more complex shape
+///
+///     public func corners(in rect: CGRect) -> [Corner] {
+///         CSPentagon(pointHeight: .relative(0.2), topTaper: .relative(0.15), bottomTaper: .zero)
+///             .corners(in: rect)
+///             .inset(by: 10)
+///             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
+///     }
+///
 public struct CSPentagon: CornerShape {    
     public var insetAmount: CGFloat = 0
     
@@ -14,7 +30,12 @@ public struct CSPentagon: CornerShape {
     public var topTaper: RelatableValue
     public var bottomTaper: RelatableValue
     
-    public init(pointHeight: RelatableValue, topTaper: RelatableValue, bottomTaper: RelatableValue) {
+    /// Creates a 2d pentagon shape with corners that can be styled.
+    /// - Parameters:
+    ///   - pointHeight: The vertical distance from the central point to the two points on either side.
+    ///   - topTaper: The horizontal inset of the two points closest to the top.
+    ///   - bottomTaper: The horizontal inset of the bottom two points.
+    public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero) {
         self.pointHeight = pointHeight
         self.topTaper = topTaper
         self.bottomTaper = bottomTaper
@@ -27,7 +48,6 @@ public struct CSPentagon: CornerShape {
         ]
         return sidePoints
         + [Corner(x: rect.midX, y: rect.minY)]
-        + sidePoints.flipHorizontal(around: rect.midX).reversed()
+        + sidePoints.flippedHorizontally(across: rect.midX).reversed()
     }
 }
-

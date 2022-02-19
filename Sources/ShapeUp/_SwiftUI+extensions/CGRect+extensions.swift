@@ -8,52 +8,36 @@
 import SwiftUI
 
 public extension CGRect {
+    /// Creates an array of points from the 4 corners of the rectangle starting with the top left and going clockwise.
     var points: [CGPoint] {
-        [
-            CGPoint(x: self.minX, y: self.minY),
-            CGPoint(x: self.maxX, y: self.minY),
-            CGPoint(x: self.maxX, y: self.maxY),
-            CGPoint(x: self.minX, y: self.maxY)
-        ]
+        RectAnchor.vertexAnchors.points(in: self)
     }
     
-    func anchorPoint(_ anchorPoint: RectAnchor) -> CGPoint {
-        switch anchorPoint {
-        case .topLeft:
-            return CGPoint(x: minX, y: minY)
-        case .top:
-            return CGPoint(x: midX, y: minY)
-        case .topRight:
-            return CGPoint(x: maxX, y: minY)
-        case .left:
-            return CGPoint(x: minX, y: midY)
-        case .center:
-            return CGPoint(x: midX, y: midY)
-        case .right:
-            return CGPoint(x: maxX, y: midY)
-        case .bottomLeft:
-            return CGPoint(x: minX, y: maxY)
-        case .bottom:
-            return CGPoint(x: midX, y: maxY)
-        case .bottomRight:
-            return CGPoint(x: maxX, y: maxY)
-        }
+    /// Creates a point in the location of an anchor.
+    /// - Parameter anchor: Anchor where the point is located
+    /// - Returns: The point where the anchor is located.
+    func anchorPoint(_ anchor: RectAnchor) -> CGPoint {
+        anchor.point(in: self)
     }
     
+    /// Creates an array of points in the locations of the supplied anchors.
+    /// - Parameter anchors: Achors defining point locations in order.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
+    func anchorPoints(_ anchors: RectAnchor...) -> [CGPoint] {
+        anchors.points(in: self)
+    }
+    
+    /// Creates an array of corners from the rectangle.
+    /// - Parameter style: Corner style used for all corners.
+    /// - Returns: An array of 4 corners, with the provided style, starting with the top left and going clockwise.
     func corners(_ style: CornerStyle = .point) -> [Corner] {
-        points.map({ Corner(style, point: $0) })
+        points.corners(style)
     }
     
+    /// Creates an array of corners from the rectangle.
+    /// - Parameter styles: Array of corner styles starting with the top left and going clockwise. Nil values will use "point"
+    /// - Returns: An array of 4 corners, with the provided styles, starting with the top left and going clockwise.
     func corners(_ styles: [CornerStyle?]) -> [Corner] {
-        let points = self.points
-        
-        ///Ensures cornerStyles array is long enough to cover all corners
-        let cornerStyles = styles + Array<CornerStyle?>(repeating: nil, count: Swift.max(points.count - styles.count, 0))
-        var corners = [Corner]()
-        for (i, point) in points.enumerated() {
-            #warning("Add error checking here in case cornerStyles[i] doesn't exist")
-            corners.append(Corner(cornerStyles[i], point: point))
-        }
-        return corners
+        points.corners(styles)
     }
 }
