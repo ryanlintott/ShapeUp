@@ -40,12 +40,12 @@ public extension Array where Element == Corner {
         return newCorners
     }
     
-    func inset(_ insetAmount: CGFloat, previousPoint: CGPoint, nextPoint: CGPoint, allowNegativeRadius: Bool? = nil) -> [Corner] {
+    func inset(_ insetAmount: CGFloat, previousPoint: CGPoint, nextPoint: CGPoint) -> [Corner] {
         if self.count < 2 || insetAmount == 0 { return self }
         
         return self
             .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
-            .corners(inset: insetAmount, allowNegativeRadius: allowNegativeRadius)
+            .corners(inset: insetAmount)
     }
 
     /// Creates an array of corners that represent an inset version of the current shape.
@@ -53,10 +53,10 @@ public extension Array where Element == Corner {
     /// Corner array will be flattened so it may contain more corners than before. The inset assumes a clockwise shape order and a closed path where the start point is also the end point. Do not include a duplicate of the start point at the end of the array.
     /// - Parameter insetAmount: Amount corners will be inset.
     /// - Returns: An array of inset corners.
-    func inset(by insetAmount: CGFloat, allowNegativeRadius: Bool? = nil) -> [Corner] {
+    func inset(by insetAmount: CGFloat) -> [Corner] {
         if self.isEmpty { return self }
         
-        return inset(insetAmount, previousPoint: self.last!.point, nextPoint: self.first!.point, allowNegativeRadius: allowNegativeRadius)
+        return inset(insetAmount, previousPoint: self.last!.point, nextPoint: self.first!.point)
     }
     
     /// Creates a path with a closed shape defined by this array of corners.

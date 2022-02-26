@@ -9,10 +9,18 @@ import SwiftUI
 
 extension Corner.Dimensions {
     func startCornerShape(on path: inout Path, moveToStart: Bool) {
-        moveToStart ? path.move(to: cornerStart) : path.addLine(to: cornerStart)
+        // If radius is ever negative, use the corner point instead.
+        let start = absoluteRadius > 0 ? cornerStart : corner.point
+        moveToStart ? path.move(to: start) : path.addLine(to: start)
     }
     
     func addCornerShape(to path: inout Path, moveToStart: Bool) {
+        guard absoluteRadius > 0 else {
+            // If the radius is negative the corner style doesn't matter.
+            startCornerShape(on: &path, moveToStart: moveToStart)
+            return
+        }
+        
         // Draw the corner based on the style.
         switch corner.style {
         case .point:
@@ -26,21 +34,42 @@ extension Corner.Dimensions {
             path.addArc(
                 tangent1End: corner.point,
                 tangent2End: cornerEnd,
-                radius: abs(absoluteRadius)
+                radius: absoluteRadius
             )
-        case let .concave(_, radiusOffset):
+        case .concave:
             // Start drawing this corner shape
             startCornerShape(on: &path, moveToStart: moveToStart)
-            // Draw a concave arc from the cornerStart to cornerEnd
-            #warning("Draw the arc using center point and angles instead.")
-            path.addArc(
-                tangent1End: cutoutPoint,
-                tangent2End: cornerEnd,
-                radius: absoluteRadius + (radiusOffset ?? 0)
-            )
-            // Draw an additional line in case the arc doesn't get to the corner end point. Once the bug is fixed with drawing offset arcs this shouldn't be needed.
-            if radiusOffset != 0 {
+            // If one value is nil, both are nil
+            if let concaveStart = concaveStart, let concaveEnd = concaveEnd {
+//                path.addLine(to: concaveStart)
+//                path.addLine(to: concaveRadiusCenter)
+//                path.addLine(to: cutoutPoint)
+//                path.addLine(to: concaveEnd)
+//                path.addLine(to: radiusCenter)
+//                path.addLine(to: cornerEnd)
+                
+                // Draw a line to concave start
+                path.addLine(to: concaveStart)
+                // Draw a concave arc from the concave start to concave end
+                path.addArc(
+                    tangent1End: cutoutPoint,
+                    tangent2End: concaveEnd,
+                    radius: concaveRadius
+                )
+                // Draw a line to corner end.
                 path.addLine(to: cornerEnd)
+            } else {
+//                path.addLine(to: cutoutPoint)
+//                path.addLine(to: concaveRadiusCenter)
+//                path.addLine(to: cutoutPoint)
+//                path.addLine(to: cornerEnd)
+
+                // Draw a concave arc from the cornerStart to cornerEnd
+                path.addArc(
+                    tangent1End: cutoutPoint,
+                    tangent2End: cornerEnd,
+                    radius: concaveRadius
+                )
             }
         case let .straight(_, cornerStyles):
             if cornerStyles == [] || cornerStyles.allSatisfy({ $0 == .point }) {

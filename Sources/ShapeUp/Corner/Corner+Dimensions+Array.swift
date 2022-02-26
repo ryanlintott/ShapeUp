@@ -28,13 +28,11 @@ extension Array where Element == Corner {
 
 extension Array where Element == Corner.Dimensions {
     public var corners: [Corner] {
-        corners()
+        map { $0.corner }
     }
     
-    public func corners(inset: CGFloat = .zero, allowNegativeRadius: Bool? = nil) -> [Corner] {
-        map {
-            $0.corner(inset: inset, allowNegativeRadius: allowNegativeRadius)
-        }
+    public func corners(inset: CGFloat) -> [Corner] {
+        map { $0.corner(inset: inset) }
     }
     
     public func path() -> Path {

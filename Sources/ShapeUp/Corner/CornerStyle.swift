@@ -22,8 +22,8 @@ public enum CornerStyle: Equatable {
     /// With zero radius offset, this corner style looks like a rounded corner flipped, but with the same start and end points. The radius offset is used to compensate for shape insetting. By default the center point of the circle describing the radius can be found by flipping the center point of the rounded corner circle across the line described by the arc endpoints. When a shape is inset, this point needs to remain in the same location leading to a non-zero radius offset.
     ///  - Parameters:
     ///   - radius: Radius of the circle used to cutout this corner.
-    ///   - radiusOffset: Offset of the center point of the circle used to cutout this corner in the direction the corner is pointing.
-    case concave(radius: RelatableValue, radiusOffset: CGFloat? = nil)
+    ///   - radiusOffset: Added to radius to create concave curve radius. Default is zero.
+    case concave(radius: RelatableValue, radiusOffset: CGFloat = 0)
     
     /// A straight chamfer corner style with a specified radius. Additional cornerstyles can be used on the two resulting corners of the chamfer.
     ///  - Parameters:
@@ -109,11 +109,11 @@ public extension CornerStyle {
             return self
         case .rounded:
             return .rounded(radius: radius)
-        case .concave(_, let radiusOffset):
+        case let .concave(_, radiusOffset):
             return .concave(radius: radius, radiusOffset: radiusOffset)
-        case .straight(_, let cornerStyles):
+        case let .straight(_, cornerStyles):
             return .straight(radius: radius, cornerStyles: cornerStyles)
-        case .cutout(_, let cornerStyles):
+        case let .cutout(_, cornerStyles):
             return .cutout(radius: radius, cornerStyles: cornerStyles)
         }
     }
