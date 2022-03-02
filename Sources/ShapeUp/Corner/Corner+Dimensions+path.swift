@@ -14,7 +14,7 @@ extension Corner.Dimensions {
     }
     
     func addCornerShape(to path: inout Path, moveToStart: Bool) {
-        #warning("Comment this when finished debugging")
+        #warning("Comment this when debugging")
         guard absoluteRadius > 0 else {
             // If the radius is negative the corner style doesn't matter.
             startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)
@@ -47,7 +47,7 @@ extension Corner.Dimensions {
                     path.addLine(to: concaveStart)
                 }
                 // path.addLine(to: cutoutPoint)
-                path.addLine(to: concaveRadiusCenter)
+//                path.addLine(to: concaveRadiusCenter)
                 // path.addLine(to: corner.point)
                 if let concaveEnd = concaveEnd {
                     path.addLine(to: concaveEnd)
@@ -58,16 +58,22 @@ extension Corner.Dimensions {
             
             // If one value is nil, both are nil
             if let concaveStart = concaveStart, let concaveEnd = concaveEnd {
-                // Draw a line to concave start
-                path.addLine(to: concaveStart)
-                // Draw a concave arc from the concave start to concave end
-                path.addArc(
-                    tangent1End: cutoutPoint,
-                    tangent2End: concaveEnd,
-                    radius: concaveRadius
-                )
+                if (concaveStart.vector - cornerStart.vector).magnitude < abs(cutLength) {
+                    // Draw a line to concave start
+                    path.addLine(to: concaveStart)
+                    // Draw a concave arc from the concave start to concave end
+                    path.addArc(
+                        tangent1End: cutoutPoint,
+                        tangent2End: concaveEnd,
+                        radius: concaveRadius
+                    )
+                } else {
+                    // Just draw a line to the cutout point
+                    path.addLine(to: cutoutPoint)
+                }
                 // Draw a line to corner end.
                 path.addLine(to: cornerEnd)
+                
             } else {
                 // Draw a concave arc from the cornerStart to cornerEnd
                 path.addArc(
