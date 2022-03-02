@@ -94,31 +94,31 @@ extension Corner {
             
             halvedRadiusAngle = Self.halvedRadiusAngle(halvedNonReflexAngle: halvedNonReflexAngle)
             
-            previousVector = Self.previousVector(previousPoint: self.previousPoint, corner: corner)
+            previousVector = Self.previousVector(previousPoint: self.previousPoint, cornerPoint: corner.point)
             
-            nextVector = Self.nextVector(nextPoint: self.nextPoint, corner: corner)
+            nextVector = Self.nextVector(nextPoint: self.nextPoint, cornerPoint: corner.point)
             
             maxCutLength = Self.maxCutLength(previousVector: previousVector, nextVector: nextVector)
             
             maxRadius = Self.maxRadius(maxCutLength: maxCutLength, halvedRadiusAngle: halvedRadiusAngle)
             
-            absoluteRadius = Self.absoluteRadius(corner: corner, maxRadius: maxRadius)
+            absoluteRadius = Self.absoluteRadius(radius: corner.radius, maxRadius: maxRadius)
             
-            cutLength = Self.cutLength(maxCutLength: maxCutLength, absoluteRadius: absoluteRadius, maxRadius: maxRadius)
+            cutLength = Self.cutLength(absoluteRadius: absoluteRadius, halvedNonReflexAngle: halvedNonReflexAngle)
             
-            cornerStart = Self.cornerStart(corner: corner, previousVector: previousVector, cutLength: cutLength)
+            cornerStart = Self.cornerStart(cornerPoint: corner.point, previousVector: previousVector, cutLength: cutLength)
             
-            cornerEnd = Self.cornerEnd(corner: corner, nextVector: nextVector, cutLength: cutLength)
+            cornerEnd = Self.cornerEnd(cornerPoint: corner.point, nextVector: nextVector, cutLength: cutLength)
             
             radiusCenter = Self.radiusCenter(cornerStart: cornerStart, absoluteRadius: absoluteRadius, previousVector: previousVector, reflexMultiplier: reflexMultiplier)
             
-            radiusOffset = Self.radiusOffset(corner: corner)
+            radiusOffset = Self.radiusOffset(style: corner.style)
             
             concaveRadius = Self.concaveRadius(absoluteRadius: absoluteRadius, radiusOffset: radiusOffset)
             
             cutoutPoint = Self.cutoutPoint(corner: corner, cornerStart: cornerStart, cornerEnd: cornerEnd, nextVector: nextVector, previousVector: previousVector, cutLength: cutLength, absoluteRadius: absoluteRadius, halvedRadiusAngle: halvedRadiusAngle, radiusOffset: radiusOffset, concaveRadius: concaveRadius, reflexMultiplier: reflexMultiplier)
             
-            concaveStart = Self.concaveStart(radiusOffset: radiusOffset, cornerStart: cornerStart, nextVector: nextVector, halvedRadiusAngle: halvedRadiusAngle, reflexMultiplier: reflexMultiplier)
+            concaveStart = Self.concaveStart(absoluteRadius: absoluteRadius, concaveRadius: concaveRadius, cornerStart: cornerStart, cutLength: cutLength, nextVector: nextVector, halvedNonReflexAngle: halvedNonReflexAngle, reflexMultiplier: reflexMultiplier)
             
             concaveEnd = Self.concaveEnd(concaveStart: concaveStart, corner: corner, radiusCenter: radiusCenter)
             
@@ -140,12 +140,12 @@ public extension Corner.Dimensions {
         halvedNonReflexAngle.complementary
     }
     
-    static func previousVector(previousPoint: CGPoint, corner: Corner) -> Vector2 {
-        previousPoint.vector - corner.vector
+    static func previousVector(previousPoint: CGPoint, cornerPoint: CGPoint) -> Vector2 {
+        previousPoint.vector - cornerPoint.vector
     }
     
-    static func nextVector(nextPoint: CGPoint, corner: Corner) -> Vector2 {
-        nextPoint.vector - corner.vector
+    static func nextVector(nextPoint: CGPoint, cornerPoint: CGPoint) -> Vector2 {
+        nextPoint.vector - cornerPoint.vector
     }
     
     static func maxCutLength(previousVector: Vector2, nextVector: Vector2) -> CGFloat {
@@ -156,29 +156,28 @@ public extension Corner.Dimensions {
         abs(maxCutLength / tan(halvedRadiusAngle.radians))
     }
     
-    static func absoluteRadius(corner: Corner, maxRadius: CGFloat) -> CGFloat {
-        corner.radius.value(using: maxRadius)
+    static func absoluteRadius(radius: RelatableValue, maxRadius: CGFloat) -> CGFloat {
+        radius.value(using: maxRadius)
     }
     
-    static func cutLength(maxCutLength: CGFloat, absoluteRadius: CGFloat, maxRadius: CGFloat) -> CGFloat {
-        guard maxRadius != .zero else { return .zero }
-        return maxCutLength * absoluteRadius / maxRadius
+    static func cutLength(absoluteRadius: CGFloat, halvedNonReflexAngle: Angle) -> CGFloat {
+        absoluteRadius / abs(tan(halvedNonReflexAngle.radians))
     }
     
-    static func cornerStart(corner: Corner, previousVector: Vector2, cutLength: CGFloat) -> CGPoint {
-        (corner.vector + (previousVector.normalized * cutLength)).point
+    static func cornerStart(cornerPoint: CGPoint, previousVector: Vector2, cutLength: CGFloat) -> CGPoint {
+        (cornerPoint.vector + (previousVector.normalized * cutLength)).point
     }
     
-    static func cornerEnd(corner: Corner, nextVector: Vector2, cutLength: CGFloat) -> CGPoint {
-        (corner.vector + (nextVector.normalized * cutLength)).point
+    static func cornerEnd(cornerPoint: CGPoint, nextVector: Vector2, cutLength: CGFloat) -> CGPoint {
+        (cornerPoint.vector + (nextVector.normalized * cutLength)).point
     }
     
     static func radiusCenter(cornerStart: CGPoint, absoluteRadius: CGFloat, previousVector: Vector2, reflexMultiplier: CGFloat) -> CGPoint {
         (cornerStart.vector + (previousVector.normalized.rotated(.degrees(-90 * reflexMultiplier)) * absoluteRadius)).point
     }
     
-    static func radiusOffset(corner: Corner) -> CGFloat {
-        switch corner.style {
+    static func radiusOffset(style: CornerStyle) -> CGFloat {
+        switch style {
         case let .concave(_, radiusOffset):
             return radiusOffset
         default:
@@ -194,7 +193,6 @@ public extension Corner.Dimensions {
         let halfStraightVector = (cornerEnd.vector - cornerStart.vector) / 2
         switch corner.style {
         case .point, .rounded:
-            #warning("Check to make sure I'm not using this to draw mirror lines with the corner point")
             return corner.point
         case .straight:
             return (cornerStart.vector + halfStraightVector).point
@@ -202,7 +200,9 @@ public extension Corner.Dimensions {
             // mirrored point
             return (cornerStart.vector + (nextVector.normalized * cutLength)).point
         case .concave:
-            if radiusOffset > 0 {
+            if radiusOffset <= 0 {
+                return (cornerStart.vector + (nextVector.normalized * cutLength)).point
+            } else {
                 // Imagine a right angle triangle between the corner start, the concave radius center and the straight cut midpoint.
                 let halfStraightLength = halfStraightVector.magnitude
                 let concaveRadiusCenterToStraightMiddle = sqrt(pow(concaveRadius, 2) - pow(halfStraightLength, 2))
@@ -210,43 +210,198 @@ public extension Corner.Dimensions {
                 // This is a similar triangle (same angles) to one between the corner cut, the corner start, and the straight cut middle.
                 let straightMiddleToCutoutLength = pow(halfStraightLength, 2) / concaveRadiusCenterToStraightMiddle
                 
-                let straightMiddleToCutoutVector =  halfStraightVector.normalized.rotated(.degrees(90)) * straightMiddleToCutoutLength * reflexMultiplier
-                return (cornerStart.vector + halfStraightVector + straightMiddleToCutoutVector).point
-            } else {
-                return (cornerStart.vector + (nextVector.normalized * cutLength)).point
+                let cornerToHalfStraight = (cornerStart.vector + halfStraightVector) - corner.vector
+                let cornerToCutout = cornerToHalfStraight + (cornerToHalfStraight.normalized * straightMiddleToCutoutLength)
+                return (corner.vector + cornerToCutout).point
             }
         }
     }
+    
+    /// Start point of concave corner
+    static func concaveStart(absoluteRadius: CGFloat, concaveRadius: CGFloat, cornerStart: CGPoint, cutLength: CGFloat, nextVector: Vector2, halvedNonReflexAngle: Angle, reflexMultiplier: CGFloat) -> CGPoint? {
+        
+        guard absoluteRadius > concaveRadius else { return nil }
+        // Imagine a right angle triangle with a hypotenuse from the concave center to cutout center and the right angle at concave start.
+        let concaveStartToCutout = concaveRadius / abs(tan(halvedNonReflexAngle.radians))
+        let cornerStartToConcaveStart = cutLength - concaveStartToCutout
+        let cornerStartToConcaveStartVector = nextVector.normalized * cornerStartToConcaveStart
+        
+        return (cornerStart.vector + cornerStartToConcaveStartVector).point
+    }
                 
     /// Start point of concave corner
-    static func concaveStart(radiusOffset: CGFloat?, cornerStart: CGPoint, nextVector: Vector2, halvedRadiusAngle: Angle, reflexMultiplier: CGFloat) -> CGPoint? {
-        guard let radiusOffset = radiusOffset else { return nil }
-        guard radiusOffset < 0 else { return nil }
-        // Imagine a triangle from the
-        let cutoutBeforeCurveLength = abs(radiusOffset / tan(halvedRadiusAngle.complementary.radians))
-        let cutoutBeforeCurveVector = nextVector.normalized * cutoutBeforeCurveLength
-        return (cornerStart.vector + cutoutBeforeCurveVector).point
-    }
+//    static func concaveStart(radiusOffset: CGFloat?, cornerStart: CGPoint, nextVector: Vector2, halvedRadiusAngle: Angle, reflexMultiplier: CGFloat) -> CGPoint? {
+//        guard let radiusOffset = radiusOffset else { return nil }
+//        guard radiusOffset < 0 else { return nil }
+//        // Imagine a right angle triangle with a hypotenuse from the corner start to the concave start and the right angle at the concave center.
+//        let sin(halvedNonReflexAngle.radians) = concave
+//
+//
+//        let cutoutBeforeCurveLength = abs(radiusOffset / tan(halvedRadiusAngle.complementary.radians))
+//        let cutoutBeforeCurveVector = nextVector.normalized * cutoutBeforeCurveLength
+//        return (cornerStart.vector + cutoutBeforeCurveVector).point
+//    }
     
     static func concaveEnd(concaveStart: CGPoint?, corner: Corner, radiusCenter: CGPoint) -> CGPoint? {
         concaveStart?.flipped(mirrorLineStart: corner, mirrorLineEnd: radiusCenter)
     }
     
     static func concaveRadiusCenter(concaveStart: CGPoint, cutoutPoint: CGPoint, concaveRadius: CGFloat, reflexMultiplier: CGFloat) -> CGPoint {
+        let negativeRadiusMultiplier = concaveRadius > 0 ? 1.0 : -1.0
         let concaveStartToRadiusCenter =
-        (concaveStart.vector - cutoutPoint.vector).normalized.rotated(.degrees(90 * reflexMultiplier)) * concaveRadius
+        (concaveStart.vector - cutoutPoint.vector).normalized.rotated(.degrees(90)) * concaveRadius * reflexMultiplier * negativeRadiusMultiplier
         return (concaveStart.vector + concaveStartToRadiusCenter).point
     }
+}
+
+extension Corner.Dimensions {
+//    /// Returns the concave start where the line from corner to previous intersects the concave circle.
+//    ///
+//    /// Nil values are returned when the line does not intersect.
+//    /// - Parameters:
+//    ///   - cornerPoint: Corner point
+//    ///   - previousPoint: The point before this corner.
+//    ///   - concaveRadiusCenter: The center point defining the concave cut.
+//    ///   - concaveRadius: The radius of the concave cut.
+//    /// - Returns: The concave start where the line from corner to previous intersects the concave circle.
+//    static func concaveStart(cornerPoint: CGPoint, previousPoint: CGPoint, concaveRadiusCenter: CGPoint, concaveRadius: CGFloat) -> CGPoint? {
+//        guard concaveRadius > 0 else { return nil }
+//        guard cornerPoint != previousPoint else { return nil }
+//
+//        // Find the closest intersecting point to the previous point between the inset line and the circle created by the inset concave radius.
+//        return GeoMath.intersectionPoints(
+//            line: (point1: cornerPoint, point2: previousPoint),
+//            circle: (center: concaveRadiusCenter, radius: concaveRadius)
+//        )
+//            .sorted { lhs, rhs in
+//                (previousPoint.vector - lhs.vector).magnitude < (previousPoint.vector - rhs.vector).magnitude
+//            }
+//            .first
+//    }
+//
+//
+//    static func absoluteRadius(cornerPoint: CGPoint, cornerStart: CGPoint, halvedNonReflexAngle: Angle) -> CGFloat {
+//        let cutLength = (cornerStart.vector - cornerPoint.vector).magnitude
+//        return abs(tan(halvedNonReflexAngle.radians)) * cutLength
+//    }
+//
+//    // This only works when concave radius is smaller than corner radius
+//    static func concaveCutoutPoint(cornerPoint: CGPoint, concaveRadiusCenter: CGPoint, concaveRadius: CGFloat, halvedNonReflexAngle: Angle) -> CGPoint {
+//        // positive values place concave center in cutout. negative values place it beyond the cutout.
+//        let concaveRadiusCenterToCutoutLength = concaveRadius / sin(halvedNonReflexAngle.radians)
+//        let concaveRadiusCenterToCutoutVector = (concaveRadiusCenter.vector - cornerPoint.vector).normalized * concaveRadiusCenterToCutoutLength
+//        return concaveRadiusCenter.moved(concaveRadiusCenterToCutoutVector)
+//    }
+//
+//    // This only works when concave radius is smaller than corner radius
+//    static func concaveCutLength(cornerPoint: CGPoint, cutoutPoint: CGPoint, halvedNonReflexAngle: Angle) -> CGFloat {
+//        let cornerToStraightMiddle = (cutoutPoint.vector - cornerPoint.vector).magnitude
+//        return cornerToStraightMiddle / abs(cos(halvedNonReflexAngle.radians))
+//    }
+//
+//    static func cornerStart(cornerPoint: CGPoint, previousPoint: CGPoint, cutLength: CGFloat) -> CGPoint {
+//        let cutVector = previousVector(previousPoint: previousPoint, cornerPoint: cornerPoint).normalized * cutLength
+//        return (cornerPoint.vector + cutVector).point
+//    }
+//
+//    static func absoluteRadius(cornerPoint: CGPoint, concaveRadiusCenter: CGPoint, concaveRadius: CGFloat, halvedNonReflexAngle: Angle, previousVector: Vector2) -> CGFloat {
+//        #warning("I need to find the cornerStart or cutlength first")
+//
+//
+//        // Imagine a triangle between corner point, concave start and concave radius center
+//        let cornerToConcaveRadiusCenter = (concaveRadiusCenter.vector - cornerPoint.vector).magnitude
+//
+//        // Cut this triangle into two right angle triangles with a line from concave radius center
+//        let cutLengthA = abs(cos(halvedNonReflexAngle.radians)) * cornerToConcaveRadiusCenter
+//        let cutLineSquared = pow(cornerToConcaveRadiusCenter, 2) - pow(cutLengthA, 2)
+//        let cutLengthB = sqrt(pow(concaveRadius, 2) - cutLineSquared)
+//        let cutLength = cutLengthA + cutLengthB
+//
+//        return tan(halvedNonReflexAngle.radians) * cutLength
+//    }
     
-    static func absoluteRadius(cornerPoint: CGPoint, concaveRadiusCenter: CGPoint, concaveRadius: CGFloat, halvedNonReflexAngle: Angle, previousVector: Vector2) -> CGFloat {
-        let cornerToConcaveRadiusCenter = (concaveRadiusCenter.vector - cornerPoint.vector).magnitude
-        // Imagine a triangle between corner point, concave start and concave radius
-        // Cut this triangle into two right angle triangles with a line from concave radius center
-        let cutLengthA = abs(cos(halvedNonReflexAngle.radians)) * cornerToConcaveRadiusCenter
-        let cutLineSquared = pow(cornerToConcaveRadiusCenter, 2) - pow(cutLengthA, 2)
-        let cutLengthB = sqrt(pow(concaveRadius, 2) - cutLineSquared)
-        let cutLength = cutLengthA + cutLengthB
+    static func cutLength(cornerPoint: CGPoint, previousPoint: CGPoint, concaveRadiusCenter: CGPoint, concaveRadius: CGFloat, halvedNonReflexAngle: Angle, reflexMultiplier: CGFloat) -> CGFloat {
+        #warning("may need to test these cases")
+        // If the corner angle is zero or 90 then none of these calculations will work so just return a concave corner with zero radius.
+        guard halvedNonReflexAngle.positive > .zero && halvedNonReflexAngle.positive < .degrees(90) else {
+            return .zero
+        }
         
-        return tan(halvedNonReflexAngle.radians) * cutLength
+        // Initialize the cut length then set it in the switch statement
+        let cutLength: CGFloat
+        
+        guard cornerPoint != concaveRadiusCenter else {
+            // if corner point is the concave radius center then the concave radius in the cut length
+            return concaveRadius
+        }
+        // Get the intersection points of the concave circle and the line from previous point to corner point.
+        let intersections = GeoMath.intersectionPoints(
+            line: (point1: cornerPoint, point2: previousPoint),
+            circle: (center: concaveRadiusCenter, radius: concaveRadius)
+        )
+        
+        // If one of the intersections equals the corner point
+        guard !intersections.contains(where: { $0 == cornerPoint }) else {
+            guard
+                let first = intersections.first,
+                let last = intersections.last
+            else {
+                // If there's only one intersection and it equals the corner point then the cut length is zero. (This should not be possible)
+                return .zero
+            }
+            
+            // If one of the intersections is the same as the corner point then the cut length equals the length of the line between the intersections
+            return (last.vector - first.vector).magnitude
+        }
+        
+        
+        // Get the start point of the concave curve if there is one
+        let intersection = intersections
+            .first(where: {
+                guard
+                    let direction = ($0.vector - concaveRadiusCenter.vector).direction,
+                    let cornerToCutDirection = (previousPoint.vector - cornerPoint.vector).rotated(-halvedNonReflexAngle * reflexMultiplier).direction
+                else {
+                    return false
+                }
+                
+                // Cut point must be on the side of the concave cirlce that points in the previous direction.
+                return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle.complementary
+            })
+        
+        
+        switch intersection {
+        case let .some(intersection):
+            // cutLength
+            return (cornerPoint.vector - intersection.vector).magnitude
+        case .none:
+            // imagine a right angle triangle with the hypotenuse from concave center to cutout point and the right angle intersecting with the line from cutout point to corner start. (it may also be negative
+            // Positive values are between cutout and corner, negative valuse are on the other side of cutout.
+            let concaveCenterToCutout = concaveRadius / abs(sin(halvedNonReflexAngle.radians))
+            // The vector from corner point to concave radius center
+            let cornerToConcaveCenter = concaveRadiusCenter.vector - cornerPoint.vector
+            // The vector from concave center to cutout
+            let concaveCenterToCutoutVector = cornerToConcaveCenter.normalized * concaveCenterToCutout
+            // The vector from corner to cutout
+            let cornerToCutout = cornerToConcaveCenter + concaveCenterToCutoutVector
+            // The vector from corner to the straight line between corner start and corner end
+            let cornerToStraight = cornerToCutout * 0.5
+            //            // Get the angle from previous, to corner, to concave radius center.
+            //            let previousToConcaveCenterAngle = Angle.threePoint(previousPoint, cornerPoint, concaveRadiusCenter).nonReflexCoterminal
+            //            // Positive if the concave center is inside the non reflex angle of this corner.
+            //            let concaveCenterInNonReflexMultiplier = previousToConcaveCenterAngle <= .degrees(90) ? 1.0 : -1.0
+            // Imagine a right angle triangle with the cut length as the hypotenuse and the right angle at the middle straight point.
+            
+            // cutLength
+            return cornerToStraight.magnitude / abs(cos(halvedNonReflexAngle.radians))
+        }
+    }
+    
+    static func absoluteRadius(cutLength: CGFloat, halvedNonReflexAngle: Angle) -> CGFloat {
+        abs(tan(halvedNonReflexAngle.radians)) * cutLength
+    }
+    
+    static func radiusOffset(concaveRadius: CGFloat, absoluteRadius: CGFloat) -> CGFloat {
+        concaveRadius - absoluteRadius
     }
 }

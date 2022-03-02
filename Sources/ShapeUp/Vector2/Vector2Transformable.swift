@@ -76,17 +76,20 @@ public extension Vector2Transformable {
     ///   - previousPoint: Point before this one used to determine the corner angle.
     ///   - nextPoint: Point after this one used to determine the corner angle.
     /// - Returns: Position of this corner after being inset.
-    func insetPoint(_ amount: CGFloat, previousPoint: CGPoint?, nextPoint: CGPoint?) -> CGPoint {
+    func insetPoint(_ amount: CGFloat, previousPoint: CGPoint? = nil, nextPoint: CGPoint? = nil) -> CGPoint {
+        let insetVector: Vector2
+        
         switch (previousPoint, nextPoint) {
         case (nil, nil):
             // Inset not possible as there is no line.
-            return point
+            insetVector = .zero
         case let (nil, .some(nextPoint)):
             // Find the vector from this point to the next one and then inset to the right.
-            return ((nextPoint.vector - point.vector).normalized.rotated(.degrees(90)) * amount).point
+            insetVector = (nextPoint.vector - self.vector).normalized.rotated(.degrees(90)) * amount
         case let (.some(previousPoint), nil):
             // Find the vector from the previous point to this one and then inset to the right.
-            return ((point.vector - previousPoint.vector).normalized.rotated(.degrees(90)) * amount).point
+            insetVector = (self.vector - previousPoint.vector).normalized.rotated(.degrees(90)) * amount
+            return ((self.vector - previousPoint.vector).normalized.rotated(.degrees(90)) * amount).point
         case let (.some(previousPoint), .some(nextPoint)):
             // Positive clockwise angle of this corner.
             let angle = Angle.threePoint(nextPoint, self, previousPoint)
@@ -96,12 +99,12 @@ public extension Vector2Transformable {
             let nextVector = nextPoint.vector - self.vector
             
             // Length from corner to inset corner
-            let cornerInsetLength = amount / sin(halvedRadiusAngle.radians)
+            let insetLength = amount / sin(halvedRadiusAngle.radians)
             
             // Vector from corner to inset corner
-            let cornerInsetVector = nextVector.normalized.rotated(angle.halved) * cornerInsetLength
+            insetVector = nextVector.normalized.rotated(angle.halved) * insetLength
             
-            return (self.vector + cornerInsetVector).point
         }
+        return (self.vector + insetVector).point
     }
 }

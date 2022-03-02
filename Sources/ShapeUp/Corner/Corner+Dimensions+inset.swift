@@ -8,30 +8,46 @@
 import SwiftUI
 
 public extension Corner.Dimensions {
-    func insetValues(_ insetAmount: CGFloat) -> (point: CGPoint, radius: CGFloat, concaveRadius: CGFloat) {
-        // Default insetPoint works for most cases
-        var insetPoint = corner.insetPoint(insetAmount, previousPoint: previousPoint, nextPoint: nextPoint)
-        // Inset radius is initialized to the current absolute radius value
-        var insetRadius = absoluteRadius
+    func insetValues(_ insetAmount: CGFloat) -> (point: CGPoint, radius: CGFloat, insetRadiusOffset: CGFloat) {
+        // The same inset point works for all cases
+        let insetPoint = corner.insetPoint(insetAmount, previousPoint: previousPoint, nextPoint: nextPoint)
+        // Inset radius value will be set in the switch below
+        let insetRadius: CGFloat
         // Default radius inset works for most cases
         let radiusInset = insetAmount * reflexMultiplier
-        // Default concave inset radius
-        var insetConcaveRadius = concaveRadius
+        // Default concave inset radius only changed
+        var insetRadiusOffset: CGFloat? = nil
         
         switch corner.style {
         case .point, .cutout:
-            // both of these values just use the default inset and unchanged radius
-            break
+            // Inset radius is unchanged
+            insetRadius = absoluteRadius
+            
         case .rounded:
             // radius shrinks with inset on non-reflex corners
-            insetRadius -= radiusInset
-        case .concave:
-            insetConcaveRadius += radiusInset
+            insetRadius = absoluteRadius - radiusInset
             
-#warning("Inset radius is based on the new inset point and the concave radius center (that never changes)")
-            // radius grows with inset on non-reflext corners
-            insetRadius = Self.absoluteRadius(cornerPoint: insetPoint, concaveRadiusCenter: concaveRadiusCenter, concaveRadius: insetConcaveRadius, halvedNonReflexAngle: halvedNonReflexAngle, previousVector: previousVector)
-//            insetRadius += radiusInset
+        case .concave:
+            // radius inset affects the concave radius directly and the radius indirectly
+            let insetConcaveRadius = concaveRadius + radiusInset
+            
+            // Get a perpendicular inset of the previous point. Doesn't need to be precise as any point far away on the inset line will do.
+            let insetPreviousPoint = previousPoint.insetPoint(insetAmount, nextPoint: corner.point)
+            
+            // next vector, concave radius center, halved non reflex angle and reflex multiplier are unchanged when insetting.
+            let insetCutLength = Self.cutLength(
+                cornerPoint: insetPoint,
+                previousPoint: insetPreviousPoint,
+                concaveRadiusCenter: concaveRadiusCenter,
+                concaveRadius: insetConcaveRadius,
+                halvedNonReflexAngle: halvedNonReflexAngle,
+                reflexMultiplier: reflexMultiplier
+            )
+            
+            insetRadius = Self.absoluteRadius(cutLength: insetCutLength, halvedNonReflexAngle: halvedNonReflexAngle)
+            
+            insetRadiusOffset = Self.radiusOffset(concaveRadius: insetConcaveRadius, absoluteRadius: insetRadius)
+
         case .straight:
             // The cornerStart of the new inset point
             let insetStart = cornerStart.insetPoint(insetAmount, previousPoint: previousPoint, nextPoint: cornerEnd)
@@ -49,7 +65,7 @@ public extension Corner.Dimensions {
             // The radius angle will be the same for the inset. It can be used with half the straight cut line to determine the inset radius
             insetRadius = (straightCutLength * 0.5) / abs(sin(halvedRadiusAngle.radians))
         }
-        return (point: insetPoint, radius: insetRadius, concaveRadius: insetConcaveRadius)
+        return (point: insetPoint, radius: insetRadius, insetRadiusOffset: insetRadiusOffset ?? 0)
     }
     
     /// Creates an inset version of this corner adjusting any nested corner styles.
@@ -76,10 +92,7 @@ public extension Corner.Dimensions {
             insetCornerStyle = .rounded(radius: insetRadius)
             
         case .concave:
-            let insetConcaveRadius = insetValues.concaveRadius
-            let insetRadiusOffset = insetConcaveRadius - insetValues.radius
-            
-            insetCornerStyle = .concave(radius: insetRadius, radiusOffset: insetRadiusOffset)
+            insetCornerStyle = .concave(radius: insetRadius, radiusOffset: insetValues.insetRadiusOffset)
             
         case let .straight(_, cornerStyles):
             let nestedCornerStyles = zip(cornerStyles, [cornerStart, cornerEnd])

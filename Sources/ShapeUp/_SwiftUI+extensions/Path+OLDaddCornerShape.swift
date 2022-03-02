@@ -99,7 +99,7 @@ extension Path {
                 // Set the cutout corner as a mirrored version of the corner
                 let cutoutCorner = corner.flipped(mirrorLineStart: cornerStart, mirrorLineEnd: cornerEnd)
                 // Draw a concave arc from the cornerStart to cornerEnd
-                addArc(tangent1End: cutoutCorner.point, tangent2End: cornerEnd.point, radius: cornerRadius + (radiusOffset ?? 0))
+                addArc(tangent1End: cutoutCorner.point, tangent2End: cornerEnd.point, radius: cornerRadius + radiusOffset)
                 // Draw an additional line in case the arc doesn't get to the corner end point.
                 addLine(to: cornerEnd.point)
             case let .straight(_, cornerStyles):
