@@ -7,8 +7,11 @@
 
 import SwiftUI
 
-public extension Corner.Dimensions {
-    func insetValues(_ insetAmount: CGFloat) -> (point: CGPoint, radius: CGFloat, insetRadiusOffset: CGFloat) {
+extension Corner.Dimensions {
+    /// Returns the point, radius and radius offset for the inset corner.
+    /// - Parameter insetAmount: Amount to inset.
+    /// - Returns: The point, radius and radius offset for the inset corner.
+    internal func insetValues(_ insetAmount: CGFloat) -> (point: CGPoint, radius: CGFloat, radiusOffset: CGFloat) {
         // The same inset point works for all cases
         let insetPoint = corner.insetPoint(insetAmount, previousPoint: previousPoint, nextPoint: nextPoint)
         // Inset radius value will be set in the switch below
@@ -67,7 +70,7 @@ public extension Corner.Dimensions {
             // The radius angle will be the same for the inset. It can be used with half the straight cut line to determine the inset radius
             insetRadius = (straightCutLength * 0.5) / abs(sin(halvedRadiusAngle.radians))
         }
-        return (point: insetPoint, radius: insetRadius, insetRadiusOffset: insetRadiusOffset ?? 0)
+        return (point: insetPoint, radius: insetRadius, radiusOffset: insetRadiusOffset ?? 0)
     }
     
     /// Creates an inset version of this corner adjusting any nested corner styles.
@@ -77,7 +80,7 @@ public extension Corner.Dimensions {
     ///   - inset: Amount of the inset.
     ///   - allowNegativeRadius: Boolean To set
     /// - Returns: An inset version of this corner.
-    func corner(inset: CGFloat) -> Corner {
+    public func corner(inset: CGFloat) -> Corner {
         if inset == 0 { return corner }
         
         let insetValues = insetValues(inset)
@@ -94,7 +97,7 @@ public extension Corner.Dimensions {
             insetCornerStyle = .rounded(radius: insetRadius)
             
         case .concave:
-            insetCornerStyle = .concave(radius: insetRadius, radiusOffset: insetValues.insetRadiusOffset)
+            insetCornerStyle = .concave(radius: insetRadius, radiusOffset: insetValues.radiusOffset)
             
         case let .straight(_, cornerStyles):
             let nestedCornerStyles = zip(cornerStyles, [cornerStart, cornerEnd])

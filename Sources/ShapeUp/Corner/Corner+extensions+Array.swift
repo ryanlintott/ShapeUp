@@ -13,63 +13,6 @@ public extension Array where Element == Corner {
         self.map({ $0.style })
     }
     
-    /// A boolean check that determines if a corner array is flat.
-    ///
-    /// If there are any corners using relative values or nested corner styles, this value will be false.
-    var isFlat: Bool {
-        self.contains(where: { $0.style.isFlat })
-    }
-    
-    #warning("This function should reference Corner.Dimensions version instead.")
-    /// An array of corners that's a flattened representation of the current array.
-    ///
-    /// This array will not include relative values or corner styles with nested corner styles that are not .point. This function runs multiple passes to flatten corners with nested styles and so that relative values are relative to corners at the same level.
-    var flattened: [Corner] {
-        var corners: [Corner]
-        var newCorners = self
-        while !newCorners.isFlat {
-            corners = newCorners
-            newCorners = []
-            for (i, corner) in corners.enumerated() {
-                let previousCorner = i == 0 ? corners.last! : corners[i - 1]
-                let nextCorner = i == corners.count - 1 ? corners.first! : corners[i + 1]
-                newCorners += corner.flatten(previousCorner: previousCorner, nextCorner: nextCorner)
-            }
-        }
-        
-        return newCorners
-    }
-    
-    func inset(_ insetAmount: CGFloat, previousPoint: CGPoint, nextPoint: CGPoint) -> [Corner] {
-        if self.count < 2 || insetAmount == 0 { return self }
-        
-        return self
-            .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
-            .corners(inset: insetAmount)
-    }
-
-    /// Creates an array of corners that represent an inset version of the current shape.
-    ///
-    /// Corner array will be flattened so it may contain more corners than before. The inset assumes a clockwise shape order and a closed path where the start point is also the end point. Do not include a duplicate of the start point at the end of the array.
-    /// - Parameter insetAmount: Amount corners will be inset.
-    /// - Returns: An array of inset corners.
-    func inset(by insetAmount: CGFloat) -> [Corner] {
-        if self.isEmpty { return self }
-        
-        return inset(insetAmount, previousPoint: self.last!.point, nextPoint: self.first!.point)
-    }
-    
-    /// Creates a path with a closed shape defined by this array of corners.
-    ///
-    /// The start point is also the end point. Do not include a duplicate of the start point at the end of the array.
-    /// - Returns: A path with a closed shape defined by this array of corners.
-    func path() -> Path {
-        var path = Path()
-        self.dimensions().addClosedCornerShape(to: &path)
-//        path.addClosedCornerShape(self)
-        return path
-    }
-    
     /// Applies new styles to this array of corners.
     /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
     mutating func applyStyles(_ styles: [CornerStyle?]) {
@@ -121,6 +64,91 @@ public extension Array where Element == Corner {
         applyingStyle(style, corners: [index])
     }
     
+    /// An array of corner dimensions used for drawing, insetting, and modifying points of a closed shape.
+    var dimensions: [Corner.Dimensions] {
+        dimensions()
+    }
+    
+    /// Creates an array of corner dimensions used for drawing, insetting, and modifying points of an open shape.
+    /// - Parameters:
+    ///   - previousPoint: Previous corner point. Default is the last point.
+    ///   - nextPoint: Next corner point. Default is the first point.
+    /// - Returns: An array of corner dimensions used for drawing, insetting, and modifying points.
+    func dimensions(previousPoint: CGPoint? = nil, nextPoint: CGPoint? = nil) -> [Corner.Dimensions] {
+        guard
+            let beforeFirst = previousPoint ?? last?.point,
+            let afterLast = nextPoint ?? first?.point
+        else {
+            return []
+        }
+        
+        return enumerated().map { i, corner in
+            let previousPoint = i == 0 ? beforeFirst : self[i - 1].point
+            let nextPoint = i == self.count - 1 ? afterLast : self[i + 1].point
+            return corner.dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
+        }
+    }
+    
+    /// Creates a path with a closed shape defined by this array of corners.
+    /// - Returns: A path with a closed shape defined by this array of corners.
+    func path() -> Path {
+        dimensions.path()
+    }
+    
+    /// Adds an open corner shape defined by this array of corners to the provided path.
+    /// - Parameters:
+    ///   - path: Path where corner shape is added.
+    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner.
+    func addOpenCornerShape(to path: inout Path, moveToStart: Bool) {
+        dimensions.addOpenCornerShape(to: &path, moveToStart: moveToStart)
+    }
+    
+    /// Adds a closed corner shape defined by this array of corners to the provided path.
+    /// - Parameters:
+    ///   - path: Path where corner shape is added.
+    func addClosedCornerShape(to path: inout Path) {
+        dimensions.addClosedCornerShape(to: &path)
+    }
+    
+    /// Returns an array of corners inset from this array but the specified amount.
+    ///
+    /// A clockwise ordering of corners is expected.
+    /// - Parameters:
+    ///   - insetAmount: Amount to inset the corners.
+    ///   - previousPoint: A point used for determining the angle of the first corner. Default is last point.
+    ///   - nextPoint: A point used for determining the angle of the last corner. Default is first point.
+    /// - Returns: An array of corners inset from this array but the specified amount.
+    func inset(by insetAmount: CGFloat, previousPoint: CGPoint? = nil, nextPoint: CGPoint? = nil) -> [Corner] {
+        if self.count < 2 || insetAmount == 0 { return self }
+        
+        return self
+            .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
+            .corners(inset: insetAmount)
+    }
+    
+    /// A boolean check that determines if a corner array is flat. Flat corners are point, rounded, and concave with absolute radius values.
+    ///
+    /// If any corner uses relative radius values or allows nested corner styles, this value will be false.
+    internal var isFlat: Bool {
+        self.contains(where: { !$0.style.isFlat })
+    }
+    
+    /// An array of corners that's a flattened representation of the current array. Flat corners are point, rounded, and concave with absolute radius values.
+    ///
+    /// Relative radius values will be changed to absolute and corners with nested styles will change to an array of sub corners with those styles. This function is recursive and will flatten corners at all nested levels.
+    internal var flattened: [Corner] {
+        isFlat ? self : dimensions.flattened
+    }
+    
+    /// Returns a copy of this array of corners flattened by the number of levels provided.
+    ///
+    /// All corners on this level will have their radius changed to absolute values and corners with nested styles will change to an array of corners with those styles. For each level higher than one this process will be repeated for those new nested corners.
+    /// - Parameter levels: Number of levels to flatten.
+    /// - Returns: A copy of this array of corners flattened by the number of levels provided.
+    internal func flattened(levels: Int) -> [Corner] {
+        isFlat ? self : dimensions.flattened(levels: levels)
+    }
+    
     /// Adds corners based on the specified notches.
     ///
     /// The first notch will create corners between the first and second corner, the next will create corners between the second and third corners, etc. Nil values will create no additional corners.
@@ -169,6 +197,8 @@ public extension Array where Element == Corner {
     }
     
     /// Creates a copy of the corner array appending additional corners based on the specified notch and corner.
+    ///
+    /// If array is empty, no corners are added.
     /// - Parameters:
     ///   - notch: Notch that define additional corners to add between the last corner and the specified corner.
     ///   - corner: Corner to add at the end of the array.

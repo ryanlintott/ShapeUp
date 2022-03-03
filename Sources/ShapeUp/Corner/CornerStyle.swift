@@ -81,20 +81,18 @@ public extension CornerStyle {
         }
     }
     
-    /// A boolean check that determines if a corner style is flat.
+    /// A boolean check that determines if a corner style is flat. Flat corners are point, rounded, and concave with absolute radius values.
     ///
-    /// Flat corners are either point, rounded, or concave with absolute values. If a corner uses relative values or has nested corner styles, this value will be false.
+    /// If a corner uses relative radius values or allows nested corner styles, this value will be false.
     var isFlat: Bool {
         switch self {
         case .point:
             return true
         case .rounded, .concave:
-            switch radius {
-            case .absolute:
+            if case .absolute = radius {
                 return true
-            case .relative:
-                return false
             }
+            return false
         case .straight, .cutout:
             return false
         }
