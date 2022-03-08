@@ -89,10 +89,14 @@ public extension Array where Element == Corner {
         }
     }
     
-    /// Creates a path with a closed shape defined by this array of corners.
-    /// - Returns: A path with a closed shape defined by this array of corners.
-    func path() -> Path {
-        dimensions.path()
+    /// Creates a path defined by this array of corners. Closed by default.
+    /// - Parameters:
+    ///   - closed: Boolean determining if the path is closed. Default is true.
+    /// - Returns: A path defined by this array of corners. Closed by default.
+    func path(closed: Bool = true) -> Path {
+        var path = Path()
+        dimensions.addCornerShape(to: &path, closed: closed)
+        return path
     }
     
     /// Adds an open corner shape defined by this array of corners to the provided path.
@@ -106,8 +110,9 @@ public extension Array where Element == Corner {
     /// Adds a closed corner shape defined by this array of corners to the provided path.
     /// - Parameters:
     ///   - path: Path where corner shape is added.
-    func addClosedCornerShape(to path: inout Path) {
-        dimensions.addClosedCornerShape(to: &path)
+    ///   - closed: Boolean determining if the path is closed. Default is true.
+    func addCornerShape(to path: inout Path, closed: Bool = true) {
+        dimensions.addCornerShape(to: &path, closed: closed)
     }
     
     /// Returns an array of corners inset from this array but the specified amount.

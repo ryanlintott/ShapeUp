@@ -21,7 +21,7 @@ public protocol AngleRepresentable {
 
 extension AngleRepresentable {
     /// The angle represented as a SwiftUI Angle (used in functions below).
-    internal var angle: Angle {
+    fileprivate var angle: Angle {
         .radians(radians)
     }
 }

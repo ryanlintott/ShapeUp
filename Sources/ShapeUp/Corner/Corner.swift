@@ -9,9 +9,9 @@ import SwiftUI
 
 /// A point with a specified corner style used to draw corner shapes
 ///
-/// Can be used to draw closed corner shapes using `CSCustom`
+/// Can be used to draw closed corner shapes using `CornerCustom`
 ///
-///     CSCustom { rect in
+///     CornerCustom { rect in
 ///         [
 ///             Corner(x: rect.midX, y: rect.minY),
 ///             Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),

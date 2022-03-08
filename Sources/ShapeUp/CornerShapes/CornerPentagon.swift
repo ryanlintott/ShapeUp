@@ -1,5 +1,5 @@
 //
-//  CSPentagon.swift
+//  CornerPentagon.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-09-10.
@@ -11,19 +11,20 @@ import SwiftUI
 ///
 /// This shape can either be used in a SwiftUI View directly (similar to `RoundedRectangle`)
 ///
-///     CSPentagon(pointHeight: .relative(0.2), topTaper: .relative(0.15), bottomTaper: .zero)
+///     CornerPentagon(pointHeight: .relative(0.2), topTaper: .relative(0.15), bottomTaper: .zero)
 ///         .fill()
 ///
 /// Or the corners can be accessed directly for use in a more complex shape
 ///
 ///     public func corners(in rect: CGRect) -> [Corner] {
-///         CSPentagon(pointHeight: .relative(0.2), topTaper: .relative(0.15), bottomTaper: .zero)
+///         CornerPentagon(pointHeight: .relative(0.2), topTaper: .relative(0.15), bottomTaper: .zero)
 ///             .corners(in: rect)
 ///             .inset(by: 10)
 ///             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
 ///     }
 ///
-public struct CSPentagon: CornerShape {    
+public struct CornerPentagon: CornerShape {
+    public var closed = true
     public var insetAmount: CGFloat = 0
     
     public var pointHeight: RelatableValue

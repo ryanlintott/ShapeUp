@@ -1,5 +1,5 @@
 //
-//  CSCustom.swift
+//  CornerCustom.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-23.
@@ -11,7 +11,7 @@ import SwiftUI
 ///
 /// This shape can be used in a SwiftUI View directly (similar to `RoundedRectangle`)
 ///
-///     CSCustom { rect in
+///     CornerCustom { rect in
 ///         [
 ///             Corner(x: rect.midX, y: rect.minY),
 ///             Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),
@@ -20,14 +20,18 @@ import SwiftUI
 ///     }
 ///     .fill()
 ///
-public struct CSCustom: CornerShape {
+public struct CornerCustom: CornerShape {
+    public let closed: Bool
     public var insetAmount: CGFloat = 0
     
     internal var corners: (CGRect) -> [Corner]
     
     /// Creates a custom insettable shape out of corners.
-    /// - Parameter corners: Corners used to draw a single closed shape.
-    public init(_ corners: @escaping (CGRect) -> [Corner]) {
+    /// - Parameters:
+    ///  - closed: A boolean determining if the shape should be closed. Default is true.
+    ///  - corners: Corners used to draw a single closed shape.
+    public init(closed: Bool = true, _ corners: @escaping (CGRect) -> [Corner]) {
+        self.closed = closed
         self.corners = corners
     }
     

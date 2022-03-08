@@ -1,27 +1,19 @@
 //
 //  Corner+Dimensions+Array.swift
-//  
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2022-02-18.
 //
 
 import SwiftUI
 
-extension Array where Element == Corner.Dimensions {
-    public var corners: [Corner] {
+public extension Array where Element == Corner.Dimensions {
+    var corners: [Corner] {
         map { $0.corner }
     }
     
-    public func corners(inset: CGFloat) -> [Corner] {
+    func corners(inset: CGFloat) -> [Corner] {
         inset == 0 ? corners : map { $0.corner(inset: inset) }
-    }
-    
-    /// Creates a path with a closed shape defined by this array of corner dimensions.
-    /// - Returns: A path with a closed shape defined by this array of corners.
-    public func path() -> Path {
-        var path = Path()
-        addClosedCornerShape(to: &path)
-        return path
     }
     
     /// Adds an open corner shape defined by this array of corners to the provided path.
@@ -38,9 +30,12 @@ extension Array where Element == Corner.Dimensions {
     /// Adds a closed corner shape defined by this array of corner dimensions to the provided path.
     /// - Parameters:
     ///   - path: Path where corner shape is added.
-    func addClosedCornerShape(to path: inout Path) {
+    ///   - closed: Boolean determining if the path is closed. Default is true.
+    func addCornerShape(to path: inout Path, closed: Bool = true) {
         addOpenCornerShape(to: &path, moveToStart: true)
-        path.closeSubpath()
+        if closed {
+            path.closeSubpath()
+        }
     }
     
     /// An flattened array of corners based on these corner dimensions.

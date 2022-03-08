@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Corner+Dimensions+path.swift
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2022-02-18.
 //
@@ -13,7 +13,7 @@ extension Corner.Dimensions {
     ///   - path: Path that will be modified.
     ///   - point: Point that will either be moved to or have a line added towards.
     ///   - moveToStart: A boolean value determining if the point should be moved to. If this value is false a line will be added from wherever the path currrently is to the point.
-    func startCornerShape(on path: inout Path, at point: CGPoint? = nil, moveToStart: Bool) {
+    internal func startCornerShape(on path: inout Path, at point: CGPoint? = nil, moveToStart: Bool) {
         let point = point ?? cornerStart
         moveToStart ? path.move(to: point) : path.addLine(to: point)
     }
@@ -22,7 +22,7 @@ extension Corner.Dimensions {
     /// - Parameters:
     ///   - path: Path where corner shape is added.
     ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner.
-    func addCornerShape(to path: inout Path, moveToStart: Bool) {
+    public func addCornerShape(to path: inout Path, moveToStart: Bool) {
         guard absoluteRadius > 0 else {
             // If the radius is negative the corner style doesn't matter.
             startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)

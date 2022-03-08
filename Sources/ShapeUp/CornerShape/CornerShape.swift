@@ -9,10 +9,11 @@ import SwiftUI
 
 /// An 2D insettable shape that you can use when drawing a view or as an array of corners to use as a starting point for a more complex shape.
 ///
-/// When building a CornerShape, define an insetAmount of zero, and write a function that returns an array of corners.
+/// You can define an insetAmount of zero as this property is mainly used if the shape is later inset. Use the closed property to define if your shape should be closed or left open. Write a function that returns an array of corners.
 ///
 ///     public struct MyShape: CornerShape {
 ///         public var insetAmount: CGFloat = .zero
+///         public let closed = true
 ///
 ///         public func corners(in rect: CGRect) -> [Corner] {
 ///             [
@@ -23,7 +24,7 @@ import SwiftUI
 ///         }
 ///     }
 ///
-/// The path function is already implemented and will use this array to create a single closed path, applying any inset as well.
+/// The path function is already implemented and will use this array to create a single path, applying any inset, and closing it if the closed parameter is true.
 ///
 /// A `CornerShape` is an `InsettableShape` so it can be used in SwiftUI Views in the same way as `RoundedRectangle` or similar.
 ///
@@ -46,6 +47,9 @@ public protocol CornerShape: InsettableShapeByProperty {
     /// - Parameter rect: Frame in which the corners are defined.
     /// - Returns: An array of corners defining the shape with zero inset.
     func corners(in rect: CGRect) -> [Corner]
+    
+    /// A boolean determining if the shape is closed or open.
+    var closed: Bool { get }
 }
 
 public extension CornerShape {
@@ -62,6 +66,6 @@ public extension CornerShape {
     /// - Returns: Path that describes this corner shape.
     func path(in rect: CGRect) -> Path {
         insetCorners(in: rect)
-            .path()
+            .path(closed: closed)
     }
 }
