@@ -1,5 +1,5 @@
 //
-//  NotchStyle+staticStyles.swift
+//  NotchStyle+staticInit.swift
 //  
 //
 //  Created by Ryan Lintott on 2022-02-09.
