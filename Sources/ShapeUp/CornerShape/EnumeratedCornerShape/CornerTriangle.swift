@@ -24,7 +24,7 @@ This shape can either be used in a SwiftUI View like any other `InsettableShape`
 The corners can be accessed directly for use in a more complex shape
  
     public func corners(in rect: CGRect) -> [Corner] {
-        CornerTriangle(top: .rounded(radius: 10))
+        CornerTriangle(topPoint: 30)
             .corners(in: rect)
             .inset(by: 10)
             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)

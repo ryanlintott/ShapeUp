@@ -12,8 +12,16 @@ A pentagon shape pointing upwards with individually stylable corners, aligned in
 
 This shape can either be used in a SwiftUI View like any other `InsettableShape`
  
-    CornerPentagon(pointHeight: .relative(0.2), topTaper: .relative(0.15), bottomTaper: .zero, styles: [)
-        .fill()
+    CornerPentagon(
+        pointHeight: .relative(0.3),
+        topTaper: .relative(0.1),
+        bottomTaper: .relative(0.3),
+        styles: [
+            .topRight: .concave(radius: 30),
+            .bottomLeft: .straight(radius: .relative(0.3))
+        ]
+    )
+    .fill()
 
 The corners can be accessed directly for use in a more complex shape
 

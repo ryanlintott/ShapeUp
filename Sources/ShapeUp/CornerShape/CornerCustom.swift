@@ -23,7 +23,7 @@ This shape can either be used in a SwiftUI View like any other `InsettableShape`
  
     CornerCustom { rect in
         rect
-            .anchorPoints(.top, .bottomRight, .left)
+            .points(.top, .bottomRight, .left)
             .corners(.rounded(radius: .relative(0.1)))
     }
     .strokeBorder(lineWidth: 10)
