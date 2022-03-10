@@ -287,7 +287,7 @@ let cornerStyle = .rounded(radius: 5)
 ## SketchyLine
 A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
 
-<img width="190" alt="image" src="https://user-images.githubusercontent.com/2143656/157757702-8d4bcd9f-ffcb-43ce-a51f-4f102b2ef14e.png">
+<img width="195" alt="image" src="https://user-images.githubusercontent.com/2143656/157765981-3f48e2bb-50c8-46ba-b2b3-80d7491f1473.png">
 
 ```swift
 Text("Hello World")
@@ -308,4 +308,5 @@ Text("Hello World")
 ## Emboss or Deboss
 Extensions for `InsettableShape` and `View` that create an embossed or debossed effect.
 
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/2143656/157758578-5ad3083b-f326-4c96-bad9-b727aa66105e.png">
+<img width="205" alt="image" src="https://user-images.githubusercontent.com/2143656/157765787-a8bcdee3-fec3-40f8-8414-1c66ca073db6.png">
+
