@@ -8,12 +8,13 @@
 [![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
 
 # Overview
-A Swift Package that makes SwiftUI shapes easier to draw.
+A Swift Package that makes SwiftUI shapes easier to make by redefining them as an array of styled corners. (The logo above was created in 100 lines + SwiftUI Text)
 
-- [`Corner`](#corner), a `CGPoint` with style.
+Features:
+- [`Corner`](#corner), a `CGPoint` with `style`.
 - [`CornerStyle`](#cornerstyle), an enum with style options for `Corner` including `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
-- [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners that automatically conforms to `InsettableShape` with no extra code.
 - [Basic Shapes](#basicshapes) like `CornerRectangle`, `CornerTriangle`, and `CornerPentagon`. All similar to a SwiftUI `Rectangle` but you can apply any mix of `CornerStyle`s
+- [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners that automatically conforms to `InsettableShape` with no extra code.
 - [`CornerCustom`](#cornercustom), for building open or closed shapes from and array of `Corner`s in a view without needing to define your own type.
 - Add a [`Notch`](#notch) of any `NotchStyle` inbetween two corners.
 - [`.addOpenCornerShape()`](#addcornershape) or [`.addClosedCornerShape()`](#addcornershape) if you want to just add a few corners to a SwiftUI `Path`
@@ -50,27 +51,6 @@ If you like this package, buy me a coffee to say thanks!
 
 - - -
 # Details
-## RelatableValue
-A handy enumeration that represents either a relative or absolute value. This is used in lots of situations throughout ShapeUp to give flexibility when defining parameters.
-
-When setting a corner radius you might want a fixed value like 20 or you might want a value that's 20% of the maximum so that it will scale proportionally. `RelatableValue` gives you both of those options.
-```swift
-let absolute = RelatableValue.absolute(20)
-let relative = RelatableValue.relative(0.2)
-```
-
-Later, the value is determined by running the `value(using total:)` function. Absolute values will always be the same but any relative values will be calculated. In the case of a corner radius, the total would be the maximum radius that would fit that corner given the length of the two lines and the angle of the corner.
-```swift
-let radius = relatableRadius.value(using: maxRadius)
-```
-
-For ease of use, `RelatableValue` conforms to `ExpressibleByIntegerLiteral` and `ExpressibleByFloatLiteral`. This means in many cases you can omit `.absolute()` when writing absolute values.
-```swift
-// Both are the same
-let cornerStyle = .rounded(.absolute(5))
-let cornerStyle = .rounded(5)
-```
-
 ## Corner
 A point with a specified `CornerStyle` used to draw paths and create shapes.
 
@@ -78,7 +58,7 @@ A point with a specified `CornerStyle` used to draw paths and create shapes.
 Corner(.rounded(radius: 5), x: 0, y: 10)
 ```
 
-Corners store no information about their orientation or where the previous and next points are located. When they're put into an array their order is assumed to be their drawing order. This means you can generate a path from this array. By default this path is assumed to be closed with the last point connecting back to the first.
+Corners store no information about their orientation or where the previous and next points are located. When they're put into an array their order is assumed to be their drawing order. This means you can generate a `Path` from this array. By default this path is assumed to be closed with the last point connecting back to the first.
 
 ```swift
 [
@@ -91,62 +71,23 @@ Corners store no information about their orientation or where the previous and n
 ## CornerStyle
 An enum storing style information for a `Corner`. In all cases, the radius is a [`RelatableValue`](#relatablevalue) that can either be an absolue value or relative to the length of the shortest line from that corner.
 
-### `.point`
+<img width="50" alt="Pink triangle with a point corner" src="https://user-images.githubusercontent.com/2143656/157761591-2341d07c-5f0e-4434-ad19-22873f7357d9.svg"> `.point`
 A simple point corner with no properties.
 
-### `.rounded(radius: RelatableValue)`
+<img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue)`
 A rounded corner with a radius.
 
-### `.concave(radius: RelatableValue, radiusOffset: CGFloat)`
+<img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, radiusOffset: CGFloat)`
 A concave corner where the radius determines the start and end points of the cut and the radius offeset is the difference between the concave radius and the radius. The radiusOffset is mainly used when insetting a concave corner and is often left with the default value of zero.
 
-### `.straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
+<img width="50" alt="Pink triangle with a straight cut corner" src="https://user-images.githubusercontent.com/2143656/157762299-437bcec4-2fc8-475b-bbbb-ed810d86ca7f.svg"> `.straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
 A straight chamfer corner where the radius determines the start and end points of the cut. Additional cornerstyles can be used on the two resulting corners of the chamfer. (You can continue nesting recursively.)
 
-### `cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
+<img width="50" alt="Pink triangle with a cutout corner" src="https://user-images.githubusercontent.com/2143656/157762313-c4015f99-7c53-4571-93b5-a8b476c9f5da.svg"> `.cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
 A cutout corner where the radius determines the start and end points of the cut. Additional cornerstyles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
 
-## CornerShape
-A protocol you can use to create a shape built from an array of `Corner`s. It automatically conforms to `InsettableShape`. The path function typically used for SwiftUI Shape is already implemented and will use this array to create a single path, applying any inset, and closing it if the closed parameter is true.
-
-### How to build a CornerShape
-- Define an insetAmount of zero as this property is mainly used if the shape is later inset.
-- Use the closed property to define if your shape should be closed or left open.
-- Write a function that returns an array of corners.
-```swift
-public struct MyShape: CornerShape {
-    public var insetAmount: CGFloat = .zero
-    public let closed = true
-   
-    public func corners(in rect: CGRect) -> [Corner] {
-        [
-            Corner(x: rect.midX, y: rect.minY),
-            Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),
-            Corner(.rounded(radius: 5), x: rect.minX, y: rect.maxY)
-        ]
-    }
-}
-```
-
-### Using A CornerShape
-A `CornerShape` is an `InsettableShape` so it can be used in SwiftUI Views in the same way as `RoundedRectangle` or similar.
-```swift
-MyShape()
-    .fill()
-```
-
-The corners can also be accessed directly for use in a more complex shape
-```swift
-public func corners(in rect: CGRect) -> [Corner] {
-    MyShape()
-        .corners(in: rect)
-        .inset(by: 10)
-        .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
-}
-```
-
 ## Basic Shapes
-`CornerRectangle`, `CornerTriangle`, and `CornerPentagon` are ready-made `CornerShape`s
+`CornerRectangle`, `CornerTriangle`, and `CornerPentagon` are pre-built shapes where you can customize the style of any corner.
 
 Examples:
 ```swift
@@ -180,8 +121,47 @@ CornerPentagon(
 .fill()
 ```
 
+## CornerShape
+A protocol for creating shapes built from an array of `Corner`s. The path and inset functions needed to conform to SwiftUI InsettableShape are already implemented.
+
+### How to build a CornerShape
+- Set insetAbount zero (this property is used if the shape inset).
+- Set the closed property to define if your shape should be closed or left open.
+- Write a function that returns an array of corners.
+```swift
+public struct MyShape: CornerShape {
+    public var insetAmount: CGFloat = .zero
+    public let closed = true
+   
+    public func corners(in rect: CGRect) -> [Corner] {
+        [
+            Corner(x: rect.midX, y: rect.minY),
+            Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),
+            Corner(.rounded(radius: 5), x: rect.minX, y: rect.maxY)
+        ]
+    }
+}
+```
+
+### Using A CornerShape
+A `CornerShape` can be used in SwiftUI Views the same way as `RoundedRectangle` or similar.
+```swift
+MyShape()
+    .fill()
+```
+
+The corners can also be accessed directly for use in a more complex shape
+```swift
+public func corners(in rect: CGRect) -> [Corner] {
+    MyShape()
+        .corners(in: rect)
+        .inset(by: 10)
+        .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
+}
+```
+
 ## CornerCustom
-Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s. All you do is provide the corners and the shape will draw itself.
+Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s. All you do is provide the corners.
 
 ```swift
 CornerCustom { rect in
@@ -193,15 +173,139 @@ CornerCustom { rect in
 }
 .strokeBorder(lineWidth: 5)
 ```
-## Notch
-## Add CornerShape
-A way to add open and closed corner
-## Vector2
-## Vector2Representable
-## Vector2Algebraic
-## Vector2Transformable
-## RectAnchor
-## RelatableValue
-## SketchyLine
-## Emboss
 
+## Notch
+Sometimes you want to cut a notch in the side of a shape. This can be tricky to do when the line is at an odd angle but `Notch` makes it easy. A `Notch` has a `NotchStyle`, position, length and depth.
+
+The following code adds a rectangular notch between the second and third corner. The `addingNotch()` function makes all the necessary calculations to add the corners representing that notch into the `Corner` array.
+
+```swift
+let notch = Notch(.rectangle, position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1))
+
+let corners = corners.addingNotch(notch, afterCornerIndex: 1)
+```
+### NotchStyle
+Two basic styles are `.triangle` and `.rectangle` and both allow customization of the corner styles for the 2 or 3 resulting notch corners.
+```swift
+/// Specify styles for each corner
+let notch1 = .triangle(cornerStyles: [.rounded(radius: 10), .point, .straight(radius: 5)])
+/// Or specify one style for all
+let notch2 = .rectangle(cornerStyle: .rounded(radius: .relative(0.2))
+```
+
+There is also a `.custom` notch style that takes a closure that returns an array of `Corner`s based on a `CGRect` that matches the size and orientation of the notch.
+```swift
+let notch = .custom { rect in
+    [
+        Corner(x: rect.minX, y: rect.minY),
+        Corner(x: rect.minX, y: rect.midY),
+        Corner(.rounded(radius: 15), x: rect.midX, y: rect.maxY),
+        Corner(x: rect.maxX, y: rect.midY),
+        Corner(x: rect.maxX, y: rect.minY)
+    ]
+}
+```
+
+## Add CornerShape
+Shapes made completely with corners have their limitations. Only straight lines and arcs are possible. If you want to use corners to draw only a portion of your shape you can do that too with `.addOpenCornerShape()` and `.addClosedCornerShape()` functions added to `Path`
+
+## Vector2
+A vector type used as an alternative to CGPoint that conforms to all the Vector2 protocols.
+
+## Vector2Representable
+A protocol that adds the `vector: Vector2` property. `Vector2`, `CGPoint`, and `Corner` all conform to this and it's required for any other Vector2 protocols.
+
+Other properties and methods:
+```swift
+point: CGPoint
+corner(_ style:) -> Corner
+```
+
+Array extensions:
+```swift
+points: [CGPoint]
+vectors: [Vector2]
+corners(_ style: CornerStyle?) -> [Corner]
+corners(_ styles: [CornerStyle?]) -> [Corner]
+bounds: CGRect
+center: CGPoint
+anchorPoint(_ anchor: RectAnchor) -> CGPoint
+angles: [Angle]
+```
+
+## Vector2Algebraic
+A protocol that adds vector math. Only applied to `Vector2` by default but can be added to any other `Vector2Representable` if need be.
+
+Functions include: magnitude, direction, normalized, addition, subtraction, and multiplication or division with scalars.
+
+## Vector2Transformable
+A protocol that adds transformation functions (move, rotate, flip, inset) to any `Vector2Representable` or array of that type. Applied to `Vector2`, `CGPoint`, and `Corner`.
+
+## RectAnchor
+An enum to indicate one of 9 anchor locations on a rectangle. It's primarily used to quickly get `CGPoint` values from `CGRect`
+
+```swift
+// Current method
+let point = CGPoint(x: rect.minX, y: rect.minY)
+// ShapeUp method
+let point = rect.point(.topLeft)
+```
+
+This is especially helpful when getting an array of points
+
+```swift
+// Current method
+let points = [
+    CGPoint(x: rect.minX, y: rect.midY),
+    CGPoint(x: rect.midX, y: rect.midY),
+    CGPoint(x: rect.maxX, y: rect.maxY)
+]
+// ShapeUp method
+let points = rect.points(.left, .center, .bottomRight)
+```
+
+## RelatableValue
+A handy enumeration that represents either a relative or absolute value. This is used in lots of situations throughout ShapeUp to give flexibility when defining parameters.
+
+When setting a corner radius you might want a fixed value like 20 or you might want a value that's 20% of the maximum so that it will scale proportionally. `RelatableValue` gives you both of those options.
+```swift
+let absolute = RelatableValue.absolute(20)
+let relative = RelatableValue.relative(0.2)
+```
+
+Later, the value is determined by running the `value(using total:)` function. Absolute values will always be the same but any relative values will be calculated. In the case of a corner radius, the total would be the maximum radius that would fit that corner given the length of the two lines and the angle of the corner.
+```swift
+let radius = relatableRadius.value(using: maxRadius)
+```
+
+For ease of use, `RelatableValue` conforms to `ExpressibleByIntegerLiteral` and `ExpressibleByFloatLiteral`. This means in many cases you can omit `.absolute()` when writing absolute values.
+```swift
+// Both are the same
+let cornerStyle = .rounded(radius: .absolute(5))
+let cornerStyle = .rounded(radius: 5)
+```
+## SketchyLine
+A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
+
+<img width="190" alt="image" src="https://user-images.githubusercontent.com/2143656/157757702-8d4bcd9f-ffcb-43ce-a51f-4f102b2ef14e.png">
+
+```swift
+Text("Hello World")
+    .alignmentGuide(.bottom) { d in
+        // moves bottom alignment to text baseline
+        return d[.firstTextBaseline]
+    }
+    .background(
+        SketchyLines(lines: [
+            .leading(startExtension: -2, endExtension: 10),
+            .bottom(startExtension: 5, endExtension: 5, offset: .relative(0.05))
+        ], drawAmount: 1)
+            .stroke(Color.red)
+        , alignment: .bottom
+    )
+```
+
+## Emboss or Deboss
+Extensions for `InsettableShape` and `View` that create an embossed or debossed effect.
+
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/2143656/157758578-5ad3083b-f326-4c96-bad9-b727aa66105e.png">
