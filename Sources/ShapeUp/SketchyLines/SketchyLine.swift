@@ -10,12 +10,8 @@ import SwiftUI
 /// A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
 public struct SketchyLine: Shape {
     /// Edges where the line can be drawn
-    public enum SketchyEdge {
+    public enum SketchyEdge: Equatable, Hashable, Codable {
         case top, bottom, leading, trailing
-        /// The baseline of the text as defined in UIFont
-        case textBaseline(font: UIFont)
-        /// The cap height of the text as defined in UIFont
-        case textCapHeight(font: UIFont)
     }
     
     /// Drawing direction
@@ -59,26 +55,14 @@ public struct SketchyLine: Shape {
 }
 
 public extension SketchyLine {
-    /// Amount to offset the edge based on the font size.
-    var fontOffset: CGFloat {
-        switch edge {
-        case let .textBaseline(font):
-            return font.descender
-        case let .textCapHeight(font):
-            return font.ascender - font.capHeight
-        default:
-            return 0
-        }
-    }
-    
-    /// Determines the start point of the line.
+    /// Determines the start point of the line before offset.
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line starts in the given rectangle.
     func startPoint(in rect: CGRect) -> CGPoint {
         switch edge {
-        case .top, .textCapHeight:
+        case .top:
             return CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.minY)
-        case .bottom, .textBaseline:
+        case .bottom:
             return CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.maxY)
         case .leading:
             return CGPoint(x: rect.minX, y: rect.minY - startExtension.value(using: rect.height))
@@ -87,14 +71,14 @@ public extension SketchyLine {
         }
     }
     
-    /// Determines the end point of the line.
+    /// Determines the end point of the line before offset.
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line ends in the given rectangle.
     func endPoint(in rect: CGRect) -> CGPoint {
         switch edge {
-        case .top, .textCapHeight:
+        case .top:
             return CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.minY)
-        case .bottom, .textBaseline:
+        case .bottom:
             return CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.maxY)
         case .leading:
             return CGPoint(x: rect.minX, y: rect.maxY + endExtension.value(using: rect.height))
@@ -109,7 +93,7 @@ public extension SketchyLine {
             points.reverse()
         }
         switch edge {
-        case .top, .bottom, .textBaseline, .textCapHeight:
+        case .top, .bottom:
             points[1].x = points[0].x + (points[1].x - points[0].x) * max(0,drawAmount)
         default:
             points[1].y = points[0].y + (points[1].y - points[0].y) * max(0,drawAmount)
@@ -121,7 +105,7 @@ public extension SketchyLine {
         case .leading, .trailing:
             return path.offsetBy(dx: offset.value(using: rect.width), dy: 0)
         default:
-            return path.offsetBy(dx: 0, dy: offset.value(using: rect.height) + fontOffset)
+            return path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
         }
     }
     

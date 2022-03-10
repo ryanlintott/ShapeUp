@@ -57,7 +57,7 @@ public extension Array where Element: Vector2Representable {
     /// - Parameter anchor: Bounds anchor where the point is located.
     /// - Returns: The point where the bounds anchor is located.
     func anchorPoint(_ anchor: RectAnchor) -> CGPoint {
-        bounds.anchorPoint(anchor)
+        bounds.point(anchor)
     }
     
     /// Center point of the bounds rectangle containing all points in the array.

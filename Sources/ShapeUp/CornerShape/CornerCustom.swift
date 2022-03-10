@@ -7,19 +7,27 @@
 
 import SwiftUI
 
-/// A custom insettable shape built out of corners, aligned inside the frame of the view containing it.
-///
-/// This shape can be used in a SwiftUI View directly (similar to `RoundedRectangle`)
-///
-///     CornerCustom { rect in
-///         [
-///             Corner(x: rect.midX, y: rect.minY),
-///             Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),
-///             Corner(.rounded(radius: 5), x: rect.minX, y: rect.maxY)
-///         ]
-///     }
-///     .fill()
-///
+/**
+A custom open or closed insettable shape built out of corners, aligned inside the frame of the view containing it.
+
+This shape can either be used in a SwiftUI View like any other `InsettableShape`
+
+    CornerCustom { rect in
+        [
+            Corner(x: rect.midX, y: rect.minY),
+            Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),
+            Corner(.rounded(radius: 5), x: rect.minX, y: rect.maxY)
+        ]
+    }
+    .fill()
+ 
+    CornerCustom { rect in
+        rect
+            .anchorPoints(.top, .bottomRight, .left)
+            .corners(.rounded(radius: .relative(0.1)))
+    }
+    .strokeBorder(lineWidth: 10)
+*/
 public struct CornerCustom: CornerShape {
     public let closed: Bool
     public var insetAmount: CGFloat = 0
