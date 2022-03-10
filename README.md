@@ -12,20 +12,20 @@ A Swift Package that makes SwiftUI shapes easier to make by redefining them as a
 
 Features:
 - [`Corner`](#corner), a `CGPoint` with `style`.
-- [`CornerStyle`](#cornerstyle), an enum with style options for `Corner` including `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
-- [Basic Shapes](#basicshapes) like `CornerRectangle`, `CornerTriangle`, and `CornerPentagon`. All similar to a SwiftUI `Rectangle` but you can apply any mix of `CornerStyle`s
-- [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners that automatically conforms to `InsettableShape` with no extra code.
-- [`CornerCustom`](#cornercustom), for building open or closed shapes from and array of `Corner`s in a view without needing to define your own type.
+- [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
+- Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
+- [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners.
+- [`CornerCustom`](#cornercustom), for building corner shapes inline without making a new type.
 - Add a [`Notch`](#notch) of any `NotchStyle` inbetween two corners.
-- [`.addOpenCornerShape()`](#addcornershape) or [`.addClosedCornerShape()`](#addcornershape) if you want to just add a few corners to a SwiftUI `Path`
+- [`.addOpenCornerShape()`](#add-cornershape) or [`.addClosedCornerShape()`](#add-cornershape) for adding a few corners to a SwiftUI `Path`
 - [`Vector2`](#vector2), a new type similar to `CGPoint` but used to do vector math.
-- [`Vector2Representable`](#vector2representable) protocol that adds a `.vector` property needed to conform to other Vector2-related protocols. Applied to `Vector2`, `CGPoint`, and `Corner`
+- [`Vector2Representable`](#vector2representable) protocol that adds a `.vector` property needed to conform to other Vector2-related protocols.
 - [`Vector2Algebraic`](#vector2algebraic) protocol used to add vector algebra capabilities to `Vector2`
-- [`Vector2Transformable`](#vector2transformable) protocol used to add transformm functions like `.moved()`, `.rotated()`, and `.flipped()` to `Vector2Representable` types and arrays of that type.
+- [`Vector2Transformable`](#vector2transformable) protocol with methods for transforming arrays of points.
 - [`RectAnchor`](#rectanchor), an enum for all major anchor points on a rectangle. Used for transform functions.
-- [`RelatableValue`](#relatablevalue), an enum used to store `.relative` or `.absolute` values. Used for `CornerStyle.radius`, `Notch` properties, `CornerTriangle` and `CornerPentagon` properties and `SketchyLine`. Also useful for your own shapes.
+- [`RelatableValue`](#relatablevalue), an enum used to store `.relative` or `.absolute` values.
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
-- [`.emboss()`](#emboss) or `.deboss()` any SwiftUI `Shape` or `View`.
+- [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
 
 
 # [ShapeUpExample](https://github.com/ryanlintott/ShapeUpExample)
@@ -265,7 +265,7 @@ let points = rect.points(.left, .center, .bottomRight)
 ```
 
 ## RelatableValue
-A handy enumeration that represents either a relative or absolute value. This is used in lots of situations throughout ShapeUp to give flexibility when defining parameters.
+A handy enum that represents either a relative or absolute value. This is used in lots of situations throughout ShapeUp to give flexibility when defining parameters.
 
 When setting a corner radius you might want a fixed value like 20 or you might want a value that's 20% of the maximum so that it will scale proportionally. `RelatableValue` gives you both of those options.
 ```swift
