@@ -62,7 +62,7 @@ public extension Vector2Transformable {
     /// - Returns: The same object, flipped across the provided line.
     func flipped<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Self {
         // If the mirror line is just a point, don't make any changes.
-        if mirrorLineStart == mirrorLineEnd { return self }
+        if mirrorLineStart.point == mirrorLineEnd.point { return self }
         
         let vector = self.vector
         let vectorToPoint = vector - mirrorLineStart.vector
