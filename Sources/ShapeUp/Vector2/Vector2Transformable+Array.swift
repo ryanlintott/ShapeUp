@@ -49,7 +49,6 @@ public extension Array where Element: Vector2Transformable {
         rotated(angle, anchor: anchorPoint(anchor))
     }
     
-    #warning("Confirm what happens when start and end points are equal")
     /// Flips an array of points across a mirror line.
     ///
     /// If start and end are equal, points are unchanged.
@@ -61,7 +60,6 @@ public extension Array where Element: Vector2Transformable {
         map({ $0.flipped(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd) })
     }
     
-    #warning("Confirm what happens when start and end points are equal")
     /// Flips an array of points across a mirror line defined by anchor points on the bounding frame.
     ///
     /// If start and end are equal, points are unchanged.

@@ -54,7 +54,6 @@ public extension Vector2Transformable {
         rotated(angle, anchor: CGPoint.zero)
     }
     
-    #warning("Confirm what happens when start and end points are equal")
     /// Flips a Vector2Transformable type without modifying other properties.
     ///
     /// If start and end are equal, points are unchanged.
@@ -62,6 +61,9 @@ public extension Vector2Transformable {
     /// - Parameter mirrorLineEnd: End point of mirror line.
     /// - Returns: The same object, flipped across the provided line.
     func flipped<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Self {
+        // If the mirror line is just a point, don't make any changes.
+        if mirrorLineStart == mirrorLineEnd { return self }
+        
         let vector = self.vector
         let vectorToPoint = vector - mirrorLineStart.vector
         let angle = Angle.threePoint(mirrorLineEnd, mirrorLineStart, self) * 2
