@@ -30,9 +30,17 @@ public extension Notch {
         let notchDepth = depth.value(using: totalLength)
         let notchStartPoint = start.vector + normalizedVector * (notchPosition - (notchLength / 2))
         
-        let rect = CGRect(x: 0, y: 0, width: notchLength, height: notchDepth)
-        return style
-            .corners(in: rect)
+        let rect = CGRect(x: 0, y: 0, width: notchLength, height: abs(notchDepth))
+        
+        let notchCorners = style.corners(in: rect)
+        let signedNotchCorners: [Corner]
+        if notchDepth < 0 {
+            signedNotchCorners = notchCorners.flippedVertically(across: 0)
+        } else {
+            signedNotchCorners = notchCorners
+        }
+        
+        return signedNotchCorners
             .rotated(direction)
             .moved(notchStartPoint)
     }

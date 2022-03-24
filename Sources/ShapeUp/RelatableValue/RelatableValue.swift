@@ -8,9 +8,10 @@
 import SwiftUI
 
 /// An enumeration that represents either a relative or absolute value.
-public enum RelatableValue: Equatable, Hashable {
+public enum RelatableValue: Equatable, Hashable, AdditiveArithmetic {
     case absolute(_ value: CGFloat)
     case relative(_ value: CGFloat)
+    case mixed(absolute: CGFloat, relative: CGFloat)
 }
 
 public extension RelatableValue {
@@ -22,10 +23,12 @@ public extension RelatableValue {
     /// - Returns: The absolute value based on a provided total.
     func value(using total: CGFloat) -> CGFloat {
         switch self {
-        case .absolute(let value):
+        case let .absolute(value):
             return value
-        case .relative(let value):
+        case let .relative(value):
             return value * total
+        case let .mixed(absolute, relative):
+            return absolute + (relative * total)
         }
     }
     
@@ -40,10 +43,18 @@ public extension RelatableValue {
     /// - Parameter total: Total used to create relative values from absolute values.
     /// - Returns: A relative relatable value of this value based on a provided total.
     func relative(total: CGFloat) -> Self {
+        .relative(value(using: total) / total)
+    }
+    
+    /// Returns a mixed relatable value of this value based on a provided total.
+    /// - Returns: A mixed relatable value of this value.
+    var mixed: Self {
         switch self {
         case let .absolute(value):
-            return .relative(value / total)
-        case .relative:
+            return .mixed(absolute: value, relative: 0)
+        case let .relative(value):
+            return .mixed(absolute: 0, relative: value)
+        case .mixed:
             return self
         }
     }

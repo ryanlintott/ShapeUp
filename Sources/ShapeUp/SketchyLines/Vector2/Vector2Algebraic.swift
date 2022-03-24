@@ -12,7 +12,7 @@ import SwiftUI
 /// Used on Vector2 and can be applied to CGPoint.
 ///
 /// Functionality includes: magnitude, normalizing, vector addition, vector subtraction, vector-scalar multiplication and division.
-public protocol Vector2Algebraic: Vector2Representable, Equatable {
+public protocol Vector2Algebraic: Vector2Representable, Equatable, AdditiveArithmetic {
     /// Creates an object from a Vector2 representation.
     ///
     /// Object must not have any other properties.
