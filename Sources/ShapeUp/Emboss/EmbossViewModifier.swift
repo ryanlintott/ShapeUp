@@ -51,7 +51,7 @@ struct EmbossViewModifier: ViewModifier {
                         )
                         .opacity(opacity)
                         .allowsHitTesting(false)
-                        .accessibilityHidden(true)
+                        .accessibility(hidden: true)
                     
                     Color.black
                         .mask(
@@ -69,7 +69,7 @@ struct EmbossViewModifier: ViewModifier {
                         )
                         .opacity(opacity)
                         .allowsHitTesting(false)
-                        .accessibilityHidden(true)
+                        .accessibility(hidden: true)
                 }
             )
             .mask(content)
