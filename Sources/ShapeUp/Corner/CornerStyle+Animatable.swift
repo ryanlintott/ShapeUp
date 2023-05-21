@@ -8,19 +8,19 @@
 import SwiftUI
 
 extension CornerStyle: Animatable {
-    public var animatableData: AnimatablePair<RelatableValue.AnimatableData, CGFloat> {
+    public var animatableData: AnimatablePair<RelatableValue, CGFloat> {
         get {
             switch self {
             case .point:
                 return .init(.zero, .zero)
             case let .rounded(radius):
-                return .init(radius.animatableData, .zero)
+                return .init(radius, .zero)
             case let .concave(radius, radiusOffset):
-                return .init(radius.animatableData, radiusOffset)
+                return .init(radius, radiusOffset)
             case let .straight(radius, _):
-                return .init(radius.animatableData, .zero)
+                return .init(radius, .zero)
             case let .cutout(radius, _):
-                return .init(radius.animatableData, .zero)
+                return .init(radius, .zero)
             }
         }
         set {
@@ -32,20 +32,10 @@ extension CornerStyle: Animatable {
     /// - Parameter newValue: Animatable Data representing the new value.
     mutating func update(with newValue: AnimatableData) {
         switch self {
-        case .point:
-            break
-        case var .rounded(radius):
-            radius.update(with: newValue.first)
-            self = self.changingRadius(to: radius)
-        case var .concave(radius, _):
-            radius.update(with: newValue.first)
-            self = .concave(radius: radius, radiusOffset: newValue.second)
-        case var .straight(radius, _):
-            radius.update(with: newValue.first)
-            self = self.changingRadius(to: radius)
-        case var .cutout(radius, _):
-            radius.update(with: newValue.first)
-            self = self.changingRadius(to: radius)
+        case .point, .rounded, .straight, .cutout:
+            self = self.changingRadius(to: newValue.first)
+        case .concave:
+            self = .concave(radius: newValue.first, radiusOffset: newValue.second)
         }
     }
 }

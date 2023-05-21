@@ -64,9 +64,9 @@ public struct CornerTriangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerTriangle {
-    public var animatableData: AnimatablePair<CGFloat, RelatableValue.AnimatableData> {
+    public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
         get {
-            .init(insetAmount, topPoint.animatableData)
+            .init(insetAmount, topPoint)
         }
         set {
             self.update(with: newValue)
@@ -75,6 +75,6 @@ extension CornerTriangle {
     
     mutating func update(with newValue: AnimatableData) {
         insetAmount = newValue.first
-        topPoint.update(with: newValue.second)
+        topPoint = newValue.second
     }
 }

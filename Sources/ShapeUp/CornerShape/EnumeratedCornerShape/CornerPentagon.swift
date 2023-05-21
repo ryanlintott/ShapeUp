@@ -83,10 +83,10 @@ extension CornerPentagon {
     AnimatablePair<
         CGFloat,
         AnimatablePair<
-            RelatableValue.AnimatableData,
+            RelatableValue,
             AnimatablePair<
-                RelatableValue.AnimatableData,
-                RelatableValue.AnimatableData
+                RelatableValue,
+                RelatableValue
     >
     >
     >
@@ -94,9 +94,9 @@ extension CornerPentagon {
     public var animatableData: AnimatableData {
         get {
             .init(insetAmount,
-                  .init(pointHeight.animatableData,
-                        .init(topTaper.animatableData,
-                              bottomTaper.animatableData
+                  .init(pointHeight,
+                        .init(topTaper,
+                              bottomTaper
                              )
                   )
             )
@@ -108,8 +108,8 @@ extension CornerPentagon {
     
     public mutating func update(with newValue: AnimatableData) {
         insetAmount = newValue.first
-        pointHeight.update(with: newValue.second.first)
-        topTaper.update(with: newValue.second.second.first)
-        bottomTaper.update(with: newValue.second.second.second)
+        pointHeight = newValue.second.first
+        topTaper = newValue.second.second.first
+        bottomTaper = newValue.second.second.second
     }
 }

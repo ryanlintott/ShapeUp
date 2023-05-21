@@ -37,16 +37,27 @@ public extension Vector2 {
     var rect: CGRect { CGRect(x: 0, y: 0, width: dx, height: dy) }
 }
 
-extension Vector2: Vector2Algebraic, Vector2Transformable {
+extension Vector2: Vector2Representable {
     public var vector: Vector2 {
         self
     }
-    
+}
+
+extension Vector2: Vector2Algebraic {
     public init(vector: Vector2) {
         self = vector
     }
-    
+}
+
+extension Vector2: Vector2Transformable {
     public func repositioned<T>(to point: T) -> Vector2 where T : Vector2Representable {
         point.vector
+    }
+}
+    
+extension Vector2: VectorArithmetic {
+    public mutating func scale(by rhs: Double) {
+        dx *= rhs
+        dy *= rhs
     }
 }
