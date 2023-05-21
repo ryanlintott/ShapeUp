@@ -58,3 +58,11 @@ public struct CornerRectangle: EnumeratedCornerShape {
         ]
     }
 }
+
+/// Animatable Extension
+extension CornerRectangle {
+    public var animatableData: CGFloat {
+        get { insetAmount }
+        set { insetAmount = newValue }
+    }
+}

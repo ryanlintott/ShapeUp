@@ -40,9 +40,14 @@ public extension Vector2Algebraic {
         self.init(vector: .unitVector(direction: direction) * magnitude)
     }
     
+    /// Vector magnitude squared.
+    var magnitudeSquared: Double {
+        vector.dx * vector.dx + vector.dy * vector.dy
+    }
+    
     /// Vector magnitude. Length of the vector.
     var magnitude: CGFloat {
-        sqrt(vector.dx * vector.dx + vector.dy * vector.dy)
+        sqrt(vector.magnitudeSquared)
     }
     
     /// The positive angle between the X axis and the vector.

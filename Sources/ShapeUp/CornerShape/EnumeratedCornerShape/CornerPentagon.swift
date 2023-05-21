@@ -76,3 +76,40 @@ public struct CornerPentagon: EnumeratedCornerShape {
         ]
     }
 }
+
+/// Animatable Extension
+extension CornerPentagon {
+    public typealias AnimatableData =
+    AnimatablePair<
+        CGFloat,
+        AnimatablePair<
+            RelatableValue.AnimatableData,
+            AnimatablePair<
+                RelatableValue.AnimatableData,
+                RelatableValue.AnimatableData
+    >
+    >
+    >
+    
+    public var animatableData: AnimatableData {
+        get {
+            .init(insetAmount,
+                  .init(pointHeight.animatableData,
+                        .init(topTaper.animatableData,
+                              bottomTaper.animatableData
+                             )
+                  )
+            )
+        }
+        set {
+            self.update(with: newValue)
+        }
+    }
+    
+    public mutating func update(with newValue: AnimatableData) {
+        insetAmount = newValue.first
+        pointHeight.update(with: newValue.second.first)
+        topTaper.update(with: newValue.second.second.first)
+        bottomTaper.update(with: newValue.second.second.second)
+    }
+}

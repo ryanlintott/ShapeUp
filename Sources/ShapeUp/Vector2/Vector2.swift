@@ -12,9 +12,9 @@ import SwiftUI
 /// This type is mainly used internally so that CGPoint isn't publically extended with too many functions that may conflict with other user functions.
 public struct Vector2: Equatable, Hashable, Codable {
     /// Delta x
-    public let dx: CGFloat
+    public var dx: CGFloat
     /// Delta y
-    public let dy: CGFloat
+    public var dy: CGFloat
     
     /// Creates a vector
     /// - Parameters:

@@ -32,6 +32,11 @@ public struct CornerCustom: CornerShape {
     public let closed: Bool
     public var insetAmount: CGFloat = 0
     
+    public var animatableData: CGFloat {
+        get { insetAmount }
+        set { insetAmount = newValue }
+    }
+    
     internal var corners: (CGRect) -> [Corner]
     
     /// Creates a custom insettable shape out of corners.

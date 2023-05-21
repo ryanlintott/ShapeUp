@@ -61,3 +61,20 @@ public struct CornerTriangle: EnumeratedCornerShape {
         ]
     }
 }
+
+/// Animatable Extension
+extension CornerTriangle {
+    public var animatableData: AnimatablePair<CGFloat, RelatableValue.AnimatableData> {
+        get {
+            .init(insetAmount, topPoint.animatableData)
+        }
+        set {
+            self.update(with: newValue)
+        }
+    }
+    
+    mutating func update(with newValue: AnimatableData) {
+        insetAmount = newValue.first
+        topPoint.update(with: newValue.second)
+    }
+}
