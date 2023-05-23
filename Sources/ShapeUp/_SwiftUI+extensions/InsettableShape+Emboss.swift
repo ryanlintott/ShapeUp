@@ -23,10 +23,6 @@ public extension InsettableShape {
         let offsetX = size * 1.5 * CGFloat(cos(angle.radians))
         let offsetY = size * 1.5 * CGFloat(sin(angle.radians))
         
-        // Using Color.clear will not render shadows
-        let almostClearBlack = Color.black.opacity(0.000001)
-        let almostClearWhite = Color.white.opacity(0.000001)
-        
         var inset: CGFloat {
             -max(1, size * 1.5)
         }
@@ -41,12 +37,12 @@ public extension InsettableShape {
                 ZStack {
                     self
                         .inset(by: inset)
-                        .strokeBorder(almostClearBlack, lineWidth: lineWidth)
+                        .stroke(style: .init(lineWidth: lineWidth))
                         .shadow(color: Color.black.opacity(opacity), radius: size, x: -offsetX, y: -offsetY)
 
                     self
                         .inset(by: inset)
-                        .strokeBorder(almostClearWhite, lineWidth: lineWidth)
+                        .stroke(style: .init(lineWidth: lineWidth))
                         .shadow(color: Color.white.opacity(opacity), radius: size, x: offsetX, y: offsetY)
                 }
                 .clipShape(self)
