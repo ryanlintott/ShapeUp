@@ -196,7 +196,7 @@ public extension Corner.Dimensions {
         abs(maxCutLength / tan(halvedRadiusAngle.radians))
     }
     
-    /// Retruns the radius as a non-relative value.
+    /// Returns the radius as a non-relative value.
     /// - Parameters:
     ///   - radius: Relatable radius value.
     ///   - maxRadius: The maximum radius that can be applied to this corner. (The length of the shorter of the two lines from the corner point)
