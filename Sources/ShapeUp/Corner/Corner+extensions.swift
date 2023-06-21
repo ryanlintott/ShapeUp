@@ -18,7 +18,7 @@ extension Corner: Vector2Transformable {
         style = .point
     }
     
-    public func repositioned<T: Vector2Representable>(to point: T) -> Corner {
+    public func repositioned(to point: some Vector2Representable) -> Corner {
         Corner(style, point: point)
     }
 }

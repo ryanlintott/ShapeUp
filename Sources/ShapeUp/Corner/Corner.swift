@@ -50,7 +50,7 @@ public struct Corner: Equatable, Hashable {
     /// - Parameters:
     ///   - style: Corner style. Default is .point.
     ///   - point: Location of corner.
-    public init<T: Vector2Representable>(_ style: CornerStyle? = nil, point: T) {
+    public init(_ style: CornerStyle? = nil, point: some Vector2Representable) {
         x = point.vector.dx
         y = point.vector.dy
         self.style = style ?? .point

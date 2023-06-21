@@ -13,7 +13,7 @@ internal enum GeoMath {
     ///   - line: A line defined by two points.
     ///   - circle: A circle defined by a center point and a radius.
     /// - Returns: An array of intersection points between the line and the circle. May be 0, 1, or 2 points.
-    static func intersectionPoints<T: Vector2Representable, U: Vector2Representable, V: Vector2Representable>(line: (point1: T, point2: U), circle: (center: V, radius: CGFloat)) -> [CGPoint] {
+    static func intersectionPoints(line: (point1: some Vector2Representable, point2: some Vector2Representable), circle: (center: some Vector2Representable, radius: CGFloat)) -> [CGPoint] {
         let deltaLine = line.point2.vector - line.point1.vector
         let centerToP1 = line.point1.vector - circle.center.vector
         

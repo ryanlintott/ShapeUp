@@ -124,7 +124,7 @@ public extension AngleRepresentable {
     ///   - anchor: Corner point of the angle.
     ///   - terminalPoint: Point on the terminal side of the angle.
     /// - Returns: The positive angle of rotation from the initial point to the terminal point around an anchor point.
-    static func threePoint<T: Vector2Representable, U: Vector2Representable, V: Vector2Representable>(_ initialPoint: T, _ anchor: U, _ terminalPoint: V) -> Angle {
+    static func threePoint(_ initialPoint: some Vector2Representable, _ anchor: some Vector2Representable, _ terminalPoint: some Vector2Representable) -> Angle {
         // Get both angles and ensure they are not undefined.
         guard
             let initialAngle = (initialPoint.vector - anchor.vector).direction,

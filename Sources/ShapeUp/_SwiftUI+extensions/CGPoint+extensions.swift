@@ -19,7 +19,7 @@ extension CGPoint: Vector2Transformable {
         self = vector.point
     }
     
-    public func repositioned<T: Vector2Representable>(to point: T) -> CGPoint {
+    public func repositioned(to point: some Vector2Representable) -> CGPoint {
         /// This function is required for Vector2Transformable conformance. Other types (like Corner) have to pass on their other properties but CGPoint only has point information.
         point.point
     }

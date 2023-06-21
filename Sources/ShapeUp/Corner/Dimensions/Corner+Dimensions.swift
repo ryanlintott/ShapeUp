@@ -86,7 +86,7 @@ extension Corner {
         /// - Parameters:
         ///   - previousPoint: Point before the corner.
         ///   - nextPoint: Point after the corner.
-        public init<T: Vector2Representable, U: Vector2Representable>(corner: Corner, previousPoint: T, nextPoint: U) {
+        public init(corner: Corner, previousPoint: some Vector2Representable, nextPoint: some Vector2Representable) {
             self.corner = corner
             
             self.previousPoint = previousPoint.point

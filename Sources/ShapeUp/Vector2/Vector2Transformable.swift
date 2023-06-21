@@ -10,14 +10,14 @@ import SwiftUI
 public protocol Vector2Transformable: Vector2Representable {
     /// Repositions while keeping other properties untouched.
     /// - Returns: The same object, respositioned to a new point.
-    func repositioned<T: Vector2Representable>(to point: T) -> Self
+    func repositioned(to point: some Vector2Representable) -> Self
 }
 
 public extension Vector2Transformable {
     /// Moves a Vector2Transformable type without modifying other properties.
     /// - Parameter distance: A vector representing the movement.
     /// - Returns: The same object, moved by the provided distance.
-    func moved<T: Vector2Representable>(_ distance: T) -> Self {
+    func moved(_ distance: some Vector2Representable) -> Self {
         let vector = self.vector + distance.vector
         return repositioned(to: vector)
     }
@@ -35,7 +35,7 @@ public extension Vector2Transformable {
     /// - Parameter angle: Angle of rotation. Clockwise is positive for SwiftUI.
     /// - Parameter anchor: Anchor point for the rotation.
     /// - Returns: The same object, rotated around the provided anchor by the provided angle.
-    func rotated<T: Vector2Representable>(_ angle: Angle, anchor: T) -> Self {
+    func rotated(_ angle: Angle, anchor: some Vector2Representable) -> Self {
         // Get relative position
         let p = self.vector - anchor.vector
         // Get sin and cos of angle
@@ -60,7 +60,7 @@ public extension Vector2Transformable {
     /// - Parameter mirrorLineStart: Start point of mirror line.
     /// - Parameter mirrorLineEnd: End point of mirror line.
     /// - Returns: The same object, flipped across the provided line.
-    func flipped<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Self {
+    func flipped(mirrorLineStart: some Vector2Representable, mirrorLineEnd: some Vector2Representable) -> Self {
         // If the mirror line is just a point, don't make any changes.
         if mirrorLineStart.point == mirrorLineEnd.point { return self }
         

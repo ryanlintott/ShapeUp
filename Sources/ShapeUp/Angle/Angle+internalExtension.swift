@@ -61,7 +61,7 @@ internal extension Angle {
         _angle.halved
     }
     
-    static func threePoint<T: Vector2Representable, U: Vector2Representable, V: Vector2Representable>(_ initialPoint: T, _ anchor: U, _ terminalPoint: V) -> Angle {
+    static func threePoint(_ initialPoint: some Vector2Representable, _ anchor: some Vector2Representable, _ terminalPoint: some Vector2Representable) -> Angle {
         _Angle.threePoint(initialPoint, anchor, terminalPoint)
     }
 }

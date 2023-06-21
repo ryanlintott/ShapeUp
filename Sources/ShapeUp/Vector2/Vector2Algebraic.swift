@@ -85,7 +85,7 @@ public extension Vector2Algebraic {
     ///   - lhs: First vector.
     ///   - rhs: Second vector.
     /// - Returns: The sum of both vectors.
-    static func + <T: Vector2Algebraic>(lhs: Self, rhs: T) -> Self {
+    static func + (lhs: Self, rhs: some Vector2Algebraic) -> Self {
         let vector = Vector2(dx: lhs.vector.dx + rhs.vector.dx, dy: lhs.vector.dy + rhs.vector.dy)
         return .init(vector: vector)
     }
@@ -99,17 +99,17 @@ public extension Vector2Algebraic {
     ///   - lhs: First vector
     ///   - rhs: Second vector
     /// - Returns: First vector plus the negated second vector.
-    static func - <T: Vector2Algebraic>(lhs: Self, rhs: T) -> Self {
+    static func - (lhs: Self, rhs: some Vector2Algebraic) -> Self {
         lhs + -rhs
     }
     
     /// Vector addition assignment
-    static func += <T: Vector2Algebraic>(lhs: inout Self, rhs: T) {
+    static func += (lhs: inout Self, rhs: some Vector2Algebraic) {
         lhs = lhs + rhs
     }
     
     /// Vector subtraction assignment
-    static func -= <T: Vector2Algebraic>(lhs: inout Self, rhs: T) {
+    static func -= (lhs: inout Self, rhs: some Vector2Algebraic) {
         lhs = lhs - rhs
     }
     

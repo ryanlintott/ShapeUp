@@ -50,7 +50,7 @@ extension Vector2: Vector2Algebraic {
 }
 
 extension Vector2: Vector2Transformable {
-    public func repositioned<T>(to point: T) -> Vector2 where T : Vector2Representable {
+    public func repositioned(to point: some Vector2Representable) -> Vector2 {
         point.vector
     }
 }

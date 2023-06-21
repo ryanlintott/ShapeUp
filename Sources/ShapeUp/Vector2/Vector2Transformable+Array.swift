@@ -11,7 +11,7 @@ public extension Array where Element: Vector2Transformable {
     /// Moves an array of points without modifying other properties.
     /// - Parameter distance: A vector representing the distance to move.
     /// - Returns: The same array of points, moved by the provided distance.
-    func moved<T: Vector2Representable>(_ distance: T) -> Self {
+    func moved(_ distance: some Vector2Representable) -> Self {
         map { $0.moved(distance)}
     }
     
@@ -29,7 +29,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - angle: Angle of rotation.
     ///   - anchor: Anchor point for the rotation.
     /// - Returns: The same array of points rotated around the provided anchor point by the provided angle.
-    func rotated<T: Vector2Representable>(_ angle: Angle, anchor: T) -> Self {
+    func rotated(_ angle: Angle, anchor: some Vector2Representable) -> Self {
         map { $0.rotated(angle, anchor: anchor) }
     }
     
@@ -56,7 +56,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - mirrorLineStart: Start point of mirror line.
     ///   - mirrorLineEnd: End point of mirror line.
     /// - Returns: The same array of points flipped across a mirror line.
-    func flipped<T: Vector2Representable, U: Vector2Representable>(mirrorLineStart: T, mirrorLineEnd: U) -> Self {
+    func flipped(mirrorLineStart: some Vector2Representable, mirrorLineEnd: some Vector2Representable) -> Self {
         map({ $0.flipped(mirrorLineStart: mirrorLineStart, mirrorLineEnd: mirrorLineEnd) })
     }
     

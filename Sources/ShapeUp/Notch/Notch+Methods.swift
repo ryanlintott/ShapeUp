@@ -15,7 +15,7 @@ public extension Notch {
     ///  - start: Start point of the line where a notch is added.
     ///  - end: End point of the line where a notch is added.
     /// - Returns: An array of corners describing a notch between two points.
-    func between<T: Vector2Representable, U: Vector2Representable>(start: T, end: U) -> [Corner] {
+    func between(start: some Vector2Representable, end: some Vector2Representable) -> [Corner] {
         let vector = end.vector - start.vector
         
         // Check if vector has a direction. If not then a notch can't be created between these two points.
