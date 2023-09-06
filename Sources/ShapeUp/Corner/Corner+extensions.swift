@@ -59,4 +59,8 @@ extension Corner {
     public func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
     }
+    
+    func rescaled(from source: CGRect, to destination: CGRect) -> Self {
+        .init(style, point: rescaledPoint(from: source, to: destination))
+    }
 }

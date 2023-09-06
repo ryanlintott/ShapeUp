@@ -215,4 +215,8 @@ public extension Array where Element == Corner {
         
         return self + (notch?.between(start: lastCorner, end: corner) ?? []) + [corner]
     }
+    
+    func rescaled(from source: CGRect, to destination: CGRect) -> Self {
+        map { $0.rescaled(from: source, to: destination) }
+    }
 }

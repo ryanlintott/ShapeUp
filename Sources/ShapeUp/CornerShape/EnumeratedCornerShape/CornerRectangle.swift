@@ -33,7 +33,7 @@ public struct CornerRectangle: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
     
-    public enum ShapeCorner: CaseIterable {
+    public enum ShapeCorner: EnumeratedCorner {
         case topLeft
         case topRight
         case bottomRight

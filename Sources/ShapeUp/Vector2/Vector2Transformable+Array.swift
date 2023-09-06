@@ -117,4 +117,16 @@ public extension Array where Element: Vector2Transformable {
             return insetPoint
         }
     }
+    
+    func rescaledPoints(scale: CGSize) -> [CGPoint] {
+        map { $0.rescaledPoint(scale: scale) }
+    }
+    
+    func rescaledPoints(width: CGFloat? = nil, height: CGFloat? = nil) -> [CGPoint] {
+        map { $0.rescaledPoint(width: width, height: height) }
+    }
+    
+    func rescaledPoints(from source: CGRect, to destination: CGRect) -> [CGPoint] {
+        map { $0.rescaledPoint(from: source, to: destination) }
+    }
 }

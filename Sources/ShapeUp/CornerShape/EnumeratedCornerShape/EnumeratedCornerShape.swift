@@ -7,12 +7,14 @@
 
 import SwiftUI
 
+public protocol EnumeratedCorner: CaseIterable, Hashable, Sendable { }
+
 /// A corner shape defined by a specific set of shape corners.
 ///
 /// For example a triangle would include the corners top, bottom left, and bottom right.
 public protocol EnumeratedCornerShape: CornerShape {
     /// An enumeration containing each named corner in the order they will be drawn.
-    associatedtype ShapeCorner: CaseIterable, Hashable
+    associatedtype ShapeCorner: EnumeratedCorner
     
     /// A dictionary storing the style of each corner by it's shape corner label.
     var styles: [ShapeCorner: CornerStyle?] { get set }

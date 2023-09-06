@@ -37,7 +37,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
     public var insetAmount: CGFloat = 0
     
     /// An enumeration to indicate the three corners of a pentagon.
-    public enum ShapeCorner: CaseIterable {
+    public enum ShapeCorner: EnumeratedCorner {
         case topLeft
         case top
         case topRight
@@ -93,23 +93,22 @@ extension CornerPentagon {
     
     public var animatableData: AnimatableData {
         get {
-            .init(insetAmount,
-                  .init(pointHeight,
-                        .init(topTaper,
-                              bottomTaper
-                             )
-                  )
+            .init(
+                insetAmount,
+                .init(
+                    pointHeight,
+                    .init(
+                        topTaper,
+                        bottomTaper
+                    )
+                )
             )
         }
         set {
-            self.update(with: newValue)
+            insetAmount = newValue.first
+            pointHeight = newValue.second.first
+            topTaper = newValue.second.second.first
+            bottomTaper = newValue.second.second.second
         }
-    }
-    
-    public mutating func update(with newValue: AnimatableData) {
-        insetAmount = newValue.first
-        pointHeight = newValue.second.first
-        topTaper = newValue.second.second.first
-        bottomTaper = newValue.second.second.second
     }
 }

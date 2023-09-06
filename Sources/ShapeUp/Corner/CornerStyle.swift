@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enum describing a corner style including subproperties.
-public enum CornerStyle: Equatable, Hashable {
+public enum CornerStyle: Equatable, Hashable, Sendable {
     /// A simple point corner with no additional styling. This is the default style if none has been provided.
     case point
     

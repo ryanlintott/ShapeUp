@@ -109,4 +109,19 @@ public extension Vector2Transformable {
         }
         return (self.vector + insetVector).point
     }
+    
+    func rescaledPoint(scale: CGSize) -> CGPoint {
+        .init(vector: vector * scale)
+    }
+    
+    func rescaledPoint(width: CGFloat? = nil, height: CGFloat? = nil) -> CGPoint {
+        rescaledPoint(scale: .init(width: width ?? 1, height: height ?? 1))
+    }
+    
+    func rescaledPoint(from source: CGRect, to destination: CGRect) -> CGPoint {
+        let widthScale = source.width == 0 ? destination.width : destination.width / source.width
+        let heightScale = source.height == 0 ? destination.height : destination.height / source.height
+
+        return (source.origin.vector - point.vector).rescaledPoint(width: widthScale, height: heightScale)
+    }
 }
