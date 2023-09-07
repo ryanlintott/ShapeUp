@@ -1,6 +1,6 @@
 //
 //  AnimatablePack.swift
-//  ShapeUpExample
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2023-08-02.
 //
