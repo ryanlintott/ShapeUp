@@ -1,5 +1,5 @@
 //
-//  Notch+Methods.swift
+//  Notch+extensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-08-13.

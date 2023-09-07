@@ -45,8 +45,11 @@ fileprivate extension VectorArithmetic {
  */
 @available(iOS 17, macOS 14, *)
 public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
+    /// Pack of items that conform to `VectorArithmetic`
     public var item: (repeat each Item)
     
+    /// Creates an `Animatable` pack of items
+    /// - Parameter item: Pack of items that conform to `VectorArithmetic`
     public init(_ item: repeat each Item) {
         self.item = (repeat each item)
     }

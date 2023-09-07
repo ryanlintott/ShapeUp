@@ -1,5 +1,5 @@
 //
-//  Rectangle+extensions.swift
+//  Rectangle+publicExtensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2022-03-09.

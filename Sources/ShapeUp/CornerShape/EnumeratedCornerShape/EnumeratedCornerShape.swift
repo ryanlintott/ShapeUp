@@ -1,15 +1,16 @@
 //
-//  File.swift
-//  
+//  EnumeratedCornerShape.swift
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2022-03-09.
 //
 
 import SwiftUI
 
+/// A protocol used inside `EnumeratedCornerShape` to ensure `ShapeCorner` is `CaseIterable`, `Hashable`, and `Sendable`
 public protocol EnumeratedCorner: CaseIterable, Hashable, Sendable { }
 
-/// A corner shape defined by a specific set of shape corners.
+/// A corner shape defined by a named set of shape corners.
 ///
 /// For example a triangle would include the corners top, bottom left, and bottom right.
 public protocol EnumeratedCornerShape: CornerShape {

@@ -1,5 +1,5 @@
 //
-//  InsettableShape.swift
+//  InsettableShape+publicExtensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-09-16.

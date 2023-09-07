@@ -1,6 +1,6 @@
 //
-//  CornerStyle+AnimatableData.swift
-//  
+//  CornerStyle+Animatable.swift
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2023-05-20.
 //
