@@ -37,13 +37,13 @@ public struct CornerCustom: CornerShape {
         set { insetAmount = newValue }
     }
     
-    internal var corners: (CGRect) -> [Corner]
+    internal var corners: @Sendable (CGRect) -> [Corner]
     
     /// Creates a custom insettable shape out of corners.
     /// - Parameters:
     ///  - closed: A boolean determining if the shape should be closed. Default is true.
-    ///  - corners: Corners used to draw a single closed shape.
-    public init(closed: Bool = true, _ corners: @escaping (CGRect) -> [Corner]) {
+    ///  - corners: Sendable closure used to draw corners in a defined frame.
+    public init(closed: Bool = true, _ corners: @escaping @Sendable (CGRect) -> [Corner]) {
         self.closed = closed
         self.corners = corners
     }

@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  
+//  Corner+Animatable.swift
+//  ShapeUp
 //
 //  Created by Ryan Lintott on 2023-05-19.
 //

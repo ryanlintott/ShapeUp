@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+extension CGRect {
+    /// A unit rectangle with origin at zero and size of 1
+    static let one = CGRect(x: 0, y: 0, width: 1, height: 1)
+}
+
 public extension CGRect {
     /// Creates an array of points from the 4 corners of the rectangle starting with the top left and going clockwise.
     var points: [CGPoint] {

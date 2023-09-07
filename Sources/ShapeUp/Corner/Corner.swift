@@ -30,7 +30,7 @@ import SwiftUI
 ///         }
 ///     }
 ///
-public struct Corner: Equatable, Hashable {
+public struct Corner: Hashable, Codable, Sendable {
     public var x: CGFloat
     public var y: CGFloat
     public var style: CornerStyle
