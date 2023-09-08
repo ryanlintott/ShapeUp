@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enum describing a corner style including subproperties.
-public enum CornerStyle: Equatable, Hashable {
+public enum CornerStyle: Hashable, Codable, Sendable {
     /// A simple point corner with no additional styling. This is the default style if none has been provided.
     case point
     
@@ -43,7 +43,7 @@ public enum CornerStyle: Equatable, Hashable {
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start, and end corners of the custom shape. Relative values relate to the shortest of the two lines from this corner.
     ///   - corners: A closure used to create corners in a rectangle that will be stretched and skewed to fit the corner. Start and end points are at the bottom left and top right and do not need to be included.
-//    case custom(radius: RelatableValue, corners: (CGRect) -> [Corner])
+//    case custom(radius: RelatableValue, corners: FramedCorners)
 }
 
 public extension CornerStyle {

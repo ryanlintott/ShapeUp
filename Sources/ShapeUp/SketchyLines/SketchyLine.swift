@@ -10,12 +10,12 @@ import SwiftUI
 /// A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
 public struct SketchyLine: Shape {
     /// Edges where the line can be drawn
-    public enum SketchyEdge: Equatable, Hashable, Codable {
+    public enum SketchyEdge: Hashable, Codable, Sendable {
         case top, bottom, leading, trailing
     }
     
     /// Drawing direction
-    public enum DrawDirection: CGFloat {
+    public enum DrawDirection: Hashable, Codable, Sendable {
         /// Drawing will start at the top or leading end and draw to the bottom or trailing end.
         case toBottomTrailing
         /// Drawing will start at the bottom or trailing end and draw to the top or leading end.

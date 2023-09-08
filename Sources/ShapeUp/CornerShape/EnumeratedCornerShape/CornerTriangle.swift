@@ -35,7 +35,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
     public var insetAmount: CGFloat = 0
     
     /// An enumeration to indicate the three corners of a triangle.
-    public enum ShapeCorner: CaseIterable, Hashable {
+    public enum ShapeCorner: EnumeratedCorner {
         case top
         case bottomRight
         case bottomLeft
@@ -69,12 +69,8 @@ extension CornerTriangle {
             .init(insetAmount, topPoint)
         }
         set {
-            self.update(with: newValue)
+            insetAmount = newValue.first
+            topPoint = newValue.second
         }
-    }
-    
-    mutating func update(with newValue: AnimatableData) {
-        insetAmount = newValue.first
-        topPoint = newValue.second
     }
 }

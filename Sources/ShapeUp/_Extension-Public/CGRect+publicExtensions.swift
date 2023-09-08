@@ -1,5 +1,5 @@
 //
-//  CGRect+extensions.swift
+//  CGRect+PublicExtensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2021-01-23.

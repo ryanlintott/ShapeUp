@@ -36,8 +36,8 @@ public struct CornerPentagon: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
     
-    /// An enumeration to indicate the three corners of a pentagon.
-    public enum ShapeCorner: CaseIterable {
+    /// An enumeration to indicate the corners of a pentagon.
+    public enum ShapeCorner: EnumeratedCorner {
         case topLeft
         case top
         case topRight
@@ -50,7 +50,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
     public var bottomTaper: RelatableValue
     public var styles: [ShapeCorner: CornerStyle?]
     
-    /// Creates a 2d pentagon shape with corners that can be styled.
+    /// Creates a pentagon shape with corners that can be styled.
     /// - Parameters:
     ///   - pointHeight: The vertical distance from the central point to the two points on either side.
     ///   - topTaper: The horizontal inset of the two points closest to the top.
@@ -93,23 +93,22 @@ extension CornerPentagon {
     
     public var animatableData: AnimatableData {
         get {
-            .init(insetAmount,
-                  .init(pointHeight,
-                        .init(topTaper,
-                              bottomTaper
-                             )
-                  )
+            .init(
+                insetAmount,
+                .init(
+                    pointHeight,
+                    .init(
+                        topTaper,
+                        bottomTaper
+                    )
+                )
             )
         }
         set {
-            self.update(with: newValue)
+            insetAmount = newValue.first
+            pointHeight = newValue.second.first
+            topTaper = newValue.second.second.first
+            bottomTaper = newValue.second.second.second
         }
-    }
-    
-    public mutating func update(with newValue: AnimatableData) {
-        insetAmount = newValue.first
-        pointHeight = newValue.second.first
-        topTaper = newValue.second.second.first
-        bottomTaper = newValue.second.second.second
     }
 }

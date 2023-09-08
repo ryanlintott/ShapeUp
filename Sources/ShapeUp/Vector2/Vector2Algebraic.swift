@@ -132,6 +132,25 @@ public extension Vector2Algebraic {
         rhs * lhs
     }
     
+    /// Size-vector multiplication
+    /// - Parameters:
+    ///   - lhs: Size
+    ///   - rhs: Vector
+    /// - Returns: The resulting vector from multiplying the x component by the width of the size and the y component by the height of the size.
+    static func * (lhs: CGSize, rhs: Self) -> Self {
+        let vector = Vector2(dx: lhs.width * rhs.vector.dx, dy: lhs.height * rhs.vector.dy)
+        return .init(vector: vector)
+    }
+    
+    /// Vector-size multiplication
+    /// - Parameters:
+    ///   - lhs: Vector
+    ///   - rhs: Size
+    /// - Returns: The resulting vector from multiplying the x component by the width of the size and the y component by the height of the size.
+    static func * (lhs: Self, rhs: CGSize) -> Self {
+        rhs * lhs
+    }
+    
     /// Vector-scalar division
     /// - Parameters:
     ///   - lhs: Vector

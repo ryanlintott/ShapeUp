@@ -1,5 +1,5 @@
 //
-//  CGPoint+extensions.swift
+//  CGPoint+publicExtensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2020-09-22.
