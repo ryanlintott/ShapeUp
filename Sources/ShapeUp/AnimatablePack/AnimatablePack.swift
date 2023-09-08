@@ -5,6 +5,7 @@
 //  Created by Ryan Lintott on 2023-08-02.
 //
 
+#if swift(>=5.9)
 import Foundation
 import SwiftUI
 
@@ -88,3 +89,4 @@ public extension AnimatablePack {
         return value
     }
 }
+#endif
