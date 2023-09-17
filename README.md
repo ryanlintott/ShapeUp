@@ -27,7 +27,7 @@ Features:
 - [`RelatableValue`](#relatablevalue), an enum used to store `.relative` or `.absolute` values.
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
 - [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
-- [`AnimatablePack`](#animatablepack) as an alternative to `AnimatablePair` that takes any number of properties.
+- *Work In Progress* [`AnimatablePack`](#animatablepack) as an alternative to `AnimatablePair` that takes any number of properties.
 
 
 # ShapeUpExample
@@ -313,6 +313,8 @@ Extensions for `InsettableShape` and `View` that create an embossed or debossed 
 <img width="205" alt="image" src="https://user-images.githubusercontent.com/2143656/157765787-a8bcdee3-fec3-40f8-8414-1c66ca073db6.png">
 
 ## AnimatablePack
+*Work In Progress*
+
 *\*iOS 17 or macOS 14 and up only*
 
 Animate lots of properties in a `Shape` using `AnimatablePack` instead of nesting `AnimatablePair` types
