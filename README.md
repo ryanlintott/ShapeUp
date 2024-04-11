@@ -51,6 +51,9 @@ If you like this package, buy me a coffee to say thanks!
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X7X04PU6T)
 
+Or you can buy a t-shirt with the ShapeUp logo
+
+<a href="https://cottonbureau.com/p/JBYGB7/shirt/shapeup#/20149802"><img width="256" alt="ShapeUp T-Shirt" src="https://cottonbureau.com/mockup?vid=20149802&hash=6UJM&w=512"></a>
 - - -
 # Details
 ## Corner
