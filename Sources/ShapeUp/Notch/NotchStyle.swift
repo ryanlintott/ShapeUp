@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enumeration to indicate the style of a notch.
-public enum NotchStyle {
+public enum NotchStyle: Sendable {
     /// A triangular shaped notch.
     /// - Parameters:
     ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.

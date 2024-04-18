@@ -32,15 +32,13 @@ Features:
 # ShapeUpExample
 Check out the [example app](https://github.com/ryanlintott/ShapeUpExample) to see how you can use this package in your iOS app.
 
-# Installation
+# Installation and Usage
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/ShapeUp` and select by version.
-
-# Usage
-Import the package using `import ShapeUp`
+3. Import the package using `import ShapeUp`
 
 # Platforms
-This package is compatible with iOS 14 or later. It's technically compatible with macOS 11 but hasn't been tested yet.
+This package is compatible with iOS 14 and up, macOS 11 and up, watchOS 7 and up, tvOS 14 and up, and visionOS.
 
 # Is this Production-Ready?
 Really it's up to you. I currently use this package in my own [Old English Wordhord app](https://oldenglishwordhord.com/app).
