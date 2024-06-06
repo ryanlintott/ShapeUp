@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// A notch in a line.
-public struct Notch {
+public struct Notch: Sendable {
     /// Style of the notch.
     public let style: NotchStyle
     

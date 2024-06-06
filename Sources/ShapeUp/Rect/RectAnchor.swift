@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enumeration to indicate the type of anchor
-public enum AnchorType {
+public enum AnchorType: Sendable {
     /// Anchor positioned on a vertex
     case vertex
     /// Anchor positioned on an edge
@@ -20,7 +20,7 @@ public enum AnchorType {
 /// An enumeration to indicate an anchor location on a rectangle.
 ///
 /// Cases start with Center and are in clockwise order from top left.
-public enum RectAnchor: CaseIterable {
+public enum RectAnchor: CaseIterable, Sendable {
     case center
     case topLeft
     case top
