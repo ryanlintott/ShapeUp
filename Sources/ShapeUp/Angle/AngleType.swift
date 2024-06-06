@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enumeration representing the type of an angle.
-public enum AngleType: Int, Comparable, CaseIterable {
+public enum AngleType: Int, Comparable, CaseIterable, Sendable {
     /// An angle of zero degrees with initial and terminal sides in the same location.
     case zero
     /// An angle with a magnitude greater than 0 but less than 90 degrees.

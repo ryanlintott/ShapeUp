@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enumeration to indicate the style of a notch.
-public enum NotchStyle {
+public enum NotchStyle: Sendable {
     /// A triangular shaped notch.
     /// - Parameters:
     ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
@@ -22,7 +22,7 @@ public enum NotchStyle {
     /// A custom shaped notch defined by corners in a reference frame equal to the notch's length and depth.
     /// - Parameters:
     ///   - coners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
-    case custom(corners: (_ in: CGRect) -> [Corner])
+    case custom(corners: @Sendable (_ in: CGRect) -> [Corner])
 }
 
 public extension NotchStyle {

@@ -31,11 +31,10 @@ struct EmbossViewModifier: ViewModifier {
             .opacity(baseColor == nil ? 1 : 0)
             .overlay(
                 ZStack {
-                    if let baseColor = baseColor {
-                        baseColor
-                    }
+                    baseColor
                     
                     Color.white
+                        .accessibilityIgnoresInvertColors()
                         .mask(
                             Color.white
                                 .overlay(
@@ -54,6 +53,7 @@ struct EmbossViewModifier: ViewModifier {
                         .accessibility(hidden: true)
                     
                     Color.black
+                        .accessibilityIgnoresInvertColors()
                         .mask(
                             Color.white
                                 .overlay(

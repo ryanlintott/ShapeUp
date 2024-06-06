@@ -11,7 +11,7 @@ extension Corner {
     /// A collection of calculated dimensions relating to corner with known previous and next points.
     ///
     /// Used for creating paths, insetting, flattening, etc.
-    public struct Dimensions {
+    public struct Dimensions: Sendable {
         /// The corner used to create these dimensions.
         public let corner: Corner
         

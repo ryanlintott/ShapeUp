@@ -45,6 +45,7 @@ public extension InsettableShape {
                         .stroke(style: .init(lineWidth: lineWidth))
                         .shadow(color: Color.white.opacity(opacity), radius: size, x: offsetX, y: offsetY)
                 }
+                .accessibilityIgnoresInvertColors()
                 .clipShape(self)
                 .blendMode(.overlay)
             )
