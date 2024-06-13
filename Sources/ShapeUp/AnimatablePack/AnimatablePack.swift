@@ -5,22 +5,10 @@
 //  Created by Ryan Lintott on 2023-08-02.
 //
 
-/// Crashes only with release build possibly due to writing past the end of a function local array
-/// https://stackoverflow.com/questions/186237/program-only-crashes-as-release-build-how-to-debug
-/// Waiting for iterable parameter pack feature to be added to swift as it may fix this issue
+/// AnimatablePack uses parameter pack iteration that is only available in swift 6.0
 /// https://forums.swift.org/t/pitch-enable-pack-iteration/66168
-/// Pack Iteration merged in Swift 6.0
-/// https://github.com/swiftlang/swift-evolution/blob/main/proposals/0408-pack-iteration.md
-
 #if compiler(>=6.0)
 import SwiftUI
-
-/// No longer needed with pack iteration
-//fileprivate extension VectorArithmetic {
-//    func addingMagnitudeSquared(to value: inout Double) {
-//        value += magnitudeSquared
-//    }
-//}
 
 /**
  A parameter pack implementation of `AnimatablePair`
@@ -94,7 +82,6 @@ public extension AnimatablePack {
     
     var magnitudeSquared: Double {
         var value = 0.0
-//        _ = (repeat (each item).addingMagnitudeSquared(to: &value))
         for i in repeat each item {
             value += i.magnitudeSquared
         }
