@@ -8,13 +8,22 @@
 import SwiftUI
 
 /// A CornerShape that stores corners based on relative positions. This would be useful for creating shapes with an array of animated corner positions.
+@MainActor
 internal struct RelativeCornerShape: CornerShape {
     public let closed: Bool
     public var insetAmount: CGFloat = 0
     
-    public var animatableData: CGFloat {
-        get { insetAmount }
-        set { insetAmount = newValue }
+    nonisolated public var animatableData: CGFloat {
+        get {
+            MainActor.assumeIsolated {
+                insetAmount
+            }
+        }
+        set {
+            MainActor.assumeIsolated {
+                insetAmount = newValue
+            }
+        }
     }
     
     let relativeFrame: CGRect = .one

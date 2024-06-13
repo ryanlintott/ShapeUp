@@ -29,6 +29,7 @@ The corners can be accessed directly for use in a more complex shape
             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
     }
 */
+@MainActor
 public struct CornerRectangle: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
@@ -61,8 +62,16 @@ public struct CornerRectangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerRectangle {
-    public var animatableData: CGFloat {
-        get { insetAmount }
-        set { insetAmount = newValue }
+    nonisolated public var animatableData: CGFloat {
+        get {
+            MainActor.assumeIsolated {
+                insetAmount
+            }
+        }
+        set {
+            MainActor.assumeIsolated {
+                insetAmount = newValue
+            }
+        }
     }
 }

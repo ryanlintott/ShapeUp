@@ -32,6 +32,7 @@ The corners can be accessed directly for use in a more complex shape
             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
     }
 */
+@MainActor
 public struct CornerPentagon: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
@@ -91,24 +92,28 @@ extension CornerPentagon {
     >
     >
     
-    public var animatableData: AnimatableData {
+    nonisolated public var animatableData: AnimatableData {
         get {
-            .init(
-                insetAmount,
+            MainActor.assumeIsolated {
                 .init(
-                    pointHeight,
+                    insetAmount,
                     .init(
-                        topTaper,
-                        bottomTaper
+                        pointHeight,
+                        .init(
+                            topTaper,
+                            bottomTaper
+                        )
                     )
                 )
-            )
+            }
         }
         set {
-            insetAmount = newValue.first
-            pointHeight = newValue.second.first
-            topTaper = newValue.second.second.first
-            bottomTaper = newValue.second.second.second
+            MainActor.assumeIsolated {
+                insetAmount = newValue.first
+                pointHeight = newValue.second.first
+                topTaper = newValue.second.second.first
+                bottomTaper = newValue.second.second.second
+            }
         }
     }
 }

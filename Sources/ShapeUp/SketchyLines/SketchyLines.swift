@@ -10,10 +10,19 @@ import SwiftUI
 /// Lines with ends that can extend and a position that can offset perpendicular to its direction.
 ///
 /// All lines can be animated with a single draw amount. Each line's draw amount will be ignored.
+@MainActor
 public struct SketchyLines: Shape {
-    public var animatableData: CGFloat {
-        get { drawAmount }
-        set { self.drawAmount = newValue }
+    nonisolated public var animatableData: CGFloat {
+        get {
+            MainActor.assumeIsolated {
+                drawAmount
+            }
+        }
+        set {
+            MainActor.assumeIsolated {
+                self.drawAmount = newValue
+            }
+        }
     }
     
     public var lines: [SketchyLine]
@@ -30,13 +39,15 @@ public struct SketchyLines: Shape {
 }
 
 public extension SketchyLines {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        
-        for line in lines {
-            var drawnLine = line
-            path.addPath(drawnLine.path(in: rect, drawAmount: drawAmount))
+    nonisolated func path(in rect: CGRect) -> Path {
+        MainActor.assumeIsolated {
+            var path = Path()
+            
+            for line in lines {
+                var drawnLine = line
+                path.addPath(drawnLine.path(in: rect, drawAmount: drawAmount))
+            }
+            return path
         }
-        return path
     }
 }

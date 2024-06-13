@@ -30,6 +30,7 @@ The corners can be accessed directly for use in a more complex shape
             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
     }
 */
+@MainActor
 public struct CornerTriangle: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
@@ -64,13 +65,17 @@ public struct CornerTriangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerTriangle {
-    public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
+    nonisolated public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
         get {
-            .init(insetAmount, topPoint)
+            MainActor.assumeIsolated {
+                .init(insetAmount, topPoint)
+            }
         }
         set {
-            insetAmount = newValue.first
-            topPoint = newValue.second
+            MainActor.assumeIsolated {
+                insetAmount = newValue.first
+                topPoint = newValue.second
+            }
         }
     }
 }

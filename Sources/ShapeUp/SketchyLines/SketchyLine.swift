@@ -8,6 +8,7 @@
 import SwiftUI
 
 /// A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
+@MainActor
 public struct SketchyLine: Shape {
     /// Edges where the line can be drawn
     public enum SketchyEdge: Hashable, Codable, Sendable {
@@ -24,9 +25,17 @@ public struct SketchyLine: Shape {
         public static let `default`: DrawDirection = .toBottomTrailing
     }
     
-    public var animatableData: CGFloat {
-        get { drawAmount }
-        set { self.drawAmount = newValue }
+    nonisolated public var animatableData: CGFloat {
+        get {
+            MainActor.assumeIsolated {
+                drawAmount
+            }
+        }
+        set {
+            MainActor.assumeIsolated {
+                self.drawAmount = newValue
+            }
+        }
     }
     
     public let edge: SketchyEdge
@@ -87,25 +96,27 @@ public extension SketchyLine {
         }
     }
     
-    func path(in rect: CGRect) -> Path {
-        var points = [startPoint(in: rect), endPoint(in: rect)]
-        if drawDirection == .toTopLeading {
-            points.reverse()
-        }
-        switch edge {
-        case .top, .bottom:
-            points[1].x = points[0].x + (points[1].x - points[0].x) * max(0,drawAmount)
-        default:
-            points[1].y = points[0].y + (points[1].y - points[0].y) * max(0,drawAmount)
-        }
-        var path = Path()
-        path.addLines(points)
-        
-        switch edge {
-        case .leading, .trailing:
-            return path.offsetBy(dx: offset.value(using: rect.width), dy: 0)
-        default:
-            return path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
+    nonisolated func path(in rect: CGRect) -> Path {
+        MainActor.assumeIsolated {
+            var points = [startPoint(in: rect), endPoint(in: rect)]
+            if drawDirection == .toTopLeading {
+                points.reverse()
+            }
+            switch edge {
+            case .top, .bottom:
+                points[1].x = points[0].x + (points[1].x - points[0].x) * max(0,drawAmount)
+            default:
+                points[1].y = points[0].y + (points[1].y - points[0].y) * max(0,drawAmount)
+            }
+            var path = Path()
+            path.addLines(points)
+            
+            switch edge {
+            case .leading, .trailing:
+                return path.offsetBy(dx: offset.value(using: rect.width), dy: 0)
+            default:
+                return path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
+            }
         }
     }
     

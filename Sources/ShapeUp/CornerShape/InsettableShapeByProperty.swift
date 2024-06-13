@@ -10,6 +10,7 @@ import SwiftUI
 /// An insettable shape that stores its inset amount in a property rather than using the function.
 ///
 /// Inset versions of this type will always share the same type using the insetAmount property in the path function to draw the shape with the appropriate inset.
+@MainActor
 public protocol InsettableShapeByProperty: InsettableShape {
     /// Inset amount stored as a property.
     ///
@@ -18,7 +19,6 @@ public protocol InsettableShapeByProperty: InsettableShape {
     ///     var insetAmount: CGFloat = 0
     ///
     /// Do not use this value in the corners function as that function needs to output corners with zero inset.
-    @MainActor
     var insetAmount: CGFloat { get set }
 }
 
