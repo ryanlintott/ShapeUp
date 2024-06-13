@@ -20,7 +20,7 @@ class Vector2AlgebraicTests: XCTestCase {
     }
     
     fileprivate struct V2ATest: Vector2Algebraic {
-        static var zero = Self(vector: .zero)
+        static let zero = Self(vector: .zero)
         
         var vector: Vector2
     }
