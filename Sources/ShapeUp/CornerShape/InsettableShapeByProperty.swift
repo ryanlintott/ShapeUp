@@ -18,6 +18,7 @@ public protocol InsettableShapeByProperty: InsettableShape {
     ///     var insetAmount: CGFloat = 0
     ///
     /// Do not use this value in the corners function as that function needs to output corners with zero inset.
+    @MainActor
     var insetAmount: CGFloat { get set }
 }
 
@@ -27,9 +28,11 @@ public extension InsettableShapeByProperty {
     /// The shape must use this property in its path function to draw with the appropriate inset.
     /// - Parameter amount: Inset amount
     /// - Returns: The same shape type with the inset amount saved to
-    func inset(by amount: CGFloat) -> Self {
-        var shape = self
-        shape.insetAmount += amount
-        return shape
+    nonisolated func inset(by amount: CGFloat) -> Self {
+        MainActor.assumeIsolated {
+            var shape = self
+            shape.insetAmount += amount
+            return shape
+        }
     }
 }

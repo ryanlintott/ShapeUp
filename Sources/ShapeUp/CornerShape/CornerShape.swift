@@ -46,9 +46,11 @@ public protocol CornerShape: InsettableShapeByProperty {
     /// Do not apply any inset amount in this function as it is automatically applied before creating the path.
     /// - Parameter rect: Frame in which the corners are defined.
     /// - Returns: An array of corners defining the shape with zero inset.
+    @MainActor
     func corners(in rect: CGRect) -> [Corner]
     
     /// A boolean determining if the shape is closed or open.
+    @MainActor
     var closed: Bool { get }
 }
 
@@ -56,6 +58,7 @@ public extension CornerShape {
     /// Creates an array of corners inset by the insetAmount property.
     /// - Parameter rect: Frame in which the corners are defined.
     /// - Returns: An array of corners inset by the insetAmount property.
+    @MainActor
     func insetCorners(in rect: CGRect) -> [Corner] {
         corners(in: rect)
             .inset(by: insetAmount)
@@ -64,8 +67,10 @@ public extension CornerShape {
     /// Creates a path from the array of inset corners.
     /// - Parameter rect: Frame in which the path is drawn.
     /// - Returns: Path that describes this corner shape.
-    func path(in rect: CGRect) -> Path {
-        insetCorners(in: rect)
-            .path(closed: closed)
+    nonisolated func path(in rect: CGRect) -> Path {
+        MainActor.assumeIsolated {
+            insetCorners(in: rect)
+                .path(closed: closed)
+        }
     }
 }
