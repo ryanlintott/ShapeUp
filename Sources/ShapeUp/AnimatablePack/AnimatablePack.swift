@@ -12,8 +12,7 @@
 /// Pack Iteration merged in Swift 6.0
 /// https://github.com/swiftlang/swift-evolution/blob/main/proposals/0408-pack-iteration.md
 
-//#if swift(>=5.9)
-#if swift(>=6.0) /// Removing this feature for now
+#if compiler(>=6.0)
 import SwiftUI
 
 /// No longer needed with pack iteration
@@ -51,7 +50,7 @@ import SwiftUI
  }
  ```
  */
-@available(iOS 18, macOS 15, watchOS 11, tvOS 18, visionOS 2, *)
+@available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
 public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
     /// Pack of items that conform to `VectorArithmetic`
     public var item: (repeat each Item)
@@ -67,11 +66,11 @@ public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
     }
 }
 
-@available(iOS 18, macOS 15, watchOS 11, tvOS 18, visionOS 2, *)
+@available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
 extension AnimatablePack: Sendable where (repeat each Item): Sendable { }
 
 
-@available(iOS 18, macOS 15, watchOS 11, tvOS 18, visionOS 2, *)
+@available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
 public extension AnimatablePack {
     static var zero: Self {
         .init(repeat (each Item).zero)
