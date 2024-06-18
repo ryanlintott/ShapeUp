@@ -39,6 +39,7 @@ import SwiftUI
  ```
  */
 @available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
+@dynamicMemberLookup
 public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
     /// Pack of items that conform to `VectorArithmetic`
     public var item: (repeat each Item)
@@ -49,13 +50,20 @@ public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
         self.item = (repeat each item)
     }
     
+    /// Access elements in the same was as a tuple using pack.1, pack.2, etc...
+    public subscript<V>(dynamicMember keyPath: WritableKeyPath<(repeat each Item), V>) -> V {
+        get { item[keyPath: keyPath] }
+        set { item[keyPath: keyPath] = newValue }
+    }
+    
+    /// Call as function to easily return the item tuple.
     public func callAsFunction() -> (repeat each Item) {
         item
     }
 }
 
 @available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
-extension AnimatablePack: Sendable where (repeat each Item): Sendable { }
+extension AnimatablePack: Sendable where repeat each Item: Sendable { }
 
 
 @available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
@@ -82,8 +90,8 @@ public extension AnimatablePack {
     
     var magnitudeSquared: Double {
         var value = 0.0
-        for i in repeat each item {
-            value += i.magnitudeSquared
+        for item in repeat each item {
+            value += item.magnitudeSquared
         }
         return value
     }

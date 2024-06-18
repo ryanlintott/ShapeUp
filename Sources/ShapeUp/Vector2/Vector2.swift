@@ -28,7 +28,7 @@ public struct Vector2: Equatable, Hashable, Codable, Sendable {
 
 public extension Vector2 {
     /// The zero vector
-    static var zero: Self { Self.init(dx: 0, dy: 0) }
+    static let zero = Self.init(dx: 0, dy: 0)
     
     /// A CGSize representation
     var size: CGSize { CGSize(width: dx, height: dy) }
