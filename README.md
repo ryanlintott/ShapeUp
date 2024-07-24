@@ -31,7 +31,7 @@ Features:
 
 
 # Demo App
-Check out the [ShapeUpExample](https://github.com/ryanlintott/ShapeUpExample) to see how you can use this package in your app.
+Check out [ShapeUpExample](https://github.com/ryanlintott/ShapeUpExample) to see how you can use this package in your app.
 
 # Installation and Usage
 This package is compatible with iOS 14+, macOS 11+, watchOS 7+, tvOS 14+, and visionOS.

@@ -29,7 +29,6 @@ The corners can be accessed directly for use in a more complex shape
             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
     }
 */
-@MainActor
 public struct CornerRectangle: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
@@ -46,11 +45,11 @@ public struct CornerRectangle: EnumeratedCornerShape {
     /// Creates a 2d rectangular shape with specified styles for each corner.
     /// - Parameters:
     ///   - styles: A dictionary describing the style of each shape corner.
-    public init(_ styles: [ShapeCorner: CornerStyle] = [:]) {
+    nonisolated public init(_ styles: [ShapeCorner: CornerStyle] = [:]) {
         self.styles = styles
     }
     
-    public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
+    nonisolated public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
         [
             .topLeft: rect.point(.topLeft),
             .topRight: rect.point(.topRight),
@@ -62,16 +61,12 @@ public struct CornerRectangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerRectangle {
-    nonisolated public var animatableData: CGFloat {
+    @preconcurrency nonisolated public var animatableData: CGFloat {
         get {
-            MainActor.assumeIsolated {
-                insetAmount
-            }
+            insetAmount
         }
         set {
-            MainActor.assumeIsolated {
-                insetAmount = newValue
-            }
+            insetAmount = newValue
         }
     }
 }

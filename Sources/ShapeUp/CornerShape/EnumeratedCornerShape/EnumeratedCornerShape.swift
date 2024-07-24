@@ -13,7 +13,6 @@ public protocol EnumeratedCorner: CaseIterable, Hashable, Sendable { }
 /// A corner shape defined by a named set of shape corners.
 ///
 /// For example a triangle would include the corners top, bottom left, and bottom right.
-@MainActor
 public protocol EnumeratedCornerShape: CornerShape {
     /// An enumeration containing each named corner in the order they will be drawn.
     associatedtype ShapeCorner: EnumeratedCorner

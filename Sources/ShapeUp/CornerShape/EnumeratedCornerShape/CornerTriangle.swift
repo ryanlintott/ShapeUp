@@ -30,7 +30,6 @@ The corners can be accessed directly for use in a more complex shape
             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
     }
 */
-@MainActor
 public struct CornerTriangle: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
@@ -49,12 +48,12 @@ public struct CornerTriangle: EnumeratedCornerShape {
     /// - Parameters:
     ///   - topPoint: Position of the top point from the top left corner of the frame. Relative values are relative to width.
     ///   - styles: A dictionary describing the style of each shape corner.
-    public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
+    nonisolated public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
         self.topPoint = topPoint
         self.styles = styles
     }
     
-    public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
+    nonisolated public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
         [
             .top: rect.point(.topLeft).moved(dx: topPoint.value(using: rect.width)),
             .bottomRight: rect.point(.bottomRight),
@@ -65,17 +64,13 @@ public struct CornerTriangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerTriangle {
-    nonisolated public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
+    @preconcurrency nonisolated public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
         get {
-            MainActor.assumeIsolated {
-                .init(insetAmount, topPoint)
-            }
+            .init(insetAmount, topPoint)
         }
         set {
-            MainActor.assumeIsolated {
-                insetAmount = newValue.first
-                topPoint = newValue.second
-            }
+            insetAmount = newValue.first
+            topPoint = newValue.second
         }
     }
 }

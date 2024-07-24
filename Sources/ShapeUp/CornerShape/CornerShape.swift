@@ -40,14 +40,13 @@ import SwiftUI
 ///             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
 ///     }
 ///
-@MainActor
 public protocol CornerShape: InsettableShapeByProperty {
     /// Creates an array of corners that will form a single closed shape with zero inset.
     ///
     /// Do not apply any inset amount in this function as it is automatically applied before creating the path.
     /// - Parameter rect: Frame in which the corners are defined.
     /// - Returns: An array of corners defining the shape with zero inset.
-    func corners(in rect: CGRect) -> [Corner]
+    nonisolated func corners(in rect: CGRect) -> [Corner]
     
     /// A boolean determining if the shape is closed or open.
     var closed: Bool { get }
@@ -57,7 +56,6 @@ public extension CornerShape {
     /// Creates an array of corners inset by the insetAmount property.
     /// - Parameter rect: Frame in which the corners are defined.
     /// - Returns: An array of corners inset by the insetAmount property.
-    @MainActor
     func insetCorners(in rect: CGRect) -> [Corner] {
         corners(in: rect)
             .inset(by: insetAmount)
@@ -66,10 +64,8 @@ public extension CornerShape {
     /// Creates a path from the array of inset corners.
     /// - Parameter rect: Frame in which the path is drawn.
     /// - Returns: Path that describes this corner shape.
-    nonisolated func path(in rect: CGRect) -> Path {
-        MainActor.assumeIsolated {
-            insetCorners(in: rect)
-                .path(closed: closed)
-        }
+    func path(in rect: CGRect) -> Path {
+        insetCorners(in: rect)
+            .path(closed: closed)
     }
 }

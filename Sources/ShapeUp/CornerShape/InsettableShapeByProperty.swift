@@ -10,7 +10,6 @@ import SwiftUI
 /// An insettable shape that stores its inset amount in a property rather than using the function.
 ///
 /// Inset versions of this type will always share the same type using the insetAmount property in the path function to draw the shape with the appropriate inset.
-@MainActor
 public protocol InsettableShapeByProperty: InsettableShape {
     /// Inset amount stored as a property.
     ///
@@ -28,11 +27,9 @@ public extension InsettableShapeByProperty {
     /// The shape must use this property in its path function to draw with the appropriate inset.
     /// - Parameter amount: Inset amount
     /// - Returns: The same shape type with the inset amount saved to
-    nonisolated func inset(by amount: CGFloat) -> Self {
-        MainActor.assumeIsolated {
-            var shape = self
-            shape.insetAmount += amount
-            return shape
-        }
+    func inset(by amount: CGFloat) -> Self {
+        var shape = self
+        shape.insetAmount += amount
+        return shape
     }
 }

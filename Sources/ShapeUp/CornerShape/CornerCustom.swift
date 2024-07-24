@@ -28,36 +28,31 @@ This shape can either be used in a SwiftUI View like any other `InsettableShape`
     }
     .strokeBorder(lineWidth: 10)
 */
-@MainActor
 public struct CornerCustom: CornerShape {
-    public let closed: Bool
+    public var closed: Bool
     public var insetAmount: CGFloat = 0
     
-    nonisolated public var animatableData: CGFloat {
+    @preconcurrency nonisolated public var animatableData: CGFloat {
         get {
-            MainActor.assumeIsolated {
-                insetAmount
-            }
+            insetAmount
         }
         set {
-            MainActor.assumeIsolated {
-                insetAmount = newValue
-            }
+            insetAmount = newValue
         }
     }
     
-    internal var corners: (CGRect) -> [Corner]
+    nonisolated internal let corners: @Sendable (CGRect) -> [Corner]
     
     /// Creates a custom insettable shape out of corners.
     /// - Parameters:
     ///  - closed: A boolean determining if the shape should be closed. Default is true.
     ///  - corners: Closure used to draw corners in a defined frame.
-    public init(closed: Bool = true, _ corners: @escaping (CGRect) -> [Corner]) {
+    nonisolated public init(closed: Bool = true, _ corners: @escaping @Sendable (CGRect) -> [Corner]) {
         self.closed = closed
         self.corners = corners
     }
     
-    public func corners(in rect: CGRect) -> [Corner] {
+    nonisolated public func corners(in rect: CGRect) -> [Corner] {
         corners(rect)
     }
 }

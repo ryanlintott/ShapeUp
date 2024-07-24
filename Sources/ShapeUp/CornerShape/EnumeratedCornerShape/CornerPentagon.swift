@@ -32,7 +32,6 @@ The corners can be accessed directly for use in a more complex shape
             .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
     }
 */
-@MainActor
 public struct CornerPentagon: EnumeratedCornerShape {
     public var closed = true
     public var insetAmount: CGFloat = 0
@@ -56,14 +55,14 @@ public struct CornerPentagon: EnumeratedCornerShape {
     ///   - pointHeight: The vertical distance from the central point to the two points on either side.
     ///   - topTaper: The horizontal inset of the two points closest to the top.
     ///   - bottomTaper: The horizontal inset of the bottom two points.
-    public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero, styles: [ShapeCorner: CornerStyle] = [:]) {
+    nonisolated public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero, styles: [ShapeCorner: CornerStyle] = [:]) {
         self.pointHeight = pointHeight
         self.topTaper = topTaper
         self.bottomTaper = bottomTaper
         self.styles = styles
     }
     
-    public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
+    nonisolated public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
         let bottomInset = bottomTaper.value(using: rect.width / 2)
         let topInset = topTaper.value(using: rect.width / 2)
         let pointHeight = pointHeight.value(using: rect.height)
@@ -92,28 +91,24 @@ extension CornerPentagon {
     >
     >
     
-    nonisolated public var animatableData: AnimatableData {
+    @preconcurrency nonisolated public var animatableData: AnimatableData {
         get {
-            MainActor.assumeIsolated {
+            .init(
+                insetAmount,
                 .init(
-                    insetAmount,
+                    pointHeight,
                     .init(
-                        pointHeight,
-                        .init(
-                            topTaper,
-                            bottomTaper
-                        )
+                        topTaper,
+                        bottomTaper
                     )
                 )
-            }
+            )
         }
         set {
-            MainActor.assumeIsolated {
-                insetAmount = newValue.first
-                pointHeight = newValue.second.first
-                topTaper = newValue.second.second.first
-                bottomTaper = newValue.second.second.second
-            }
+            insetAmount = newValue.first
+            pointHeight = newValue.second.first
+            topTaper = newValue.second.second.first
+            bottomTaper = newValue.second.second.second
         }
     }
 }

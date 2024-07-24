@@ -13,7 +13,6 @@ public extension Rectangle {
     ///   - style: Style to apply to specified shape corners.
     ///   - shapeCorners: Shape corners on which to apply the specified style. Missing values will keep current style.
     /// - Returns: A copy of this shape changing the style of specified corners to the provided style.
-    @MainActor
     func applyingStyle(_ style: CornerStyle, shapeCorners: Set<CornerRectangle.ShapeCorner> = Set(CornerRectangle.ShapeCorner.allCases)) -> CornerRectangle {
         CornerRectangle()
             .applyingStyle(style, shapeCorners: shapeCorners)
@@ -23,7 +22,6 @@ public extension Rectangle {
     /// - Parameters:
     ///   - styles: Styles to apply to each specified shape corner. Nil or missing values will keep current style.
     /// - Returns: A copy of this shape changing the styles of specified corners.
-    @MainActor
     func applyingStyles(_ styles: [CornerRectangle.ShapeCorner: CornerStyle?]) -> CornerRectangle {
         CornerRectangle()
             .applyingStyles(styles)
