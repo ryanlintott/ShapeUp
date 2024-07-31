@@ -41,7 +41,7 @@ public struct CornerCustom: CornerShape {
         }
     }
     
-    nonisolated internal let corners: @Sendable (CGRect) -> [Corner]
+    internal let corners: @Sendable (CGRect) -> [Corner]
     
     /// Creates a custom insettable shape out of corners.
     /// - Parameters:
