@@ -32,7 +32,7 @@ public struct CornerCustom: CornerShape {
     public var closed: Bool
     public var insetAmount: CGFloat = 0
     
-    @preconcurrency nonisolated public var animatableData: CGFloat {
+    nonisolated public var animatableData: CGFloat {
         get {
             insetAmount
         }
@@ -52,7 +52,7 @@ public struct CornerCustom: CornerShape {
         self.corners = corners
     }
     
-    nonisolated public func corners(in rect: CGRect) -> [Corner] {
+    public func corners(in rect: CGRect) -> [Corner] {
         corners(rect)
     }
 }

@@ -30,7 +30,7 @@ The corners can be accessed directly for use in a more complex shape
     }
 */
 public struct CornerRectangle: EnumeratedCornerShape {
-    public var closed = true
+    public let closed = true
     public var insetAmount: CGFloat = 0
     
     public enum ShapeCorner: EnumeratedCorner {
@@ -49,7 +49,7 @@ public struct CornerRectangle: EnumeratedCornerShape {
         self.styles = styles
     }
     
-    nonisolated public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
+    public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
         [
             .topLeft: rect.point(.topLeft),
             .topRight: rect.point(.topRight),
@@ -61,7 +61,7 @@ public struct CornerRectangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerRectangle {
-    @preconcurrency nonisolated public var animatableData: CGFloat {
+    nonisolated public var animatableData: CGFloat {
         get {
             insetAmount
         }

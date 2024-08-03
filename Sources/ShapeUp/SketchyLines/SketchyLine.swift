@@ -24,7 +24,7 @@ public struct SketchyLine: Shape {
         public static let `default`: DrawDirection = .toBottomTrailing
     }
     
-    @preconcurrency nonisolated public var animatableData: CGFloat {
+    nonisolated public var animatableData: CGFloat {
         get {
             drawAmount
         }

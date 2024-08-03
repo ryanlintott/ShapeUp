@@ -33,7 +33,7 @@ The corners can be accessed directly for use in a more complex shape
     }
 */
 public struct CornerPentagon: EnumeratedCornerShape {
-    public var closed = true
+    public let closed = true
     public var insetAmount: CGFloat = 0
     
     /// An enumeration to indicate the corners of a pentagon.
@@ -62,7 +62,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
         self.styles = styles
     }
     
-    nonisolated public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
+    public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
         let bottomInset = bottomTaper.value(using: rect.width / 2)
         let topInset = topTaper.value(using: rect.width / 2)
         let pointHeight = pointHeight.value(using: rect.height)
@@ -91,7 +91,7 @@ extension CornerPentagon {
     >
     >
     
-    @preconcurrency nonisolated public var animatableData: AnimatableData {
+    nonisolated public var animatableData: AnimatableData {
         get {
             .init(
                 insetAmount,

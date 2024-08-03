@@ -12,7 +12,7 @@ internal struct RelativeCornerShape: CornerShape {
     public let closed: Bool
     public var insetAmount: CGFloat = 0
     
-    @preconcurrency nonisolated public var animatableData: CGFloat {
+    nonisolated public var animatableData: CGFloat {
         get {
             insetAmount
         }
@@ -33,7 +33,7 @@ internal struct RelativeCornerShape: CornerShape {
         self.relativeCorners = corners(relativeFrame)
     }
     
-    nonisolated public func corners(in rect: CGRect) -> [Corner] {
+    public func corners(in rect: CGRect) -> [Corner] {
         relativeCorners.repositioned(from: relativeFrame, to: rect)
     }
 }

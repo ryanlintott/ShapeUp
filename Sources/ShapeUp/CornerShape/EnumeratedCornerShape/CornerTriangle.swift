@@ -31,7 +31,7 @@ The corners can be accessed directly for use in a more complex shape
     }
 */
 public struct CornerTriangle: EnumeratedCornerShape {
-    public var closed = true
+    public let closed = true
     public var insetAmount: CGFloat = 0
     
     /// An enumeration to indicate the three corners of a triangle.
@@ -53,7 +53,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
         self.styles = styles
     }
     
-    nonisolated public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
+    public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
         [
             .top: rect.point(.topLeft).moved(dx: topPoint.value(using: rect.width)),
             .bottomRight: rect.point(.bottomRight),
@@ -64,7 +64,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerTriangle {
-    @preconcurrency nonisolated public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
+    nonisolated public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
         get {
             .init(insetAmount, topPoint)
         }
