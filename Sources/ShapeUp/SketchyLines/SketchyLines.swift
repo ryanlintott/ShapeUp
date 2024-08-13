@@ -11,7 +11,7 @@ import SwiftUI
 ///
 /// All lines can be animated with a single draw amount. Each line's draw amount will be ignored.
 public struct SketchyLines: Shape {
-    nonisolated public var animatableData: CGFloat {
+    public var animatableData: CGFloat {
         get {
             drawAmount
         }
@@ -27,14 +27,14 @@ public struct SketchyLines: Shape {
     /// - Parameters:
     ///   - lines: Lines that will be drawn using hte drawAmount.
     ///   - drawAmount: Amount to draw. Defaults to 1 and overrides all lines.
-    nonisolated public init(lines: [SketchyLine], drawAmount: CGFloat = 1) {
+    public init(lines: [SketchyLine], drawAmount: CGFloat = 1) {
         self.lines = lines
         self.drawAmount = drawAmount
     }
 }
 
 public extension SketchyLines {
-    nonisolated func path(in rect: CGRect) -> Path {
+    func path(in rect: CGRect) -> Path {
         var path = Path()
         
         for line in lines {

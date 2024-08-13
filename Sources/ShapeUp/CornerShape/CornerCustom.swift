@@ -32,7 +32,7 @@ public struct CornerCustom: CornerShape {
     public var closed: Bool
     public var insetAmount: CGFloat = 0
     
-    nonisolated public var animatableData: CGFloat {
+    public var animatableData: CGFloat {
         get {
             insetAmount
         }
@@ -47,7 +47,7 @@ public struct CornerCustom: CornerShape {
     /// - Parameters:
     ///  - closed: A boolean determining if the shape should be closed. Default is true.
     ///  - corners: Closure used to draw corners in a defined frame.
-    nonisolated public init(closed: Bool = true, _ corners: @escaping @Sendable (CGRect) -> [Corner]) {
+    public init(closed: Bool = true, _ corners: @escaping @Sendable (CGRect) -> [Corner]) {
         self.closed = closed
         self.corners = corners
     }

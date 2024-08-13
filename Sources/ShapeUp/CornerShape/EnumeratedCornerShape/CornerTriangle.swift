@@ -48,7 +48,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
     /// - Parameters:
     ///   - topPoint: Position of the top point from the top left corner of the frame. Relative values are relative to width.
     ///   - styles: A dictionary describing the style of each shape corner.
-    nonisolated public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
+    public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
         self.topPoint = topPoint
         self.styles = styles
     }
@@ -64,7 +64,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerTriangle {
-    nonisolated public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
+    public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
         get {
             .init(insetAmount, topPoint)
         }

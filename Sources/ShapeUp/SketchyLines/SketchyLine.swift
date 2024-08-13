@@ -24,7 +24,7 @@ public struct SketchyLine: Shape {
         public static let `default`: DrawDirection = .toBottomTrailing
     }
     
-    nonisolated public var animatableData: CGFloat {
+    public var animatableData: CGFloat {
         get {
             drawAmount
         }
@@ -48,7 +48,7 @@ public struct SketchyLine: Shape {
     ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
     ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
     ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
-    nonisolated public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {
+    public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {
         self.edge = edge
         self.startExtension = startExtension
         self.endExtension = endExtension
@@ -62,7 +62,7 @@ public extension SketchyLine {
     /// Determines the start point of the line before offset.
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line starts in the given rectangle.
-    nonisolated func startPoint(in rect: CGRect) -> CGPoint {
+    func startPoint(in rect: CGRect) -> CGPoint {
         switch edge {
         case .top:
             return CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.minY)
@@ -78,7 +78,7 @@ public extension SketchyLine {
     /// Determines the end point of the line before offset.
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line ends in the given rectangle.
-    nonisolated func endPoint(in rect: CGRect) -> CGPoint {
+    func endPoint(in rect: CGRect) -> CGPoint {
         switch edge {
         case .top:
             return CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.minY)
@@ -91,7 +91,7 @@ public extension SketchyLine {
         }
     }
     
-    nonisolated func path(in rect: CGRect) -> Path {
+    func path(in rect: CGRect) -> Path {
         var points = [startPoint(in: rect), endPoint(in: rect)]
         if drawDirection == .toTopLeading {
             points.reverse()
@@ -113,7 +113,7 @@ public extension SketchyLine {
         }
     }
     
-    nonisolated func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
+    func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
         var copy = self
         copy.drawAmount = drawAmount
         return copy.path(in: rect)

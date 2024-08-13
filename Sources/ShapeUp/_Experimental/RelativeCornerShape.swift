@@ -12,7 +12,7 @@ internal struct RelativeCornerShape: CornerShape {
     public let closed: Bool
     public var insetAmount: CGFloat = 0
     
-    nonisolated public var animatableData: CGFloat {
+    public var animatableData: CGFloat {
         get {
             insetAmount
         }
@@ -28,7 +28,7 @@ internal struct RelativeCornerShape: CornerShape {
     /// - Parameters:
     ///  - closed: A boolean determining if the shape should be closed. Default is true.
     ///  - corners: Corners used to draw a single closed shape.
-    nonisolated public init(closed: Bool = true, _ corners: (CGRect) -> [Corner]) {
+    public init(closed: Bool = true, _ corners: (CGRect) -> [Corner]) {
         self.closed = closed
         self.relativeCorners = corners(relativeFrame)
     }

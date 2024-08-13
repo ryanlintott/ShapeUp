@@ -55,7 +55,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
     ///   - pointHeight: The vertical distance from the central point to the two points on either side.
     ///   - topTaper: The horizontal inset of the two points closest to the top.
     ///   - bottomTaper: The horizontal inset of the bottom two points.
-    nonisolated public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero, styles: [ShapeCorner: CornerStyle] = [:]) {
+    public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero, styles: [ShapeCorner: CornerStyle] = [:]) {
         self.pointHeight = pointHeight
         self.topTaper = topTaper
         self.bottomTaper = bottomTaper
@@ -91,7 +91,7 @@ extension CornerPentagon {
     >
     >
     
-    nonisolated public var animatableData: AnimatableData {
+    public var animatableData: AnimatableData {
         get {
             .init(
                 insetAmount,
