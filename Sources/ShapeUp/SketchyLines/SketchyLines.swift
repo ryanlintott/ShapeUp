@@ -12,12 +12,8 @@ import SwiftUI
 /// All lines can be animated with a single draw amount. Each line's draw amount will be ignored.
 public struct SketchyLines: Shape {
     public var animatableData: CGFloat {
-        get {
-            drawAmount
-        }
-        set {
-            self.drawAmount = newValue
-        }
+        get { drawAmount }
+        set { self.drawAmount = newValue }
     }
     
     public var lines: [SketchyLine]

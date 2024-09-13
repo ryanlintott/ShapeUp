@@ -25,12 +25,8 @@ public struct SketchyLine: Shape {
     }
     
     public var animatableData: CGFloat {
-        get {
-            drawAmount
-        }
-        set {
-            self.drawAmount = newValue
-        }
+        get { drawAmount }
+        set { self.drawAmount = newValue }
     }
     
     public let edge: SketchyEdge

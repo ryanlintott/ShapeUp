@@ -29,16 +29,12 @@ This shape can either be used in a SwiftUI View like any other `InsettableShape`
     .strokeBorder(lineWidth: 10)
 */
 public struct CornerCustom: CornerShape {
-    public var closed: Bool
+    public let closed: Bool
     public var insetAmount: CGFloat = 0
     
     public var animatableData: CGFloat {
-        get {
-            insetAmount
-        }
-        set {
-            insetAmount = newValue
-        }
+        get { insetAmount }
+        set { insetAmount = newValue }
     }
     
     internal let corners: @Sendable (CGRect) -> [Corner]

@@ -13,12 +13,8 @@ internal struct RelativeCornerShape: CornerShape {
     public var insetAmount: CGFloat = 0
     
     public var animatableData: CGFloat {
-        get {
-            insetAmount
-        }
-        set {
-            insetAmount = newValue
-        }
+        get { insetAmount }
+        set { insetAmount = newValue }
     }
     
     let relativeFrame: CGRect = .one
