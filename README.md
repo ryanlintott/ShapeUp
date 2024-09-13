@@ -165,7 +165,7 @@ public func corners(in rect: CGRect) -> [Corner] {
 ```
 
 ## CornerCustom
-Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s. All you do is provide the corners.
+Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s. The closure itself needs to be `Sendable` so that it can be used to generate a path for a SwiftUI `Shape`.
 
 ```swift
 CornerCustom { rect in

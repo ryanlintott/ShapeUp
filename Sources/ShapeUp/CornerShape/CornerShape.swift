@@ -46,7 +46,7 @@ public protocol CornerShape: InsettableShapeByProperty {
     /// Do not apply any inset amount in this function as it is automatically applied before creating the path.
     /// - Parameter rect: Frame in which the corners are defined.
     /// - Returns: An array of corners defining the shape with zero inset.
-    nonisolated func corners(in rect: CGRect) -> [Corner]
+    func corners(in rect: CGRect) -> [Corner]
     
     /// A boolean determining if the shape is closed or open.
     var closed: Bool { get }

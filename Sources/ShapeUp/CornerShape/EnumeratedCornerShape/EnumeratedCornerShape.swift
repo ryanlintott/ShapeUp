@@ -22,7 +22,7 @@ public protocol EnumeratedCornerShape: CornerShape {
     
     /// Returns a dictionary with each point used to draw the shape stored with it's shape corner label.
     /// - Returns: A dictionary with each point used to draw the shape stored with it's shape corner label.
-    nonisolated func points(in rect: CGRect) -> [ShapeCorner: CGPoint]
+    func points(in rect: CGRect) -> [ShapeCorner: CGPoint]
 }
 
 public extension EnumeratedCornerShape {
