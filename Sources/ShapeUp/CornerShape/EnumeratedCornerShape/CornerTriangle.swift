@@ -31,7 +31,7 @@ The corners can be accessed directly for use in a more complex shape
     }
 */
 public struct CornerTriangle: EnumeratedCornerShape {
-    public var closed = true
+    public let closed = true
     public var insetAmount: CGFloat = 0
     
     /// An enumeration to indicate the three corners of a triangle.

@@ -34,8 +34,7 @@ public extension SketchyLines {
         var path = Path()
         
         for line in lines {
-            var drawnLine = line
-            path.addPath(drawnLine.path(in: rect, drawAmount: drawAmount))
+            path.addPath(line.path(in: rect, drawAmount: drawAmount))
         }
         return path
     }

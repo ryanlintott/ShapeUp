@@ -30,7 +30,7 @@ The corners can be accessed directly for use in a more complex shape
     }
 */
 public struct CornerRectangle: EnumeratedCornerShape {
-    public var closed = true
+    public let closed = true
     public var insetAmount: CGFloat = 0
     
     public enum ShapeCorner: EnumeratedCorner {

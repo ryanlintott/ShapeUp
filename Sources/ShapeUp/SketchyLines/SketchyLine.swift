@@ -109,8 +109,9 @@ public extension SketchyLine {
         }
     }
     
-    mutating func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
-        self.drawAmount = drawAmount
-        return path(in: rect)
+    func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
+        var copy = self
+        copy.drawAmount = drawAmount
+        return copy.path(in: rect)
     }
 }

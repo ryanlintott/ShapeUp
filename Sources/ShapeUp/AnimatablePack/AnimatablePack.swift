@@ -5,22 +5,10 @@
 //  Created by Ryan Lintott on 2023-08-02.
 //
 
-/// Crashes only with release build possibly due to writing past the end of a function local array
-/// https://stackoverflow.com/questions/186237/program-only-crashes-as-release-build-how-to-debug
-/// Waiting for iterable parameter pack feature to be added to swift as it may fix this issue
+/// AnimatablePack uses parameter pack iteration that is only available when using the Swift 6.0 compiler (Xcode 16+)
 /// https://forums.swift.org/t/pitch-enable-pack-iteration/66168
-
-//#if swift(>=5.9)
-#if swift(>=999) /// Removing this feature for now
-import Foundation
+#if compiler(>=6.0)
 import SwiftUI
-
-@available(iOS 17, macOS 14, *)
-fileprivate extension VectorArithmetic {
-    func addingMagnitudeSquared(to value: inout Double) {
-        value += magnitudeSquared
-    }
-}
 
 /**
  A parameter pack implementation of `AnimatablePair`
@@ -50,7 +38,8 @@ fileprivate extension VectorArithmetic {
  }
  ```
  */
-@available(iOS 17, macOS 14, *)
+@available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
+@dynamicMemberLookup
 public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
     /// Pack of items that conform to `VectorArithmetic`
     public var item: (repeat each Item)
@@ -61,13 +50,23 @@ public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
         self.item = (repeat each item)
     }
     
+    /// Access elements in the same was as a tuple using pack.1, pack.2, etc...
+    public subscript<V>(dynamicMember keyPath: WritableKeyPath<(repeat each Item), V>) -> V {
+        get { item[keyPath: keyPath] }
+        set { item[keyPath: keyPath] = newValue }
+    }
+    
+    /// Call as function to easily return the item tuple.
     public func callAsFunction() -> (repeat each Item) {
         item
     }
 }
 
+@available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
+extension AnimatablePack: Sendable where repeat each Item: Sendable { }
 
-@available(iOS 17, macOS 14, *)
+
+@available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
 public extension AnimatablePack {
     static var zero: Self {
         .init(repeat (each Item).zero)
@@ -91,7 +90,9 @@ public extension AnimatablePack {
     
     var magnitudeSquared: Double {
         var value = 0.0
-        _ = (repeat (each item).addingMagnitudeSquared(to: &value))
+        for item in repeat each item {
+            value += item.magnitudeSquared
+        }
         return value
     }
 }
