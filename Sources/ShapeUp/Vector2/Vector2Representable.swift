@@ -10,8 +10,8 @@ import SwiftUI
 
 /// A type that has x and y values and can therefore be represented by a Vector2.
 ///
-/// Used for Vector2 and CGPoint.
-/// Required for Vector2Transformable and Vector2Algebraic
+/// Used for ``Vector2`` and CGPoint.
+/// Required for ``Vector2Transformable`` and ``Vector2Algebraic``
 public protocol Vector2Representable {
     /// A Vector2 representation.
     var vector: Vector2 { get }

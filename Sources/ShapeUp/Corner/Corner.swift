@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-/// A point with a specified corner style used to draw corner shapes
+/// A point with a specified corner style used to draw corner shapes.
 ///
-/// Can be used to draw closed corner shapes using `CornerCustom`
+/// Corners in an array are used instead of generating a path in ``CornerShape``, or when creating one inline with ``CornerCustom``.
 ///
 ///     CornerCustom { rect in
 ///         [
@@ -20,13 +20,43 @@ import SwiftUI
 ///     }
 ///     .fill()
 ///
-/// Or you can create closed paths using `.path()`
+/// They can generate a path using ``Foundation/Array/Corner/path()``also be easily added to a path in a SwiftUI `Shape` using ``SwiftUICore/Path/addClosedCornerShape(_:)``, ``SwiftUICore/Path/addOpenCornerShape(_:previousPoint:nextPoint:moveToStart:)``.
 ///
 ///     struct MyShape: Shape {
 ///         let corners: [Corner]
 ///
 ///         func path(in rect: CGRect) -> Path {
-///             corners.path()
+///             let corners = [
+///                 Corner(x: rect.minX, y: rect.minY),
+///                 Corner(x: rect.midX, y: rect.midY),
+///                 Corner(x: rect.maxX, y: rect.minY),
+///                 Corner(x: rect.maxX, y: rect.midY)
+///             ]
+///             .corners([
+///                 .straight(radius: .relative(0.2)),
+///                 .cutout(radius: .relative(0.2), cornerStyles: [
+///                     .rounded(radius: .relative(0.4)),
+///                     .point,
+///                     .straight(radius: .relative(0.4))
+///                 ]),
+///                 .cutout(radius: .relative(0.2), cornerStyles: [.rounded(radius: .relative(0.2))]),
+///                 .rounded(radius: 20)
+///             ])
+///
+///                 var path = Path()
+///                 path.move(to: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.maxY))
+///                 path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.midY), control: CGPoint(x: rect.midX, y: rect.midY))
+///
+///                 path.addOpenCornerShape(
+///                 corners,
+///                 previousPoint: CGPoint(x: rect.minX, y: rect.midY),
+///                 nextPoint: CGPoint(x: rect.midX, y: rect.midY),
+///                 moveToStart: false
+///                 )
+///
+///         path.addQuadCurve(to: CGPoint(x: rect.maxX - rect.width * 0.25, y: rect.maxY), control: CGPoint(x: rect.midX, y: rect.midY))
+///
+///         return path
 ///         }
 ///     }
 ///

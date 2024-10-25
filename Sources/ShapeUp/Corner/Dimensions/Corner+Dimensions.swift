@@ -84,6 +84,7 @@ extension Corner {
         ///
         /// Values are saved when object is created so that duplicate calculations are avoided.
         /// - Parameters:
+        ///   - corner: Corner between previous and next point.
         ///   - previousPoint: Point before the corner.
         ///   - nextPoint: Point after the corner.
         public init(corner: Corner, previousPoint: some Vector2Representable, nextPoint: some Vector2Representable) {
@@ -93,6 +94,7 @@ extension Corner {
             
             self.nextPoint = nextPoint.point
             
+            /// All of the following values are calculated in the init and saved instead of using calculated properties that would need to be calculated many more times.
             angle = Angle.threePoint(nextPoint, corner, previousPoint)
             
             reflexMultiplier = Self.reflexMultiplier(angle: angle)

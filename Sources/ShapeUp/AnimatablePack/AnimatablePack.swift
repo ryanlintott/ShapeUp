@@ -41,11 +41,11 @@ import SwiftUI
 @available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
 @dynamicMemberLookup
 public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
-    /// Pack of items that conform to `VectorArithmetic`
+    /// Pack of items that conform to ``VectorArithmetic``
     public var item: (repeat each Item)
     
     /// Creates an `Animatable` pack of items
-    /// - Parameter item: Pack of items that conform to `VectorArithmetic`
+    /// - Parameter item: Pack of items that conform to ``VectorArithmetic``
     public init(_ item: repeat each Item) {
         self.item = (repeat each item)
     }

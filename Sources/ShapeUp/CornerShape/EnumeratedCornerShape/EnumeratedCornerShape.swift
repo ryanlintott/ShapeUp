@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// A protocol used inside `EnumeratedCornerShape` to ensure `ShapeCorner` is `CaseIterable`, `Hashable`, and `Sendable`
+/// A protocol used inside ``EnumeratedCornerShape`` to ensure `ShapeCorner` is `CaseIterable`, `Hashable`, and `Sendable`
 public protocol EnumeratedCorner: CaseIterable, Hashable, Sendable { }
 
 /// A corner shape defined by a named set of shape corners.
@@ -29,7 +29,7 @@ public extension EnumeratedCornerShape {
     func corners(in rect: CGRect) -> [Corner] {
         let points = points(in: rect)
         return ShapeCorner.allCases.compactMap {
-            points[$0]?.corner(styles[$0] as? CornerStyle)
+            points[$0]?.corner(styles[$0] ?? nil)
         }
     }
     
