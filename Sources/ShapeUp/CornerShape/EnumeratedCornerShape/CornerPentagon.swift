@@ -55,6 +55,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
     ///   - pointHeight: The vertical distance from the central point to the two points on either side.
     ///   - topTaper: The horizontal inset of the two points closest to the top.
     ///   - bottomTaper: The horizontal inset of the bottom two points.
+    ///   - styles: A dictionary of corner styles keyed to ``ShapeCorner``
     public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero, styles: [ShapeCorner: CornerStyle] = [:]) {
         self.pointHeight = pointHeight
         self.topTaper = topTaper

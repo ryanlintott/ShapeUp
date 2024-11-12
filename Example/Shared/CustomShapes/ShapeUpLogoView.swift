@@ -32,7 +32,7 @@ struct ShapeUpLogo: View {
                     .fill(Color.suPink)
                     .shadow(color: .suBlack, radius: 0.01, x: proxy.size.width * 0.006, y: proxy.size.width * 0.0076)
                 
-                // Purple Logo
+                /// Purple Logo
                 CornerCustom { rect in
                     [
                         rect.point(.topLeft),

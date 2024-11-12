@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Formulas used to backsolve inset concave corners.
+/// Formulas used to backsolve inset concave corners.
 public extension Corner.Dimensions {
     /// Returns the cut length for a concave corner with the following specifications.
     ///

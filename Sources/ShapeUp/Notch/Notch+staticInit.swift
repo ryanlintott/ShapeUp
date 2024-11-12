@@ -35,7 +35,7 @@ public extension Notch {
     ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
     ///   - length: Length of the notch relative to the length of the line. Default is equal to the depth.
     ///   - depth: Depth of the notch relative to the length of the line.
-    ///   - cornerStyles: Corner style used for all corners in the notch. Default is a .point style.
+    ///   - cornerStyle: Corner style used for all corners in the notch. Default is a .point style.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
         Notch(.rectangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)

@@ -58,7 +58,7 @@ public extension Array where Element == Corner {
     /// Creates an array of corners with the same positions and a new specified style applied to a specified corner.
     /// - Parameters:
     ///   - style: A style that will be applied to a specified corner.
-    ///   - indices: Index of the corner with which to apply the new style.
+    ///   - index: Index of the corner with which to apply the new style.
     /// - Returns: An array of corners with the same positions and a new specified style applied to a specified corner.
     func applyingStyle(_ style: CornerStyle, corner index: Self.Index) -> [Corner] {
         applyingStyle(style, corners: [index])

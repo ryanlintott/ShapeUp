@@ -37,13 +37,11 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     ///   - cornerStyles: Corner styles for the three resulting corners of the cutout.
     case cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])
     
-    /// A custom corner style with a specified radius. Additional corners are used to determine the shape.
-    ///
-    /// Additional corners are drawn based on a rectangular shape that will be scaled and skewed to fit the corner. The top left anchor is positioned on the corner point, the bottom left and top right on the start and end of the corner as determined by the radius and the bottom right anchor ma
+    /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine the shape.
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start, and end corners of the custom shape. Relative values relate to the shortest of the two lines from this corner.
-    ///   - corners: A closure used to create corners in a rectangle that will be stretched and skewed to fit the corner. Start and end points are at the bottom left and top right and do not need to be included.
-//    case custom(radius: RelatableValue, corners: FramedCorners)
+    ///   - cornerStyles: An array of anchor points with corner styles that create corners in a rectangle that will be stretched and skewed to fit the corner starting at the bottom left and ending at the top right.
+//    case custom(radius: RelatableValue, cornerStyles: [(RectAnchor, CornerStyle)])
 }
 
 public extension CornerStyle {
@@ -150,7 +148,7 @@ public extension CornerStyle {
     /// Create a corner style matching this style but with an absolute value radius.
     ///
     /// All relative values will be changed to absolute based on the supplied total.
-    /// - Parameter total: Relative values will use this total to determine their absolute values.
+    /// - Parameter maxRadius: Relative radius values will use this value to determine their absolute values.
     /// - Returns: A corner style matching this style but with an absolute value radius.
     func absolute(using maxRadius: CGFloat) -> Self {
         changingRadius(to: .absolute(radius.value(using: maxRadius)))

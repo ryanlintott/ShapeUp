@@ -20,7 +20,7 @@ import SwiftUI
 ///     }
 ///     .fill()
 ///
-/// They can generate a path using ``Foundation/Array/Corner/path()``also be easily added to a path in a SwiftUI `Shape` using ``SwiftUICore/Path/addClosedCornerShape(_:)``, ``SwiftUICore/Path/addOpenCornerShape(_:previousPoint:nextPoint:moveToStart:)``.
+/// They can generate a path using ``Swift/Array/path(closed:)``also be easily added to a path in a SwiftUI `Shape` using ``SwiftUICore/Path/addClosedCornerShape(_:)``, ``SwiftUICore/Path/addOpenCornerShape(_:previousPoint:nextPoint:moveToStart:)``.
 ///
 ///     struct MyShape: Shape {
 ///         let corners: [Corner]
