@@ -10,11 +10,11 @@ import SwiftUI
 
 struct CornerExample: View {
     let shapes = ["Rectangle", "Triangle", "Pentagon"]
-    let styles: [CornerStyle] = [.point, .rounded(radius: .zero), .concave(radius: .zero), .straight(radius: .zero), .cutout(radius: .zero)]
+    let styles: [CornerStyle] = [.point, .rounded(.zero), .concave(.zero), .straight(.zero), .cutout(.zero)]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
     @State private var shape = "Rectangle"
-    @State private var style = CornerStyle.rounded(radius: .zero)
+    @State private var style = CornerStyle.rounded(.zero)
     @State private var relativeRadius = true
     @State private var relative = 0.2
     @State private var absolute = 25.0

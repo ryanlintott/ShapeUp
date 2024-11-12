@@ -11,10 +11,10 @@ import SwiftUI
 struct CornerStyleExampleOld: View {
     let styles: [CornerStyle] = [
         .point,
-        .rounded(radius: 25),
-        .concave(radius: 25),
-        .straight(radius: 25),
-        .cutout(radius: 25)
+        .rounded(25),
+        .concave(25),
+        .straight(25),
+        .cutout(25)
     ]
     
     var body: some View {

@@ -19,10 +19,12 @@ public extension Array where Element: Vector2Representable {
     }
     
     /// Returns an array of corners matching the positions of the points with an applied corner style.
+    ///
+    /// If the style is nil and the array contains ``Corner`` the existing style will remain.
     /// - Parameter style: Style applied to all corners.
     /// - Returns: An array of corners matching the positions of the points with an applied corner style.
     func corners(_ style: CornerStyle? = nil) -> [Corner] {
-        map({ $0.corner(style) })
+        map { $0.corner(style) }
     }
     
     /// Returns an array of corners matching the positions of the points
@@ -57,7 +59,7 @@ public extension Array where Element: Vector2Representable {
     /// - Parameter anchor: Bounds anchor where the point is located.
     /// - Returns: The point where the bounds anchor is located.
     func anchorPoint(_ anchor: RectAnchor) -> CGPoint {
-        bounds.point(anchor)
+        bounds[anchor]
     }
     
     /// Center point of the bounds rectangle containing all points in the array.

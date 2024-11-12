@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-/// A vector type used as an alternative to CGPoint
+/// A vector type used as an alternative to `CGPoint` or `CGVector`
 ///
-/// This type is mainly used internally so that CGPoint isn't publically extended with too many functions that may conflict with other user functions.
+/// This type is mainly used internally so that `CGPoint` and `CGVector` are not publically extended with too many functions that may conflict with other user functions.
 public struct Vector2: Equatable, Hashable, Codable, Sendable {
     /// Delta x
     public var dx: CGFloat

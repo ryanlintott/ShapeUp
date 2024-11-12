@@ -26,9 +26,12 @@ public extension Vector2Representable {
     }
     
     /// Returns a corner at the same position with the applied style
+    ///
+    /// If no style is provided and the type is already a corner, the existing style will remain.
     /// - Parameter style: Corner style to use. Default is .point.
     /// - Returns: Corner with the provided style and the same position as the point.
     func corner(_ style: CornerStyle? = nil) -> Corner {
-        Corner(style ?? .point, point: point)
+        if style == nil, let corner = self as? Corner { return corner }
+        return Corner(style, point: point)
     }
 }

@@ -12,27 +12,19 @@ struct FoldButton: View {
     var body: some View {
         ZStack(alignment: .trailing) {
             Rectangle()
-                .applyingStyle(.rounded(radius: .relative(0.5)))
+                .applyingStyle(.rounded(.relative(0.5)))
                 .applyingStyle(.point, shapeCorners: [.topRight])
                 .fill(.purple)
                 .frame(width: 300)
             
             CornerCustom { rect in
-                rect
-                    .points(relativeLocations: [
-                        (0,0),
-                        (1,0),
-                        (1,-0.5),
-                        (1,1),
-                        (0,1)
-                    ])
-                    .corners([
-                        .rounded(radius: .absolute(rect.height * 0.5)),
-                        .rounded(radius: .relative(1)),
-                        .point,
-                        .rounded(radius: .absolute(rect.height * 0.5)),
-                        .rounded(radius: .absolute(rect.height * 0.5))
-                    ])
+                [
+                    rect[.topLeft, .rounded(.absolute(rect.height * 0.5))],
+                    rect[.topRight, .rounded(.relative(1))],
+                    rect[.relative(1,-0.5), .point],
+                    rect[.bottomRight, .rounded(.absolute(rect.height * 0.5))],
+                    rect[.bottomLeft, .rounded(.absolute(rect.height * 0.5))]
+                ]
             }
             .fill(.blue)
             .frame(width: 100)

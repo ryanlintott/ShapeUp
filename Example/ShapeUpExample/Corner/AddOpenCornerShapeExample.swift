@@ -10,35 +10,36 @@ import SwiftUI
 
 struct OpenCornerShape: Shape {
     func path(in rect: CGRect) -> Path {
-        let corners = [
-            Corner(x: rect.minX, y: rect.minY),
-            Corner(x: rect.midX, y: rect.midY),
-            Corner(x: rect.maxX, y: rect.minY),
-            Corner(x: rect.maxX, y: rect.midY)
-        ]
+        let corners = rect[.topLeft, .center, .topRight, .right]
             .corners([
-                .straight(radius: .relative(0.2)),
-                .cutout(radius: .relative(0.2), cornerStyles: [
-                    .rounded(radius: .relative(0.4)),
+                .straight(.relative(0.2)),
+                .cutout(.relative(0.2), cornerStyles: [
+                    .rounded(.relative(0.4)),
                     .point,
-                    .straight(radius: .relative(0.4))
+                    .straight(.relative(0.4))
                 ]),
-                .cutout(radius: .relative(0.2), cornerStyles: [.rounded(radius: .relative(0.2))]),
-                .rounded(radius: 20)
+                .cutout(.relative(0.2), cornerStyles: [.rounded(.relative(0.2))]),
+                .rounded(20)
             ])
         
         var path = Path()
-        path.move(to: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.maxY))
-        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.midY), control: CGPoint(x: rect.midX, y: rect.midY))
+        path.move(to: rect[0.25, 1])
+        path.addQuadCurve(
+            to: rect[.left],
+            control: rect[.center]
+        )
         
         path.addOpenCornerShape(
             corners,
-            previousPoint: CGPoint(x: rect.minX, y: rect.midY),
-            nextPoint: CGPoint(x: rect.midX, y: rect.midY),
+            previousPoint: path.currentPoint,
+            nextPoint: rect[.center],
             moveToStart: false
         )
         
-        path.addQuadCurve(to: CGPoint(x: rect.maxX - rect.width * 0.25, y: rect.maxY), control: CGPoint(x: rect.midX, y: rect.midY))
+        path.addQuadCurve(
+            to: rect[0.75, 1],// .point(relativeLocation: (0.75, 1)),
+            control: rect[.center]
+        )
 
         return path
     }

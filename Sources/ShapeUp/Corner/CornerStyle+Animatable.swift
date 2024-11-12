@@ -35,7 +35,7 @@ extension CornerStyle: Animatable {
         case .point, .rounded, .straight, .cutout:
             self = self.changingRadius(to: newValue.first)
         case .concave:
-            self = .concave(radius: newValue.first, radiusOffset: newValue.second)
+            self = .concave(newValue.first, radiusOffset: newValue.second)
         }
     }
 }

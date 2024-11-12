@@ -15,11 +15,11 @@ struct CornerCustomExample: View {
         VStack {
             CornerCustom { rect in
                 [
-                    Corner(.straight(radius: .relative(0.4)),x: rect.minX, y: rect.minY),
-                    Corner(.rounded(radius: .relative(0.1)), x: rect.midX, y: rect.midY),
-                    Corner(.concave(radius: 20),x: rect.maxX, y: rect.minY),
-                    Corner(.cutout(radius: .relative(0.3)),x: rect.maxX, y: rect.maxY),
-                    Corner(.concave(radius: 40), x: rect.midX, y: rect.midY + (rect.height * 0.1)),
+                    Corner(.straight(.relative(0.4)),x: rect.minX, y: rect.minY),
+                    Corner(.rounded(.relative(0.1)), x: rect.midX, y: rect.midY),
+                    Corner(.concave(20),x: rect.maxX, y: rect.minY),
+                    Corner(.cutout(.relative(0.3)),x: rect.maxX, y: rect.maxY),
+                    Corner(.concave(40), x: rect.midX, y: rect.midY + (rect.height * 0.1)),
                     Corner(x: rect.minX, y: rect.maxY)
                 ]
             }
@@ -39,23 +39,21 @@ struct CornerCustomExample: View {
             Text("Closed Shape")
             
             CornerCustom(closed: false) { rect in
-                rect
-                    .points(relativeLocations: [
-                        (0.0, 1.0),
-                        (0.0, 0.4),
-                        (0.4, 0.7),
-                        (0.4, 0.1),
-                        (0.7, 0.3),
-                        (1.0, 0),
-                        (0.8, 1.0)
-                    ])
+                rect[
+                    (0.0, 1.0),
+                    (0.0, 0.4),
+                    (0.4, 0.7),
+                    (0.4, 0.1),
+                    (0.7, 0.3),
+                    (1.0, 0),
+                    (0.8, 1.0)
+                ]
                     .corners([
                         nil,
-                        .rounded(radius: .relative(0.4)),
-                        .concave(radius: .relative(0.3)),
-                        .straight(radius: .relative(0.3)),
-                        .cutout(radius: .relative(0.1)),
-                        nil
+                        .rounded(.relative(0.4)),
+                        .concave(.relative(0.3)),
+                        .straight(.relative(0.3)),
+                        .cutout(.relative(0.1))
                     ])
             }
                 .stroke(Color.suYellow, lineWidth: 10)

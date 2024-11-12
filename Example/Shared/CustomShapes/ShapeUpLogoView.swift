@@ -15,19 +15,13 @@ struct ShapeUpLogo: View {
                 // Pink Logo
                 CornerCustom { rect in
                     [
-                        rect.point(.topLeft),
-                        rect.point(.topRight).moved(dx: rect.width * -0.075, dy: rect.height * 0.04),
-                        rect.point(.topRight).moved(dx: rect.width * -0.075, dy: rect.height * 0.3),
-                        rect.point(.bottomLeft).moved(dx: rect.width * 0.005, dy: rect.height * -0.08)
+                        rect[.topLeft, .straight(.relative(0.27))],
+                        rect[.relative(0.925, 0.04), .cutout(.relative(0.4))],
+                        rect[.relative(0.925, 0.3), .rounded(.relative(0.4))],
+                        rect[.relative(0.005, 0.92), .concave(.relative(0.23))]
                     ]
                         .rotated(.degrees(9))
-                        .moved(dx: rect.width * 0.06, dy: rect.height * 0.02)
-                        .corners([
-                            .straight(radius: .relative(0.27)),
-                            .cutout(radius: .relative(0.4)),
-                            .rounded(radius: .relative(0.4)),
-                            .concave(radius: .relative(0.23))
-                        ])
+                        .moved(rect[.relative(0.06, 0.02)])
                 }
                     .fill(Color.suPink)
                     .shadow(color: .suBlack, radius: 0.01, x: proxy.size.width * 0.006, y: proxy.size.width * 0.0076)
@@ -35,19 +29,13 @@ struct ShapeUpLogo: View {
                 /// Purple Logo
                 CornerCustom { rect in
                     [
-                        rect.point(.topLeft),
-                        rect.point(.topLeft).moved(dx: rect.width * 0.271),
-                        rect.point(.bottomLeft).moved(dx: rect.width * 0.271, dy: rect.height * -0.15),
-                        rect.point(.bottomLeft).moved(dy: rect.height * -0.15)
+                        rect[.topLeft, .rounded(.relative(0.12))],
+                        rect[.relative(0.271, 0), .concave(.relative(0.12))],
+                        rect[.relative(0.271, 1 - 0.15), .straight(.relative(0.18))],
+                        rect[.relative(0, 1 - 0.15), .rounded(.relative(0.23))]
                     ]
                         .rotated(.degrees(-5))
                         .moved(dx: rect.width * 0.63, dy: rect.height * 0.11)
-                        .corners([
-                            .rounded(radius: .relative(0.12)),
-                            .concave(radius: .relative(0.12)),
-                            .straight(radius: .relative(0.18)),
-                            .rounded(radius: .relative(0.23))
-                        ])
                 }
                 .fill(Color.suPurple)
                 

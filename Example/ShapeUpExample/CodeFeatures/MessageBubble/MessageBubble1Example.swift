@@ -18,13 +18,13 @@ struct MessageBubble1: CornerShape {
     
     func corners(in rect: CGRect) -> [Corner] {
         [
-            Corner(.rounded(radius: cornerRadius), x: rect.minX, y: rect.minY),
-            Corner(.rounded(radius: cornerRadius), x: rect.maxX, y: rect.minY),
-            Corner(.rounded(radius: cornerRadius), x: rect.maxX, y: rect.maxY),
-            Corner(.rounded(radius: pointRadius), x: rect.midX + (pointSize / 2), y: rect.maxY),
+            Corner(.rounded(cornerRadius), x: rect.minX, y: rect.minY),
+            Corner(.rounded(cornerRadius), x: rect.maxX, y: rect.minY),
+            Corner(.rounded(cornerRadius), x: rect.maxX, y: rect.maxY),
+            Corner(.rounded(pointRadius), x: rect.midX + (pointSize / 2), y: rect.maxY),
             Corner(.point, x: rect.midX, y: rect.maxY + pointSize),
-            Corner(.rounded(radius: pointRadius), x: rect.midX - (pointSize / 2), y: rect.maxY),
-            Corner(.rounded(radius: cornerRadius), x: rect.minX, y: rect.maxY)
+            Corner(.rounded(pointRadius), x: rect.midX - (pointSize / 2), y: rect.maxY),
+            Corner(.rounded(cornerRadius), x: rect.minX, y: rect.maxY)
         ]
     }
 }

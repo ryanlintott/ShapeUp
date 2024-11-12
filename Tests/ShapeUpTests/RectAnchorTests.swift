@@ -55,12 +55,8 @@ class RectAnchorTests: XCTestCase {
         XCTAssertEqual(RectAnchor.bottom.type, .edge)
         XCTAssertEqual(RectAnchor.bottomRight.type, .vertex)
     }
-
-    func testEdgeAnchorsArrayIsClockwiseFromTop() throws {
-        XCTAssertEqual(RectAnchor.edgeAnchors, [.top, .right, .bottom, .left])
-    }
     
-    func testVertexAnchorsArrayIsClockwiseFromTopLeft() throws {
-        XCTAssertEqual(RectAnchor.vertexAnchors, [.topLeft, .topRight, .bottomRight, .bottomLeft])
+    func testVerticesArrayIsClockwiseFromTopLeft() throws {
+        XCTAssertEqual(RectAnchor.vertices, [.topLeft, .topRight, .bottomRight, .bottomLeft])
     }
 }

@@ -69,11 +69,11 @@ public struct CornerPentagon: EnumeratedCornerShape {
         let pointHeight = pointHeight.value(using: rect.height)
         
         return [
-            .bottomLeft: rect.point(.bottomLeft).moved(dx: bottomInset),
-            .bottomRight: rect.point(.bottomRight).moved(dx: -bottomInset),
-            .topLeft: rect.point(.topLeft).moved(dx: topInset, dy: pointHeight),
-            .topRight: rect.point(.topRight).moved(dx: -topInset, dy: pointHeight),
-            .top: rect.point(.top)
+            .bottomLeft: rect[.bottomLeft].moved(dx: bottomInset),
+            .bottomRight: rect[.bottomRight].moved(dx: -bottomInset),
+            .topLeft: rect[.topLeft].moved(dx: topInset, dy: pointHeight),
+            .topRight: rect[.topRight].moved(dx: -topInset, dy: pointHeight),
+            .top: rect[.top]
         ]
     }
 }

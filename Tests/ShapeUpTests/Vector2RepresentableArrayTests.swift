@@ -36,7 +36,7 @@ class Vector2RepresentableArrayTests: XCTestCase {
         RectAnchor.allCases.forEach { rectAnchor in
             XCTAssertEqual(
                 Self.testVectors.anchorPoint(rectAnchor),
-                Self.testVectors.bounds.point(rectAnchor)
+                Self.testVectors.bounds[rectAnchor]
             )
         }
     }

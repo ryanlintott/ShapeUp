@@ -14,4 +14,6 @@ public extension Array where Element == RectAnchor {
     func points(in rect: CGRect) -> [CGPoint] {
         map { $0.point(in: rect) }
     }
+    
+    static var vertices: Self { RectAnchor.vertices }
 }

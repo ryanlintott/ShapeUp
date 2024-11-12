@@ -41,18 +41,9 @@ public extension NotchStyle {
     func corners(in rect: CGRect) -> [Corner] {
         switch self {
         case .triangle(let cornerStyles):
-            return rect.points(
-                .topLeft,
-                .bottom,
-                .topRight
-            ).corners(cornerStyles)
+            return rect[.topLeft, .bottom, .topRight].corners(cornerStyles)
         case .rectangle(let cornerStyles):
-            return rect.points(
-                .topLeft,
-                .bottomLeft,
-                .bottomRight,
-                .topRight
-            ).corners(cornerStyles)
+            return rect[.topLeft, .bottomLeft, .bottomRight, .topRight].corners(cornerStyles)
         case .custom(let corners):
             return corners(rect)
         }

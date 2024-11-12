@@ -51,10 +51,10 @@ public struct CornerRectangle: EnumeratedCornerShape {
     
     public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
         [
-            .topLeft: rect.point(.topLeft),
-            .topRight: rect.point(.topRight),
-            .bottomRight: rect.point(.bottomRight),
-            .bottomLeft: rect.point(.bottomLeft)
+            .topLeft: rect[.topLeft],
+            .topRight: rect[.topRight],
+            .bottomRight: rect[.bottomRight],
+            .bottomLeft: rect[.bottomLeft]
         ]
     }
 }

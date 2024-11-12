@@ -16,9 +16,9 @@ struct CornerTriangleExample2: View {
         VStack {
             Color.clear.overlay(
                 CornerTriangle(topPoint: .relative(topPoint), styles: [
-                    .top: .straight(radius: 10),
-                    .bottomRight: .rounded(radius: .relative(0.3)),
-                    .bottomLeft: .concave(radius: .relative(0.2))
+                    .top: .straight(10),
+                    .bottomRight: .rounded(.relative(0.3)),
+                    .bottomLeft: .concave(.relative(0.2))
                 ])
                 .inset(by: inset)
                 .fill(Color.suCyan)

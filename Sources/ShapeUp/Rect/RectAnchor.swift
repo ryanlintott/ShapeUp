@@ -15,12 +15,18 @@ public enum AnchorType: Sendable {
     case edge
     /// Anchor positioned in the center
     case center
+    /// Anchor is inside the shape
+    case interior
+    /// Anchor is outside the shape
+    case exterior
 }
 
 /// An enumeration to indicate an anchor location on a rectangle.
 ///
 /// Cases start with Center and are in clockwise order from top left.
-public enum RectAnchor: CaseIterable, Sendable {
+public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable {
+    public static let allCases: [RectAnchor] = [.center, .topLeft, .top, .topRight, .right, .bottomRight, .bottom, .bottomLeft, .left]
+    
     case center
     case topLeft
     case top
@@ -30,6 +36,11 @@ public enum RectAnchor: CaseIterable, Sendable {
     case bottom
     case bottomLeft
     case left
+    case relative(_ x: CGFloat, _ y: CGFloat)
+    
+    static func relative(_ point: CGPoint) -> RectAnchor {
+        .relative(point.x, point.y)
+    }
     
     /// Creates a point in the location of an anchor.
     /// - Parameter rect: Rectangle where anchor is positioned.
@@ -37,42 +48,56 @@ public enum RectAnchor: CaseIterable, Sendable {
     public func point(in rect: CGRect) -> CGPoint {
         switch self {
         case .topLeft:
-            return CGPoint(x: rect.minX, y: rect.minY)
+            CGPoint(x: rect.minX, y: rect.minY)
         case .top:
-            return CGPoint(x: rect.midX, y: rect.minY)
+            CGPoint(x: rect.midX, y: rect.minY)
         case .topRight:
-            return CGPoint(x: rect.maxX, y: rect.minY)
+            CGPoint(x: rect.maxX, y: rect.minY)
         case .left:
-            return CGPoint(x: rect.minX, y: rect.midY)
+            CGPoint(x: rect.minX, y: rect.midY)
         case .center:
-            return CGPoint(x: rect.midX, y: rect.midY)
+            CGPoint(x: rect.midX, y: rect.midY)
         case .right:
-            return CGPoint(x: rect.maxX, y: rect.midY)
+            CGPoint(x: rect.maxX, y: rect.midY)
         case .bottomLeft:
-            return CGPoint(x: rect.minX, y: rect.maxY)
+            CGPoint(x: rect.minX, y: rect.maxY)
         case .bottom:
-            return CGPoint(x: rect.midX, y: rect.maxY)
+            CGPoint(x: rect.midX, y: rect.maxY)
         case .bottomRight:
-            return CGPoint(x: rect.maxX, y: rect.maxY)
+            CGPoint(x: rect.maxX, y: rect.maxY)
+        case let .relative(x, y):
+            CGPoint(x: rect.minX + (x * rect.width), y: rect.minY + (y * rect.height))
         }
+    }
+    
+    public var relativePoint: CGPoint {
+        point(in: .one)
     }
     
     /// The type of the anchor.
     public var type: AnchorType {
-        switch self {
-        case .center: return .center
-        case .topLeft, .topRight, .bottomRight, .bottomLeft: return .vertex
-        case .top, .right, .bottom, .left: return .edge
+        switch (relativePoint.x, relativePoint.y) {
+        case (0.5, 0.5): .center
+        case (0, 0), (1, 0), (1, 1), (0, 1): .vertex
+        case (0...1, 0), (1, 0...1), (0...1, 1), (0, 0...1): .edge
+        case (0...1, 0...1): .interior
+        default: .exterior
         }
     }
     
-    /// Edge anchors in clockwise order from the top left.
+    /// An array of four edges clockwise starting with top
+    @available(*, deprecated, message: "This conveneince parameter was likely never used.")
     public static var edgeAnchors: [Self] {
-        allCases.filter { $0.type == .edge }
+        [.top, .right, .bottom, .left]
     }
     
-    /// Corner anchors in clockwise order from the top left.
+    @available(*, deprecated, renamed: "vertices")
     public static var vertexAnchors: [Self] {
-        allCases.filter { $0.type == .vertex }
+        [.topLeft, .topRight, .bottomRight, .bottomLeft]
+    }
+    
+    /// An array of four corners clockwise starting from top left.
+    public static var vertices: [Self] {
+        [.topLeft, .topRight, .bottomRight, .bottomLeft]
     }
 }

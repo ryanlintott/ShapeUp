@@ -17,12 +17,12 @@ struct MessageBubble4: View {
     var body: some View {
         CornerCustom { rect in
             rect
-                .corners(.rounded(radius: cornerRadius))
+                .corners(.rounded(cornerRadius))
                 .addingNotch(
                     .triangle(depth: -pointSize, cornerStyles: [
-                        .rounded(radius: pointRadius),
+                        .rounded(pointRadius),
                         .point,
-                        .rounded(radius: pointRadius)
+                        .rounded(pointRadius)
                     ]),
                     afterCornerIndex: 2
                 )

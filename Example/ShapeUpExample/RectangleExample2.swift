@@ -12,10 +12,10 @@ struct RectangleExample2: View {
     var body: some View {
         Rectangle()
             .applyingStyles([
-                .topLeft: .rounded(radius: 100),
-                .topRight: .concave(radius: 80),
-                .bottomRight: .straight(radius: 50),
-                .bottomLeft: .cutout(radius: 50)
+                .topLeft: .rounded(100),
+                .topRight: .concave(80),
+                .bottomRight: .straight(50),
+                .bottomLeft: .cutout(50)
             ])
             .fill(Color.suPurple)
             .padding()

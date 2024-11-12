@@ -5,8 +5,6 @@
 //  Created by Ryan Lintott on 2022-03-09.
 //
 
-import SwiftUI
-
 import ShapeUp
 import SwiftUI
 

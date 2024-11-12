@@ -55,9 +55,9 @@ public struct CornerTriangle: EnumeratedCornerShape {
     
     public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
         [
-            .top: rect.point(.topLeft).moved(dx: topPoint.value(using: rect.width)),
-            .bottomRight: rect.point(.bottomRight),
-            .bottomLeft: rect.point(.bottomLeft)
+            .top: rect[.topLeft].moved(dx: topPoint.value(using: rect.width)),
+            .bottomRight: rect[.bottomRight],
+            .bottomLeft: rect[.bottomLeft]
         ]
     }
 }

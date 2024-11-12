@@ -17,13 +17,13 @@ struct NotchedPentagonExample: View {
                 bottomTaper: .zero
             )
             .corners(in: rect)
-            .applyingStyle(.rounded(radius: 20))
+            .applyingStyle(.rounded(20))
             .addingNotches([
                 .triangle(depth: .relative(0.2)),
                 nil,
                 nil,
                 .triangle(depth: .relative(0.2)),
-                .rectangle(length: 20, depth: 10, cornerStyle: .rounded(radius: .relative(0.4)))
+                .rectangle(length: 20, depth: 10, cornerStyle: .rounded(.relative(0.4)))
             ])
         }
         .fill(Color.suYellow)

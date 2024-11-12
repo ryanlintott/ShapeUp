@@ -13,14 +13,14 @@ struct InsettableShapeWithHole: InsettableShapeByProperty {
     
     func path(in rect: CGRect) -> Path {
         var path = rect
-            .corners(.rounded(radius: 10))
+            .corners(.rounded(10))
             .inset(by: insetAmount)
             .path()
         
         path.closeSubpath()
         
         var hole = Path()
-        hole.addArc(center: rect.point(.center), radius: rect.width * 0.25 + insetAmount, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
+        hole.addArc(center: rect[.center], radius: rect.width * 0.25 + insetAmount, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: true)
         hole.closeSubpath()
         
         hole.addPath(path)
