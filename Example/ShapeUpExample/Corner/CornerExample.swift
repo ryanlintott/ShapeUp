@@ -113,6 +113,11 @@ struct CornerExample: View {
             .disabled(style == .point)
 
         }
+        .animation(.default, value: shape)
+        .animation(.default, value: style)
+        .animation(.default, value: relativeRadius)
+        .animation(.default, value: relative)
+        .animation(.default, value: absolute)
         .padding()
         .navigationTitle("Corner")
     }

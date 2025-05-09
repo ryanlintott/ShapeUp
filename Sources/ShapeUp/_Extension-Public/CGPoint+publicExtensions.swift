@@ -24,3 +24,26 @@ extension CGPoint: Vector2Transformable {
     }
 }
 
+extension CGPoint {
+    /// Creates a rectangle using this point as an anchor.
+    /// - Parameters:
+    ///   - size: Size of the rectangle.
+    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
+    /// - Returns: A rectangle with the specified size and this point as the anchor.
+    public func rect(size: CGSize, anchor: RectAnchor = .topLeft) -> CGRect {
+        let anchorVector = size.rect()[anchor].vector
+        return CGRect(origin: self.moved(-anchorVector), size: size)
+    }
+    
+    
+    /// Creates a rectangle using this point as an anchor.
+    /// - Parameters:
+    ///   - width: Width of the rectangle.
+    ///   - height: Height of the rectangle.
+    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
+    /// - Returns: A rectangle with the specified size and this point as the anchor.
+    public func rect(width: CGFloat, height: CGFloat, anchor: RectAnchor = .topLeft) -> CGRect {
+        rect(size: .init(width: width, height: height), anchor: anchor)
+    }
+}
+

@@ -29,12 +29,12 @@ struct TestOpenShape: CornerShape {
     
     func corners(in rect: CGRect) -> [Corner] {
         [
-            rect[.bottomLeft, .point],
-            rect[.left, .rounded(.relative(0.4))],
-            rect[.bottom, .concave(.relative(0.3))],
-            rect[.top, .straight(.relative(0.3))],
-            rect[.right, .cutout(.relative(0.1))],
-            rect[.topRight, .point]
+            rect[.bottomLeft].corner,
+            rect[.left].corner(.rounded(.relative(0.4))),
+            rect[.bottom].corner(.concave(.relative(0.3))),
+            rect[.top].corner(.straight(.relative(0.3))),
+            rect[.right].corner(.cutout(.relative(0.1))),
+            rect[.topRight].corner
         ]
     }
 }

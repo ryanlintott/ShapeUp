@@ -19,11 +19,11 @@ struct FoldButton: View {
             
             CornerCustom { rect in
                 [
-                    rect[.topLeft, .rounded(.absolute(rect.height * 0.5))],
-                    rect[.topRight, .rounded(.relative(1))],
-                    rect[.relative(1,-0.5), .point],
-                    rect[.bottomRight, .rounded(.absolute(rect.height * 0.5))],
-                    rect[.bottomLeft, .rounded(.absolute(rect.height * 0.5))]
+                    rect[.topLeft].corner(.rounded(.absolute(rect.height * 0.5))),
+                    rect[.topRight].corner(.rounded(.relative(1))),
+                    rect[1, -0.5].corner(.point),
+                    rect[.bottomRight].corner(.rounded(.absolute(rect.height * 0.5))),
+                    rect[.bottomLeft].corner(.rounded(.absolute(rect.height * 0.5)))
                 ]
             }
             .fill(.blue)

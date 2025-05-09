@@ -29,15 +29,6 @@ public extension CGRect {
         anchor.point(in: self)
     }
     
-    /// Returns a corner with the specified style at the specified anchor position inside this CGRect.
-    /// - Parameters:
-    ///   - anchor: Anchor where the corner is positioned.
-    ///   - style: Style applied to the corner.
-    /// - Returns: A corner with the specified style at the specified anchor position inside this CGRect.
-    subscript (_ anchor: RectAnchor, _ style: CornerStyle) -> Corner {
-        self[anchor].corner(style)
-    }
-    
     /// Creates an array of points in the locations of the supplied anchors.
     /// - Parameter anchors: Anchors defining point locations in order.
     /// - Returns: An array of points in the location and order of the supplied anchors.
@@ -145,5 +136,29 @@ public extension CGRect {
     /// - Returns: An array of 4 corners, with the provided styles, starting with the top left and going clockwise.
     func corners(_ styles: [CornerStyle?]) -> [Corner] {
         self[.vertices].corners(styles)
+    }
+    
+    /// Repositions the origin.
+    /// - Parameter point: A vector representing the new origin.
+    /// - Returns: A rectangle of the same size, repositioned to the new origin.
+    func repositioned(to point: some Vector2Representable) -> Self {
+        .init(origin: point.point, size: size)
+    }
+    
+    /// Moves the origin.
+    /// - Parameter distance: A vector representing the movement.
+    /// - Returns: A rectangle of the same size, moved by the provided distance.
+    func moved(_ distance: some Vector2Representable) -> Self {
+        let vector = origin.vector + distance.vector
+        return repositioned(to: vector)
+    }
+    
+    /// Moves the origin.
+    /// - Parameters:
+    ///   - dx: Delta x
+    ///   - dy: Delta y
+    /// - Returns: A rectangle of the same size, moved by the provided distance.
+    func moved(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
+        moved(Vector2(dx: dx, dy: dy))
     }
 }
