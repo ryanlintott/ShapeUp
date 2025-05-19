@@ -40,7 +40,7 @@ public struct CornerRectangle: EnumeratedCornerShape {
         case bottomLeft
     }
     
-    public var styles: [ShapeCorner : CornerStyle?]
+    public var styles: [ShapeCorner : CornerStyle]
     
     /// Creates a 2d rectangular shape with specified styles for each corner.
     /// - Parameters:
@@ -61,8 +61,41 @@ public struct CornerRectangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerRectangle {
-    public var animatableData: CGFloat {
-        get { insetAmount }
-        set { insetAmount = newValue }
+    public var animatableData: AnimatablePair<
+        CGFloat,
+        AnimatablePair<
+            CornerStyle.AnimatableData,
+            AnimatablePair<
+                CornerStyle.AnimatableData,
+                AnimatablePair<
+                    CornerStyle.AnimatableData,
+                    CornerStyle.AnimatableData
+                >
+            >
+        >
+    >
+    {
+        get {
+            .init(
+                insetAmount,
+                .init(
+                    styles[.topLeft].animatableData,
+                    .init(
+                        styles[.topRight].animatableData,
+                        .init(
+                            styles[.bottomRight].animatableData,
+                            styles[.bottomLeft].animatableData
+                        )
+                    )
+                )
+            )
+        }
+        set {
+            insetAmount = newValue.first
+            styles[.topLeft].animatableData = newValue.second.first
+            styles[.topRight].animatableData = newValue.second.second.first
+            styles[.bottomRight].animatableData = newValue.second.second.second.first
+            styles[.bottomLeft].animatableData = newValue.second.second.second.second
+        }
     }
 }

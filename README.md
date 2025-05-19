@@ -9,9 +9,10 @@
 [![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
 
 # Overview
-A Swift Package that makes SwiftUI shapes easier to make by redefining them as an array of styled corners. (The logo above was created in 100 lines + SwiftUI Text)
+A Swift Package that makes SwiftUI shapes easier to build. (The logo above was created in 100 lines + SwiftUI Text)
 
 Features:
+- Extensions to [`CGPoint`](#cgpoint), [`CGRect`](#cgpoint), and [`CGSize`](#cgpoint)
 - [`Corner`](#corner), a `CGPoint` with `style`.
 - [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
@@ -55,6 +56,16 @@ Or you can buy a t-shirt with the ShapeUp logo
 <a href="https://cottonbureau.com/p/JBYGB7/shirt/shapeup#/20149802"><img width="256" alt="ShapeUp T-Shirt" src="https://cottonbureau.com/mockup?vid=20149802&hash=6UJM&w=512"></a>
 - - -
 # Features
+## CGPoint
+Conformance to [`Vector2Transformable`](#vector2transformable) allowing points or arrays of points to be easily moved, rotated, flipped or inset.
+
+Easy creation of CGRect through `rect(size:anchor:)` or `rect(width:height:anchor:)` methods.
+
+## CGRect
+
+## CGSize
+
+
 ## Corner
 A point with a specified `CornerStyle` used to draw paths and create shapes.
 

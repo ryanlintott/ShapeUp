@@ -48,7 +48,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
     public var pointHeight: RelatableValue
     public var topTaper: RelatableValue
     public var bottomTaper: RelatableValue
-    public var styles: [ShapeCorner: CornerStyle?]
+    public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a pentagon shape with corners that can be styled.
     /// - Parameters:
@@ -80,16 +80,30 @@ public struct CornerPentagon: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerPentagon {
-    public typealias AnimatableData =
-    AnimatablePair<
+    public typealias AnimatableData = AnimatablePair<
         CGFloat,
         AnimatablePair<
             RelatableValue,
             AnimatablePair<
                 RelatableValue,
-                RelatableValue
-    >
-    >
+                AnimatablePair<
+                    RelatableValue,
+                    AnimatablePair<
+                        CornerStyle.AnimatableData,
+                        AnimatablePair<
+                            CornerStyle.AnimatableData,
+                            AnimatablePair<
+                                CornerStyle.AnimatableData,
+                                AnimatablePair<
+                                    CornerStyle.AnimatableData,
+                                    CornerStyle.AnimatableData
+                                >
+                            >
+                        >
+                    >
+                >
+            >
+        >
     >
     
     public var animatableData: AnimatableData {
@@ -100,7 +114,22 @@ extension CornerPentagon {
                     pointHeight,
                     .init(
                         topTaper,
-                        bottomTaper
+                        .init(
+                            bottomTaper,
+                            .init(
+                                styles[.topLeft].animatableData,
+                                .init(
+                                    styles[.top].animatableData,
+                                    .init(
+                                        styles[.topRight].animatableData,
+                                        .init(
+                                            styles[.bottomRight].animatableData,
+                                            styles[.bottomLeft].animatableData
+                                        )
+                                    )
+                                )
+                            )
+                        )
                     )
                 )
             )
@@ -109,7 +138,12 @@ extension CornerPentagon {
             insetAmount = newValue.first
             pointHeight = newValue.second.first
             topTaper = newValue.second.second.first
-            bottomTaper = newValue.second.second.second
+            bottomTaper = newValue.second.second.second.first
+            styles[.topLeft].animatableData = newValue.second.second.second.second.first
+            styles[.top].animatableData = newValue.second.second.second.second.second.first
+            styles[.topRight].animatableData = newValue.second.second.second.second.second.second.first
+            styles[.bottomRight].animatableData = newValue.second.second.second.second.second.second.second.first
+            styles[.bottomLeft].animatableData = newValue.second.second.second.second.second.second.second.second
         }
     }
 }

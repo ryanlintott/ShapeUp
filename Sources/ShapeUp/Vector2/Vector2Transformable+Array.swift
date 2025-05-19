@@ -24,6 +24,25 @@ public extension Array where Element: Vector2Transformable {
         moved(Vector2(dx: dx, dy: dy))
     }
     
+    /// Moves objects from one relative position to a new location.
+    /// - Parameters:
+    ///   - anchor: Start point of the move relative to the bounds of the object locations.
+    ///   - location: End location of anchor point.
+    /// - Returns: The same array of objects, moved from the anchor provided to the end location.
+    func moved(_ anchor: RectAnchor = .topLeft, to location: some Vector2Representable) -> Self {
+        let vector = location.vector - bounds[anchor].vector
+        return moved(vector)
+    }
+    
+    /// Moves the objects from one relative position to another relative position.
+    /// - Parameters:
+    ///   - anchor: Start point of the move relative to the bounds of the object locations.
+    ///   - location: End point of the move relative to the bounds of the object locations.
+    /// - Returns: The same array of objects, moved from one provided anchor point to another.
+    func moved(_ anchor: RectAnchor = .topLeft, to location: RectAnchor) -> Self {
+        moved(anchor, to: bounds[location])
+    }
+    
     /// Rotates the position of this array of objects without modifying other properties.
     /// - Parameters:
     ///   - angle: Angle of rotation.
@@ -46,7 +65,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - anchor: Anchor point for the rotation based on the bounding frame.
     /// - Returns: The same array of objects, rotated around the provided anchor by the provided angle.
     func rotated(_ angle: Angle, anchor: RectAnchor) -> Self {
-        rotated(angle, anchor: anchorPoint(anchor))
+        rotated(angle, anchor: bounds[anchor])
     }
     
     /// Flips the positions of this array of objects across a mirror line without modifying other properties.
@@ -68,7 +87,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - mirrorLineEnd: End point of the mirror line based on the bounding frame.
     /// - Returns: The same array of objects flipped across the provided mirror line.
     func flipped(mirrorLineStart: RectAnchor, mirrorLineEnd: RectAnchor) -> Self {
-        flipped(mirrorLineStart: anchorPoint(mirrorLineStart), mirrorLineEnd: anchorPoint(mirrorLineEnd))
+        flipped(mirrorLineStart: bounds[mirrorLineStart], mirrorLineEnd: bounds[mirrorLineEnd])
     }
     
     /// Flips the positions of this array of objects horizontally without modifying other properties.
@@ -82,7 +101,7 @@ public extension Array where Element: Vector2Transformable {
     /// - Parameter anchor: The position of the vertical mirror line based on the bounding frame.
     /// - Returns: The same array of objects flipped horizontally across a vertical mirror line.
     func flippedHorizontally(across anchor: RectAnchor) -> Self {
-        flippedHorizontally(across: anchorPoint(anchor).x)
+        flippedHorizontally(across: bounds[anchor].x)
     }
     
     /// Flips the positions of this array of objects vertically without modifying other properties.
@@ -96,7 +115,7 @@ public extension Array where Element: Vector2Transformable {
     /// - Parameter anchor: The position of the horizontal mirror line based on the bounding frame.
     /// - Returns: The same array of points flipped vertically across a horizontal mirror line.
     func flippedVertically(across anchor: RectAnchor) -> Self {
-        flippedVertically(across: anchorPoint(anchor).x)
+        flippedVertically(across: bounds[anchor].x)
     }
     
     /// Returns positions inset by a specified amount.
@@ -121,6 +140,7 @@ public extension Array where Element: Vector2Transformable {
     /// Returns positions after being scaled from the origin.
     /// - Parameter scale: Used to scale the positions.
     /// - Returns: Positions after being scaled from the origin.
+    @available(*, deprecated, renamed: "scaledPositions(_:)")
     func scaledPositions(scale: CGSize) -> [CGPoint] {
         map { $0.scaledPosition(scale: scale) }
     }
@@ -130,8 +150,37 @@ public extension Array where Element: Vector2Transformable {
     ///   - width: Used to scale the x positions.
     ///   - height: Used to scale the y positions.
     /// - Returns: Positions after being scaled from the origin.
+    @available(*, deprecated, renamed: "scaledPositions(x:y:)")
     func scaledPositions(width: CGFloat? = nil, height: CGFloat? = nil) -> [CGPoint] {
         map { $0.scaledPosition(width: width, height: height) }
+    }
+    
+    /// Returns positions after being scaled from the origin.
+    /// - Parameters:
+    ///   - scale: Used to scale the positions.
+    ///   - anchor: Anchor point for the scale.
+    /// - Returns: Positions after being scaled from the origin.
+    func scaledPositions(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> [CGPoint] {
+        map { $0.scaledPosition(scale, anchor: anchor) }
+    }
+    
+    /// Returns positions after being scaled from the origin.
+    /// - Parameters:
+    ///   - x: Used to scale the x positions.
+    ///   - y: Used to scale the y positions.
+    ///   - anchor: Anchor point for the scale.
+    /// - Returns: Positions after being scaled from the origin.
+    func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> [CGPoint] {
+        map { $0.scaledPosition(x: x, y: y, anchor: anchor) }
+    }
+    
+    /// Returns positions after being scaled from the origin.
+    /// - Parameters:
+    ///   - scale: Used to scale the positions.
+    ///   - anchor: Anchor point for the scale.
+    /// - Returns: Positions after being scaled from the origin.
+    func scaledPositions(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> [CGPoint] {
+        map { $0.scaledPosition(scale, anchor: anchor) }
     }
     
     /// Returns positions after being moved from one frame of reference to another.

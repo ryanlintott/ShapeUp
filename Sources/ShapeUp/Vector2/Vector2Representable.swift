@@ -39,4 +39,35 @@ public extension Vector2Representable {
     var corner: Corner {
         self as? Corner ?? Corner(nil, point: point)
     }
+    
+    /// Returns an anchor point relative to the specified rectangle.
+    /// - Parameter rect: Rectangle used for relative position.
+    /// - Returns: An anchor point relative to the specified rectangle.
+    func relative(to rect: CGRect) -> RectAnchor {
+        let relativePosition = vector - rect.origin.vector
+        let x = rect.width == 0 ? 0 : relativePosition.dx / rect.width
+        let y = rect.height == 0 ? 0 : relativePosition.dy / rect.height
+        return .relative(x, y)
+    }
+    
+    /// Creates a rectangle using this point as an anchor.
+    /// - Parameters:
+    ///   - size: Size of the rectangle.
+    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
+    /// - Returns: A rectangle with the specified size and this point as the anchor.
+    public func rect(size: CGSize, anchor: RectAnchor = .topLeft) -> CGRect {
+        let anchorVector = size.rect()[anchor].vector
+        return CGRect(origin: point.moved(-anchorVector), size: size)
+    }
+    
+    
+    /// Creates a rectangle using this point as an anchor.
+    /// - Parameters:
+    ///   - width: Width of the rectangle.
+    ///   - height: Height of the rectangle.
+    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
+    /// - Returns: A rectangle with the specified size and this point as the anchor.
+    public func rect(width: CGFloat, height: CGFloat, anchor: RectAnchor = .topLeft) -> CGRect {
+        rect(size: .init(width: width, height: height), anchor: anchor)
+    }
 }

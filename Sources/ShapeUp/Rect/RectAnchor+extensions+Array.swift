@@ -15,5 +15,5 @@ public extension Array where Element == RectAnchor {
         map { $0.point(in: rect) }
     }
     
-    static var vertices: Self { RectAnchor.vertices }
+    static let vertices: Self = RectAnchor.vertices
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 public extension CGRect {
     /// Creates an array of points from the 4 corners of the rectangle starting with the top left and going clockwise.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use subscript `[.vertices]` instead.")
+    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[.vertices]` instead.")
     var points: [CGPoint] {
         self[.vertices]
     }
@@ -17,7 +17,7 @@ public extension CGRect {
     /// Creates a point in the location of an anchor.
     /// - Parameter anchor: Anchor where the point is located
     /// - Returns: A point where the anchor is located.
-    @available(*, deprecated, renamed: "subscript(_:)")
+    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchor]` instead.")
     func point(_ anchor: RectAnchor) -> CGPoint {
         self[anchor]
     }
@@ -32,7 +32,7 @@ public extension CGRect {
     /// Creates an array of points in the locations of the supplied anchors.
     /// - Parameter anchors: Anchors defining point locations in order.
     /// - Returns: An array of points in the location and order of the supplied anchors.
-    @available(*, deprecated, renamed: "subscript(_:)")
+    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchors]` instead.")
     func points(_ anchors: [RectAnchor]) -> [CGPoint] {
         self[anchors]
     }
@@ -47,7 +47,7 @@ public extension CGRect {
     /// Creates an array of points in the locations of the supplied anchors.
     /// - Parameter anchors: Anchors defining point locations in order.
     /// - Returns: An array of points in the location and order of the supplied anchors.
-    @available(*, deprecated, renamed: "subscript(_:)")
+    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchor1, anchor2, ...]` instead.")
     func points(_ anchors: RectAnchor...) -> [CGPoint] {
         self[anchors]
     }
@@ -65,7 +65,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocation: A tuple with relative x and y coordinates respectively.
     /// - Returns: A point at the relative location inside this CGRect.
-    @available(*, deprecated, renamed: "subscript(_:_:)")
+    @available(*, deprecated, renamed: "subscript(_:_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
     func point(relativeLocation: (CGFloat, CGFloat)) -> CGPoint {
         self[relativeLocation.0, relativeLocation.1]
     }
@@ -88,7 +88,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated, renamed: "subscript(_:)")
+    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[tupleArray]` instead.")
     func points(relativeLocations: [(CGFloat, CGFloat)]) -> [CGPoint] {
         self[relativeLocations]
     }
@@ -109,7 +109,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated, renamed: "subscript(_:)")
+    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
     func points(relativeLocations: (CGFloat, CGFloat)...) -> [CGPoint] {
         self[relativeLocations]
     }
@@ -160,5 +160,52 @@ public extension CGRect {
     /// - Returns: A rectangle of the same size, moved by the provided distance.
     func moved(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
         moved(Vector2(dx: dx, dy: dy))
+    }
+    
+    /// Moves the rectangle from one relative position to a new location.
+    /// - Parameters:
+    ///   - anchor: Start location of anchor point.
+    ///   - location: End location.
+    /// - Returns: A rectangle of the same size and a new origin determined by moving an anchor point from one location to another.
+    func moved(_ anchor: RectAnchor = .topLeft, to location: some Vector2Representable) -> Self {
+        let vector = location.vector - self[anchor].vector
+        return repositioned(to: vector)
+    }
+    
+    /// Moves the rectangle from one relative position to another
+    /// - Parameters:
+    ///   - anchor: Start location of anchor point.
+    ///   - location: End location of anchor point.
+    /// - Returns: A rectangle of the same size and a new origin determined by moving an anchor point from one location to another.
+    func moved(_ anchor: RectAnchor = .topLeft, to location: RectAnchor) -> Self {
+        moved(anchor, to: self[location])
+    }
+    
+    /// Scales the rectangle by a specified size using a specified anchor point.
+    /// - Parameters:
+    ///   - scale: Scale amount.
+    ///   - anchor: Anchor point for scale. Default is .topLeft
+    /// - Returns: A rectangle scaled by a specified size using a specified anchor point.
+    func scaled(_ scale: CGSize, anchor: RectAnchor = .topLeft) -> Self {
+        self[anchor].rect(size: size.scaled(scale), anchor: anchor)
+    }
+    
+    /// Scales the rectangle by a specified x and y amount using a specified anchor point.
+    /// - Parameters:
+    ///   - x: X scale amount
+    ///   - y: Y scale amount
+    ///   - anchor: Anchor point for scale. Default is .topLeft
+    /// - Returns: A rectangle scaled by a specified x and y amount using a specified anchor point.
+    func scaled(x: CGFloat, y: CGFloat, anchor: RectAnchor = .topLeft) -> Self {
+        scaled(CGSize(width: x, height: y), anchor: anchor)
+    }
+    
+    /// Scales the rectangle by a specified amount using a specified anchor point.
+    /// - Parameters:
+    ///   - scale: Scale amount
+    ///   - anchor: Anchor point for scale. Default is .topLeft
+    /// - Returns: A rectangle scaled by a specified amount using a specified anchor point.
+    func scaled(_ scale: CGFloat, anchor: RectAnchor = .topLeft) -> Self {
+        scaled(CGSize(width: scale, height: scale), anchor: anchor)
     }
 }

@@ -42,7 +42,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
     }
     
     public var topPoint: RelatableValue
-    public var styles: [ShapeCorner: CornerStyle?]
+    public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d triangular shape with specified top point and styles for each corner.
     /// - Parameters:
@@ -64,13 +64,41 @@ public struct CornerTriangle: EnumeratedCornerShape {
 
 /// Animatable Extension
 extension CornerTriangle {
-    public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
+    public var animatableData: AnimatablePair<
+        CGFloat,
+        AnimatablePair<
+            RelatableValue,
+            AnimatablePair<
+                CornerStyle.AnimatableData,
+                AnimatablePair<
+                    CornerStyle.AnimatableData,
+                    CornerStyle.AnimatableData
+                >
+            >
+        >
+    >
+    {
         get {
-            .init(insetAmount, topPoint)
+            .init(
+                insetAmount,
+                .init(
+                    topPoint,
+                    .init(
+                        styles[.top].animatableData,
+                        .init(
+                            styles[.bottomRight].animatableData,
+                            styles[.bottomLeft].animatableData
+                        )
+                    )
+                )
+            )
         }
         set {
             insetAmount = newValue.first
-            topPoint = newValue.second
+            topPoint = newValue.second.first
+            styles[.top].animatableData = newValue.second.second.first
+            styles[.bottomRight].animatableData = newValue.second.second.second.first
+            styles[.bottomLeft].animatableData = newValue.second.second.second.second
         }
     }
 }

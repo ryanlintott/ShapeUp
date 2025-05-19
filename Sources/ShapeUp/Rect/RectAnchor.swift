@@ -86,18 +86,12 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable {
     }
     
     /// An array of four edges clockwise starting with top
-    @available(*, deprecated, message: "This conveneince parameter was likely never used.")
-    public static var edgeAnchors: [Self] {
-        [.top, .right, .bottom, .left]
-    }
+    @available(*, deprecated, message: "Use `self[.top, .right, .bottom, .left]`.")
+    public static let edgeAnchors: [Self] = [.top, .right, .bottom, .left]
     
     @available(*, deprecated, renamed: "vertices")
-    public static var vertexAnchors: [Self] {
-        [.topLeft, .topRight, .bottomRight, .bottomLeft]
-    }
+    public static let vertexAnchors: [Self] = [.topLeft, .topRight, .bottomRight, .bottomLeft]
     
     /// An array of four corners clockwise starting from top left.
-    public static var vertices: [Self] {
-        [.topLeft, .topRight, .bottomRight, .bottomLeft]
-    }
+    public static let vertices: [Self] = [.topLeft, .topRight, .bottomRight, .bottomLeft]
 }

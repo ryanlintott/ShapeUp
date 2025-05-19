@@ -13,15 +13,9 @@ extension Corner: Animatable {
             .init(Vector2(dx: x, dy: y), style.animatableData)
         }
         set {
-            self.update(with: newValue)
+            x = newValue.first.dx
+            y = newValue.first.dy
+            style.animatableData = newValue.second
         }
-    }
-    
-    /// Updates this Corner with new values based on animatable data
-    /// - Parameter newValue: Data used to update this Corner
-    mutating func update(with newValue: AnimatableData) {
-        x = newValue.first.dx
-        y = newValue.first.dy
-        style.update(with: newValue.second)
     }
 }

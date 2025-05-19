@@ -7,6 +7,20 @@
 
 import SwiftUI
 
+extension Optional<CornerStyle> {
+    public var animatableData: AnimatablePair<RelatableValue, CGFloat> {
+        get {
+            switch self {
+            case .none: CornerStyle.point.animatableData
+            case let .some(value): value.animatableData
+            }
+        }
+        set {
+            self?.animatableData = newValue
+        }
+    }
+}
+
 extension CornerStyle: Animatable {
     public var animatableData: AnimatablePair<RelatableValue, CGFloat> {
         get {
@@ -24,18 +38,12 @@ extension CornerStyle: Animatable {
             }
         }
         set {
-            self.update(with: newValue)
-        }
-    }
-    
-    /// Updates this value based on new animatable data
-    /// - Parameter newValue: Animatable Data representing the new value.
-    mutating func update(with newValue: AnimatableData) {
-        switch self {
-        case .point, .rounded, .straight, .cutout:
-            self = self.changingRadius(to: newValue.first)
-        case .concave:
-            self = .concave(newValue.first, radiusOffset: newValue.second)
+            switch self {
+            case .point, .rounded, .straight, .cutout:
+                self = self.changingRadius(to: newValue.first)
+            case .concave:
+                self = .concave(newValue.first, radiusOffset: newValue.second)
+            }
         }
     }
 }

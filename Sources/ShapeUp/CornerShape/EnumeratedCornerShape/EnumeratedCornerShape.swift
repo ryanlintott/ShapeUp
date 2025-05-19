@@ -18,7 +18,7 @@ public protocol EnumeratedCornerShape: CornerShape {
     associatedtype ShapeCorner: EnumeratedCorner
     
     /// A dictionary storing the style of each corner by it's shape corner label.
-    var styles: [ShapeCorner: CornerStyle?] { get set }
+    var styles: [ShapeCorner: CornerStyle] { get set }
     
     /// Returns a dictionary with each point used to draw the shape stored with it's shape corner label.
     /// - Returns: A dictionary with each point used to draw the shape stored with it's shape corner label.

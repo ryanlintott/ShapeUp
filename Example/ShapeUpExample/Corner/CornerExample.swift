@@ -8,8 +8,38 @@
 import ShapeUp
 import SwiftUI
 
+struct CustomCornerShapeExample: CornerShape {
+    let closed: Bool = true
+    var insetAmount: CGFloat = 0
+    var style: CornerStyle
+    
+    init(style: CornerStyle) {
+        self.style = style
+    }
+    
+    var animatableData: AnimatablePair<CGFloat, CornerStyle.AnimatableData> {
+        get {
+            .init(insetAmount, style.animatableData)
+        }
+        set {
+            insetAmount = newValue.first
+            style.animatableData = newValue.second
+        }
+    }
+    
+    func corners(in rect: CGRect) -> [Corner] {
+        rect[
+            .topLeft,
+            .center,
+            .topRight,
+            .bottomRight,
+            .bottomLeft
+        ].corners(style)
+    }
+}
+
 struct CornerExample: View {
-    let shapes = ["Rectangle", "Triangle", "Pentagon"]
+    let shapes = ["Rectangle", "Triangle", "Pentagon", "Custom"]
     let styles: [CornerStyle] = [.point, .rounded(.zero), .concave(.zero), .straight(.zero), .cutout(.zero)]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
@@ -18,6 +48,7 @@ struct CornerExample: View {
     @State private var relativeRadius = true
     @State private var relative = 0.2
     @State private var absolute = 25.0
+    @State private var inset = 0.0
     
     var adjustedStyle: CornerStyle {
         style.changingRadius(to: relativeRadius ? .relative(relative) : .absolute(absolute))
@@ -30,17 +61,42 @@ struct CornerExample: View {
             }
             
             Color.clear.overlay(
-                Group {
+                ZStack {
                     switch shape {
                     case "Rectangle":
                         CornerRectangle()
                             .applyingStyle(adjustedStyle)
+                            .inset(by: inset)
+                        
+                        CornerRectangle()
+                            .applyingStyle(adjustedStyle)
+                            .stroke()
+                            .foregroundColor(.black)
                     case "Triangle":
                         CornerTriangle()
                             .applyingStyle(adjustedStyle)
-                    default:
+                            .inset(by: inset)
+                        
+                        CornerTriangle()
+                            .applyingStyle(adjustedStyle)
+                            .stroke()
+                            .foregroundColor(.black)
+                    case "Pentagon":
                         CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
                             .applyingStyle(adjustedStyle)
+                            .inset(by: inset)
+                        
+                        CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
+                            .applyingStyle(adjustedStyle)
+                            .stroke()
+                            .foregroundColor(.black)
+                    default:
+                        CustomCornerShapeExample(style: adjustedStyle)
+                            .inset(by: inset)
+                        
+                        CustomCornerShapeExample(style: adjustedStyle)
+                            .stroke()
+                            .foregroundColor(.black)
                     }
                 }
             )
@@ -61,34 +117,51 @@ struct CornerExample: View {
             }
             .pickerStyle(.segmented)
             
-            Group {
-                Section {
-                    Picker("Radius", selection: $relativeRadius) {
-                        Text("Relative").tag(true)
-                        Text("Absolute").tag(false)
-                    }
-                    .pickerStyle(.segmented)
-                } header: {
-                    if relativeRadius {
-                        CrossPlatformStepper(
-                            label: "Radius",
-                            value: $relative,
-                            minValue: 0,
-                            maxValue: 1,
-                            step: 0.1,
-                            decimalPlaces: 1
-                        )
-                    } else {
-                        CrossPlatformStepper(
-                            label: "Radius",
-                            value: $absolute,
-                            minValue: 0,
-                            maxValue: 300,
-                            step: 10,
-                            decimalPlaces: 0
-                        )
-                    }
+            CrossPlatformStepper(
+                label: "Inset: ",
+                value: $inset,
+                minValue: -50,
+                maxValue: 50,
+                step: 5,
+                decimalPlaces: 0
+            )
+            
+            #if !os(tvOS)
+            Slider(value: $inset, in: -50...50) {
+                Text("Inset")
+            } minimumValueLabel: {
+                Text("-50")
+            } maximumValueLabel: {
+                Text("50")
+            }
+            #endif
+            
+            VStack {
+                if relativeRadius {
+                    CrossPlatformStepper(
+                        label: "Radius",
+                        value: $relative,
+                        minValue: 0,
+                        maxValue: 1,
+                        step: 0.1,
+                        decimalPlaces: 1
+                    )
+                } else {
+                    CrossPlatformStepper(
+                        label: "Radius",
+                        value: $absolute,
+                        minValue: 0,
+                        maxValue: 300,
+                        step: 10,
+                        decimalPlaces: 0
+                    )
                 }
+                
+                Picker("Radius", selection: $relativeRadius) {
+                    Text("Relative").tag(true)
+                    Text("Absolute").tag(false)
+                }
+                .pickerStyle(.segmented)
                 
                 #if !os(tvOS)
                 if relativeRadius {
@@ -113,6 +186,7 @@ struct CornerExample: View {
             .disabled(style == .point)
 
         }
+        .animation(.default, value: inset)
         .animation(.default, value: shape)
         .animation(.default, value: style)
         .animation(.default, value: relativeRadius)

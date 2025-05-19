@@ -113,6 +113,7 @@ public extension Vector2Transformable {
     /// Returns the position after being scaled from the origin.
     /// - Parameter scale: Used to scale the position.
     /// - Returns: Position after being scaled from the origin.
+    @available(*, deprecated, renamed: "scaledPosition(_:)")
     func scaledPosition(scale: CGSize) -> CGPoint {
         .init(vector: vector * scale)
     }
@@ -122,8 +123,37 @@ public extension Vector2Transformable {
     ///   - width: Used to scale the x position.
     ///   - height: Used to scale the y position.
     /// - Returns: Position after being scaled from the origin.
+    @available(*, deprecated, renamed: "scaledPosition(x:y:)")
     func scaledPosition(width: CGFloat? = nil, height: CGFloat? = nil) -> CGPoint {
         scaledPosition(scale: .init(width: width ?? 1, height: height ?? 1))
+    }
+    
+    /// Returns the position after being scaled from the origin.
+    /// - Parameters:
+    ///   - scale: Used to scale the position.
+    ///   - anchor: Anchor point for the scale.
+    /// - Returns: Position after being scaled from the origin.
+    func scaledPosition(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> CGPoint {
+        .init(vector: (vector - anchor.vector) * scale + anchor.vector)
+    }
+    
+    /// Returns the position after being scaled from the origin.
+    /// - Parameters:
+    ///   - x: Used to scale the x position.
+    ///   - y: Used to scale the y position.
+    ///   - anchor: Anchor point for the scale.
+    /// - Returns: Position after being scaled from the origin.
+    func scaledPosition(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> CGPoint {
+        scaledPosition(.init(width: x, height: y), anchor: anchor)
+    }
+    
+    /// Returns the position after being scaled from the origin.
+    /// - Parameters:
+    ///   - scale: Used to scale the position.
+    ///   - anchor: Anchor point for the scale.
+    /// - Returns: Position after being scaled from the origin.
+    func scaledPosition(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> CGPoint {
+        scaledPosition(.init(width: scale, height: scale), anchor: anchor)
     }
     
     /// Repositions the object from one frame of reference to another.
@@ -132,10 +162,6 @@ public extension Vector2Transformable {
     ///   - destination: Resulting frame of reference.
     /// - Returns: The same object, repositioned from one frame of reference to another.
     func repositioned(from source: CGRect, to destination: CGRect) -> Self {
-        let widthScale = source.width == 0 ? destination.width : destination.width / source.width
-        let heightScale = source.height == 0 ? destination.height : destination.height / source.height
-
-        let point = (source.origin.vector - point.vector).scaledPosition(width: widthScale, height: heightScale)
-        return self.repositioned(to: point)
+        repositioned(to: destination[relative(to: source)])
     }
 }

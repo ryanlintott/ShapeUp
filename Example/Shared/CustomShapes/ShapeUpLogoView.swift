@@ -24,6 +24,7 @@ struct ShapeUpLogo: View {
                         .moved(rect[0.06, 0.02])
                 }
                     .fill(Color.suPink)
+
                     .shadow(color: .suBlack, radius: 0.01, x: proxy.size.width * 0.006, y: proxy.size.width * 0.0076)
                 
                 /// Purple Logo
@@ -35,7 +36,7 @@ struct ShapeUpLogo: View {
                         rect[0, 1 - 0.15].corner(.rounded(.relative(0.23)))
                     ]
                         .rotated(.degrees(-5))
-                        .moved(dx: rect.width * 0.63, dy: rect.height * 0.11)
+                        .moved(rect[0.63, 0.11])
                 }
                 .fill(Color.suPurple)
                 
@@ -46,7 +47,7 @@ struct ShapeUpLogo: View {
                         .aspectRatio(0.9, contentMode: .fit)
                         .frame(width: proxy.size.width * 0.075)
                         .rotationEffect(.degrees(-126))
-                        .offset(x: proxy.size.width * 0.019, y: proxy.size.height * 0.35)
+                        .offset(proxy.size.scaled(0.019, 0.35))
 
                     // Three triangles
                     VStack(spacing: proxy.size.height * 0.026) {
@@ -71,22 +72,21 @@ struct ShapeUpLogo: View {
                         .aspectRatio(1, contentMode: .fit)
                         .frame(width: proxy.size.width * 0.041)
                         .rotationEffect(.degrees(15))
-                        .offset(x: proxy.size.width * 0.8365, y: proxy.size.height * 0.17)
+                        .offset(proxy.size.scaled(0.8365, 0.17))
                     
                     // Yellow Squiggle
                     CornerCustom(closed: false) { rect in
-                        let points: [CGPoint] = [
+                        rect[
                             (0.0, 1.0),
                             (1.1, 0),
                             (2.1, 0.9),
                             (2.9, -0.1),
                             (3.8, 1),
                             (5, 0)
-                        ].map { CGPoint(x: $0.0 * rect.height * 0.13, y: $0.1 * rect.height * 0.1) }
-                        
-                        return points
+                        ]
+                            .scaledPositions(x: 0.0365, y: 0.1)
                             .rotated(.degrees(-15), anchor: .bottomLeft)
-                            .moved(dx: rect.width * 0.28, dy: rect.height * 0.23)
+                            .moved(rect[0.28, 0.23])
                             .corners()
                     }
                     .stroke(Color.suYellow, lineWidth: proxy.size.height * 0.05)
