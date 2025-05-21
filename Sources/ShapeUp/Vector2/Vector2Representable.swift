@@ -55,7 +55,7 @@ public extension Vector2Representable {
     ///   - size: Size of the rectangle.
     ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
     /// - Returns: A rectangle with the specified size and this point as the anchor.
-    public func rect(size: CGSize, anchor: RectAnchor = .topLeft) -> CGRect {
+    func rect(size: CGSize, anchor: RectAnchor = .topLeft) -> CGRect {
         let anchorVector = size.rect()[anchor].vector
         return CGRect(origin: point.moved(-anchorVector), size: size)
     }
@@ -67,7 +67,7 @@ public extension Vector2Representable {
     ///   - height: Height of the rectangle.
     ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
     /// - Returns: A rectangle with the specified size and this point as the anchor.
-    public func rect(width: CGFloat, height: CGFloat, anchor: RectAnchor = .topLeft) -> CGRect {
+    func rect(width: CGFloat, height: CGFloat, anchor: RectAnchor = .topLeft) -> CGRect {
         rect(size: .init(width: width, height: height), anchor: anchor)
     }
 }

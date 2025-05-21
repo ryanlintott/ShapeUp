@@ -42,6 +42,8 @@ public struct CornerTriangle: EnumeratedCornerShape {
     }
     
     public var topPoint: RelatableValue
+    
+    @AnimatableDictionary
     public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d triangular shape with specified top point and styles for each corner.
@@ -50,7 +52,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
     ///   - styles: A dictionary describing the style of each shape corner.
     public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
         self.topPoint = topPoint
-        self.styles = styles
+        self._styles = .init(styles)
     }
     
     public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
@@ -68,13 +70,7 @@ extension CornerTriangle {
         CGFloat,
         AnimatablePair<
             RelatableValue,
-            AnimatablePair<
-                CornerStyle.AnimatableData,
-                AnimatablePair<
-                    CornerStyle.AnimatableData,
-                    CornerStyle.AnimatableData
-                >
-            >
+            AnimatableDictionary<ShapeCorner, CornerStyle>.AnimatableData
         >
     >
     {
@@ -83,22 +79,53 @@ extension CornerTriangle {
                 insetAmount,
                 .init(
                     topPoint,
-                    .init(
-                        styles[.top].animatableData,
-                        .init(
-                            styles[.bottomRight].animatableData,
-                            styles[.bottomLeft].animatableData
-                        )
-                    )
+                    _styles.animatableData
                 )
             )
         }
         set {
             insetAmount = newValue.first
             topPoint = newValue.second.first
-            styles[.top].animatableData = newValue.second.second.first
-            styles[.bottomRight].animatableData = newValue.second.second.second.first
-            styles[.bottomLeft].animatableData = newValue.second.second.second.second
+            _styles.animatableData = newValue.second.second
         }
     }
 }
+//extension CornerTriangle {
+//    public var animatableData: AnimatablePair<
+//        CGFloat,
+//        AnimatablePair<
+//            RelatableValue,
+//            AnimatablePair<
+//                CornerStyle.AnimatableData,
+//                AnimatablePair<
+//                    CornerStyle.AnimatableData,
+//                    CornerStyle.AnimatableData
+//                >
+//            >
+//        >
+//    >
+//    {
+//        get {
+//            .init(
+//                insetAmount,
+//                .init(
+//                    topPoint,
+//                    .init(
+//                        styles[.top].animatableData,
+//                        .init(
+//                            styles[.bottomRight].animatableData,
+//                            styles[.bottomLeft].animatableData
+//                        )
+//                    )
+//                )
+//            )
+//        }
+//        set {
+//            insetAmount = newValue.first
+//            topPoint = newValue.second.first
+//            styles[.top].animatableData = newValue.second.second.first
+//            styles[.bottomRight].animatableData = newValue.second.second.second.first
+//            styles[.bottomLeft].animatableData = newValue.second.second.second.second
+//        }
+//    }
+//}

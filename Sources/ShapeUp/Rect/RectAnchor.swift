@@ -36,6 +36,7 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable {
     case bottom
     case bottomLeft
     case left
+    /// Relative to a rectangle with a width and height of 1 and an origin at the top left.
     case relative(_ x: CGFloat, _ y: CGFloat)
     
     static func relative(_ point: CGPoint) -> RectAnchor {

@@ -40,13 +40,14 @@ public struct CornerRectangle: EnumeratedCornerShape {
         case bottomLeft
     }
     
-    public var styles: [ShapeCorner : CornerStyle]
+    @AnimatableDictionary
+    public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d rectangular shape with specified styles for each corner.
     /// - Parameters:
     ///   - styles: A dictionary describing the style of each shape corner.
     public init(_ styles: [ShapeCorner: CornerStyle] = [:]) {
-        self.styles = styles
+        self._styles = .init(styles)
     }
     
     public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
@@ -63,39 +64,18 @@ public struct CornerRectangle: EnumeratedCornerShape {
 extension CornerRectangle {
     public var animatableData: AnimatablePair<
         CGFloat,
-        AnimatablePair<
-            CornerStyle.AnimatableData,
-            AnimatablePair<
-                CornerStyle.AnimatableData,
-                AnimatablePair<
-                    CornerStyle.AnimatableData,
-                    CornerStyle.AnimatableData
-                >
-            >
-        >
+        AnimatableDictionary<ShapeCorner, CornerStyle>.AnimatableData
     >
     {
         get {
             .init(
                 insetAmount,
-                .init(
-                    styles[.topLeft].animatableData,
-                    .init(
-                        styles[.topRight].animatableData,
-                        .init(
-                            styles[.bottomRight].animatableData,
-                            styles[.bottomLeft].animatableData
-                        )
-                    )
-                )
+                _styles.animatableData
             )
         }
         set {
             insetAmount = newValue.first
-            styles[.topLeft].animatableData = newValue.second.first
-            styles[.topRight].animatableData = newValue.second.second.first
-            styles[.bottomRight].animatableData = newValue.second.second.second.first
-            styles[.bottomLeft].animatableData = newValue.second.second.second.second
+            _styles.animatableData = newValue.second
         }
     }
 }
