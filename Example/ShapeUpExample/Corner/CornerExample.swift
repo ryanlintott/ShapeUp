@@ -46,7 +46,7 @@ struct CornerExample: View {
         .concave(.zero),
         .straight(.zero),
         .cutout(.zero),
-        .symmetrical(.zero, anchorPoints: [.topLeft, .left, .top, .topRight])
+        .custom(.zero, anchorPoints: [.topLeft, .left, .center, .bottomLeft, .bottomRight])
     ]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     

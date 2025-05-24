@@ -24,16 +24,6 @@ extension Corner: Vector2Transformable {
 }
 
 extension Corner {
-    /// Radius of corner based on the style.
-    public var radius: RelatableValue {
-        get {
-            style.radius
-        }
-        set {
-            style.radius = newValue
-        }
-    }
-    
     /// Creates a corner at the same position but with the supplied style.
     /// - Parameter style: Corner style to apply.
     /// - Returns: A corner at the same position but with the supplied style.
@@ -42,16 +32,6 @@ extension Corner {
             return self
         }
         return Corner(style, point: point)
-    }
-    
-    /// Creates a corner with the same style at the same position but with a new supplied radius.
-    /// - Parameter radius: Radius to apply to the corner.
-    /// - Returns: A corner with the same style at the same position but with a new supplied radius.
-    public func changingRadius(to radius: RelatableValue) -> Corner {
-        if radius == self.radius {
-            return self
-        }
-        return applyingStyle(style.changingRadius(to: radius))
     }
     
     /// Creates a set of saved dimensions based on the corner style and provided previous and next points.
@@ -65,25 +45,14 @@ extension Corner {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
     }
     
-    public func relative(to dimensions: Corner.Dimensions) -> RelativeCorner {
-        .init(
-            style,
-            anchorPoint: point.relative(to: dimensions)
-        )
+    public func relative(to rect: CGRect) -> RelativeCorner {
+        relative(to: CGFrame(rect))
     }
     
-    func relativeToRhombus(
-        origin: CGPoint,
-        uVector: Vector2,
-        vVector: Vector2
-    ) -> RelativeCorner {
+    public func relative(to frame: CGFrame) -> RelativeCorner {
         .init(
             style,
-            anchorPoint: point.relativeToRhombus(
-                origin: origin,
-                uVector: uVector,
-                vVector: vVector
-            )
+            anchorPoint: frame[point]
         )
     }
 }

@@ -26,7 +26,7 @@ public extension CGRect {
     /// - Parameter anchor: Anchor where the point is located.
     /// - Returns: A point where the anchor is located.
     subscript (_ anchor: RectAnchor) -> CGPoint {
-        anchor(in: self)
+        anchor.point(in: self)
     }
     
     /// Creates an array of points in the locations of the supplied anchors.

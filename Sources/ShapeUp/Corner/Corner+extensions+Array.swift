@@ -20,57 +20,6 @@ public extension Array where Element == Corner {
         }
     }
     
-    /// Applies new styles to this array of corners.
-    /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
-    mutating func applyStyles(_ styles: [CornerStyle?]) {
-        self = self.applyingStyles(styles)
-    }
-    
-    /// Creates an array of corners with the same positions and specified styles.
-    /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
-    /// - Returns: An array of corners with the same positions and specified styles.
-    func applyingStyles(_ styles: [CornerStyle?]) -> [Corner] {
-        if styles.isEmpty { return self }
-        // Create an array of styles equal in length to the array of corners.
-        let styles = styles + Array<CornerStyle?>(repeating: nil, count: Swift.max(count - styles.count, 0))
-        
-        return zip(self, styles).map { corner, style in
-            // Apply a style if one is provided, otherwise use the current style.
-            corner.applyingStyle(style ?? corner.style)
-        }
-    }
-    
-    /// Applies a new style to all corners in the array.
-    /// - Parameter style: A style that will be applied to every corner.
-    mutating func applyStyle(_ style: CornerStyle) {
-        self = self.applyingStyle(style)
-    }
-    
-    /// Creates an array of corners with the same positions and a new specified style.
-    /// - Parameter style: A style that will be applied to every corner.
-    /// - Returns: An array of corners with the same positions and a new specified style.
-    func applyingStyle(_ style: CornerStyle) -> [Corner] {
-        self.map { $0.applyingStyle(style) }
-    }
-    
-    /// Creates an array of corners with the same positions and a new specified style applied to specified corners.
-    /// - Parameters:
-    ///   - style: A style that will be applied to specified corners.
-    ///   - indices: Indices of the corners with which to apply the new style.
-    /// - Returns: An array of corners with the same positions and a new specified style applied to specified corners.
-    func applyingStyle(_ style: CornerStyle, corners indices: [Self.Index]) -> [Corner] {
-        self.enumerated().map({ indices.contains($0) ? $1.applyingStyle(style) : $1 })
-    }
-    
-    /// Creates an array of corners with the same positions and a new specified style applied to a specified corner.
-    /// - Parameters:
-    ///   - style: A style that will be applied to a specified corner.
-    ///   - index: Index of the corner with which to apply the new style.
-    /// - Returns: An array of corners with the same positions and a new specified style applied to a specified corner.
-    func applyingStyle(_ style: CornerStyle, corner index: Self.Index) -> [Corner] {
-        applyingStyle(style, corners: [index])
-    }
-    
     /// An array of corner dimensions used for drawing, insetting, and modifying points of a closed shape.
     var dimensions: [Corner.Dimensions] {
         dimensions()
@@ -96,22 +45,12 @@ public extension Array where Element == Corner {
         }
     }
     
-    func relative(to dimensions: Corner.Dimensions) -> [RelativeCorner] {
-        map { $0.relative(to: dimensions) }
+    func relative(to rect: CGRect) -> [RelativeCorner] {
+        map { $0.relative(to: rect) }
     }
     
-    func relativeToRhombus(
-        origin: CGPoint,
-        uVector: Vector2,
-        vVector: Vector2
-    ) -> [RelativeCorner] {
-        map {
-            $0.relativeToRhombus(
-                origin: origin,
-                uVector: uVector,
-                vVector: vVector
-            )
-        }
+    func relative(to frame: CGFrame) -> [RelativeCorner] {
+        map { $0.relative(to: frame) }
     }
     
     /// Creates a path defined by this array of corners. Closed by default.
@@ -160,7 +99,7 @@ public extension Array where Element == Corner {
     ///
     /// If any corner uses relative radius values or allows nested corner styles, this value will be false.
     internal var isFlat: Bool {
-        self.contains(where: { !$0.style.isFlat })
+        allSatisfy { $0.style.isFlat }
     }
     
     /// An array of corners that's a flattened representation of the current array. Flat corners are point, rounded, and concave with absolute radius values.

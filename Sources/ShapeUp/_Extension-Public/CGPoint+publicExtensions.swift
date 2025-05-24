@@ -33,25 +33,8 @@ extension CGPoint: Vector2Transformable {
         return .relative(x, y)
     }
     
-    func relative(to dimensions: Corner.Dimensions) -> RectAnchor {
-        relativeToRhombus(origin: dimensions.cornerStart, uVector: dimensions.startVector, vVector: dimensions.endVector)
-    }
-    
-    func relativeToRhombus(
-        origin: CGPoint,
-        uVector: Vector2,
-        vVector: Vector2
-    ) -> RectAnchor {
-        /// Vector from cornerStart to the point.
-        let relativeVector = vector - origin.vector
-        
-        let denominator = uVector.crossProduct(with: vVector)
-        guard abs(denominator) > 1e-8 else { return .topLeft }
-        
-        let u = relativeVector.crossProduct(with: vVector) / denominator
-        let v = uVector.crossProduct(with: relativeVector) / denominator
-        
-        return .relative(u, v)
+    func relative(to frame: CGFrame) -> RectAnchor {
+        frame[self]
     }
     
     /// Creates a rectangle using this point as an anchor.
@@ -84,15 +67,7 @@ extension Array<CGPoint> {
         map { $0.relative(to: rect) }
     }
     
-    func relative(to dimensions: Corner.Dimensions) -> [RectAnchor] {
-        map { $0.relative(to: dimensions) }
-    }
-    
-    func relativeToRhombus(
-        origin: CGPoint,
-        uVector: Vector2,
-        vVector: Vector2
-    ) -> [RectAnchor] {
-        map { $0.relativeToRhombus(origin: origin, uVector: uVector, vVector: vVector) }
+    func relative(to frame: CGFrame) -> [RectAnchor] {
+        map { $0.relative(to: frame) }
     }
 }

@@ -287,7 +287,7 @@ public extension Corner.Dimensions {
     static func cutoutPoint(corner: Corner, cornerStart: CGPoint, cornerEnd: CGPoint, nextVector: Vector2, previousVector: Vector2, cutLength: CGFloat, absoluteRadius: CGFloat, halvedRadiusAngle: Angle, radiusOffset: CGFloat, concaveRadius: CGFloat, reflexMultiplier: CGFloat) -> CGPoint {
         let halfStraightVector = (cornerEnd.vector - cornerStart.vector) / 2
         switch corner.style {
-        case .point, .rounded, .symmetrical:
+        case .point, .rounded, .custom:
             return corner.point
         case .straight:
             return (cornerStart.vector + halfStraightVector).point

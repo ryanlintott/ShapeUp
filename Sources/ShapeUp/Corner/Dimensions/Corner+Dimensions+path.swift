@@ -103,7 +103,7 @@ extension Corner.Dimensions {
                     .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                     .addOpenCornerShape(to: &path, moveToStart: moveToStart)
             }
-        case .symmetrical:
+        case .custom:
             subCorners
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                 .addOpenCornerShape(to: &path, moveToStart: moveToStart)

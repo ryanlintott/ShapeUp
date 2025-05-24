@@ -48,7 +48,7 @@ extension RectAnchor {
     /// Creates a point in the location of an anchor.
     /// - Parameter rect: Rectangle where anchor is positioned.
     /// - Returns: The point where the anchor is located.
-    public func callAsFunction(in rect: CGRect) -> CGPoint {
+    public func point(in rect: CGRect) -> CGPoint {
         switch self {
         case .topLeft:
             CGPoint(x: rect.minX, y: rect.minY)
@@ -76,14 +76,12 @@ extension RectAnchor {
     /// Creates a point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
     /// - Parameter cornerDimensions: Dimensions of a corner that are used to define a rhombus with U and V coordinates on which the relative x and y coordinates of this anchor will be mapped.
     /// - Returns: A point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
-    func callAsFunction(in cornerDimensions: Corner.Dimensions) -> CGPoint {
-        cornerDimensions.cornerStart
-            .moved(cornerDimensions.startVector * relativePoint.x)
-            .moved(cornerDimensions.endVector * relativePoint.y)
+    public func point(in frame: CGFrame) -> CGPoint {
+        frame[self]
     }
     
     var relativePoint: CGPoint {
-        self(in: .one)
+        self.point(in: .one)
     }
     
     /// The type of the anchor.

@@ -25,7 +25,7 @@ extension CornerStyle: Animatable {
     public var animatableData: AnimatablePair<RelatableValue, CGFloat> {
         get {
             switch self {
-            case .point, .rounded, .straight, .cutout, .symmetrical:
+            case .point, .rounded, .straight, .cutout, .custom:
                 .init(radius, .zero)
             case let .concave(radius, radiusOffset):
                 .init(radius, radiusOffset)
@@ -33,8 +33,8 @@ extension CornerStyle: Animatable {
         }
         set {
             switch self {
-            case .point, .rounded, .straight, .cutout, .symmetrical:
-                self = self.changingRadius(to: newValue.first)
+            case .point, .rounded, .straight, .cutout, .custom:
+                radius = newValue.first
             case .concave:
                 self = .concave(newValue.first, radiusOffset: newValue.second)
             }

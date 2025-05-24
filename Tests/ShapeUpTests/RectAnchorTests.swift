@@ -33,15 +33,15 @@ class RectAnchorTests: XCTestCase {
         let bottomRightPoint = CGPoint(x: 10, y: 20)
         
         // then
-        XCTAssertEqual(RectAnchor.topLeft(in: rect), topLeftPoint)
-        XCTAssertEqual(RectAnchor.top(in: rect), topPoint)
-        XCTAssertEqual(RectAnchor.topRight(in: rect), topRightPoint)
-        XCTAssertEqual(RectAnchor.left(in: rect), leftPoint)
-        XCTAssertEqual(RectAnchor.center(in: rect), centerPoint)
-        XCTAssertEqual(RectAnchor.right(in: rect), rightPoint)
-        XCTAssertEqual(RectAnchor.bottomLeft(in: rect), bottomLeftPoint)
-        XCTAssertEqual(RectAnchor.bottom(in: rect), bottomPoint)
-        XCTAssertEqual(RectAnchor.bottomRight(in: rect), bottomRightPoint)
+        XCTAssertEqual(RectAnchor.topLeft.point(in: rect), topLeftPoint)
+        XCTAssertEqual(RectAnchor.top.point(in: rect), topPoint)
+        XCTAssertEqual(RectAnchor.topRight.point(in: rect), topRightPoint)
+        XCTAssertEqual(RectAnchor.left.point(in: rect), leftPoint)
+        XCTAssertEqual(RectAnchor.center.point(in: rect), centerPoint)
+        XCTAssertEqual(RectAnchor.right.point(in: rect), rightPoint)
+        XCTAssertEqual(RectAnchor.bottomLeft.point(in: rect), bottomLeftPoint)
+        XCTAssertEqual(RectAnchor.bottom.point(in: rect), bottomPoint)
+        XCTAssertEqual(RectAnchor.bottomRight.point(in: rect), bottomRightPoint)
     }
     
     func testCasesMatchAnchorType() throws {

@@ -69,7 +69,7 @@ extension Corner.Dimensions {
             let straightCutLength = (insetEnd.vector - insetStart.vector).magnitude * insetStraightCutSignMultiplier
             // The radius angle will be the same for the inset. It can be used with half the straight cut line to determine the inset radius
             insetRadius = (straightCutLength * 0.5) / abs(sin(halvedRadiusAngle.radians))
-        case .symmetrical:
+        case .custom:
             /// Inset radius is set to an absolute value that doesn't change.
             insetRadius = absoluteRadius
         }
@@ -117,20 +117,20 @@ extension Corner.Dimensions {
             
             insetCornerStyle = .cutout(insetRadius, cornerStyles: nestedCornerStyles)
             
-        case let .symmetrical(_, relativeCorners):
+        case .custom:
             let insetSubcorners = subCorners
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                 .corners(inset: inset)
             /// The Rhombus is the same size, just moved to the new inset location.
-                .relativeToRhombus(
-                    origin: insetPoint.moved(-startVector),
-                    uVector: startVector,
-                    vVector: endVector
+                .relative(
+                    to: CGFrame(
+                        origin: insetPoint.moved(-startVector),
+                        xAxis: startVector,
+                        yAxis: endVector
+                    )
                 )
             
-            let halfInsetSubcorners = Array(insetSubcorners[0..<relativeCorners.count])
-            
-            insetCornerStyle = .symmetrical(insetRadius, relativeCorners: halfInsetSubcorners)
+            insetCornerStyle = .custom(insetRadius, relativeCorners: insetSubcorners)
         }
         
         return insetPoint.corner(insetCornerStyle)
