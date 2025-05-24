@@ -18,7 +18,7 @@ extension Corner.Dimensions {
                 return [corner.changingRadius(to: .absolute(absoluteRadius))]
             }
             return [corner]
-        case .straight, .cutout:
+        case .straight, .cutout, .symmetrical:
             return subCorners.flattened
         }
     }
@@ -37,7 +37,7 @@ extension Corner.Dimensions {
                 return [corner.changingRadius(to: .absolute(absoluteRadius))]
             }
             return [corner]
-        case .straight, .cutout:
+        case .straight, .cutout, .symmetrical:
             return subCorners.flattened(levels: levels - 1)
         }
     }

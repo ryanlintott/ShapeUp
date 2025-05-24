@@ -37,27 +37,23 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     ///   - cornerStyles: Corner styles for the three resulting corners of the cutout.
     case cutout(_ radius: RelatableValue, cornerStyles: [CornerStyle] = [])
     
-    /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine the shape.
+    /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine half of the corner shape then mirrored to create the other half.
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start, and end corners of the custom shape. Relative values relate to the shortest of the two lines from this corner.
-    ///   - cornerStyles: An array of anchor points with corner styles that create corners in a rectangle that will be stretched and skewed to fit the corner starting at the bottom left and ending at the top right.
-//    case custom(radius: RelatableValue, cornerStyles: [(RectAnchor, CornerStyle)])
+    ///   - relativeCorners: Relative corners that define half of the symmetrical corner shape. Their position is determined relative to a rhombus defined by the radius.
+    case symmetrical(_ radius: RelatableValue, relativeCorners: [RelativeCorner])
 }
 
 public extension CornerStyle {
     /// A string with the name of this corner style.
     var name: String {
         switch self {
-        case .point:
-            return "point"
-        case .rounded:
-            return "rounded"
-        case .concave:
-            return "concave"
-        case .straight:
-            return "straight"
-        case .cutout:
-            return "cutout"
+        case .point: "point"
+        case .rounded: "rounded"
+        case .concave: "concave"
+        case .straight: "straight"
+        case .cutout: "cutout"
+        case .symmetrical: "symmetrical"
         }
     }
     
@@ -115,21 +111,35 @@ public extension CornerStyle {
         .cutout(radius, cornerStyle: cornerStyle)
     }
     
+    /// A symmetrical corner style with a specified radius, a set of mirrored points and a corner style used on all of them.
+    ///  - Parameters:
+    ///   - radius: Radius of a circle used to determine the start point (0,0) and end point (1,1) of the corner. Relative values relate to the shortest of the two lines from this corner.
+    ///   - cornerStyle: Corner style applied to all points. Default is .point.
+    ///   - anchorPoints: Relative points that define half of the symmetrical corner shape defined by an array of ``RectAnchor``
+    static func symmetrical(_ radius: RelatableValue, cornerStyle: CornerStyle = .point, anchorPoints: [RectAnchor]) -> Self {
+        .symmetrical(
+            radius,
+            relativeCorners: anchorPoints.map { RelativeCorner(cornerStyle, anchorPoint: $0)
+            }
+        )
+    }
+    
     /// Radius of the corner.
     ///
     /// A circle with this radius determines the start and end points of any corner shape except concave that may be effected by radius offset.
     var radius: RelatableValue {
-        switch self {
-        case .point:
-            return .zero
-        case let .rounded(radius):
-            return radius
-        case let .concave(radius, _):
-            return radius
-        case let .straight(radius, _):
-            return radius
-        case let .cutout(radius, _):
-            return radius
+        get {
+            switch self {
+            case .point: .zero
+            case let .rounded(radius): radius
+            case let .concave(radius, _): radius
+            case let .straight(radius, _): radius
+            case let .cutout(radius, _): radius
+            case let .symmetrical(radius, _): radius
+            }
+        }
+        set {
+            self = self.changingRadius(to: newValue)
         }
     }
     
@@ -137,14 +147,31 @@ public extension CornerStyle {
     ///
     /// Some corners styles have no nested corners, others may have several and this nesting can continue to multiple levels.
     var cornerStyles: [CornerStyle] {
-        switch self {
-        case .point, .rounded, .concave:
-            return []
-        case let .straight(_, cornerStyles):
-            return cornerStyles
-        case let .cutout(_, cornerStyles):
-            return cornerStyles
+        get {
+            switch self {
+            case .point, .rounded, .concave: []
+            case let .straight(_, cornerStyles): cornerStyles
+            case let .cutout(_, cornerStyles): cornerStyles
+            case let .symmetrical(_, corners): corners.map(\.style)
+            }
         }
+//        set {
+//            switch self {
+//            case .point, .rounded, .concave:
+//                break
+//            case let .straight:
+//                self = .straight(radius, cornerStyles: newValue)
+//            case let .cutout:
+//                self = .cutout(radius, cornerStyles: newValue)
+//            case let .symmetrical(_, relativeCorners):
+//                self = .symmetrical(
+//                    radius,
+//                    relativeCorners: relativeCorners
+//                        .applyingStyle(.point)
+//                        .applyingStyles(newValue)
+//                )
+//            }
+//        }
     }
     
     /// A boolean check that determines if a corner style is flat. Flat corners are point, rounded, and concave with absolute radius values.
@@ -159,7 +186,7 @@ public extension CornerStyle {
                 return true
             }
             return false
-        case .straight, .cutout:
+        case .straight, .cutout, .symmetrical:
             return false
         }
     }
@@ -170,15 +197,17 @@ public extension CornerStyle {
     func changingRadius(to radius: RelatableValue) -> CornerStyle {
         switch self {
         case .point:
-            return self
+            self
         case .rounded:
-            return .rounded(radius)
+            .rounded(radius)
         case let .concave(_, radiusOffset):
-            return .concave(radius, radiusOffset: radiusOffset)
+            .concave(radius, radiusOffset: radiusOffset)
         case let .straight(_, cornerStyles):
-            return .straight(radius, cornerStyles: cornerStyles)
+            .straight(radius, cornerStyles: cornerStyles)
         case let .cutout(_, cornerStyles):
-            return .cutout(radius, cornerStyles: cornerStyles)
+            .cutout(radius, cornerStyles: cornerStyles)
+        case let .symmetrical(_, relativeCorners):
+            .symmetrical(radius, relativeCorners: relativeCorners)
         }
     }
     

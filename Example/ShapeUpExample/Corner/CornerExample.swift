@@ -40,7 +40,14 @@ struct CustomCornerShapeExample: CornerShape {
 
 struct CornerExample: View {
     let shapes = ["Rectangle", "Triangle", "Pentagon", "Custom"]
-    let styles: [CornerStyle] = [.point, .rounded(.zero), .concave(.zero), .straight(.zero), .cutout(.zero)]
+    let styles: [CornerStyle] = [
+        .point,
+        .rounded(.zero),
+        .concave(.zero),
+        .straight(.zero),
+        .cutout(.zero),
+        .symmetrical(.zero, anchorPoints: [.topLeft, .left, .top, .topRight])
+    ]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
     @State private var shape = "Rectangle"

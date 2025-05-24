@@ -223,7 +223,8 @@ public extension Corner.Dimensions {
     ///   - cutLength: Cut length from corner point to corner start.
     /// - Returns: The point where the corner shape starts.
     static func cornerStart(cornerPoint: CGPoint, previousVector: Vector2, cutLength: CGFloat) -> CGPoint {
-        (cornerPoint.vector + (previousVector.normalized * cutLength)).point
+        cornerPoint
+            .moved(previousVector.normalized * cutLength)
     }
     
     /// Returns the point where the corner shape ends.
@@ -233,7 +234,8 @@ public extension Corner.Dimensions {
     ///   - cutLength: Cut length from cotner point to corner end.
     /// - Returns: The point where the corner shape ends.
     static func cornerEnd(cornerPoint: CGPoint, nextVector: Vector2, cutLength: CGFloat) -> CGPoint {
-        (cornerPoint.vector + (nextVector.normalized * cutLength)).point
+        cornerPoint
+            .moved(nextVector.normalized * cutLength)
     }
     
     /// Returns the center point of the radius used to cut the corner
@@ -285,7 +287,7 @@ public extension Corner.Dimensions {
     static func cutoutPoint(corner: Corner, cornerStart: CGPoint, cornerEnd: CGPoint, nextVector: Vector2, previousVector: Vector2, cutLength: CGFloat, absoluteRadius: CGFloat, halvedRadiusAngle: Angle, radiusOffset: CGFloat, concaveRadius: CGFloat, reflexMultiplier: CGFloat) -> CGPoint {
         let halfStraightVector = (cornerEnd.vector - cornerStart.vector) / 2
         switch corner.style {
-        case .point, .rounded:
+        case .point, .rounded, .symmetrical:
             return corner.point
         case .straight:
             return (cornerStart.vector + halfStraightVector).point

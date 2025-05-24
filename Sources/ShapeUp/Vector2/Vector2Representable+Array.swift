@@ -92,11 +92,4 @@ public extension Array where Element: Vector2Representable {
                 return Angle.threePoint(nextPoint, $0.element, previousPoint)
             }
     }
-    
-    /// Returns an array of anchor points relative to the specified rectangle.
-    /// - Parameter rect: Rectangle used for relative position.
-    /// - Returns: An array of anchor points relative to the specified rectangle.
-    func relative(to rect: CGRect) -> [RectAnchor] {
-        map { $0.relative(to: rect) }
-    }
 }

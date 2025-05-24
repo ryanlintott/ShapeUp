@@ -25,21 +25,15 @@ extension CornerStyle: Animatable {
     public var animatableData: AnimatablePair<RelatableValue, CGFloat> {
         get {
             switch self {
-            case .point:
-                return .init(.zero, .zero)
-            case let .rounded(radius):
-                return .init(radius, .zero)
+            case .point, .rounded, .straight, .cutout, .symmetrical:
+                .init(radius, .zero)
             case let .concave(radius, radiusOffset):
-                return .init(radius, radiusOffset)
-            case let .straight(radius, _):
-                return .init(radius, .zero)
-            case let .cutout(radius, _):
-                return .init(radius, .zero)
+                .init(radius, radiusOffset)
             }
         }
         set {
             switch self {
-            case .point, .rounded, .straight, .cutout:
+            case .point, .rounded, .straight, .cutout, .symmetrical:
                 self = self.changingRadius(to: newValue.first)
             case .concave:
                 self = .concave(newValue.first, radiusOffset: newValue.second)

@@ -34,7 +34,7 @@ class RectAnchorArrayTests: XCTestCase {
         if pointArray.count == rectAnchors.count {
             for i in 0..<pointArray.count {
                 // Check that the point value calculated above equals the point value of each element
-                XCTAssertEqual(pointArray[i], rectAnchors[i].point(in: rect))
+                XCTAssertEqual(pointArray[i], rectAnchors[i](in: rect))
             }
         }
     }

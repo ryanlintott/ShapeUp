@@ -12,7 +12,7 @@ public extension Array where Element == RectAnchor {
     /// - Parameter rect: Rectangle where anchors are positioned.
     /// - Returns: An array of points where the anchors are located.
     func points(in rect: CGRect) -> [CGPoint] {
-        map { $0.point(in: rect) }
+        map { $0(in: rect) }
     }
     
     static let vertices: Self = RectAnchor.vertices

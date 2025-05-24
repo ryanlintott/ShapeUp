@@ -69,6 +69,9 @@ extension Corner.Dimensions {
             let straightCutLength = (insetEnd.vector - insetStart.vector).magnitude * insetStraightCutSignMultiplier
             // The radius angle will be the same for the inset. It can be used with half the straight cut line to determine the inset radius
             insetRadius = (straightCutLength * 0.5) / abs(sin(halvedRadiusAngle.radians))
+        case .symmetrical:
+            /// Inset radius is set to an absolute value that doesn't change.
+            insetRadius = absoluteRadius
         }
         return (point: insetPoint, radius: insetRadius, radiusOffset: insetRadiusOffset ?? 0)
     }
@@ -98,25 +101,36 @@ extension Corner.Dimensions {
         case .concave:
             insetCornerStyle = .concave(insetRadius, radiusOffset: insetValues.radiusOffset)
             
-        case let .straight(_, cornerStyles):
-            let nestedCornerStyles = zip(cornerStyles, [cornerStart, cornerEnd])
-                .map { style, vector in
-                    vector.corner(style)
-                }
+        case .straight:
+            let nestedCornerStyles = subCorners
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
-                .map { $0.corner(inset: inset).style }
+                .corners(inset: inset)
+                .cornerStyles
 
             insetCornerStyle = .straight(insetRadius, cornerStyles: nestedCornerStyles)
             
-        case let .cutout(_, cornerStyles):
-            let nestedCornerStyles = zip(cornerStyles, [cornerStart, cutoutPoint, cornerEnd])
-                .map { style, vector in
-                    vector.corner(style)
-                }
+        case .cutout:
+            let nestedCornerStyles = subCorners
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
-                .map { $0.corner(inset: inset).style }
+                .corners(inset: inset)
+                .cornerStyles
             
             insetCornerStyle = .cutout(insetRadius, cornerStyles: nestedCornerStyles)
+            
+        case let .symmetrical(_, relativeCorners):
+            let insetSubcorners = subCorners
+                .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
+                .corners(inset: inset)
+            /// The Rhombus is the same size, just moved to the new inset location.
+                .relativeToRhombus(
+                    origin: insetPoint.moved(-startVector),
+                    uVector: startVector,
+                    vVector: endVector
+                )
+            
+            let halfInsetSubcorners = Array(insetSubcorners[0..<relativeCorners.count])
+            
+            insetCornerStyle = .symmetrical(insetRadius, relativeCorners: halfInsetSubcorners)
         }
         
         return insetPoint.corner(insetCornerStyle)

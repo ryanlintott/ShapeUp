@@ -22,4 +22,77 @@ extension CGPoint: Vector2Transformable {
         /// This function is required for Vector2Transformable conformance. Other types (like Corner) have to pass on their other properties but CGPoint only has point information.
         point.point
     }
+    
+    /// Returns an anchor point relative to the specified rectangle.
+    /// - Parameter rect: Rectangle used for relative position.
+    /// - Returns: An anchor point relative to the specified rectangle.
+    func relative(to rect: CGRect) -> RectAnchor {
+        let relativePosition = vector - rect.origin.vector
+        let x = rect.width == 0 ? 0 : relativePosition.dx / rect.width
+        let y = rect.height == 0 ? 0 : relativePosition.dy / rect.height
+        return .relative(x, y)
+    }
+    
+    func relative(to dimensions: Corner.Dimensions) -> RectAnchor {
+        relativeToRhombus(origin: dimensions.cornerStart, uVector: dimensions.startVector, vVector: dimensions.endVector)
+    }
+    
+    func relativeToRhombus(
+        origin: CGPoint,
+        uVector: Vector2,
+        vVector: Vector2
+    ) -> RectAnchor {
+        /// Vector from cornerStart to the point.
+        let relativeVector = vector - origin.vector
+        
+        let denominator = uVector.crossProduct(with: vVector)
+        guard abs(denominator) > 1e-8 else { return .topLeft }
+        
+        let u = relativeVector.crossProduct(with: vVector) / denominator
+        let v = uVector.crossProduct(with: relativeVector) / denominator
+        
+        return .relative(u, v)
+    }
+    
+    /// Creates a rectangle using this point as an anchor.
+    /// - Parameters:
+    ///   - size: Size of the rectangle.
+    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
+    /// - Returns: A rectangle with the specified size and this point as the anchor.
+    func rect(size: CGSize, anchor: RectAnchor = .topLeft) -> CGRect {
+        let anchorVector = size.rect()[anchor].vector
+        return CGRect(origin: point.moved(-anchorVector), size: size)
+    }
+    
+    
+    /// Creates a rectangle using this point as an anchor.
+    /// - Parameters:
+    ///   - width: Width of the rectangle.
+    ///   - height: Height of the rectangle.
+    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
+    /// - Returns: A rectangle with the specified size and this point as the anchor.
+    func rect(width: CGFloat, height: CGFloat, anchor: RectAnchor = .topLeft) -> CGRect {
+        rect(size: .init(width: width, height: height), anchor: anchor)
+    }
+}
+
+extension Array<CGPoint> {
+    /// Returns an array of anchor points relative to the specified rectangle.
+    /// - Parameter rect: Rectangle used for relative position.
+    /// - Returns: An array of anchor points relative to the specified rectangle.
+    func relative(to rect: CGRect) -> [RectAnchor] {
+        map { $0.relative(to: rect) }
+    }
+    
+    func relative(to dimensions: Corner.Dimensions) -> [RectAnchor] {
+        map { $0.relative(to: dimensions) }
+    }
+    
+    func relativeToRhombus(
+        origin: CGPoint,
+        uVector: Vector2,
+        vVector: Vector2
+    ) -> [RectAnchor] {
+        map { $0.relativeToRhombus(origin: origin, uVector: uVector, vVector: vVector) }
+    }
 }

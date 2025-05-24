@@ -10,7 +10,14 @@ import SwiftUI
 public extension Array where Element == Corner {
     /// Array of corner styles used on each corner respectively.
     var cornerStyles: [CornerStyle] {
-        self.map({ $0.style })
+        get {
+            map(\.style)
+        }
+        set {
+            self = self
+                .applyingStyle(.point)
+                .applyingStyles(newValue)
+        }
     }
     
     /// Applies new styles to this array of corners.
@@ -86,6 +93,24 @@ public extension Array where Element == Corner {
             let previousPoint = i == 0 ? beforeFirst : self[i - 1].point
             let nextPoint = i == self.count - 1 ? afterLast : self[i + 1].point
             return corner.dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
+        }
+    }
+    
+    func relative(to dimensions: Corner.Dimensions) -> [RelativeCorner] {
+        map { $0.relative(to: dimensions) }
+    }
+    
+    func relativeToRhombus(
+        origin: CGPoint,
+        uVector: Vector2,
+        vVector: Vector2
+    ) -> [RelativeCorner] {
+        map {
+            $0.relativeToRhombus(
+                origin: origin,
+                uVector: uVector,
+                vVector: vVector
+            )
         }
     }
     

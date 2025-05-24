@@ -26,7 +26,12 @@ extension Corner: Vector2Transformable {
 extension Corner {
     /// Radius of corner based on the style.
     public var radius: RelatableValue {
-        style.radius
+        get {
+            style.radius
+        }
+        set {
+            style.radius = newValue
+        }
     }
     
     /// Creates a corner at the same position but with the supplied style.
@@ -58,5 +63,27 @@ extension Corner {
     /// - Returns: A set of saved dimensions based on the corner style and provided previous and next points.
     public func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
+    }
+    
+    public func relative(to dimensions: Corner.Dimensions) -> RelativeCorner {
+        .init(
+            style,
+            anchorPoint: point.relative(to: dimensions)
+        )
+    }
+    
+    func relativeToRhombus(
+        origin: CGPoint,
+        uVector: Vector2,
+        vVector: Vector2
+    ) -> RelativeCorner {
+        .init(
+            style,
+            anchorPoint: point.relativeToRhombus(
+                origin: origin,
+                uVector: uVector,
+                vVector: vVector
+            )
+        )
     }
 }

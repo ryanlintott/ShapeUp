@@ -171,4 +171,8 @@ public extension Vector2Algebraic {
     static func *= (lhs: inout Self, rhs: CGFloat) {
         lhs = lhs * rhs
     }
+    
+    func crossProduct(with b: some Vector2Representable) -> CGFloat {
+        (vector.dx * b.vector.dy) - (vector.dy * b.vector.dx)
+    }
 }

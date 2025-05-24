@@ -24,7 +24,7 @@ public enum AnchorType: Sendable {
 /// An enumeration to indicate an anchor location on a rectangle.
 ///
 /// Cases start with Center and are in clockwise order from top left.
-public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable {
+public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable, Codable {
     public static let allCases: [RectAnchor] = [.center, .topLeft, .top, .topRight, .right, .bottomRight, .bottom, .bottomLeft, .left]
     
     case center
@@ -38,15 +38,17 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable {
     case left
     /// Relative to a rectangle with a width and height of 1 and an origin at the top left.
     case relative(_ x: CGFloat, _ y: CGFloat)
-    
-    static func relative(_ point: CGPoint) -> RectAnchor {
+}
+
+extension RectAnchor {
+    public static func relative(_ point: CGPoint) -> RectAnchor {
         .relative(point.x, point.y)
     }
     
     /// Creates a point in the location of an anchor.
     /// - Parameter rect: Rectangle where anchor is positioned.
     /// - Returns: The point where the anchor is located.
-    public func point(in rect: CGRect) -> CGPoint {
+    public func callAsFunction(in rect: CGRect) -> CGPoint {
         switch self {
         case .topLeft:
             CGPoint(x: rect.minX, y: rect.minY)
@@ -71,8 +73,17 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable {
         }
     }
     
-    public var relativePoint: CGPoint {
-        point(in: .one)
+    /// Creates a point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
+    /// - Parameter cornerDimensions: Dimensions of a corner that are used to define a rhombus with U and V coordinates on which the relative x and y coordinates of this anchor will be mapped.
+    /// - Returns: A point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
+    func callAsFunction(in cornerDimensions: Corner.Dimensions) -> CGPoint {
+        cornerDimensions.cornerStart
+            .moved(cornerDimensions.startVector * relativePoint.x)
+            .moved(cornerDimensions.endVector * relativePoint.y)
+    }
+    
+    var relativePoint: CGPoint {
+        self(in: .one)
     }
     
     /// The type of the anchor.

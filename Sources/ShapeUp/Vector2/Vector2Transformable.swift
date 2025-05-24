@@ -162,6 +162,6 @@ public extension Vector2Transformable {
     ///   - destination: Resulting frame of reference.
     /// - Returns: The same object, repositioned from one frame of reference to another.
     func repositioned(from source: CGRect, to destination: CGRect) -> Self {
-        repositioned(to: destination[relative(to: source)])
+        repositioned(to: destination[point.relative(to: source)])
     }
 }

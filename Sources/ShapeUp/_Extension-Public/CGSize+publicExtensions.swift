@@ -14,7 +14,7 @@ extension CGSize {
     ///   - anchor: Anchor point on rectangle.
     /// - Returns: A rectangle matching this size with an anchor point at a specified location.
     public func rect(at location: some Vector2Representable = CGPoint.zero, anchor: RectAnchor = .topLeft) -> CGRect {
-        location.rect(size: self, anchor: anchor)
+        location.point.rect(size: self, anchor: anchor)
     }
     
     /// Returns a rectangle matching this size with a zero origin.
