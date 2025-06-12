@@ -39,7 +39,17 @@ struct CustomCornerShapeExample: CornerShape {
 }
 
 struct CornerExample: View {
-    let shapes = ["Rectangle", "Triangle", "Pentagon", "Custom"]
+    enum ExampleShape: String, CaseIterable, Identifiable {
+        case rectangle
+        case triangle
+        case pentagon
+        case custom
+        
+        var id: Self { self }
+    }
+    
+    let shapes = ExampleShape.allCases
+    
     let styles: [CornerStyle] = [
         .point,
         .rounded(.zero),
@@ -50,8 +60,8 @@ struct CornerExample: View {
     ]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
-    @State private var shape = "Rectangle"
-    @State private var style = CornerStyle.rounded(.zero)
+    @State private var shape: ExampleShape = .rectangle
+    @State private var style: CornerStyle = .rounded(.zero)
     @State private var relativeRadius = true
     @State private var relative = 0.2
     @State private var absolute = 25.0
@@ -67,51 +77,23 @@ struct CornerExample: View {
                 Text("Make shapes using `Corner`, pick a `style` and set the `radius` using either `absolute` or `relative` values.")
             }
             
-            Color.clear.overlay(
-                ZStack {
-                    switch shape {
-                    case "Rectangle":
-                        CornerRectangle()
-                            .applyingStyle(adjustedStyle)
-                            .inset(by: inset)
-                            .foregroundColor(.accentColor)
-                        
-                        CornerRectangle()
-                            .applyingStyle(adjustedStyle)
-                            .stroke()
-                    case "Triangle":
-                        CornerTriangle()
-                            .applyingStyle(adjustedStyle)
-                            .inset(by: inset)
-                            .foregroundColor(.accentColor)
-                        
-                        CornerTriangle()
-                            .applyingStyle(adjustedStyle)
-                            .stroke()
-                    case "Pentagon":
-                        CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
-                            .applyingStyle(adjustedStyle)
-                            .inset(by: inset)
-                            .foregroundColor(.accentColor)
-                        
-                        CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
-                            .applyingStyle(adjustedStyle)
-                            .stroke()
-                    default:
-                        CustomCornerShapeExample(style: adjustedStyle)
-                            .inset(by: inset)
-                            .foregroundColor(.accentColor)
-                        
-                        CustomCornerShapeExample(style: adjustedStyle)
-                            .stroke()
+            ZStack {
+                VStack {
+                    ForEach(0...2, id: \.self) { _ in
+                        Image(.shapeUpLogo)
+                            .resizable()
+                            .scaledToFit()
                     }
                 }
-            )
-            .padding()
+                
+                CornerExampleShapeView(shape: shape, adjustedStyle: adjustedStyle, inset: inset)
+                    .accentColor(.suPink.opacity(0.1))
+                    .padding()
+            }
             
             Picker("Base Shape", selection: $shape) {
-                ForEach(shapes, id: \.self) { shape in
-                    Text(shape)
+                ForEach(shapes) { shape in
+                    Text(shape.rawValue)
                 }
             }
             .pickerStyle(.segmented)

@@ -46,6 +46,7 @@
 		CF765EAD2B93C935003E3FBE /* CrossPlatformSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF765E6F2B913AD5003E3FBE /* CrossPlatformSlider.swift */; };
 		CF765EAE2B93C95A003E3FBE /* HexagonExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFEAF1027F269790086ECC5 /* HexagonExample.swift */; };
 		CF78EF5C27F500C200F67ED0 /* FoldButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF78EF5B27F500C200F67ED0 /* FoldButton.swift */; };
+		CF9E0D132DFB4F040053725B /* CornerExampleShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9E0D122DFB4F040053725B /* CornerExampleShapeView.swift */; };
 		CFA165AC27B7044700C0EFDB /* InsetCornerShapeExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFA165AB27B7044700C0EFDB /* InsetCornerShapeExample.swift */; };
 		CFA245F727ECFBA100953C2B /* MessageBubbleInsetExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFA245F627ECFBA100953C2B /* MessageBubbleInsetExample.swift */; };
 		CFA245F927ED217500953C2B /* RectangleExample2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFA245F827ED217500953C2B /* RectangleExample2.swift */; };
@@ -123,6 +124,7 @@
 		CF765E992B93C551003E3FBE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CF765EA62B93C83A003E3FBE /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		CF78EF5B27F500C200F67ED0 /* FoldButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldButton.swift; sourceTree = "<group>"; };
+		CF9E0D122DFB4F040053725B /* CornerExampleShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerExampleShapeView.swift; sourceTree = "<group>"; };
 		CFA165AB27B7044700C0EFDB /* InsetCornerShapeExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetCornerShapeExample.swift; sourceTree = "<group>"; };
 		CFA245F627ECFBA100953C2B /* MessageBubbleInsetExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubbleInsetExample.swift; sourceTree = "<group>"; };
 		CFA245F827ED217500953C2B /* RectangleExample2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleExample2.swift; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				CFCBC9742A18641A00C28E68 /* CornerExample.swift */,
+				CF9E0D122DFB4F040053725B /* CornerExampleShapeView.swift */,
 				CF2FE30726C708D20040A985 /* CornerShapeExample.swift */,
 				CF03C8A727D957EB008B415E /* NestedCornerStyleExample.swift */,
 				CF6E1FA427B6CC8A00D1F169 /* AddOpenCornerShapeExample.swift */,
@@ -462,6 +465,7 @@
 				CF03C8A627D95748008B415E /* NotchedTriangleExample.swift in Sources */,
 				CF765E722B914BF2003E3FBE /* CrossPlatformStepper.swift in Sources */,
 				CFB5482927ECD217009B699A /* MessageBubble4Example.swift in Sources */,
+				CF9E0D132DFB4F040053725B /* CornerExampleShapeView.swift in Sources */,
 				CFB5482C27ECD2E6009B699A /* MessageBubble0Example.swift in Sources */,
 				CF2FE30426C706AD0040A985 /* ShapeUpLogoView.swift in Sources */,
 				CFD47CCB27DA431800428F9B /* CornerCustomExample.swift in Sources */,
