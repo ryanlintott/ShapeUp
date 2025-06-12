@@ -59,7 +59,7 @@ extension CGPoint: Vector2Transformable {
     }
 }
 
-extension Array<CGPoint> {
+public extension Array<CGPoint> {
     /// Returns an array of anchor points relative to the specified rectangle.
     /// - Parameter rect: Rectangle used for relative position.
     /// - Returns: An array of anchor points relative to the specified rectangle.

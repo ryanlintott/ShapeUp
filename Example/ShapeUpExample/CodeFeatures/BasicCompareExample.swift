@@ -39,7 +39,7 @@ struct ShapeUpBasicShape: CornerShape {
             Corner(.rounded(.relative(0.5)), x: rect.midX, y: rect.minY),
             Corner(x: rect.maxX, y: rect.midY),
             Corner(x: rect.midX, y: rect.maxY)
-        ].corners()
+        ]
     }
 }
 

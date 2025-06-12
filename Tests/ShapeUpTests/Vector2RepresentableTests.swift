@@ -53,25 +53,24 @@ class Vector2RepresentableTests: XCTestCase {
         }
     }
     
-    func testVector2CornerMatchesCornerDefaultStyle() throws {
-        Self.testVectors.forEach { vector in
+    func testCGPointCornerMatchesCornerDefaultStyle() throws {
+        Self.testVectors.points.forEach { point in
             // given
-            let v2r = V2RTest(vector: vector)
-            let corner = Corner(vector: vector)
+            let corner = Corner(.point, x: point.x, y: point.y)
             
             // then
-            XCTAssertEqual(v2r.corner(), corner)
+            XCTAssertEqual(point.corner(), corner)
         }
     }
     
-    func testVector2CornerMatchesCorner() throws {
-        Self.testVectors.forEach { vector in
+    func testCGPointCornerMatchesCorner() throws {
+        Self.testVectors.points.forEach { point in
             // given
             let cornerStyle = CornerStyle.rounded(5)
-            let corner = Corner(cornerStyle, x: vector.dx, y: vector.dy)
+            let corner = Corner(cornerStyle, x: point.x, y: point.y)
             
             // then
-            XCTAssertEqual(vector.corner(cornerStyle), corner)
+            XCTAssertEqual(point.corner(cornerStyle), corner)
         }
     }
 }

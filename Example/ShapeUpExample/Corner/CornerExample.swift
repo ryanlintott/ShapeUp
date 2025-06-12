@@ -74,40 +74,39 @@ struct CornerExample: View {
                         CornerRectangle()
                             .applyingStyle(adjustedStyle)
                             .inset(by: inset)
+                            .foregroundColor(.accentColor)
                         
                         CornerRectangle()
                             .applyingStyle(adjustedStyle)
                             .stroke()
-                            .foregroundColor(.black)
                     case "Triangle":
                         CornerTriangle()
                             .applyingStyle(adjustedStyle)
                             .inset(by: inset)
+                            .foregroundColor(.accentColor)
                         
                         CornerTriangle()
                             .applyingStyle(adjustedStyle)
                             .stroke()
-                            .foregroundColor(.black)
                     case "Pentagon":
                         CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
                             .applyingStyle(adjustedStyle)
                             .inset(by: inset)
+                            .foregroundColor(.accentColor)
                         
                         CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
                             .applyingStyle(adjustedStyle)
                             .stroke()
-                            .foregroundColor(.black)
                     default:
                         CustomCornerShapeExample(style: adjustedStyle)
                             .inset(by: inset)
+                            .foregroundColor(.accentColor)
                         
                         CustomCornerShapeExample(style: adjustedStyle)
                             .stroke()
-                            .foregroundColor(.black)
                     }
                 }
             )
-            .foregroundColor(Color.suPink)
             .padding()
             
             Picker("Base Shape", selection: $shape) {
@@ -193,6 +192,7 @@ struct CornerExample: View {
             .disabled(style == .point)
 
         }
+        .accentColor(.suPink)
         .animation(.default, value: inset)
         .animation(.default, value: shape)
         .animation(.default, value: style)

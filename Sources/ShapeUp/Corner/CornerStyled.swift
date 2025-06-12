@@ -1,5 +1,5 @@
 //
-//  CornerStylish.swift
+//  CornerStyled.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2025-05-23.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-public protocol CornerStylish {
+public protocol CornerStyled {
     var style: CornerStyle { get set }
     func applyingStyle(_ newStyle: CornerStyle) -> Self
 }
 
-public extension CornerStylish {
+public extension CornerStyled {
     /// Radius of corner based on the style.
     var radius: RelatableValue {
         get {
@@ -32,7 +32,7 @@ public extension CornerStylish {
     }
 }
 
-public extension Array where Element: CornerStylish {
+public extension Array where Element: CornerStyled {
     /// Applies new styles to this array of corners.
     /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
     mutating func applyStyles(_ newStyles: [CornerStyle?]) {
@@ -46,7 +46,7 @@ public extension Array where Element: CornerStylish {
     }
 }
 
-public extension BidirectionalCollection where Element: CornerStylish, Index == Int {
+public extension BidirectionalCollection where Element: CornerStyled, Index == Int {
     /// Creates an array of corners with the same positions and specified styles.
     /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
     /// - Returns: An array of corners with the same positions and specified styles.

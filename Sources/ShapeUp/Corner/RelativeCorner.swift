@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct RelativeCorner: Hashable, Codable, Sendable, CornerStylish {
+public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     public var anchorPoint: RectAnchor
     public var style: CornerStyle
     
