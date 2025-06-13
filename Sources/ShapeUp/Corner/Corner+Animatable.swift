@@ -8,9 +8,18 @@
 import SwiftUI
 
 extension Corner: Animatable {
-    public var animatableData: AnimatablePair<Vector2, CornerStyle.AnimatableData> {
+    public typealias AnimatableData =
+    AnimatablePair<
+        Vector2,
+        CornerStyle.AnimatableData
+    >
+    
+    public var animatableData: AnimatableData {
         get {
-            .init(Vector2(dx: x, dy: y), style.animatableData)
+            .init(
+                Vector2(dx: x, dy: y),
+                style.animatableData
+            )
         }
         set {
             x = newValue.first.dx

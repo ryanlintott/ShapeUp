@@ -143,6 +143,26 @@ public extension CornerStyle {
         }
     }
     
+    /// Radius offset of the corner
+    var radiusOffset: CGFloat {
+        get {
+            switch self {
+            case .point, .rounded, .straight, .cutout, .custom:
+                .zero
+            case let .concave(_, radiusOffset):
+                radiusOffset
+            }
+        }
+        set {
+            switch self {
+            case .point, .rounded, .straight, .cutout, .custom:
+                break
+            case .concave:
+                self = .concave(radius, radiusOffset: newValue)
+            }
+        }
+    }
+    
     /// Corner styles of any corners one level inside this corner.
     ///
     /// Some corners styles have no nested corners, others may have several and this nesting can continue to multiple levels.
@@ -152,7 +172,7 @@ public extension CornerStyle {
             case .point, .rounded, .concave: []
             case let .straight(_, cornerStyles): cornerStyles
             case let .cutout(_, cornerStyles): cornerStyles
-            case let .custom(_, corners): corners.map(\.style)
+            case .custom: relativeCorners.map(\.style)
             }
         }
         set {
@@ -163,13 +183,29 @@ public extension CornerStyle {
                 self = .straight(radius, cornerStyles: newValue)
             case .cutout:
                 self = .cutout(radius, cornerStyles: newValue)
-            case let .custom(_, relativeCorners):
-                self = .custom(
-                    radius,
-                    relativeCorners: relativeCorners
+            case .custom:
+                self.relativeCorners
                         .applyingStyle(.point)
                         .applyingStyles(newValue)
-                )
+            }
+        }
+    }
+    
+    var relativeCorners: [RelativeCorner] {
+        get {
+            switch self {
+            case .point, .rounded, .concave, .straight, .cutout:
+                []
+            case let .custom(_, relativeCorners):
+                relativeCorners
+            }
+        }
+        set {
+            switch self {
+            case .point, .rounded, .concave, .straight, .cutout:
+                break
+            case .custom:
+                self = .custom(radius, relativeCorners: newValue)
             }
         }
     }

@@ -49,7 +49,6 @@ public struct CornerPentagon: EnumeratedCornerShape {
     public var topTaper: RelatableValue
     public var bottomTaper: RelatableValue
     
-    @AnimatableDictionary
     public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a pentagon shape with corners that can be styled.
@@ -62,7 +61,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
         self.pointHeight = pointHeight
         self.topTaper = topTaper
         self.bottomTaper = bottomTaper
-        self._styles = .init(styles)
+        self.styles = styles
     }
     
     public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
@@ -90,7 +89,7 @@ extension CornerPentagon {
                 RelatableValue,
                 AnimatablePair<
                     RelatableValue,
-                    AnimatableDictionary<ShapeCorner, CornerStyle>.AnimatableData
+                    VectorDictionary<ShapeCorner, CornerStyle.AnimatableData>
                 >
             >
         >
@@ -105,7 +104,7 @@ extension CornerPentagon {
                         topTaper,
                         .init(
                             bottomTaper,
-                            _styles.animatableData
+                            styles.animatableData
                         )
                     )
                 )
@@ -116,7 +115,7 @@ extension CornerPentagon {
             pointHeight = newValue.second.first
             topTaper = newValue.second.second.first
             bottomTaper = newValue.second.second.second.first
-            _styles.animatableData = newValue.second.second.second.second
+            styles.animatableData = newValue.second.second.second.second
         }
     }
 }

@@ -43,7 +43,6 @@ public struct CornerTriangle: EnumeratedCornerShape {
     
     public var topPoint: RelatableValue
     
-    @AnimatableDictionary
     public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d triangular shape with specified top point and styles for each corner.
@@ -52,7 +51,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
     ///   - styles: A dictionary describing the style of each shape corner.
     public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
         self.topPoint = topPoint
-        self._styles = .init(styles)
+        self.styles = styles
     }
     
     public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
@@ -70,7 +69,7 @@ extension CornerTriangle {
         CGFloat,
         AnimatablePair<
             RelatableValue,
-            AnimatableDictionary<ShapeCorner, CornerStyle>.AnimatableData
+            VectorDictionary<ShapeCorner, CornerStyle.AnimatableData>
         >
     >
     {
@@ -79,14 +78,14 @@ extension CornerTriangle {
                 insetAmount,
                 .init(
                     topPoint,
-                    _styles.animatableData
+                    styles.animatableData
                 )
             )
         }
         set {
             insetAmount = newValue.first
             topPoint = newValue.second.first
-            _styles.animatableData = newValue.second.second
+            styles.animatableData = newValue.second.second
         }
     }
 }

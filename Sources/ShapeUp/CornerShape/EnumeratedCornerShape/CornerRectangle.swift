@@ -40,14 +40,13 @@ public struct CornerRectangle: EnumeratedCornerShape {
         case bottomLeft
     }
     
-    @AnimatableDictionary
     public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d rectangular shape with specified styles for each corner.
     /// - Parameters:
     ///   - styles: A dictionary describing the style of each shape corner.
     public init(_ styles: [ShapeCorner: CornerStyle] = [:]) {
-        self._styles = .init(styles)
+        self.styles = styles
     }
     
     public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
@@ -64,18 +63,18 @@ public struct CornerRectangle: EnumeratedCornerShape {
 extension CornerRectangle {
     public var animatableData: AnimatablePair<
         CGFloat,
-        AnimatableDictionary<ShapeCorner, CornerStyle>.AnimatableData
+        VectorDictionary<ShapeCorner, CornerStyle.AnimatableData>
     >
     {
         get {
             .init(
                 insetAmount,
-                _styles.animatableData
+                styles.animatableData
             )
         }
         set {
             insetAmount = newValue.first
-            _styles.animatableData = newValue.second
+            styles.animatableData = newValue.second
         }
     }
 }

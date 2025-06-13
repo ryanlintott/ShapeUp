@@ -8,18 +8,21 @@
 import ShapeUp
 import SwiftUI
 
+#if swift(>=6.2)
 @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
 extension Shape {
     func glass(_ style: Glass = .regular) -> some View {
         Color.clear.glassEffect(style, in: self)
     }
 }
+#endif
 
 struct CornerExampleShapeView: View {
     let shape: CornerExample.ExampleShape
     let adjustedStyle: CornerStyle
     let inset: CGFloat
     
+    #if swift(>=6.2)
     @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
     var glass: Glass {
         .regular.tint(.accentColor).interactive()
@@ -50,6 +53,7 @@ struct CornerExampleShapeView: View {
                 .glass(glass)
         }
     }
+    #endif
     
     @ViewBuilder
     var solidShape: some View {
@@ -94,7 +98,11 @@ struct CornerExampleShapeView: View {
     var body: some View {
         ZStack {
             if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *) {
+                #if swift(>=6.2)
                 glassShape
+                #else
+                solidShape
+                #endif
             } else {
                 solidShape
             }

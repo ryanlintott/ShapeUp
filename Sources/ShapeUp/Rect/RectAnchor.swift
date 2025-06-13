@@ -41,6 +41,11 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable, Codable {
 }
 
 extension RectAnchor {
+    /// Returns a Boolean value indicating whether two values are equal.
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.relativePoint == rhs.relativePoint
+    }
+    
     public static func relative(_ point: CGPoint) -> RectAnchor {
         .relative(point.x, point.y)
     }
