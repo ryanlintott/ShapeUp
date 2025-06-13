@@ -89,7 +89,7 @@ extension CornerPentagon {
                 RelatableValue,
                 AnimatablePair<
                     RelatableValue,
-                    VectorDictionary<ShapeCorner, CornerStyle.AnimatableData>
+                    AnimatableDictionary<ShapeCorner, CornerStyle.AnimatableData>
                 >
             >
         >

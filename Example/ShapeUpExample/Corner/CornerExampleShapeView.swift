@@ -99,14 +99,29 @@ struct CornerExampleShapeView: View {
         ZStack {
             if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *) {
                 #if swift(>=6.2)
-                glassShape
+                ZStack {
+                    VStack {
+                        ForEach(0...2, id: \.self) { _ in
+                            Image(.shapeUpLogo)
+                                .resizable()
+                                .scaledToFit()
+                        }
+                    }
+                    
+                    glassShape
+                        .accentColor(.suPink.opacity(0.1))
+                        .padding()
+                }
                 #else
                 solidShape
+                    .padding()
                 #endif
             } else {
                 solidShape
+                    .padding()
             }
         }
+        .accentColor(.suPink)
     }
 }
 

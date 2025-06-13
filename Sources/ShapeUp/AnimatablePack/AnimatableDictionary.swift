@@ -8,7 +8,7 @@
 import SwiftUI
 
 @dynamicMemberLookup
-public struct VectorDictionary<Key: Hashable, Value> {
+public struct AnimatableDictionary<Key: Hashable, Value> {
     public var wrappedValue: [Key: Value] = [:]
     
     public init(_ wrappedValue: [Key: Value]) {
@@ -25,15 +25,15 @@ public struct VectorDictionary<Key: Hashable, Value> {
     }
 }
 
-extension VectorDictionary: Sendable where Key: Sendable, Value: Sendable { }
+extension AnimatableDictionary: Sendable where Key: Sendable, Value: Sendable { }
 
-extension VectorDictionary: Equatable where Value: Equatable {
+extension AnimatableDictionary: Equatable where Value: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.wrappedValue == rhs.wrappedValue
     }
 }
 
-extension VectorDictionary: AdditiveArithmetic where Value: AdditiveArithmetic {
+extension AnimatableDictionary: AdditiveArithmetic where Value: AdditiveArithmetic {
     public static func + (lhs: Self, rhs: Self) -> Self {
         var result = lhs.wrappedValue
         rhs.wrappedValue.forEach { (key, value) in
@@ -51,7 +51,7 @@ extension VectorDictionary: AdditiveArithmetic where Value: AdditiveArithmetic {
     }
 }
 
-extension VectorDictionary: VectorArithmetic where Value: VectorArithmetic {
+extension AnimatableDictionary: VectorArithmetic where Value: VectorArithmetic {
     public mutating func scale(by rhs: Double) {
         wrappedValue = wrappedValue.mapValues {
             $0.scaled(by: rhs)
@@ -65,46 +65,10 @@ extension VectorDictionary: VectorArithmetic where Value: VectorArithmetic {
     }
 }
 
-@dynamicMemberLookup
-public struct AnimatableDictionary<Key: Hashable, Value> {
-    public var wrappedValue: [Key: Value]
-    
-    public init(_ wrappedValue: [Key: Value]) {
-        self.wrappedValue = wrappedValue
-    }
-    
-    public subscript<V>(dynamicMember keyPath: WritableKeyPath<Dictionary<Key, Value>, V>) -> V {
-        get { wrappedValue[keyPath: keyPath] }
-        set { wrappedValue[keyPath: keyPath] = newValue }
-    }
-}
-
-extension AnimatableDictionary: Sendable where Key: Sendable, Value: Sendable { }
-
-extension AnimatableDictionary: Animatable where Value: Animatable {
-    public typealias AnimatableData = VectorDictionary<Key, Value.AnimatableData>
-    
-    public var animatableData: AnimatableData {
-        get {
-            .init(wrappedValue.mapValues(\.animatableData))
-        }
-        set {
-            newValue.wrappedValue.forEach { (key, animatableData) in
-                wrappedValue[key]?.animatableData = animatableData
-            }
-        }
-    }
-    
-    public subscript<V>(dynamicMember keyPath: WritableKeyPath<Dictionary<Key, Value>, V>) -> V {
-        get { wrappedValue[keyPath: keyPath] }
-        set { wrappedValue[keyPath: keyPath] = newValue }
-    }
-}
-
 extension Dictionary where Key: Hashable, Value: VectorArithmetic {
-    var animatableData: VectorDictionary<Key, Value> {
+    var animatableData: AnimatableDictionary<Key, Value> {
         get {
-            VectorDictionary(self)
+            AnimatableDictionary(self)
         }
         set {
             newValue.wrappedValue.forEach { (key, animatableData) in
@@ -115,7 +79,7 @@ extension Dictionary where Key: Hashable, Value: VectorArithmetic {
 }
 
 extension Dictionary where Key: Hashable, Value: Animatable {
-    var animatableData: VectorDictionary<Key, Value.AnimatableData> {
+    var animatableData: AnimatableDictionary<Key, Value.AnimatableData> {
         get {
             .init(mapValues(\.animatableData))
         }

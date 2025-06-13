@@ -77,19 +77,7 @@ struct CornerExample: View {
                 Text("Make shapes using `Corner`, pick a `style` and set the `radius` using either `absolute` or `relative` values.")
             }
             
-            ZStack {
-                VStack {
-                    ForEach(0...2, id: \.self) { _ in
-                        Image(.shapeUpLogo)
-                            .resizable()
-                            .scaledToFit()
-                    }
-                }
-                
-                CornerExampleShapeView(shape: shape, adjustedStyle: adjustedStyle, inset: inset)
-                    .accentColor(.suPink.opacity(0.1))
-                    .padding()
-            }
+            CornerExampleShapeView(shape: shape, adjustedStyle: adjustedStyle, inset: inset)
             
             Picker("Base Shape", selection: $shape) {
                 ForEach(shapes) { shape in

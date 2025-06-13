@@ -8,7 +8,7 @@
 import SwiftUI
 
 @dynamicMemberLookup
-public struct VectorArray<Element> {
+public struct AnimatableArray<Element> {
     public var wrappedValue: [Element]
     
     public init(_ wrappedValue: [Element]) {
@@ -25,15 +25,15 @@ public struct VectorArray<Element> {
     }
 }
 
-extension VectorArray: Sendable where Element: Sendable { }
+extension AnimatableArray: Sendable where Element: Sendable { }
 
-extension VectorArray: Equatable where Element: Equatable {
+extension AnimatableArray: Equatable where Element: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.wrappedValue == rhs.wrappedValue
     }
 }
 
-extension VectorArray: AdditiveArithmetic where Element: AdditiveArithmetic {
+extension AnimatableArray: AdditiveArithmetic where Element: AdditiveArithmetic {
     public static func + (lhs: Self, rhs: Self) -> Self {
         .init(
             (0..<Swift.max(lhs.wrappedValue.count, rhs.wrappedValue.count))
@@ -57,7 +57,7 @@ extension VectorArray: AdditiveArithmetic where Element: AdditiveArithmetic {
     }
 }
 
-extension VectorArray: VectorArithmetic where Element: VectorArithmetic {
+extension AnimatableArray: VectorArithmetic where Element: VectorArithmetic {
     public mutating func scale(by rhs: Double) {
         wrappedValue = wrappedValue.map { $0.scaled(by: rhs) }
     }
@@ -69,48 +69,16 @@ extension VectorArray: VectorArithmetic where Element: VectorArithmetic {
     }
 }
 
-extension VectorArray: ExpressibleByArrayLiteral {
+extension AnimatableArray: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Element...) {
         self.init(elements)
     }
 }
 
-@dynamicMemberLookup
-public struct AnimatableArray<Element> {
-    public var wrappedValue: [Element]
-
-    public init(_ wrappedValue: [Element]) {
-        self.wrappedValue = wrappedValue
-    }
-    
-    public subscript<V>(dynamicMember keyPath: WritableKeyPath<Array<Element>, V>) -> V {
-        get { wrappedValue[keyPath: keyPath] }
-        set { wrappedValue[keyPath: keyPath] = newValue }
-    }
-}
-
-extension AnimatableArray: Sendable where Element: Sendable { }
-
-extension AnimatableArray: Animatable where Element: Animatable {
-    public typealias AnimatableData = VectorArray<Element.AnimatableData>
-    
-    public var animatableData: AnimatableData {
-        get {
-            .init(wrappedValue.map(\.animatableData))
-        }
-        set {
-            let count = min(wrappedValue.count, newValue.wrappedValue.count)
-            for i in 0..<count {
-                wrappedValue[i].animatableData = newValue.wrappedValue[i]
-            }
-        }
-    }
-}
-
 extension Array where Element: VectorArithmetic {
-    var animatableData: VectorArray<Element> {
+    var animatableData: AnimatableArray<Element> {
         get {
-            VectorArray(self)
+            AnimatableArray(self)
         }
         set {
             let count = Swift.min(count, newValue.wrappedValue.count)
@@ -122,7 +90,7 @@ extension Array where Element: VectorArithmetic {
 }
 
 extension Array where Element: Animatable {
-    var animatableData: VectorArray<Element.AnimatableData> {
+    var animatableData: AnimatableArray<Element.AnimatableData> {
         get {
             .init(map(\.animatableData))
         }
@@ -136,9 +104,9 @@ extension Array where Element: Animatable {
 }
 
 extension Array where Element: NestedAnimatable {
-    var nestedAnimatableData: VectorArray<Element.NestedAnimatableData> {
+    var nestedAnimatableData: AnimatableArray<Element.NestedAnimatableData> {
         get {
-            VectorArray(map(\.nestedAnimatableData))
+            AnimatableArray(map(\.nestedAnimatableData))
         }
         set {
             let count = Swift.min(count, newValue.wrappedValue.count)
@@ -175,7 +143,7 @@ protocol NestedAnimatable: Animatable {
 //        self.wrappedValue = wrappedValue
 //    }
 //    
-//    public var animatableData: VectorArray<Element.AnimatableData> {
+//    public var animatableData: AnimatableArray<Element.AnimatableData> {
 //        get {
 //            .init(wrappedValue.map(\.animatableData))
 //        }

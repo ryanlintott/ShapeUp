@@ -63,7 +63,7 @@ public struct CornerRectangle: EnumeratedCornerShape {
 extension CornerRectangle {
     public var animatableData: AnimatablePair<
         CGFloat,
-        VectorDictionary<ShapeCorner, CornerStyle.AnimatableData>
+        AnimatableDictionary<ShapeCorner, CornerStyle.AnimatableData>
     >
     {
         get {

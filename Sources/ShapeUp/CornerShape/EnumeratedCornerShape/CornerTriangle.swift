@@ -69,7 +69,7 @@ extension CornerTriangle {
         CGFloat,
         AnimatablePair<
             RelatableValue,
-            VectorDictionary<ShapeCorner, CornerStyle.AnimatableData>
+            AnimatableDictionary<ShapeCorner, CornerStyle.AnimatableData>
         >
     >
     {
