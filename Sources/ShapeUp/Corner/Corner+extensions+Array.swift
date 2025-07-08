@@ -7,19 +7,7 @@
 
 import SwiftUI
 
-public extension Array where Element == Corner {
-    /// Array of corner styles used on each corner respectively.
-    var cornerStyles: [CornerStyle] {
-        get {
-            map(\.style)
-        }
-        set {
-            self = self
-                .applyingStyle(.point)
-                .applyingStyles(newValue)
-        }
-    }
-    
+public extension Array where Element == Corner {    
     /// An array of corner dimensions used for drawing, insetting, and modifying points of a closed shape.
     var dimensions: [Corner.Dimensions] {
         dimensions()

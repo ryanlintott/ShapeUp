@@ -184,9 +184,7 @@ public extension CornerStyle {
             case .cutout:
                 self = .cutout(radius, cornerStyles: newValue)
             case .custom:
-                self.relativeCorners
-                        .applyingStyle(.point)
-                        .applyingStyles(newValue)
+                relativeCorners.cornerStyles = newValue
             }
         }
     }

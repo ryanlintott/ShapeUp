@@ -51,13 +51,3 @@ public extension RelativeCorner {
         return .init(style, anchorPoint: anchorPoint)
     }
 }
-
-public extension Collection<RelativeCorner> {
-    func corners(in rect: CGRect) -> [Corner] {
-        map { $0.corner(in: rect) }
-    }
-    
-    func corners(in frame: CGFrame) -> [Corner] {
-        map { $0.corner(in: frame) }
-    }
-}

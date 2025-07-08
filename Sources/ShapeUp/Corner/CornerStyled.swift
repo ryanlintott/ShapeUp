@@ -33,6 +33,18 @@ public extension CornerStyled {
 }
 
 public extension Array where Element: CornerStyled {
+    /// Array of corner styles used on each corner respectively.
+    var cornerStyles: [CornerStyle] {
+        get {
+            map(\.style)
+        }
+        set {
+            self = self
+                .applyingStyle(.point)
+                .applyingStyles(newValue)
+        }
+    }
+    
     /// Applies new styles to this array of corners.
     /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
     mutating func applyStyles(_ newStyles: [CornerStyle?]) {

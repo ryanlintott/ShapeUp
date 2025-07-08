@@ -124,11 +124,11 @@ struct CornerExample: View {
             
             VStack {
                 HStack {
-                    Picker("Radius", selection: $relativeRadius) {
-                        Text("Relative").tag(true)
-                        Text("Absolute").tag(false)
+                    Button {
+                        relativeRadius.toggle()
+                    } label: {
+                        Text(relativeRadius ? "Relative" : "Absolute")
                     }
-                    .pickerStyle(.menu)
                     
                     if relativeRadius {
                         CrossPlatformStepper(

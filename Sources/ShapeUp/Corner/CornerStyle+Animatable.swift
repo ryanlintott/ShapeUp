@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Optional<CornerStyle>: Animatable {
+extension Optional<CornerStyle>: @retroactive Animatable {
     public var animatableData: CornerStyle.AnimatableData {
         get {
             switch self {

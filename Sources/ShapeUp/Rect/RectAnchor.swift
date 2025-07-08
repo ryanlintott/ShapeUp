@@ -100,6 +100,20 @@ extension RectAnchor {
         }
     }
     
+    /// Returns a relative corner at the same position with the applied style if not nil.
+    ///
+    /// If nil style is provided, the corner will use ``CornerStyle.point``.
+    /// - Parameter style: Corner style to use. Default is nil which renders as ``CornerStyle.point``.
+    /// - Returns: RelativeCorner with the provided style and the same position as the anchor.
+    func relativeCorner(_ style: CornerStyle? = nil) -> RelativeCorner {
+        RelativeCorner(style, anchorPoint: self)
+    }
+    
+    /// Relative corner at the same position with point style.
+    var relativeCorner: RelativeCorner {
+        RelativeCorner(.point, anchorPoint: self)
+    }
+    
     /// An array of four edges clockwise starting with top
     @available(*, deprecated, message: "Use `self[.top, .right, .bottom, .left]`.")
     public static let edgeAnchors: [Self] = [.top, .right, .bottom, .left]

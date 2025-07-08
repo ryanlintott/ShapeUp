@@ -7,45 +7,42 @@
 
 import SwiftUI
 
-/// An enumeration to indicate the style of a notch.
-public enum NotchStyle: Sendable {
-    /// A triangular shaped notch.
-    /// - Parameters:
-    ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
-    case triangle(cornerStyles: [CornerStyle?])
+/// The style of a notch defined by relative corners.
+public struct NotchStyle: Hashable, Codable, Sendable {
+    /// Relative corners that define the notch shape.
+    public var relativeCorners: [RelativeCorner]
     
-    /// A rectangular shaped notch.
-    /// - Parameters:
-    ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
-    case rectangle(cornerStyles: [CornerStyle?])
-    
-    /// A custom shaped notch defined by corners in a reference frame equal to the notch's length and depth.
-    /// - Parameters:
-    ///   - coners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
-    case custom(corners: @Sendable (_ in: CGRect) -> [Corner])
+    /// Creates a notch style with the specified relative corners.
+    /// - Parameter relativeCorners: Relative corners that define the notch shape.
+    public init(relativeCorners: [RelativeCorner]) {
+        self.relativeCorners = relativeCorners
+    }
 }
 
 public extension NotchStyle {
-    /// Corner styles for all corners of the notch.
-    var cornerStyles: [CornerStyle?] {
-        switch self {
-        case let .triangle(cornerStyles):
-            return cornerStyles
-        case let .rectangle(cornerStyles):
-            return cornerStyles
-        case let .custom(corners):
-            return corners(.zero).cornerStyles
+    /// Creates a notch style with the specified anchor points and corner styles.
+    /// - Parameters:
+    ///   - anchorPoints: Anchor points that define the positions of the corners.
+    ///   - cornerStyles: Corner styles for each corner. Nil values will use a .point style.
+    init(anchorPoints: [RectAnchor], cornerStyles: [CornerStyle?]) {
+        self.relativeCorners = anchorPoints.enumerated().map { index, anchor in
+            let style = cornerStyles.indices.contains(index) ? (cornerStyles[index] ?? .point) : .point
+            return RelativeCorner(style, anchorPoint: anchor)
         }
     }
     
+    /// Creates a notch style with the specified anchor points and a single corner style applied to all corners.
+    /// - Parameters:
+    ///   - anchorPoints: Anchor points that define the positions of the corners.
+    ///   - cornerStyle: Corner style to apply to all corners. Default is nil which renders as .point.
+    init(anchorPoints: [RectAnchor], cornerStyle: CornerStyle? = nil) {
+        self.relativeCorners = anchorPoints.relativeCorners(cornerStyle)
+    }
+    
+    /// Creates corners for the notch in the specified rectangle.
+    /// - Parameter rect: The rectangle in which to create the corners.
+    /// - Returns: An array of corners positioned within the rectangle.
     func corners(in rect: CGRect) -> [Corner] {
-        switch self {
-        case .triangle(let cornerStyles):
-            return rect[.topLeft, .bottom, .topRight].corners(cornerStyles)
-        case .rectangle(let cornerStyles):
-            return rect[.topLeft, .bottomLeft, .bottomRight, .topRight].corners(cornerStyles)
-        case .custom(let corners):
-            return corners(rect)
-        }
+        relativeCorners.corners(in: rect)
     }
 }
