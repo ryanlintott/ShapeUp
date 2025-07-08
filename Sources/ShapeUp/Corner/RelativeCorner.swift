@@ -23,7 +23,8 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     /// Create a corner with a specified style and anchor point.
     /// - Parameters:
     ///   - style: Corner style. Default is .point.
-    ///   - point: Location of corner based on an anchor point.
+    ///   - x: Relative x location of corner based on top left anchor point.
+    ///   - y: Relative y location of corner based on top left anchor point.
     public init(_ style: CornerStyle? = nil, x: CGFloat, y: CGFloat) {
         self.style = style ?? .point
         self.anchorPoint = .relative(x, y)

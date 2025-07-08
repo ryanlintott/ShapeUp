@@ -103,37 +103,6 @@ extension Array where Element: Animatable {
     }
 }
 
-extension Array where Element: NestedAnimatable {
-    var nestedAnimatableData: AnimatableArray<Element.NestedAnimatableData> {
-        get {
-            AnimatableArray(map(\.nestedAnimatableData))
-        }
-        set {
-            let count = Swift.min(count, newValue.wrappedValue.count)
-            for i in 0..<count {
-                self[i].nestedAnimatableData = newValue.wrappedValue[i]
-            }
-        }
-    }
-}
-
-protocol NestedAnimatable: Animatable {
-    /// The type defining the data to animate.
-    associatedtype NestedAnimatableData: VectorArithmetic
-
-    /// The data to animate.
-    var nestedAnimatableData: Self.NestedAnimatableData { get set }
-}
-
-
-
-
-
-
-
-
-
-
 //@dynamicMemberLookup
 //@propertyWrapper
 //public struct AnimatableArray<Element: Animatable>: Animatable {
