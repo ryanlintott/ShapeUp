@@ -13,7 +13,7 @@ import SwiftUI
 /**
  A parameter pack implementation of `AnimatablePair`
  
- Conforming to Animatable with AnimatablePair:
+ ## Conforming to Animatable with AnimatablePair
 
  ```swift
  struct MyShape: Animatable {
@@ -28,7 +28,8 @@ import SwiftUI
  }
  ```
  
- Conforming to Animatable with AnimatablePack:
+ ## Conforming to Animatable with AnimatablePack
+ 
  ```swift
  struct MyShape: Animatable {
      var animatableData: AnimatablePack<CGFloat, RelatableValue, Double> {

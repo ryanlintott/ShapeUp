@@ -22,8 +22,10 @@ extension CGPoint: Vector2Transformable {
         /// This function is required for Vector2Transformable conformance. Other types (like Corner) have to pass on their other properties but CGPoint only has point information.
         point.point
     }
-    
-    /// Returns an anchor point relative to the specified rectangle.
+}
+
+public extension CGPoint {
+    /// Converts this point to an anchor point relative to the specified rectangle.
     /// - Parameter rect: Rectangle used for relative position.
     /// - Returns: An anchor point relative to the specified rectangle.
     func relative(to rect: CGRect) -> RectAnchor {
@@ -33,6 +35,9 @@ extension CGPoint: Vector2Transformable {
         return .relative(x, y)
     }
     
+    /// Converts this point to an anchor point relative to the specified coordinate frame.
+    /// - Parameter frame: Coordinate frame used for relative position.
+    /// - Returns: An anchor point relative to the specified coordinate frame.
     func relative(to frame: CGFrame) -> RectAnchor {
         frame[self]
     }
@@ -60,13 +65,16 @@ extension CGPoint: Vector2Transformable {
 }
 
 public extension Array<CGPoint> {
-    /// Returns an array of anchor points relative to the specified rectangle.
+    /// Converts this array of points to anchor points relative to the specified rectangle.
     /// - Parameter rect: Rectangle used for relative position.
     /// - Returns: An array of anchor points relative to the specified rectangle.
     func relative(to rect: CGRect) -> [RectAnchor] {
         map { $0.relative(to: rect) }
     }
     
+    /// Converts this array of points to anchor points relative to the specified coordinate frame.
+    /// - Parameter frame: Coordinate frame used for relative position.
+    /// - Returns: An array of anchor points relative to the specified coordinate frame.
     func relative(to frame: CGFrame) -> [RectAnchor] {
         map { $0.relative(to: frame) }
     }

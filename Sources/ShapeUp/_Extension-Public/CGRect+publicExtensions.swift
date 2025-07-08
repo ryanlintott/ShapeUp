@@ -59,7 +59,7 @@ public extension CGRect {
         self[anchors]
     }
     
-    /// Returns a point at the relative location inside this CGRect.
+    /// Creates a point at the relative location inside this CGRect.
     ///
     /// Relative x values are multiplied by the width and positioned that distance from minX.
     /// Relative y values are multiplied by the height and positioned that distance from minY.
@@ -70,7 +70,7 @@ public extension CGRect {
         self[relativeLocation.0, relativeLocation.1]
     }
     
-    /// Returns a point at the relative location inside this CGRect.
+    /// Creates a point at the relative location inside this CGRect.
     ///
     /// Relative x values are multiplied by the width and positioned that distance from minX.
     /// Relative y values are multiplied by the height and positioned that distance from minY.
@@ -82,7 +82,7 @@ public extension CGRect {
         self[.relative(x, y)]
     }
     
-    /// Returns an array of points at the relative locations inside this CGRect.
+    /// Creates an array of points at the relative locations inside this CGRect.
     ///
     /// Relative x values are multiplied by the width and positioned that distance from minX.
     /// Relative y values are multiplied by the height and positioned that distance from minY.
@@ -93,7 +93,7 @@ public extension CGRect {
         self[relativeLocations]
     }
     
-    /// Returns an array of points at the relative locations inside this CGRect.
+    /// Creates an array of points at the relative locations inside this CGRect.
     ///
     /// Relative x values are multiplied by the width and positioned that distance from minX.
     /// Relative y values are multiplied by the height and positioned that distance from minY.
@@ -103,7 +103,7 @@ public extension CGRect {
         relativePoints.map { self[$0.x, $0.y] }
     }
     
-    /// Returns an array of points at the relative locations inside this CGRect.
+    /// Creates an array of points at the relative locations inside this CGRect.
     ///
     /// Relative x values are multiplied by the width and positioned that distance from minX.
     /// Relative y values are multiplied by the height and positioned that distance from minY.
@@ -114,7 +114,7 @@ public extension CGRect {
         self[relativeLocations]
     }
     
-    /// Returns an array of points at the relative locations inside this CGRect.
+    /// Creates an array of points at the relative locations inside this CGRect.
     ///
     /// Relative x values are multiplied by the width and positioned that distance from minX.
     /// Relative y values are multiplied by the height and positioned that distance from minY.
