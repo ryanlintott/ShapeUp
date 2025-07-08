@@ -17,10 +17,44 @@ extension Shape {
 }
 #endif
 
+enum ShapeStyle: String, CaseIterable, Identifiable {
+    case regular
+    
+    @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
+    case glass
+    
+    static var allCases: [ShapeStyle] {
+        if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *) {
+            [.regular, .glass]
+        } else {
+            [.regular]
+        }
+    }
+    
+    var id: Self { self }
+}
+
 struct CornerExampleShapeView: View {
     let shape: CornerExample.ExampleShape
     let adjustedStyle: CornerStyle
     let inset: CGFloat
+    let shapeStyle: ShapeStyle
+    
+    var baseShape: any InsettableShape {
+        switch shape {
+        case .rectangle:
+            CornerRectangle()
+                .applyingStyle(adjustedStyle)
+        case .triangle:
+            CornerTriangle()
+                .applyingStyle(adjustedStyle)
+        case .pentagon:
+            CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
+                .applyingStyle(adjustedStyle)
+        case .custom:
+            CustomCornerShapeExample(style: adjustedStyle)
+        }
+    }
     
     #if swift(>=6.2)
     @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
@@ -31,73 +65,23 @@ struct CornerExampleShapeView: View {
     @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
     @ViewBuilder
     var glassShape: some View {
-        switch shape {
-        case .rectangle:
-            CornerRectangle()
-                .applyingStyle(adjustedStyle)
-                .inset(by: inset)
-                .glass(glass)
-        case .triangle:
-            CornerTriangle()
-                .applyingStyle(adjustedStyle)
-                .inset(by: inset)
-                .glass(glass)
-        case .pentagon:
-            CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
-                .applyingStyle(adjustedStyle)
-                .inset(by: inset)
-                .glass(glass)
-        case .custom:
-            CustomCornerShapeExample(style: adjustedStyle)
-                .inset(by: inset)
-                .glass(glass)
-        }
+        AnyShape(baseShape.inset(by: inset))
+            .glass(glass)
     }
     #endif
     
     @ViewBuilder
     var solidShape: some View {
-        switch shape {
-        case .rectangle:
-            CornerRectangle()
-                .applyingStyle(adjustedStyle)
-                .inset(by: inset)
-                .foregroundColor(.accentColor)
-            
-            CornerRectangle()
-                .applyingStyle(adjustedStyle)
-                .stroke()
-        case .triangle:
-            CornerTriangle()
-                .applyingStyle(adjustedStyle)
-                .inset(by: inset)
-                .foregroundColor(.accentColor)
-            
-            CornerTriangle()
-                .applyingStyle(adjustedStyle)
-                .stroke()
-        case .pentagon:
-            CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
-                .applyingStyle(adjustedStyle)
-                .inset(by: inset)
-                .foregroundColor(.accentColor)
-            
-            CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
-                .applyingStyle(adjustedStyle)
-                .stroke()
-        case .custom:
-            CustomCornerShapeExample(style: adjustedStyle)
-                .inset(by: inset)
-                .foregroundColor(.accentColor)
-            
-            CustomCornerShapeExample(style: adjustedStyle)
-                .stroke()
-        }
+        AnyView(baseShape.inset(by: inset))
+            .foregroundColor(.accentColor)
+        
+        AnyView(baseShape.stroke())
     }
     
     var body: some View {
         ZStack {
-            if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *) {
+            if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *),
+               shapeStyle == .glass {
                 #if swift(>=6.2)
                 ZStack {
                     VStack {
@@ -126,5 +110,5 @@ struct CornerExampleShapeView: View {
 }
 
 #Preview {
-    CornerExampleShapeView(shape: .rectangle, adjustedStyle: .rounded(15), inset: 0)
+    CornerExampleShapeView(shape: .rectangle, adjustedStyle: .rounded(15), inset: 0, shapeStyle: .regular)
 }

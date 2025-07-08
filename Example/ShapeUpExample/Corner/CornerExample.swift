@@ -66,6 +66,7 @@ struct CornerExample: View {
     @State private var relative = 0.2
     @State private var absolute = 25.0
     @State private var inset = 0.0
+    @State private var shapeStyle: ShapeStyle = .regular
     
     var adjustedStyle: CornerStyle {
         style.changingRadius(to: relativeRadius ? .relative(relative) : .absolute(absolute))
@@ -77,7 +78,16 @@ struct CornerExample: View {
                 Text("Make shapes using `Corner`, pick a `style` and set the `radius` using either `absolute` or `relative` values.")
             }
             
-            CornerExampleShapeView(shape: shape, adjustedStyle: adjustedStyle, inset: inset)
+            CornerExampleShapeView(shape: shape, adjustedStyle: adjustedStyle, inset: inset, shapeStyle: shapeStyle)
+            
+            if ShapeStyle.allCases.count > 1 {
+                Picker("Shape Style", selection: $shapeStyle) {
+                    ForEach(ShapeStyle.allCases) { shapeStyle in
+                        Text(shapeStyle.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
             
             Picker("Base Shape", selection: $shape) {
                 ForEach(shapes) { shape in
@@ -113,31 +123,33 @@ struct CornerExample: View {
             #endif
             
             VStack {
-                if relativeRadius {
-                    CrossPlatformStepper(
-                        label: "Radius",
-                        value: $relative,
-                        minValue: 0,
-                        maxValue: 1,
-                        step: 0.1,
-                        decimalPlaces: 1
-                    )
-                } else {
-                    CrossPlatformStepper(
-                        label: "Radius",
-                        value: $absolute,
-                        minValue: 0,
-                        maxValue: 300,
-                        step: 10,
-                        decimalPlaces: 0
-                    )
+                HStack {
+                    Picker("Radius", selection: $relativeRadius) {
+                        Text("Relative").tag(true)
+                        Text("Absolute").tag(false)
+                    }
+                    .pickerStyle(.menu)
+                    
+                    if relativeRadius {
+                        CrossPlatformStepper(
+                            label: "",
+                            value: $relative,
+                            minValue: 0,
+                            maxValue: 1,
+                            step: 0.1,
+                            decimalPlaces: 1
+                        )
+                    } else {
+                        CrossPlatformStepper(
+                            label: "",
+                            value: $absolute,
+                            minValue: 0,
+                            maxValue: 300,
+                            step: 10,
+                            decimalPlaces: 0
+                        )
+                    }
                 }
-                
-                Picker("Radius", selection: $relativeRadius) {
-                    Text("Relative").tag(true)
-                    Text("Absolute").tag(false)
-                }
-                .pickerStyle(.segmented)
                 
                 #if !os(tvOS)
                 if relativeRadius {
