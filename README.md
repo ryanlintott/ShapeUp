@@ -12,7 +12,8 @@
 A Swift Package that makes SwiftUI shapes easier to build. (The logo above was created in 100 lines + SwiftUI Text)
 
 Features:
-- Extensions to [`CGPoint`](#cgpoint), [`CGRect`](#cgpoint), and [`CGSize`](#cgpoint)
+- Extensions to [`CGPoint`](#cgpoint), [`CGRect`](#cgrect), and [`CGSize`](#cgsize)
+- [`CGFrame`](#cgframe), a coordinate space or rhombus defined by an origin and vectors for each axis
 - [`Corner`](#corner), a `CGPoint` with `style`.
 - [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
@@ -65,6 +66,8 @@ Easy creation of CGRect through `rect(size:anchor:)` or `rect(width:height:ancho
 
 ## CGSize
 
+## CGFrame
+A coordinate space or rhombus defined only by an origin and a vector for each axis. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems.
 
 ## Corner
 A point with a specified `CornerStyle` used to draw paths and create shapes.
@@ -84,7 +87,7 @@ Corners store no information about their orientation or where the previous and n
 ```
 
 ## CornerStyle
-An enum storing style information for a `Corner`. In all cases, the radius is a [`RelatableValue`](#relatablevalue) that can either be an absolue value or relative to the length of the shortest line from that corner.
+An enum storing style information for a `Corner`. In all cases, the radius is a [`RelatableValue`](#relatablevalue) that can either be an absolute value or relative to the length of the shortest line from that corner.
 
 <img width="50" alt="Pink triangle with a point corner" src="https://user-images.githubusercontent.com/2143656/157761591-2341d07c-5f0e-4434-ad19-22873f7357d9.svg"> `.point`
 A simple point corner with no properties.
@@ -93,13 +96,13 @@ A simple point corner with no properties.
 A rounded corner with a radius.
 
 <img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, radiusOffset: CGFloat)`
-A concave corner where the radius determines the start and end points of the cut and the radius offeset is the difference between the concave radius and the radius. The radiusOffset is mainly used when insetting a concave corner and is often left with the default value of zero.
+A concave corner where the radius determines the start and end points of the cut and the radius offset is the difference between the concave radius and the radius. The radiusOffset is mainly used when insetting a concave corner and is often left with the default value of zero.
 
 <img width="50" alt="Pink triangle with a straight cut corner" src="https://user-images.githubusercontent.com/2143656/157762299-437bcec4-2fc8-475b-bbbb-ed810d86ca7f.svg"> `.straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
-A straight chamfer corner where the radius determines the start and end points of the cut. Additional cornerstyles can be used on the two resulting corners of the chamfer. (You can continue nesting recursively.)
+A straight chamfer corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the two resulting corners of the chamfer. (You can continue nesting recursively.)
 
 <img width="50" alt="Pink triangle with a cutout corner" src="https://user-images.githubusercontent.com/2143656/157762313-c4015f99-7c53-4571-93b5-a8b476c9f5da.svg"> `.cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
-A cutout corner where the radius determines the start and end points of the cut. Additional cornerstyles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
+A cutout corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
 
 ## Basic Shapes
 `CornerRectangle`, `CornerTriangle`, and `CornerPentagon` are pre-built shapes where you can customize the style of any corner.
@@ -352,4 +355,3 @@ Here is an example of animatableData using AnimatablePair:
          set { (insetAmount, cornerRadius, rotation) = newValue() }
      }
  }
- ```

@@ -172,6 +172,12 @@ public extension Vector2Algebraic {
         lhs = lhs * rhs
     }
     
+    /// Calculates the cross product of this vector with another vector.
+    ///
+    /// The cross product is a scalar value that represents the area of the parallelogram formed by the two vectors.
+    /// It can be used to determine the orientation of the vectors (positive for counterclockwise, negative for clockwise).
+    /// - Parameter b: The other vector to calculate the cross product with.
+    /// - Returns: The cross product as a scalar value.
     func crossProduct(with b: some Vector2Representable) -> CGFloat {
         (vector.dx * b.vector.dy) - (vector.dy * b.vector.dx)
     }

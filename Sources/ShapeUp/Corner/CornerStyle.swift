@@ -39,7 +39,7 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     
     /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine half of the corner shape then mirrored to create the other half.
     ///  - Parameters:
-    ///   - radius: Radius of circle used to determine the start, and end corners of the custom shape. Relative values relate to the shortest of the two lines from this corner.
+    ///   - radius: Radius of circle used to determine the start and end points of the custom shape. Relative values relate to the shortest of the two lines from this corner.
     ///   - relativeCorners: Relative corners that define half of the symmetrical corner shape. Their position is determined relative to a ``CGFrame`` defined by the radius.
     case custom(_ radius: RelatableValue, relativeCorners: [RelativeCorner])
 }

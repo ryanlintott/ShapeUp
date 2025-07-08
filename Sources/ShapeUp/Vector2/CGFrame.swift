@@ -10,11 +10,11 @@ import SwiftUI
 /// A coordinate space or rhombus defined only by an origin and a vector for each axis.
 public struct CGFrame {
     /// The origin point of the coordinate frame.
-    let origin: CGPoint
+    public var origin: CGPoint
     /// The vector defining the x-axis direction and magnitude.
-    let xAxis: Vector2
+    public var xAxis: Vector2
     /// The vector defining the y-axis direction and magnitude.
-    let yAxis: Vector2
+    public var yAxis: Vector2
 }
 
 public extension CGFrame {

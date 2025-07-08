@@ -15,6 +15,9 @@ public extension Array where Element == RectAnchor {
         map { $0.point(in: rect) }
     }
     
+    /// Creates an array of points corresponding to the locations of the anchors within a coordinate frame.
+    /// - Parameter frame: Coordinate frame where anchors are positioned.
+    /// - Returns: An array of points where the anchors are located.
     func points(in frame: CGFrame) -> [CGPoint] {
         map { $0.point(in: frame) }
     }

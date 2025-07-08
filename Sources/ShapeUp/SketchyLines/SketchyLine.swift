@@ -43,7 +43,7 @@ public struct SketchyLine: Shape {
     ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
     ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
     ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
-    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
+    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {
         self.edge = edge
         self.startExtension = startExtension
