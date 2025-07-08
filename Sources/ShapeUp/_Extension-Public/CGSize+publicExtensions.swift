@@ -34,7 +34,7 @@ extension CGSize {
     ///   - x: X scale amount
     ///   - y: Y scale amount
     /// - Returns: Size scaled by specified x and y amounts
-    public func scaled(_ x: CGFloat, _ y: CGFloat) -> Self {
+    public func scaled(x: CGFloat, y: CGFloat) -> Self {
         CGSize(width: width * x, height: height * y)
     }
     

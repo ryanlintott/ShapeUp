@@ -18,6 +18,8 @@ public struct CGFrame {
 }
 
 public extension CGFrame {
+    // MARK: - Inits
+    
     /// Creates a coordinate frame with the specified origin, size, anchor, and rotation.
     /// - Parameters:
     ///   - origin: The origin point of the frame.
@@ -41,6 +43,8 @@ public extension CGFrame {
         self.init(origin: rect.origin, size: rect.size)
     }
     
+    // MARK: - Points from anchor points
+    
     /// Returns the point at the specified anchor location within the frame.
     /// - Parameter anchor: The anchor defining the point location.
     /// - Returns: The point at the anchor location.
@@ -49,6 +53,53 @@ public extension CGFrame {
             .moved(xAxis * anchor.relativePoint.x)
             .moved(yAxis * anchor.relativePoint.y)
     }
+    
+    /// Creates an array of points in the locations of the supplied anchors.
+    /// - Parameter anchors: Anchors defining point locations in order.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
+    subscript (_ anchors: [RectAnchor]) -> [CGPoint] {
+        anchors.map { self[$0] }
+    }
+    
+    /// Creates an array of points in the locations of the supplied anchors.
+    /// - Parameter anchors: Anchors defining point locations in order.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
+    subscript (_ anchors: RectAnchor...) -> [CGPoint] {
+        self[anchors]
+    }
+    
+    // MARK: - Points from relative coordinates
+
+    /// Creates a point at the specified relative coordinates in the frame.
+    ///
+    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the frame.
+    /// - Parameters:
+    ///   - x: Relative x coordinate.
+    ///   - y: Relative y coordinate.
+    /// - Returns: The point at the relative coordinates.
+    subscript (_ x: CGFloat, _ y: CGFloat) -> CGPoint {
+        self[.relative(x, y)]
+    }
+    
+    /// Creates an array of points at relative coordinates in the frame.
+    ///
+    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the frame.
+    /// - Parameter relativePoints: An array of tuples with relative x and y coordinates respectively.
+    /// - Returns: The points at the relative coordinates.
+    subscript (_ relativePoints: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
+        relativePoints.map { self[$0.x, $0.y] }
+    }
+    
+    /// Creates an array of points at the relative coordinates in the frame.
+    ///
+    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the frame.
+    /// - Parameter relativePoints: An array of tuples with relative x and y coordinates respectively.
+    /// - Returns: The points at the relative coordinates.
+    subscript (_ relativePoints: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
+        relativePoints.map { self[$0.x, $0.y] }
+    }
+
+    // MARK: - Anchor points from points
     
     /// Returns the relative anchor for a given point within the frame.
     /// - Parameter point: The point to convert to an anchor.
@@ -64,31 +115,6 @@ public extension CGFrame {
         let y = xAxis.crossProduct(with: relativeVector) / denominator
         
         return .relative(x, y)
-    }
-    
-    /// Returns the point at the specified relative coordinates to the frame.
-    ///
-    /// Values outside the 0.0 to 1.0 range will project to relative positions outside the frame.
-    /// - Parameters:
-    ///   - x: The x-coordinate.
-    ///   - y: The y-coordinate.
-    /// - Returns: The point at the relative coordinates.
-    subscript (_ x: CGFloat, _ y: CGFloat) -> CGPoint {
-        self[.relative(x, y)]
-    }
-    
-    /// Creates an array of points in the locations of the supplied anchors.
-    /// - Parameter anchors: Anchors defining point locations in order.
-    /// - Returns: An array of points in the location and order of the supplied anchors.
-    subscript (_ anchors: [RectAnchor]) -> [CGPoint] {
-        anchors.map { self[$0] }
-    }
-    
-    /// Creates an array of points in the locations of the supplied anchors.
-    /// - Parameter anchors: Anchors defining point locations in order.
-    /// - Returns: An array of points in the location and order of the supplied anchors.
-    subscript (_ anchors: RectAnchor...) -> [CGPoint] {
-        self[anchors]
     }
     
     /// Converts an array of points to their corresponding anchors within the frame.

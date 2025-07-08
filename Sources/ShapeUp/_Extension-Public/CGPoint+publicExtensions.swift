@@ -29,10 +29,7 @@ public extension CGPoint {
     /// - Parameter rect: Rectangle used for relative position.
     /// - Returns: An anchor point relative to the specified rectangle.
     func relative(to rect: CGRect) -> RectAnchor {
-        let relativePosition = vector - rect.origin.vector
-        let x = rect.width == 0 ? 0 : relativePosition.dx / rect.width
-        let y = rect.height == 0 ? 0 : relativePosition.dy / rect.height
-        return .relative(x, y)
+        rect[self]
     }
     
     /// Converts this point to an anchor point relative to the specified coordinate frame.

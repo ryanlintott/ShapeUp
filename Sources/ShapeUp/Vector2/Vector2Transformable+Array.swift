@@ -183,6 +183,34 @@ public extension Array where Element: Vector2Transformable {
         map { $0.scaledPosition(scale, anchor: anchor) }
     }
     
+    /// Returns positions after being scaled from the origin.
+    /// - Parameters:
+    ///   - scale: Used to scale the positions.
+    ///   - anchor: Anchor point for the scale within the bounds frame.
+    /// - Returns: Positions after being scaled from the anchor point.
+    func scaledPositions(_ scale: CGSize, anchor: RectAnchor) -> [CGPoint] {
+        map { $0.scaledPosition(scale, anchor: bounds[anchor]) }
+    }
+    
+    /// Returns positions after being scaled from the origin using a RectAnchor within the bounds frame.
+    /// - Parameters:
+    ///   - x: Used to scale the x positions.
+    ///   - y: Used to scale the y positions.
+    ///   - anchor: Anchor point for the scale within the bounds frame.
+    /// - Returns: Positions after being scaled from the anchor point.
+    func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: RectAnchor) -> [CGPoint] {
+        map { $0.scaledPosition(x: x, y: y, anchor: bounds[anchor]) }
+    }
+    
+    /// Returns positions after being scaled from the origin using a RectAnchor within the bounds frame.
+    /// - Parameters:
+    ///   - scale: Used to scale the positions.
+    ///   - anchor: Anchor point for the scale within the bounds frame.
+    /// - Returns: Positions after being scaled from the anchor point.
+    func scaledPositions(_ scale: CGFloat, anchor: RectAnchor) -> [CGPoint] {
+        map { $0.scaledPosition(scale, anchor: bounds[anchor]) }
+    }
+    
     /// Returns positions after being moved from one frame of reference to another.
     /// - Parameters:
     ///   - source: Initial frame of reference for the position.

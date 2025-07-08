@@ -12,8 +12,8 @@
 A Swift Package that makes SwiftUI shapes easier to build. (The logo above was created in 100 lines + SwiftUI Text)
 
 Features:
+- [`RectAnchor`](#rectanchor), an enum for all major anchor points on a rectangle. Used for transform functions.
 - Extensions to [`CGPoint`](#cgpoint), [`CGRect`](#cgrect), and [`CGSize`](#cgsize)
-- [`CGFrame`](#cgframe), a coordinate space or rhombus defined by an origin and vectors for each axis
 - [`Corner`](#corner), a `CGPoint` with `style`.
 - [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
@@ -25,12 +25,11 @@ Features:
 - [`Vector2Representable`](#vector2representable) protocol that adds a `.vector` property needed to conform to other Vector2-related protocols.
 - [`Vector2Algebraic`](#vector2algebraic) protocol used to add vector algebra capabilities to `Vector2`
 - [`Vector2Transformable`](#vector2transformable) protocol with methods for transforming arrays of points.
-- [`RectAnchor`](#rectanchor), an enum for all major anchor points on a rectangle. Used for transform functions.
 - [`RelatableValue`](#relatablevalue), an enum used to store `.relative` or `.absolute` values.
+- [`CGFrame`](#cgframe), a coordinate space or rhombus defined by an origin and vectors for each axis
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
 - [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
 - [`AnimatablePack`](#animatablepack) as an alternative to `AnimatablePair` that takes any number of properties.
-
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
@@ -57,17 +56,87 @@ Or you can buy a t-shirt with the ShapeUp logo
 <a href="https://cottonbureau.com/p/JBYGB7/shirt/shapeup#/20149802"><img width="256" alt="ShapeUp T-Shirt" src="https://cottonbureau.com/mockup?vid=20149802&hash=6UJM&w=512"></a>
 - - -
 # Features
-## CGPoint
-Conformance to [`Vector2Transformable`](#vector2transformable) allowing points or arrays of points to be easily moved, rotated, flipped or inset.
+## RectAnchor
+An enum to indicate one of 9 anchor locations on a rectangle plus any `.relative` location. It's primarily used to quickly get `CGPoint` values from `CGRect` when creating SwiftUI shapes.
 
-Easy creation of CGRect through `rect(size:anchor:)` or `rect(width:height:anchor:)` methods.
+```swift
+func path(in rect: CGRect) -> Path {
+    // Current method
+    let point1 = CGPoint(x: rect.minX, y: rect.minY)
+    let point2 = CGPoint(x: rect.minX + (rect.width * 0.4), y: rect.minY + (rect.width * 0.7))
+    // ShapeUp method
+    let point1 = rect[.topLeft]
+    let point2 = rect[.relative(0.4, 0.7)]
+    ...
+}
+```
+
+This is especially helpful when getting an array of points
+
+```swift
+// Current method
+let points = [
+    CGPoint(x: rect.minX, y: rect.midY),
+    CGPoint(x: rect.midX, y: rect.midY),
+    CGPoint(x: rect.maxX, y: rect.maxY)
+]
+// ShapeUp method
+let points = rect[.left, .center, .bottomRight]
+```
+
+## CGPoint
+By conforming to [`Vector2Transformable`](#vector2transformable) `CGPoint` and `Array<CGPoint>` can be moved, rotated, flipped, scaled, and inset.
+
+```swift
+points
+    .moved(dx: 100, dy: 50)
+    .rotated(.degrees(45), anchor: .center)
+    .flipped(mirrorLineStart: .topLeft, mirrorLineEnd: .bottomLeft)
+    .scaledPositions(2.5, anchor: .bottomRight)
+    .insetPoints(5)
+```
+
+They can also be converted to relative positions through [`RectAnchor`](#rectanchor) or transformed to different coordinate spaces with [`CGFrame`](#cgframe).
+
+```swift
+let relativeToRect: [RectAnchor] = points.relative(to: CGRect(...))
+let relativeToFrame: [RectAnchor] = points.relative(to: CGFrame(...))
+```
 
 ## CGRect
+There are lots of short subscripts to generate points, anchor points or arrays of either.
+
+```swift
+let rect = CGRect(origin: .zero, size: CGSize(width: 50, height: 50)
+let center: CGPoint = rect[.center]
+let edgeMidpoints: [CGPoint] = rect[.top, .right, .bottom, .left]
+let relativePoint: [CGPoint] = rect[1.0, 0.666]
+let relativePoints: [CGPoint] = rect[(0.0, 0.7), (0.3, 1.0), (1.0, 0.0))
+let anchorPoint: RectAnchor = rect[CGPoint(x: 15, y: 4)]
+let anchorPoints: [RectAnchor] = rect[relativePoints]
+```
+
+The `CGRect` itself can also be moved and scaled.
+
+```swift
+rect
+    .moved(dx: 40, dy: 2.5)
+    .scaled(x: 2, y: 1.5, anchor: .center)
+```
+
+And you can quickly create corners
+
+```swift
+let roundedCorners: [Corner] = rect.corners(.rounded(20))
+```
 
 ## CGSize
+`CGSize` can also be scaled or it can be used to quickly create a `CGRect`
 
-## CGFrame
-A coordinate space or rhombus defined only by an origin and a vector for each axis. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems.
+```swift
+let scaledSize: CGSize = size.scaled(3)
+let rect = size.rect(at: point, anchor: .center)
+```
 
 ## Corner
 A point with a specified `CornerStyle` used to draw paths and create shapes.
@@ -103,6 +172,7 @@ A straight chamfer corner where the radius determines the start and end points o
 
 <img width="50" alt="Pink triangle with a cutout corner" src="https://user-images.githubusercontent.com/2143656/157762313-c4015f99-7c53-4571-93b5-a8b476c9f5da.svg"> `.cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
 A cutout corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
+
 
 ## Basic Shapes
 `CornerRectangle`, `CornerTriangle`, and `CornerPentagon` are pre-built shapes where you can customize the style of any corner.
@@ -143,19 +213,19 @@ CornerPentagon(
 A protocol for creating shapes built from an array of `Corner`s. The path and inset functions needed to conform to SwiftUI InsettableShape are already implemented.
 
 ### How to build a CornerShape
-- Set insetAbount zero (this property is used if the shape inset).
-- Set the closed property to define if your shape should be closed or left open.
+- Set `insetAmount` to zero (this property will is used to automatically inset the CornerShape).
+- Set the `closed` property to define if your shape should be closed or left open.
 - Write a function that returns an array of corners.
 ```swift
-public struct MyShape: CornerShape {
-    public var insetAmount: CGFloat = .zero
-    public let closed = true
+struct MyCornerShape: CornerShape {
+    var insetAmount: CGFloat = .zero
+    let closed = true
    
-    public func corners(in rect: CGRect) -> [Corner] {
+    func corners(in rect: CGRect) -> [Corner] {
         [
-            Corner(x: rect.midX, y: rect.minY),
-            Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),
-            Corner(.rounded(radius: 5), x: rect.minX, y: rect.maxY)
+            rect[.top].corner,
+            rect[.bottomRight].corner(.rounded(radius: 5),
+            rect[.bottomRight].corner(.rounded(radius: 5)
         ]
     }
 }
@@ -164,17 +234,32 @@ public struct MyShape: CornerShape {
 ### Using A CornerShape
 A `CornerShape` can be used in SwiftUI Views the same way as `RoundedRectangle` or similar.
 ```swift
-MyShape()
+MyCornerShape()
     .fill()
 ```
 
-The corners can also be accessed directly for use in a more complex shape
+The corners can also be accessed directly for use in a regular SwiftUI `Shape`
 ```swift
-public func corners(in rect: CGRect) -> [Corner] {
-    MyShape()
+func path(in rect: CGRect) -> Path {
+    var path = Path()
+    
+    // ...Draw some quad curves or similar complex shapes
+    
+    let corners = MyCornerShape()
         .corners(in: rect)
         .inset(by: 10)
         .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
+        
+    path.addOpenCornerShape(
+        corners,
+        previousPoint: path.currentPoint,
+        nextPoint: rect[.center],
+        moveToStart: false
+    )
+    
+    // ...Draw some more
+    
+    return path
 }
 ```
 
@@ -202,26 +287,26 @@ let notch = Notch(.rectangle, position: .relative(0.5), length: .relative(0.2), 
 
 let corners = corners.addingNotch(notch, afterCornerIndex: 1)
 ```
+
 ### NotchStyle
-Two basic styles are `.triangle` and `.rectangle` and both allow customization of the corner styles for the 2 or 3 resulting notch corners.
+Notches styles are essentially arrays of `RelativeCorner` so you can create any shape you like.
+
 ```swift
-/// Specify styles for each corner
-let notch1 = .triangle(cornerStyles: [.rounded(radius: 10), .point, .straight(radius: 5)])
-/// Or specify one style for all
-let notch2 = .rectangle(cornerStyle: .rounded(radius: .relative(0.2))
+let notchStyle = NotchStyle(relativeCorners: [
+    RelativeCorner(anchorPoint: .topLeft),
+    RelativeCorner(anchorPoint: .left),
+    RelativeCorner(.rounded(radius: 15), anchorPoint: .bottom),
+    RelativeCorner(anchorPoint: .right),
+    RelativeCorner(anchorPoint: .topRight)
+])
 ```
 
-There is also a `.custom` notch style that takes a closure that returns an array of `Corner`s based on a `CGRect` that matches the size and orientation of the notch.
+Or you can quickly create triangular or rectangular notches with custom corner styles.
 ```swift
-let notch = .custom { rect in
-    [
-        Corner(x: rect.minX, y: rect.minY),
-        Corner(x: rect.minX, y: rect.midY),
-        Corner(.rounded(radius: 15), x: rect.midX, y: rect.maxY),
-        Corner(x: rect.maxX, y: rect.midY),
-        Corner(x: rect.maxX, y: rect.minY)
-    ]
-}
+/// Specify styles for each corner
+let triangleStyle: NotchStyle = .triangle(cornerStyles: [.rounded(radius: 10), .point, .straight(radius: 5)])
+/// Or specify one style for all
+let rectangleStyle: NotchStyle = .rectangle(cornerStyle: .rounded(radius: .relative(0.2))
 ```
 
 ## Add CornerShape
@@ -259,29 +344,6 @@ Functions include: magnitude, direction, normalized, addition, subtraction, and 
 ## Vector2Transformable
 A protocol that adds transformation functions (move, rotate, flip, inset) to any `Vector2Representable` or array of that type. Applied to `Vector2`, `CGPoint`, and `Corner`.
 
-## RectAnchor
-An enum to indicate one of 9 anchor locations on a rectangle. It's primarily used to quickly get `CGPoint` values from `CGRect`
-
-```swift
-// Current method
-let point = CGPoint(x: rect.minX, y: rect.minY)
-// ShapeUp method
-let point = rect.point(.topLeft)
-```
-
-This is especially helpful when getting an array of points
-
-```swift
-// Current method
-let points = [
-    CGPoint(x: rect.minX, y: rect.midY),
-    CGPoint(x: rect.midX, y: rect.midY),
-    CGPoint(x: rect.maxX, y: rect.maxY)
-]
-// ShapeUp method
-let points = rect.points(.left, .center, .bottomRight)
-```
-
 ## RelatableValue
 A handy enum that represents either a relative or absolute value. This is used in lots of situations throughout ShapeUp to give flexibility when defining parameters.
 
@@ -302,6 +364,26 @@ For ease of use, `RelatableValue` conforms to `ExpressibleByIntegerLiteral` and 
 let cornerStyle = .rounded(radius: .absolute(5))
 let cornerStyle = .rounded(radius: 5)
 ```
+
+## CGFrame
+For more complex transformations a coordinate space or rhombus defined only by an origin and a vector for each axis can be helpful. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems. Specifically this is used to draw custom cornerStyles
+
+Similar to `CGRect` you can easily create points, anchor points or arrays of either.
+
+```swift
+let frame = CGFrame(origin: .zero, xAxis: Vector2(dx: 10, dy: 0), yAxis: Vector2(dx: 10, dy: 8))
+let center: CGPoint = frame[.center]
+let edgeMidpoints: [CGPoint] = frame[.top, .right, .bottom, .left]
+let relativePoint: [CGPoint] = frame[1.0, 0.666]
+let relativePoints: [CGPoint] = frame[(0.0, 0.7), (0.3, 1.0), (1.0, 0.0))
+let anchorPoint: RectAnchor = frame[CGPoint(x: 15, y: 4)]
+let anchorPoints: [RectAnchor] = rect[relativePoints]
+```
+
+```swift
+CGFrame(origin: .zero, size: CGSize(width: 10, height: 20), anchor: .center, rotation: .degrees(45))
+```
+
 ## SketchyLine
 A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
 

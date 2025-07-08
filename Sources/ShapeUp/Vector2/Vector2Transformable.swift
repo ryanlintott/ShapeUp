@@ -47,7 +47,7 @@ public extension Vector2Transformable {
         return repositioned(to: pRotated + anchor.vector)
     }
     
-    /// Rotates the position of this object aroudn the origin without modifying other properties.
+    /// Rotates the position of this object around the origin without modifying other properties.
     /// - Parameter angle: Rotation angle.
     /// - Returns: The same object, rotated around the origin by the provided angle.
     func rotated(_ angle: Angle) -> Self {
