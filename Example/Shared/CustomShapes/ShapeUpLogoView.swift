@@ -47,7 +47,7 @@ struct ShapeUpLogo: View {
                         .aspectRatio(0.9, contentMode: .fit)
                         .frame(width: proxy.size.width * 0.075)
                         .rotationEffect(.degrees(-126))
-                        .offset(proxy.size.scaled(0.019, 0.35))
+                        .offset(proxy.size.scaled(x: 0.019, y: 0.35))
 
                     // Three triangles
                     VStack(spacing: proxy.size.height * 0.026) {
@@ -72,7 +72,7 @@ struct ShapeUpLogo: View {
                         .aspectRatio(1, contentMode: .fit)
                         .frame(width: proxy.size.width * 0.041)
                         .rotationEffect(.degrees(15))
-                        .offset(proxy.size.scaled(0.8365, 0.17))
+                        .offset(proxy.size.scaled(x: 0.8365, y: 0.17))
                     
                     // Yellow Squiggle
                     CornerCustom(closed: false) { rect in

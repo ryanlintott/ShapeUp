@@ -21,13 +21,13 @@ public extension Corner.Dimensions {
     ///   - reflexMultiplier: A value equal to one for non-reflex corners and -1 for reflex corners.
     /// - Returns: The cut length for a concave corner with the following specifications.
     static func cutLength(cornerPoint: CGPoint, previousPoint: CGPoint, concaveRadiusCenter: CGPoint, concaveRadius: CGFloat, halvedNonReflexAngle: Angle, reflexMultiplier: CGFloat) -> CGFloat {
-        // If the corner angle is zero or 90 then none of these calculations will work so just return a concave corner with zero radius.
+        // If the half the corner angle is zero or 90 then none of these calculations will work so just return a concave corner with zero radius.
         guard halvedNonReflexAngle.positive > .zero && halvedNonReflexAngle.positive < .degrees(90) else {
             return .zero
         }
         
         guard cornerPoint != concaveRadiusCenter else {
-            // if corner point is the concave radius center then the concave radius in the cut length
+            // if corner point is the concave radius center then the concave radius is the cut length
             return concaveRadius
         }
         // Get the intersection points of the concave circle and the line from previous point to corner point.
@@ -66,10 +66,14 @@ public extension Corner.Dimensions {
                 
                 // If the angle between the direction and corner cut direction is less than the halved radius angle then the intersection point should be used as the corner start.
                 // If this isn't true, it means there should be a line from the corner start, in to meet the concave curve start.
-                return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle.complementary
+                if reflexMultiplier > 0 {
+                    return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle.complementary
+                } else {
+                    return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle
+                }
             }
         
-        if let cornerStart = cornerStart {
+        if let cornerStart {
             return (cornerPoint.vector - cornerStart.vector).magnitude
         }
         

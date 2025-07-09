@@ -49,7 +49,7 @@ extension Corner.Dimensions {
             // Start drawing this corner shape
             startCornerShape(on: &path, moveToStart: moveToStart)
             // If one value is nil, both are nil
-            if let concaveStart = concaveStart, let concaveEnd = concaveEnd {
+            if let concaveStart, let concaveEnd {
                 if (concaveStart.vector - cornerStart.vector).magnitude < abs(cutLength) {
                     // Draw a line to concave start
                     path.addLine(to: concaveStart)

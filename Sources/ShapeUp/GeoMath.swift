@@ -27,7 +27,7 @@ internal enum GeoMath {
             // No real solutions
             return []
         } else if det == 0 {
-            // One solution
+            // One solution (tangent case)
             detRoot += [0]
         } else {
             let root = sqrt(det)
