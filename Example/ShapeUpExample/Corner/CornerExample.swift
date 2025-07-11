@@ -60,8 +60,8 @@ struct CornerExample: View {
     ]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
-    @State private var shape: ExampleShape = .custom//.rectangle
-    @State private var style: CornerStyle = .concave(.zero) //.rounded(.zero)
+    @State private var shape: ExampleShape = .custom
+    @State private var style: CornerStyle = .rounded(25)
     @State private var relativeRadius = true
     @State private var relative = 0.2
     @State private var absolute = 25.0
@@ -102,25 +102,6 @@ struct CornerExample: View {
                 }
             }
             .pickerStyle(.segmented)
-            
-            CrossPlatformStepper(
-                label: "Inset: ",
-                value: $inset,
-                minValue: -50,
-                maxValue: 50,
-                step: 5,
-                decimalPlaces: 0
-            )
-            
-            #if !os(tvOS)
-            Slider(value: $inset, in: -50...50) {
-                Text("Inset")
-            } minimumValueLabel: {
-                Text("-50")
-            } maximumValueLabel: {
-                Text("50")
-            }
-            #endif
             
             VStack {
                 HStack {
@@ -172,6 +153,25 @@ struct CornerExample: View {
                 #endif
             }
             .disabled(style == .point)
+            
+            CrossPlatformStepper(
+                label: "Inset: ",
+                value: $inset,
+                minValue: -50,
+                maxValue: 50,
+                step: 5,
+                decimalPlaces: 0
+            )
+            
+            #if !os(tvOS)
+            Slider(value: $inset, in: -50...50) {
+                Text("Inset")
+            } minimumValueLabel: {
+                Text("-50")
+            } maximumValueLabel: {
+                Text("50")
+            }
+            #endif
 
         }
         .accentColor(.suPink)

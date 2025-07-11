@@ -22,7 +22,7 @@ extension Corner.Dimensions {
         var insetRadiusOffset: CGFloat? = nil
         
         switch corner.style {
-        case .point, .cutout:
+        case .point, .cutout, .custom:
             // Inset radius is unchanged
             insetRadius = absoluteRadius
             
@@ -69,9 +69,6 @@ extension Corner.Dimensions {
             let straightCutLength = (insetEnd.vector - insetStart.vector).magnitude * insetStraightCutSignMultiplier
             // The radius angle will be the same for the inset. It can be used with half the straight cut line to determine the inset radius
             insetRadius = (straightCutLength * 0.5) / abs(sin(halvedRadiusAngle.radians))
-        case .custom:
-            /// Inset radius is set to an absolute value that doesn't change.
-            insetRadius = absoluteRadius
         }
         return (point: insetPoint, radius: insetRadius, radiusOffset: insetRadiusOffset ?? 0)
     }

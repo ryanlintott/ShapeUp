@@ -31,6 +31,7 @@ extension Corner.Dimensions {
         
         // Draw the corner based on the style.
         switch corner.style {
+            // Custom corners with no subcorners should draw as points.
         case .point:
             // Start drawing this corner shape
             startCornerShape(on: &path, moveToStart: moveToStart)
@@ -103,8 +104,9 @@ extension Corner.Dimensions {
                     .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                     .addOpenCornerShape(to: &path, moveToStart: moveToStart)
             }
+            
         case .custom:
-            subCorners
+            (subCorners.isEmpty ? [RelativeCorner(.topRight).corner(in: frame)] : subCorners)
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                 .addOpenCornerShape(to: &path, moveToStart: moveToStart)
         }
