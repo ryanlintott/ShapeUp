@@ -23,14 +23,12 @@ struct NotchedRectangleExample: View {
                         .rectangle(depth: 50, cornerStyle: .rounded(10)),
                         nil,
                         .triangle(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)),
-                        .custom(depth: 60) { rect in                            
-                            [
-                                Corner(x: rect.midX, y: rect.minY),
-                                Corner(x: rect.minX, y: rect.maxY),
-                                Corner(.rounded(15), x: rect.midX, y: rect.maxY),
-                                Corner(x: rect.maxX, y: rect.minY)
-                            ]
-                        }
+                        .custom(depth: 60, relativeCorners: [
+                            .init(.top),
+                            .init(.bottomLeft),
+                            .init(.bottom, .rounded(15)),
+                            .init(.topRight)
+                        ])
                     ]
                 )
         }

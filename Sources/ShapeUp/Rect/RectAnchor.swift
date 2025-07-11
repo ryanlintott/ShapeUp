@@ -106,12 +106,7 @@ extension RectAnchor {
     /// - Parameter style: Corner style to use. Default is nil which renders as ``CornerStyle.point``.
     /// - Returns: RelativeCorner with the provided style and the same position as the anchor.
     func relativeCorner(_ style: CornerStyle? = nil) -> RelativeCorner {
-        RelativeCorner(style, anchorPoint: self)
-    }
-    
-    /// Relative corner at the same position with point style.
-    var relativeCorner: RelativeCorner {
-        RelativeCorner(.point, anchorPoint: self)
+        RelativeCorner(self, style)
     }
     
     /// An array of four edges clockwise starting with top

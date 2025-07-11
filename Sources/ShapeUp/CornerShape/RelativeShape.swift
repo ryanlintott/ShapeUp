@@ -24,11 +24,11 @@ struct RelativeShape: CornerShape {
 
 #Preview {
     RelativeShape([
-        .init(anchorPoint: .left),
-        .init(.rounded(40), anchorPoint: .relative(0.3, 0.8)),
-        .init(anchorPoint: .topRight),
-        .init(anchorPoint: .relative(1, 0.1)),
-        .init(.rounded(40), anchorPoint: .relative(0.3, 1)),
+        .init(.left),
+        .init(x: 0.3, y: 0.8, .rounded(40)),
+        .init(.topRight),
+        .init(x: 1, y: 0.1),
+        .init(x: 0.3, y: 1, .rounded(40)),
     ])
         .fill()
 }

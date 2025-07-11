@@ -8,6 +8,13 @@
 import Foundation
 
 public extension NotchStyle {
+    /// Creates a custom shaped notch defined by relative corners.
+    /// - Parameter relativeCorners: Relative corners that define the notch shape.
+    /// - Returns: A NotchStyle with the custom shape defined by the relative corners.
+    static func custom(_ relativeCorners: [RelativeCorner]) -> NotchStyle {
+        NotchStyle(relativeCorners: relativeCorners)
+    }
+    
     /// A triangular shaped notch with default corner styles.
     static let triangle = NotchStyle.triangle()
     
@@ -50,7 +57,7 @@ public extension NotchStyle {
     /// - Parameters:
     ///   - corners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
     /// - Returns: A NotchStyle with the custom shape defined by the closure.
-    @available(*, deprecated, message: "Use NotchStyle(relativeCorners:) instead for better animation support")
+    @available(*, deprecated, renamed: "custom(_:)", message: "The new custom notch based on relative corners is necessary for animation support. This should handle most cases with corners positioned relative to the notch length and depth but if there are exceptions in your closure you may need to switch to manually drawing the corners without using a notch.")
     static func custom(corners: @Sendable @escaping (_ in: CGRect) -> [Corner]) -> NotchStyle {
         // Convert the closure-based corners to relative corners using a reference frame
         let relativeCorners = corners(.one).relative(to: .one)

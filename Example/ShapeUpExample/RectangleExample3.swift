@@ -19,10 +19,10 @@ struct RectangleExample3: View {
                     .bottomLeft: .custom(
                         .relative(0.3),
                         relativeCorners: [
-                            RelativeCorner(.rounded(.relative(0.5)), anchorPoint: .topLeft),
-                            RelativeCorner(.concave(.relative(0.3)), x: 0.4, y: -0.3),
-                            RelativeCorner(.point, x: 0.6, y: 0.8),
-                            RelativeCorner(.rounded(.relative(0.5)), anchorPoint: .bottomRight),
+                            RelativeCorner(.topLeft, .rounded(.relative(0.5))),
+                            RelativeCorner(x: 0.4, y: -0.3, .concave(.relative(0.3))),
+                            RelativeCorner(x: 0.6, y: 0.8),
+                            RelativeCorner(.bottomRight, .rounded(.relative(0.5))),
                         ]
                     )
                 ]

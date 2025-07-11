@@ -13,21 +13,21 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     
     /// Create a corner with a specified style and anchor point.
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
     ///   - point: Location of corner based on an anchor point.
-    public init(_ style: CornerStyle? = nil, anchorPoint: RectAnchor) {
-        self.style = style ?? .point
+    ///   - style: Corner style. Default is .point.
+    public init(_ anchorPoint: RectAnchor, _ style: CornerStyle? = nil) {
         self.anchorPoint = anchorPoint
+        self.style = style ?? .point
     }
     
     /// Create a corner with a specified style and anchor point.
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
     ///   - x: Relative x location of corner based on top left anchor point.
     ///   - y: Relative y location of corner based on top left anchor point.
-    public init(_ style: CornerStyle? = nil, x: CGFloat, y: CGFloat) {
-        self.style = style ?? .point
+    ///   - style: Corner style. Default is .point.
+    public init(x: CGFloat, y: CGFloat, _ style: CornerStyle? = nil) {
         self.anchorPoint = .relative(x, y)
+        self.style = style ?? .point
 
     }
 }
@@ -48,6 +48,6 @@ public extension RelativeCorner {
         if style == self.style {
             return self
         }
-        return .init(style, anchorPoint: anchorPoint)
+        return .init(anchorPoint, style)
     }
 }

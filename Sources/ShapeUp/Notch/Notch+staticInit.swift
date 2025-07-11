@@ -8,6 +8,17 @@
 import SwiftUI
 
 public extension Notch {
+    /// Creates a custom notch with specified position, length, depth, and relative corners.
+    /// - Parameters:
+    ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
+    ///   - length: Length of the notch relative to the length of the line. Default is equal to the depth.
+    ///   - depth: Depth of the notch relative to the length of the line.
+    ///   - relativeCorners: Relative corners that define the notch shape.
+    /// - Returns: A custom notch with specified position, length, depth, and relative corners.
+    static func custom(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, relativeCorners: [RelativeCorner]) -> Notch {
+        Notch(position: position, length: length, depth: depth, relativeCorners: relativeCorners)
+    }
+    
     /// Creates a triangular shaped notch with specified position, length, depth, and corner style.
     /// - Parameters:
     ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
@@ -59,7 +70,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - corners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
     /// - Returns: A custom notch with specified position, length, depth, and corners.
-    @available(*, deprecated, renamed: "init(position:length:depth:relativeCorners:)", message: "Use NotchStyle(position:length:depth:relativeCorners:) instead.")
+    @available(*, deprecated, renamed: "custom(position:length:depth:relativeCorners:)", message: "The new custom notch based on relative corners is necessary for animation support. This should handle most cases with corners positioned relative to the notch length and depth but if there are exceptions in your closure you may need to switch to manually drawing the corners without using a notch.")
     static func custom(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, corners: @Sendable @escaping (CGRect) -> [Corner]) -> Notch {
         Notch(.custom(corners: corners), position: position, length: length, depth: depth)
     }

@@ -119,8 +119,7 @@ public extension CornerStyle {
     static func custom(_ radius: RelatableValue, cornerStyle: CornerStyle = .point, anchorPoints: [RectAnchor]) -> Self {
         .custom(
             radius,
-            relativeCorners: anchorPoints.map { RelativeCorner(cornerStyle, anchorPoint: $0)
-            }
+            relativeCorners: anchorPoints.relativeCorners(cornerStyle)
         )
     }
     

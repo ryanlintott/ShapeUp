@@ -27,7 +27,7 @@ public extension NotchStyle {
     init(anchorPoints: [RectAnchor], cornerStyles: [CornerStyle?]) {
         self.relativeCorners = anchorPoints.enumerated().map { index, anchor in
             let style = cornerStyles.indices.contains(index) ? (cornerStyles[index] ?? .point) : .point
-            return RelativeCorner(style, anchorPoint: anchor)
+            return RelativeCorner(anchor, style)
         }
     }
     
