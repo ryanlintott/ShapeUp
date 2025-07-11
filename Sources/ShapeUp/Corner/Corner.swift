@@ -66,12 +66,12 @@ public struct Corner: Hashable, Codable, Sendable, CornerStyled {
     public var style: CornerStyle
     
     /// Create a corner with a specified style and two-dimensional point.
-    /// - Note: This initializer is deprecated. Use `Corner(x:y:_:)` instead, with the style parameter moved to the end.
+    /// - Note: This initializer is deprecated. Use `Corner(x:y:_:)` instead. Move the style parameter to the end: Corner(x: x, y: y, style)
     /// - Parameters:
     ///   - style: Corner style. Default is .point.
     ///   - x: x coordinate of corner.
     ///   - y: y coordinate of corner.
-    @_disfavoredOverload
+    @available(*, deprecated: 100000, message: "Use Corner(x:y:_:) instead. Move the style parameter to the end: Corner(x: x, y: y, style)")
     public init(_ style: CornerStyle?, x: CGFloat, y: CGFloat) {
         self.x = x
         self.y = y
@@ -79,11 +79,11 @@ public struct Corner: Hashable, Codable, Sendable, CornerStyled {
     }
     
     /// Create a corner with a specified style and two-dimensional point.
-    /// - Note: This initializer is deprecated. Use `Corner(_:_:)` instead, with the style parameter moved to the end.
+    /// - Note: This initializer is deprecated. Use `Corner(_:_:)` instead. Move the style parameter to the end: Corner(point, style)
     /// - Parameters:
     ///   - style: Corner style. Default is .point.
     ///   - point: Location of corner.
-    @_disfavoredOverload
+    @available(*, deprecated: 100000, message: "Use Corner(_:_:) instead. Move the style parameter to the end: Corner(point, style)")
     public init(_ style: CornerStyle?, point: some Vector2Representable) {
         x = point.vector.dx
         y = point.vector.dy
