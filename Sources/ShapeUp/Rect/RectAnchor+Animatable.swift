@@ -9,7 +9,7 @@ import SwiftUI
 
 extension RectAnchor: VectorArithmetic {    
     /// The zero value.
-    public static let zero: Self = .relative(0, 0)
+    public static let zero: Self = .relative(x: 0, y: 0)
     
     /// Adds two values and produces their sum.
     public static func + (lhs: Self, rhs: Self) -> Self {

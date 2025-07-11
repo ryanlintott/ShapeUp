@@ -106,7 +106,7 @@ extension Corner.Dimensions {
             }
             
         case .custom:
-            (subCorners.isEmpty ? [RelativeCorner(.topRight).corner(in: frame)] : subCorners)
+            (subCorners.isEmpty ? [RelativeCorner.topRight.corner(in: frame)] : subCorners)
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                 .addOpenCornerShape(to: &path, moveToStart: moveToStart)
         }

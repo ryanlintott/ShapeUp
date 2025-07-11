@@ -37,7 +37,7 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable, Codable {
     case bottomLeft
     case left
     /// Relative to a rectangle with a width and height of 1 and an origin at the top left.
-    case relative(_ x: CGFloat, _ y: CGFloat)
+    case relative(x: CGFloat, y: CGFloat)
 }
 
 extension RectAnchor {
@@ -47,7 +47,7 @@ extension RectAnchor {
     }
     
     public static func relative(_ point: CGPoint) -> RectAnchor {
-        .relative(point.x, point.y)
+        .relative(x: point.x, y: point.y)
     }
     
     /// Creates a point in the location of an anchor.
@@ -106,7 +106,7 @@ extension RectAnchor {
     /// - Parameter style: Corner style to use. Default is nil which renders as ``CornerStyle.point``.
     /// - Returns: RelativeCorner with the provided style and the same position as the anchor.
     func relativeCorner(_ style: CornerStyle? = nil) -> RelativeCorner {
-        RelativeCorner(self, style)
+        RelativeCorner(anchorPoint: self, style)
     }
     
     /// An array of four edges clockwise starting with top

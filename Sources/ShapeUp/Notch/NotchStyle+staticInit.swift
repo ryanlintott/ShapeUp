@@ -54,4 +54,11 @@ public extension NotchStyle {
         let relativeCorners = corners(.one).relative(to: .one)
         return .custom(relativeCorners: relativeCorners)
     }
+    
+    /// A custom shaped notch defined by relative corners.
+    /// - Parameter relativeCorners: Relative corners that define the notch shape.
+    /// - Returns: A NotchStyle configured as a custom shape.
+    static func custom(_ relativeCorners: RelativeCorner...) -> NotchStyle {
+        .custom(relativeCorners: relativeCorners)
+    }
 }

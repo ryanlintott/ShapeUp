@@ -41,7 +41,7 @@ public extension CGRect {
     ///   - y: Relative y coordinate.
     /// - Returns: A point at the relative location inside this CGRect.
     subscript (_ x: CGFloat, _ y: CGFloat) -> CGPoint {
-        self[.relative(x, y)]
+        self[.relative(x: x, y: y)]
     }
     
     /// Creates an array of points at relative coordinates in the rectangle.
@@ -71,7 +71,7 @@ public extension CGRect {
         let relativePosition = point.vector - origin.vector
         let x = width == 0 ? 0 : relativePosition.dx / width
         let y = height == 0 ? 0 : relativePosition.dy / height
-        return .relative(x, y)
+        return .relative(x: x, y: y)
     }
     
     /// Converts an array of points to their corresponding anchors within the frame.

@@ -50,6 +50,6 @@ extension Corner {
     }
     
     public func relative(to frame: CGFrame) -> RelativeCorner {
-        .init(frame[point], style)
+        .init(anchorPoint: frame[point], style)
     }
 }

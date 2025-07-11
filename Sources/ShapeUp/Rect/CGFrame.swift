@@ -78,7 +78,7 @@ public extension CGFrame {
     ///   - y: Relative y coordinate.
     /// - Returns: The point at the relative coordinates.
     subscript (_ x: CGFloat, _ y: CGFloat) -> CGPoint {
-        self[.relative(x, y)]
+        self[.relative(x: x, y: y)]
     }
     
     /// Creates an array of points at relative coordinates in the frame.
@@ -114,7 +114,7 @@ public extension CGFrame {
         let x = relativeVector.crossProduct(with: yAxis) / denominator
         let y = xAxis.crossProduct(with: relativeVector) / denominator
         
-        return .relative(x, y)
+        return .relative(x: x, y: y)
     }
     
     /// Converts an array of points to their corresponding anchors within the frame.

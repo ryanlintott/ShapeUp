@@ -21,10 +21,10 @@ struct CornerRectangleExample: View {
             
             CornerRectangle([
                 .topLeft: .custom(20, relativeCorners: [
-                    .init(.topLeft),
-                    .init(.left),
-                    .init(.top),
-                    .init(.center),
+                    .topLeft,
+                    .left,
+                    .top,
+                    .center,
                 ]),
                 .topRight: .cutout(.relative(0.2)),
                 .bottomRight: .rounded(.relative(0.6)),

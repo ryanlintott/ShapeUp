@@ -46,6 +46,6 @@ public extension Array where Element == RectAnchor {
     
     /// An array of relative corners matching the positions of the anchors with point style.
     var relativeCorners: [RelativeCorner] {
-        map(\.relativeCorner)
+        map { $0.relativeCorner() }
     }
 }

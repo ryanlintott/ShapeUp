@@ -24,10 +24,10 @@ struct NotchedRectangleExample: View {
                         nil,
                         .triangle(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)),
                         .custom(depth: 60, relativeCorners: [
-                            .init(.top),
-                            .init(.bottomLeft),
-                            .init(.bottom, .rounded(15)),
-                            .init(.topRight)
+                            .top,
+                            .bottomLeft,
+                            .bottom(.rounded(15)),
+                            .topRight
                         ])
                     ]
                 )
