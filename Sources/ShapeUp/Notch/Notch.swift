@@ -49,7 +49,7 @@ public struct Notch: Sendable {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - relativeCorners: Relative corners that define the notch shape.
     public init(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, relativeCorners: [RelativeCorner]) {
-        self.style = NotchStyle(relativeCorners: relativeCorners)
+        self.style = .custom(relativeCorners: relativeCorners)
         self.position = position ?? .relative(0.5)
         self.length = length ?? depth
         self.depth = depth
