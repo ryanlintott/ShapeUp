@@ -67,13 +67,13 @@ public extension Array where Element: Vector2Representable {
     /// Creates a point in the location of an anchor on the bounds.
     /// - Parameter anchor: Bounds anchor where the point is located.
     /// - Returns: The point where the bounds anchor is located.
-    @available(*, deprecated, renamed: "bounds.subscript(_:)", message: "Use bounds[anchor] instead.")
+    @available(*, deprecated: 100000, renamed: "bounds.subscript(_:)", message: "Use bounds[anchor] instead.")
     func anchorPoint(_ anchor: RectAnchor) -> CGPoint {
         bounds[anchor]
     }
     
     /// Center point of the bounds rectangle containing all points in the array.
-    @available(*, deprecated, renamed: "bounds.center", message: "Use bounds[anchor] instead.")
+    @available(*, deprecated: 100000, renamed: "bounds.center", message: "Use bounds[anchor] instead.")
     var center: CGPoint {
         bounds[.center]
     }

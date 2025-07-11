@@ -70,7 +70,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - corners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
     /// - Returns: A custom notch with specified position, length, depth, and corners.
-    @available(*, deprecated, renamed: "custom(position:length:depth:relativeCorners:)", message: "The new custom notch based on relative corners is necessary for animation support. This should handle most cases with corners positioned relative to the notch length and depth but if there are exceptions in your closure you may need to switch to manually drawing the corners without using a notch.")
+    @available(*, deprecated, renamed: "custom(position:length:depth:relativeCorners:)", message: "Notch has been redesigned to work with animation and can no longer support a closure property. The new custom notch based on relative corners should handle most cases where corners are positioned relative to the notch length and depth but if not you may need to switch to manually drawing the corners without using a notch.")
     static func custom(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, corners: @Sendable @escaping (CGRect) -> [Corner]) -> Notch {
         Notch(.custom(corners: corners), position: position, length: length, depth: depth)
     }

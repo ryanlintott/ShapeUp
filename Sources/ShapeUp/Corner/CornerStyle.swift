@@ -57,22 +57,22 @@ public extension CornerStyle {
         }
     }
     
-    @available(*, deprecated, renamed: "rounded(_:)")
+    @available(*, deprecated: 100000, renamed: "rounded(_:)")
     static func rounded(radius: RelatableValue) -> Self {
         .rounded(radius)
     }
     
-    @available(*, deprecated, renamed: "concave(_:radiusOffset:)")
+    @available(*, deprecated: 100000, renamed: "concave(_:radiusOffset:)")
     static func concave(radius: RelatableValue, radiusOffset: CGFloat = 0) -> Self {
         .concave(radius, radiusOffset: radiusOffset)
     }
     
-    @available(*, deprecated, renamed: "straight(_:cornerStyles:)")
+    @available(*, deprecated: 100000, renamed: "straight(_:cornerStyles:)")
     static func straight(radius: RelatableValue, cornerStyles: [CornerStyle] = []) -> Self {
         .straight(radius, cornerStyles: cornerStyles)
     }
     
-    @available(*, deprecated, renamed: "cutout(_:cornerStyles:)")
+    @available(*, deprecated: 100000, renamed: "cutout(_:cornerStyles:)")
     static func cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = []) -> Self {
         .cutout(radius, cornerStyles: cornerStyles)
     }
@@ -89,7 +89,7 @@ public extension CornerStyle {
     ///  - Parameters:
     ///   - radius: Radius of a circle used to determine the start and end points of the chamfer. Relative values relate to the shortest of the two lines from this corner.
     ///   - cornerStyle: Corner style for the two resulting corners of the chamfer.
-    @available(*, deprecated, renamed: "straight(_:cornerStyle:)")
+    @available(*, deprecated: 100000, renamed: "straight(_:cornerStyle:)")
     static func straight(radius: RelatableValue, cornerStyle: CornerStyle) -> Self {
         .straight(radius, cornerStyle: cornerStyle)
     }
@@ -106,7 +106,7 @@ public extension CornerStyle {
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start and end points of the cutout. Relative values relate to the shortest of the two lines from this corner.
     ///   - cornerStyle: Corner style for the three resulting corners of the cutout.
-    @available(*, deprecated, renamed: "cutout(_:cornerStyle:)")
+    @available(*, deprecated: 100000, renamed: "cutout(_:cornerStyle:)")
     static func cutout(radius: RelatableValue, cornerStyle: CornerStyle) -> Self {
         .cutout(radius, cornerStyle: cornerStyle)
     }

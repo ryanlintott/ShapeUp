@@ -140,7 +140,7 @@ public extension Array where Element: Vector2Transformable {
     /// Returns positions after being scaled from the origin.
     /// - Parameter scale: Used to scale the positions.
     /// - Returns: Positions after being scaled from the origin.
-    @available(*, deprecated, renamed: "scaledPositions(_:)")
+    @available(*, deprecated: 100000, renamed: "scaledPositions(_:)")
     func scaledPositions(scale: CGSize) -> [CGPoint] {
         map { $0.scaledPosition(scale: scale) }
     }
@@ -150,7 +150,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - width: Used to scale the x positions.
     ///   - height: Used to scale the y positions.
     /// - Returns: Positions after being scaled from the origin.
-    @available(*, deprecated, renamed: "scaledPositions(x:y:)")
+    @available(*, deprecated: 100000, renamed: "scaledPositions(x:y:)")
     func scaledPositions(width: CGFloat? = nil, height: CGFloat? = nil) -> [CGPoint] {
         map { $0.scaledPosition(width: width, height: height) }
     }

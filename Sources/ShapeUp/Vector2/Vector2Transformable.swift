@@ -113,7 +113,7 @@ public extension Vector2Transformable {
     /// Returns the position after being scaled from the origin.
     /// - Parameter scale: Used to scale the position.
     /// - Returns: Position after being scaled from the origin.
-    @available(*, deprecated, renamed: "scaledPosition(_:)")
+    @available(*, deprecated: 100000, renamed: "scaledPosition(_:)")
     func scaledPosition(scale: CGSize) -> CGPoint {
         .init(vector: vector * scale)
     }
@@ -123,7 +123,7 @@ public extension Vector2Transformable {
     ///   - width: Used to scale the x position.
     ///   - height: Used to scale the y position.
     /// - Returns: Position after being scaled from the origin.
-    @available(*, deprecated, renamed: "scaledPosition(x:y:)")
+    @available(*, deprecated: 100000, renamed: "scaledPosition(x:y:)")
     func scaledPosition(width: CGFloat? = nil, height: CGFloat? = nil) -> CGPoint {
         scaledPosition(scale: .init(width: width ?? 1, height: height ?? 1))
     }

@@ -180,7 +180,7 @@ public extension CGRect {
     // MARK: - Deprecated
     
     /// Creates an array of points from the 4 corners of the rectangle starting with the top left and going clockwise.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[.vertices]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[.vertices]` instead.")
     var points: [CGPoint] {
         self[.vertices]
     }
@@ -188,7 +188,7 @@ public extension CGRect {
     /// Creates a point in the location of an anchor.
     /// - Parameter anchor: Anchor where the point is located
     /// - Returns: A point where the anchor is located.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchor]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[anchor]` instead.")
     func point(_ anchor: RectAnchor) -> CGPoint {
         self[anchor]
     }
@@ -196,7 +196,7 @@ public extension CGRect {
     /// Creates an array of points in the locations of the supplied anchors.
     /// - Parameter anchors: Anchors defining point locations in order.
     /// - Returns: An array of points in the location and order of the supplied anchors.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchors]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[anchors]` instead.")
     func points(_ anchors: [RectAnchor]) -> [CGPoint] {
         self[anchors]
     }
@@ -204,7 +204,7 @@ public extension CGRect {
     /// Creates an array of points in the locations of the supplied anchors.
     /// - Parameter anchors: Anchors defining point locations in order.
     /// - Returns: An array of points in the location and order of the supplied anchors.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchor1, anchor2, ...]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[anchor1, anchor2, ...]` instead.")
     func points(_ anchors: RectAnchor...) -> [CGPoint] {
         self[anchors]
     }
@@ -215,7 +215,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocation: A tuple with relative x and y coordinates respectively.
     /// - Returns: A point at the relative location inside this CGRect.
-    @available(*, deprecated, renamed: "subscript(_:_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
     func point(relativeLocation: (CGFloat, CGFloat)) -> CGPoint {
         self[relativeLocation.0, relativeLocation.1]
     }
@@ -226,7 +226,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[tupleArray]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[tupleArray]` instead.")
     func points(relativeLocations: [(CGFloat, CGFloat)]) -> [CGPoint] {
         self[relativeLocations]
     }
@@ -237,7 +237,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
     func points(relativeLocations: (CGFloat, CGFloat)...) -> [CGPoint] {
         self[relativeLocations]
     }
