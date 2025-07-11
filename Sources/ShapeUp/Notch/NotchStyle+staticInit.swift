@@ -54,6 +54,8 @@ public extension NotchStyle {
     }
     
     /// A custom shaped notch defined by corners in a reference frame equal to the notch's length and depth.
+    /// 
+    /// - Warning: Some custom notches may no longer draw correctly.
     /// - Parameters:
     ///   - corners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
     /// - Returns: A NotchStyle with the custom shape defined by the closure.

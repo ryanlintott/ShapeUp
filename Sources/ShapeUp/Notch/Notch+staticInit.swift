@@ -64,6 +64,8 @@ public extension Notch {
     }
     
     /// Creates a custom notch with specified position, length, depth, and corner styles.
+    /// 
+    /// - Warning: Some custom notches may no longer draw correctly.
     /// - Parameters:
     ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
     ///   - length: Length of the notch relative to the length of the line. Default is equal to the depth.
