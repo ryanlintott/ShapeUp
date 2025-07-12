@@ -13,18 +13,19 @@ struct ShapeUpLogo: View {
         ZStack {
             GeometryReader { proxy in
                 // Pink Logo
+                
+                
                 CornerCustom { rect in
                     [
-                        rect[.topLeft].corner(.straight(radius: .relative(0.27))),
-                        rect[0.925, 0.04].corner(.cutout(radius: .relative(0.4))),
-                        rect[0.925, 0.3].corner(.rounded(radius: .relative(0.4))),
-                        rect[0.005, 0.92].corner(.concave(radius: .relative(0.23)))
+                        rect[.topLeft].corner.straight(radius: .relative(0.27)),
+                        rect[0.925, 0.04].corner.cutout(radius: .relative(0.4)),
+                        rect[0.925, 0.3].corner.rounded(radius: .relative(0.4)),
+                        rect[0.005, 0.92].corner.concave(radius: .relative(0.23))
                     ]
                         .rotated(.degrees(9))
                         .moved(rect[0.06, 0.02])
                 }
                     .fill(Color.suPink)
-
                     .shadow(color: .suBlack, radius: 0.01, x: proxy.size.width * 0.006, y: proxy.size.width * 0.0076)
                 
                 /// Purple Logo

@@ -74,19 +74,7 @@ public extension CGRect {
         return .relative(x: x, y: y)
     }
     
-    /// Converts an array of points to their corresponding anchors within the frame.
-    /// - Parameter points: The points to convert to anchors.
-
-    
     // MARK: - Corners
-
-    func corners(_ relativeCorners: [RelativeCorner]) -> [Corner] {
-        relativeCorners.corners(in: self)
-    }
-    
-    func corners(_ relativeCorners: RelativeCorner...) -> [Corner] {
-        corners(relativeCorners)
-    }
     
     /// Creates an array of corners from the rectangle.
     /// - Parameter style: Corner style used for all corners.
