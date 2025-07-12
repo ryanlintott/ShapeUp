@@ -20,10 +20,10 @@ struct NotchedRectangleExample: View {
                 ])
                 .addingNotches(
                     [
-                        .rectangle(depth: 50, cornerStyle: .rounded(radius: 10)),
+                        Notch(depth: 50).rectangle(cornerStyle: .rounded(radius: 10)),
                         nil,
-                        .triangle(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)),
-                        .custom(depth: 60, relativeCorners: [
+                        Notch(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)).triangle,
+                        Notch(depth: 60).custom(relativeCorners: [
                             .top,
                             .bottomLeft,
                             .bottom.rounded(radius: 15),
