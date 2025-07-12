@@ -30,7 +30,7 @@ struct CustomCornerShapeExample: CornerShape {
     func corners(in rect: CGRect) -> [Corner] {
         rect[
             .topLeft,
-            .center,
+            .top,
             .topRight,
             .bottomRight,
             .bottomLeft
@@ -56,7 +56,7 @@ struct CornerExample: View {
         .concave(.zero),
         .straight(.zero),
         .cutout(.zero),
-        .custom(.zero, anchorPoints: [.topLeft, .left, .center, .bottomLeft, .bottomRight])
+        .custom(.zero, relativeCorners: [.topLeft, .left, .center, .bottomLeft, .bottomRight])
     ]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     

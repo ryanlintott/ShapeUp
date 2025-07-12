@@ -13,7 +13,7 @@ struct CornerRectangleExample: View {
         VStack {
             CornerRectangle()
             .applyingStyle(
-                .custom(.relative(0.3), anchorPoints: [.topLeft, .left, .top])
+                .custom(.relative(0.3), relativeCorners: [.topLeft, .left, .top])
                 .changingRadius(to: 20)
             )
                 .fill(Color.suCyan)

@@ -13,21 +13,20 @@ struct FoldButton: View {
         ZStack(alignment: .trailing) {
             Rectangle()
                 .applyingStyle(.rounded(.relative(0.5)))
-                .applyingStyle(.point, shapeCorners: [.topRight])
+                .applyingStyle(.point, to: .topRight)
                 .fill(.purple)
                 .frame(width: 300)
             
-            CornerCustom { rect in
-                [
-                    rect[.topLeft].corner(.rounded(.absolute(rect.height * 0.5))),
-                    rect[.topRight].corner(.rounded(.relative(1))),
-                    rect[1, -0.5].corner(.point),
-                    rect[.bottomRight].corner(.rounded(.absolute(rect.height * 0.5))),
-                    rect[.bottomLeft].corner(.rounded(.absolute(rect.height * 0.5)))
-                ]
-            }
+            RelativeCornerShape(
+                .topLeft.rounded(radius: .relative(0.5)),
+                .topRight.rounded(radius: .relative(1.0)),
+                .relative(x: 1, y: -0.5),
+                .topRight,
+                .bottomRight.rounded(radius: .relative(0.5)),
+                .bottomLeft.rounded(radius: .relative(0.4))
+            )
             .fill(.blue)
-            .frame(width: 100)
+            .frame(width: 100)            
         }
         .frame(height: 50)
     }

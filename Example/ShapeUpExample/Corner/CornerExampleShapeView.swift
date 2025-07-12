@@ -22,10 +22,12 @@ enum ShapeStyle: String, CaseIterable, Identifiable {
     
     @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
     case glass
+    @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
+    case clearGlass
     
     static var allCases: [ShapeStyle] {
         if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *) {
-            [.regular, .glass]
+            [.regular, .glass, .clearGlass]
         } else {
             [.regular]
         }
@@ -59,7 +61,13 @@ struct CornerExampleShapeView: View {
     #if swift(>=6.2)
     @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
     var glass: Glass {
-        .regular.tint(.accentColor).interactive()
+        switch shapeStyle {
+        case .regular, .glass:
+                .regular.tint(.accentColor).interactive()
+
+        case .clearGlass:
+                .clear.tint(.accentColor).interactive()
+        }
     }
     
     @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
@@ -81,8 +89,7 @@ struct CornerExampleShapeView: View {
     var body: some View {
         ZStack {
             if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *),
-               shapeStyle == .glass {
-                #if swift(>=6.2)
+               shapeStyle != .regular {
                 ZStack {
                     VStack {
                         ForEach(0...2, id: \.self) { _ in
@@ -96,10 +103,6 @@ struct CornerExampleShapeView: View {
                         .accentColor(.suPink.opacity(0.1))
                         .padding()
                 }
-                #else
-                solidShape
-                    .padding()
-                #endif
             } else {
                 solidShape
                     .padding()

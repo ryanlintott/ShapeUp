@@ -10,17 +10,18 @@ import SwiftUI
 
 struct OpenCornerShape: Shape {
     func path(in rect: CGRect) -> Path {
-        let corners = rect[.topLeft, .center, .topRight, .right]
-            .corners([
-                .straight(.relative(0.2)),
-                .cutout(.relative(0.2), cornerStyles: [
-                    .rounded(.relative(0.4)),
-                    .point,
-                    .straight(.relative(0.4))
-                ]),
-                .cutout(.relative(0.2), cornerStyles: [.rounded(.relative(0.2))]),
-                .rounded(20)
-            ])
+        let corners = rect.corners(
+            .topLeft.straight(radius: .relative(0.2)),
+            .center.cutout(radius: .relative(0.2), cornerStyles: [
+                .rounded(.relative(0.4)),
+                .point,
+                .straight(.relative(0.4))
+            ]),
+            .topRight.cutout(radius: .relative(0.2), cornerStyles: [
+                .rounded(.relative(0.2))
+            ]),
+            .right.rounded(radius: 20)
+        )
         
         var path = Path()
         path.move(to: rect[0.25, 1])

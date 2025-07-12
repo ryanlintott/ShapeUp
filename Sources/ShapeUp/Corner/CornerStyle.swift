@@ -37,10 +37,10 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     ///   - cornerStyles: Corner styles for the three resulting corners of the cutout.
     case cutout(_ radius: RelatableValue, cornerStyles: [CornerStyle] = [])
     
-    /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine half of the corner shape then mirrored to create the other half.
+    /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine the corner shape.
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start and end points of the custom shape. Relative values relate to the shortest of the two lines from this corner.
-    ///   - relativeCorners: Relative corners that define half of the symmetrical corner shape. Their position is determined relative to a ``CGFrame`` defined by the radius.
+    ///   - corners: These corners define the corner shape. Their position is determined relative to a ``CGFrame`` defined by the radius.
     case custom(_ radius: RelatableValue, relativeCorners: [RelativeCorner])
 }
 
@@ -109,18 +109,6 @@ public extension CornerStyle {
     @available(*, deprecated: 100000, renamed: "cutout(_:cornerStyle:)")
     static func cutout(radius: RelatableValue, cornerStyle: CornerStyle) -> Self {
         .cutout(radius, cornerStyle: cornerStyle)
-    }
-    
-    /// A symmetrical corner style with a specified radius, a set of mirrored points and a corner style used on all of them.
-    ///  - Parameters:
-    ///   - radius: Radius of a circle used to determine the start point (0,0) and end point (1,1) of the corner. Relative values relate to the shortest of the two lines from this corner.
-    ///   - cornerStyle: Corner style applied to all points. Default is .point.
-    ///   - anchorPoints: Relative points that define half of the symmetrical corner shape defined by an array of ``RectAnchor``
-    static func custom(_ radius: RelatableValue, cornerStyle: CornerStyle = .point, anchorPoints: [RectAnchor]) -> Self {
-        .custom(
-            radius,
-            relativeCorners: anchorPoints.relativeCorners(cornerStyle)
-        )
     }
     
     /// Radius of the corner.

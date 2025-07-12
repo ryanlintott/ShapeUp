@@ -44,6 +44,15 @@ public extension EnumeratedCornerShape {
         return shape
     }
     
+    /// Creates a copy of this shape changing the style of specified corner to the provided style.
+    /// - Parameters:
+    ///   - style: Style to apply to specified shape corners.
+    ///   - shapeCorner: Shape corner on which to apply the specified style.
+    /// - Returns: A copy of this shape changing the style of specified corners to the provided style.
+    func applyingStyle(_ style: CornerStyle, to shapeCorner: ShapeCorner) -> Self {
+        applyingStyle(style, shapeCorners: [shapeCorner])
+    }
+    
     /// Creates a copy of this shape changing the styles of specified corners.
     /// - Parameters:
     ///   - styles: Styles to apply to each specified shape corner. Nil or missing values will keep current style.

@@ -40,7 +40,7 @@ public extension CGRect {
     ///   - x: Relative x coordinate.
     ///   - y: Relative y coordinate.
     /// - Returns: A point at the relative location inside this CGRect.
-    subscript (_ x: CGFloat, _ y: CGFloat) -> CGPoint {
+    subscript (x: CGFloat, y: CGFloat) -> CGPoint {
         self[.relative(x: x, y: y)]
     }
     
@@ -76,20 +76,18 @@ public extension CGRect {
     
     /// Converts an array of points to their corresponding anchors within the frame.
     /// - Parameter points: The points to convert to anchors.
-    /// - Returns: An array of anchors representing the points' positions in the frame.
-    subscript (_ points: [CGPoint]) -> [RectAnchor] {
-        points.map { self[$0] }
-    }
-    
-    /// Converts points to their corresponding anchors within the frame.
-    /// - Parameter points: The points to convert to anchors.
-    /// - Returns: An array of anchors representing the points' positions in the frame.
-    subscript (_ points: CGPoint...) -> [RectAnchor] {
-        self[points]
-    }
+
     
     // MARK: - Corners
 
+    func corners(_ relativeCorners: [RelativeCorner]) -> [Corner] {
+        relativeCorners.corners(in: self)
+    }
+    
+    func corners(_ relativeCorners: RelativeCorner...) -> [Corner] {
+        corners(relativeCorners)
+    }
+    
     /// Creates an array of corners from the rectangle.
     /// - Parameter style: Corner style used for all corners.
     /// - Returns: An array of 4 corners, with the provided style, starting with the top left and going clockwise.

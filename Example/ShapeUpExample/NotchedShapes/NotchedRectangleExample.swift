@@ -26,7 +26,7 @@ struct NotchedRectangleExample: View {
                         .custom(depth: 60, relativeCorners: [
                             .top,
                             .bottomLeft,
-                            .bottom(.rounded(15)),
+                            .bottom.rounded(radius: 15),
                             .topRight
                         ])
                     ]
