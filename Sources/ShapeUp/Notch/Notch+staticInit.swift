@@ -7,18 +7,9 @@
 
 import SwiftUI
 
+
+
 public extension Notch {
-    /// Creates a custom notch with specified position, length, depth, and relative corners.
-    /// - Parameters:
-    ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
-    ///   - length: Length of the notch relative to the length of the line. Default is equal to the depth.
-    ///   - depth: Depth of the notch relative to the length of the line.
-    ///   - relativeCorners: Relative corners that define the notch shape.
-    /// - Returns: A custom notch with specified position, length, depth, and relative corners.
-    static func custom(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, relativeCorners: [RelativeCorner]) -> Notch {
-        Notch(position: position, length: length, depth: depth, relativeCorners: relativeCorners)
-    }
-    
     /// Creates a triangular shaped notch with specified position, length, depth, and corner style.
     /// - Parameters:
     ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
@@ -26,6 +17,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyle: Corner style used for all corners in the notch. Default is a .point style.
     /// - Returns: A triangular shaped notch with specified position, length, depth, and corner styles.
+    @available(*, deprecated: 1000000, message: "Use Notch().triangle(cornerStyle:) instead.")
     static func triangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
         Notch(.triangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)
     }
@@ -37,6 +29,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use a .point style.
     /// - Returns: A triangular shaped notch with specified position, length, depth, and corner styles.
+    @available(*, deprecated: 1000000, message: "Use Notch().triangle(cornerStyles:) instead.")
     static func triangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
         Notch(.triangle(cornerStyles: cornerStyles), position: position, length: length, depth: depth)
     }
@@ -48,6 +41,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyle: Corner style used for all corners in the notch. Default is a .point style.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
+    @available(*, deprecated: 1000000, message: "Use Notch().rectangle(cornerStyle:) instead.")
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
         Notch(.rectangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)
     }
@@ -59,6 +53,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use a .point style.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
+    @available(*, deprecated: 1000000, message: "Use Notch().rectangle(cornerStyles:) instead.")
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
         Notch(.rectangle(cornerStyles: cornerStyles), position: position, length: length, depth: depth)
     }

@@ -50,10 +50,10 @@ struct CornerCustomExample: View {
                 ]
                     .corners([
                         nil,
-                        .rounded(.relative(0.4)),
-                        .concave(.relative(0.3)),
-                        .straight(.relative(0.3)),
-                        .cutout(.relative(0.1))
+                        .rounded(radius: .relative(0.4)),
+                        .concave(radius: .relative(0.3)),
+                        .straight(radius: .relative(0.3)),
+                        .cutout(radius: .relative(0.1))
                     ])
             }
                 .stroke(Color.suYellow, lineWidth: 10)
