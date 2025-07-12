@@ -11,10 +11,20 @@ public extension CGRect {
     // MARK: - Points from anchor points
 
     /// Creates a point in the location of an anchor.
-    /// - Parameter anchor: Anchor where the point is located.
+    /// - Parameters:
+    ///   - anchor: Anchor where the point is located.
     /// - Returns: A point where the anchor is located.
     subscript (_ anchor: RectAnchor) -> CGPoint {
         anchor.point(in: self)
+    }
+    
+    /// Transforms a relative corner into a corner.
+    /// - Parameters:
+    ///   - anchor: Anchor where the point is located.
+    ///   - style: The corner style to apply. (default is .point)
+    /// - Returns: A corner based on the relative corner.
+    subscript (_ anchor: RectAnchor, _ style: CornerStyle = .point) -> Corner {
+        self[anchor].corner(style)
     }
     
     /// Creates an array of points in the locations of the supplied anchors.
@@ -42,6 +52,18 @@ public extension CGRect {
     /// - Returns: A point at the relative location inside this CGRect.
     subscript (x: CGFloat, y: CGFloat) -> CGPoint {
         self[.relative(x: x, y: y)]
+    }
+    
+    /// Creates a point at the relative coordinates inside this rectangle.
+    ///
+    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
+    /// - Parameters:
+    ///   - x: Relative x coordinate.
+    ///   - y: Relative y coordinate.
+    ///   - style: The corner style to apply. (default is .point)
+    /// - Returns: A corner at the relative location inside this CGRect with the applied style.
+    subscript (x: CGFloat, y: CGFloat, _ style: CornerStyle = .point) -> Corner {
+        self[.relative(x: x, y: y)].corner(style)
     }
     
     /// Creates an array of points at relative coordinates in the rectangle.

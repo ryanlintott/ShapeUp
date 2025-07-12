@@ -28,7 +28,6 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     public init(x: CGFloat, y: CGFloat, _ style: CornerStyle? = nil) {
         self.anchorPoint = .relative(x: x, y: y)
         self.style = style ?? .point
-
     }
 }
 

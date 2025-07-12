@@ -14,12 +14,21 @@ struct TestClosedShape: CornerShape {
     
     func corners(in rect: CGRect) -> [Corner] {
         [
-            Corner(.rounded(radius: .relative(0.3)),x: rect.minX, y: rect.minY),
-            Corner(.straight(radius: .relative(0.1)), x: rect.midX, y: rect.midY),
-            Corner(.cutout(radius: 20),x: rect.maxX, y: rect.minY),
-            Corner(.concave(radius: .relative(0.3)),x: rect.maxX, y: rect.maxY),
-            Corner(x: rect.midX, y: rect.maxY),
+            rect[.topLeft].rounded(radius: .relative(0.3)),
+            rect[.center].straight(radius: .relative(0.1)),
+            rect[.topRight].cutout(radius: 20),
+            rect[.bottomRight].concave(radius: .relative(0.3)),
+            rect[.bottom]
         ]
+        
+        // Old method
+//        [
+//            Corner(.rounded(radius: .relative(0.3)), x: rect.minX, y: rect.minY),
+//            Corner(.straight(radius: .relative(0.1)), x: rect.midX, y: rect.midY),
+//            Corner(.cutout(radius: 20), x: rect.maxX, y: rect.minY),
+//            Corner(.concave(radius: .relative(0.3)), x: rect.maxX, y: rect.maxY),
+//            Corner(x: rect.midX, y: rect.maxY),
+//        ]
     }
 }
 
@@ -29,12 +38,12 @@ struct TestOpenShape: CornerShape {
     
     func corners(in rect: CGRect) -> [Corner] {
         [
-            rect[.bottomLeft].corner,
-            rect[.left].corner(.rounded(radius: .relative(0.4))),
-            rect[.bottom].corner(.concave(radius: .relative(0.3))),
-            rect[.top].corner(.straight(radius: .relative(0.3))),
-            rect[.right].corner(.cutout(radius: .relative(0.1))),
-            rect[.topRight].corner
+            rect[.bottomLeft],
+            rect[.left].rounded(radius: .relative(0.4)),
+            rect[.bottom].concave(radius: .relative(0.3)),
+            rect[.top].straight(radius: .relative(0.3)),
+            rect[.right].cutout(radius: .relative(0.1)),
+            rect[.topRight],
         ]
     }
 }
