@@ -12,7 +12,7 @@ struct FoldButton: View {
     var body: some View {
         ZStack(alignment: .trailing) {
             Rectangle()
-                .applyingStyle(.rounded(.relative(0.5)))
+                .applyingStyle(.rounded(radius: .relative(0.5)))
                 .applyingStyle(.point, to: .topRight)
                 .fill(.purple)
                 .frame(width: 300)

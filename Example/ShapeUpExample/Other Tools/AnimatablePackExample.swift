@@ -21,7 +21,7 @@ struct AnimatablePackShape: CornerShape {
     
     func corners(in rect: CGRect) -> [Corner] {
         rect
-            .corners(.rounded(cornerRadius))
+            .corners(.rounded(radius: cornerRadius))
             .rotated(rotation, anchor: rect[.center])
     }
     

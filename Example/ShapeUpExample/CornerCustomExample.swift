@@ -15,11 +15,11 @@ struct CornerCustomExample: View {
         VStack {
             CornerCustom { rect in
                 [
-                    Corner(.straight(.relative(0.4)),x: rect.minX, y: rect.minY),
-                    Corner(.rounded(.relative(0.1)), x: rect.midX, y: rect.midY),
-                    Corner(.concave(20),x: rect.maxX, y: rect.minY),
-                    Corner(.cutout(.relative(0.3)),x: rect.maxX, y: rect.maxY),
-                    Corner(.concave(40), x: rect.midX, y: rect.midY + (rect.height * 0.1)),
+                    Corner(.straight(radius: .relative(0.4)),x: rect.minX, y: rect.minY),
+                    Corner(.rounded(radius: .relative(0.1)), x: rect.midX, y: rect.midY),
+                    Corner(.concave(radius: 20),x: rect.maxX, y: rect.minY),
+                    Corner(.cutout(radius: .relative(0.3)),x: rect.maxX, y: rect.maxY),
+                    Corner(.concave(radius: 40), x: rect.midX, y: rect.midY + (rect.height * 0.1)),
                     Corner(x: rect.minX, y: rect.maxY)
                 ]
             }

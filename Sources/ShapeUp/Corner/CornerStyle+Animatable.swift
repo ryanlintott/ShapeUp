@@ -42,7 +42,7 @@ extension CornerStyle: NestedAnimatable {
             case .point, .rounded, .straight, .cutout, .custom:
                 radius = newValue.first
             case .concave:
-                self = .concave(newValue.first, radiusOffset: newValue.second)
+                self = .concave(radius: newValue.first, radiusOffset: newValue.second)
             }
         }
     }

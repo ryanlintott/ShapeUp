@@ -11,12 +11,12 @@ import SwiftUI
 struct MessageBubbleInsetExample: View {
     var messageBubble: CornerCustom {
         CornerCustom { rect in
-            rect.corners(.rounded(20))
+            rect.corners(.rounded(radius: 20))
                 .addingNotch(
                     .triangle(depth: -20, cornerStyles: [
-                        .rounded(10),
+                        .rounded(radius: 10),
                         .point,
-                        .rounded(10)
+                        .rounded(radius: 10)
                     ]),
                     afterCornerIndex: 2
                 )

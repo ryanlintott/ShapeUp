@@ -12,13 +12,13 @@ struct NestedCornerStyleExample: View {
     let straightCutout: CornerStyle = {
         let radius = RelatableValue.relative(0.25)
         
-        return CornerStyle.straight(radius, cornerStyle: .cutout(radius))
+        return CornerStyle.straight(radius: radius, cornerStyle: .cutout(radius: radius))
     }()
     
     let cutoutStraight: CornerStyle = {
         let radius = RelatableValue.relative(0.3)
         
-        return CornerStyle.cutout(radius, cornerStyle: .straight(radius))
+        return CornerStyle.cutout(radius: radius, cornerStyle: .straight(radius: radius))
     }()
     
     var body: some View {

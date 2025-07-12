@@ -13,12 +13,12 @@ struct OpenCornerShape: Shape {
         let corners = rect.corners(
             .topLeft.straight(radius: .relative(0.2)),
             .center.cutout(radius: .relative(0.2), cornerStyles: [
-                .rounded(.relative(0.4)),
+                .rounded(radius: .relative(0.4)),
                 .point,
-                .straight(.relative(0.4))
+                .straight(radius: .relative(0.4))
             ]),
             .topRight.cutout(radius: .relative(0.2), cornerStyles: [
-                .rounded(.relative(0.2))
+                .rounded(radius: .relative(0.2))
             ]),
             .right.rounded(radius: 20)
         )

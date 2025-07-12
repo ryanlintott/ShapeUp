@@ -18,12 +18,12 @@ struct MessageBubble3: CornerShape {
 
     func corners(in rect: CGRect) -> [Corner] {
         rect
-            .corners(.rounded(cornerRadius))
+            .corners(.rounded(radius: cornerRadius))
             .addingNotch(
                 .triangle(depth: -pointSize, cornerStyles: [
-                    .rounded(pointRadius),
+                    .rounded(radius: pointRadius),
                     .point,
-                    .rounded(pointRadius)
+                    .rounded(radius: pointRadius)
                 ]),
                 afterCornerIndex: 2
             )

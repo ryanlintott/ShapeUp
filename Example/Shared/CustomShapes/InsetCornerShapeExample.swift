@@ -20,7 +20,7 @@ struct InsetCornerShape: CornerShape {
             .bottomRight,
             .bottomLeft
         ]
-            .corners(.concave(25))
+            .corners(.concave(radius: 25))
     }
 }
 

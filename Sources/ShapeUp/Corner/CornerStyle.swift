@@ -15,7 +15,7 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     /// A rounded corner style with a specified radius.
     ///  - Parameters:
     ///   - radius: Radius of a circle used to round this corner. Relative values relate to the shortest of the two lines from this corner.
-    case rounded(_ radius: RelatableValue)
+    case rounded(radius: RelatableValue)
     
     /// A concave corner style with a specified radius.
     ///
@@ -23,25 +23,25 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     ///  - Parameters:
     ///   - radius: Radius of the circle used to cutout this corner. Relative values relate to the shortest of the two lines from this corner.
     ///   - radiusOffset: Added to radius to create concave curve radius. Default is zero.
-    case concave(_ radius: RelatableValue, radiusOffset: CGFloat = 0)
+    case concave(radius: RelatableValue, radiusOffset: CGFloat = 0)
     
     /// A straight chamfer corner style with a specified radius. Additional corner styles can be used on the two resulting corners of the chamfer.
     ///  - Parameters:
     ///   - radius: Radius of a circle used to determine the start and end points of the chamfer. Relative values relate to the shortest of the two lines from this corner.
     ///   - cornerStyles: Corner styles for the two resulting corners of the chamfer.
-    case straight(_ radius: RelatableValue, cornerStyles: [CornerStyle] = [])
+    case straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])
     
     /// A cutout corner style with a specified radius. Additional corner styles can be used on the three resulting corners of the cut.
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start and end points of the cutout. Relative values relate to the shortest of the two lines from this corner.
     ///   - cornerStyles: Corner styles for the three resulting corners of the cutout.
-    case cutout(_ radius: RelatableValue, cornerStyles: [CornerStyle] = [])
+    case cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])
     
     /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine the corner shape.
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start and end points of the custom shape. Relative values relate to the shortest of the two lines from this corner.
     ///   - corners: These corners define the corner shape. Their position is determined relative to a ``CGFrame`` defined by the radius.
-    case custom(_ radius: RelatableValue, relativeCorners: [RelativeCorner])
+    case custom(radius: RelatableValue, relativeCorners: [RelativeCorner])
 }
 
 public extension CornerStyle {
@@ -57,58 +57,20 @@ public extension CornerStyle {
         }
     }
     
-    @available(*, deprecated: 100000, renamed: "rounded(_:)")
-    static func rounded(radius: RelatableValue) -> Self {
-        .rounded(radius)
-    }
-    
-    @available(*, deprecated: 100000, renamed: "concave(_:radiusOffset:)")
-    static func concave(radius: RelatableValue, radiusOffset: CGFloat = 0) -> Self {
-        .concave(radius, radiusOffset: radiusOffset)
-    }
-    
-    @available(*, deprecated: 100000, renamed: "straight(_:cornerStyles:)")
-    static func straight(radius: RelatableValue, cornerStyles: [CornerStyle] = []) -> Self {
-        .straight(radius, cornerStyles: cornerStyles)
-    }
-    
-    @available(*, deprecated: 100000, renamed: "cutout(_:cornerStyles:)")
-    static func cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = []) -> Self {
-        .cutout(radius, cornerStyles: cornerStyles)
-    }
-    
     /// A straight chamfer corner style with a specified radius and a nested corner style applied to the two resulting corners of the chamfer.
     ///  - Parameters:
     ///   - radius: Radius of a circle used to determine the start and end points of the chamfer. Relative values relate to the shortest of the two lines from this corner.
     ///   - cornerStyle: Corner style for the two resulting corners of the chamfer.
-    static func straight(_ radius: RelatableValue, cornerStyle: CornerStyle) -> Self {
-        .straight(radius, cornerStyles: [cornerStyle, cornerStyle])
-    }
-    
-    /// A straight chamfer corner style with a specified radius and a nested corner style applied to the two resulting corners of the chamfer.
-    ///  - Parameters:
-    ///   - radius: Radius of a circle used to determine the start and end points of the chamfer. Relative values relate to the shortest of the two lines from this corner.
-    ///   - cornerStyle: Corner style for the two resulting corners of the chamfer.
-    @available(*, deprecated: 100000, renamed: "straight(_:cornerStyle:)")
     static func straight(radius: RelatableValue, cornerStyle: CornerStyle) -> Self {
-        .straight(radius, cornerStyle: cornerStyle)
+        .straight(radius: radius, cornerStyles: [cornerStyle, cornerStyle])
     }
     
     /// A cutout corner style with a specified radius and a nested corner style applied to the three resulting corners of the cut.
     ///  - Parameters:
     ///   - radius: Radius of circle used to determine the start and end points of the cutout. Relative values relate to the shortest of the two lines from this corner.
     ///   - cornerStyle: Corner style for the three resulting corners of the cutout.
-    static func cutout(_ radius: RelatableValue, cornerStyle: CornerStyle) -> Self {
-        .cutout(radius, cornerStyles: [cornerStyle, cornerStyle, cornerStyle])
-    }
-    
-    /// A cutout corner style with a specified radius and a nested corner style applied to the three resulting corners of the cut.
-    ///  - Parameters:
-    ///   - radius: Radius of circle used to determine the start and end points of the cutout. Relative values relate to the shortest of the two lines from this corner.
-    ///   - cornerStyle: Corner style for the three resulting corners of the cutout.
-    @available(*, deprecated: 100000, renamed: "cutout(_:cornerStyle:)")
     static func cutout(radius: RelatableValue, cornerStyle: CornerStyle) -> Self {
-        .cutout(radius, cornerStyle: cornerStyle)
+        .cutout(radius: radius, cornerStyles: [cornerStyle, cornerStyle, cornerStyle])
     }
     
     /// Radius of the corner.
@@ -145,7 +107,7 @@ public extension CornerStyle {
             case .point, .rounded, .straight, .cutout, .custom:
                 break
             case .concave:
-                self = .concave(radius, radiusOffset: newValue)
+                self = .concave(radius: radius, radiusOffset: newValue)
             }
         }
     }
@@ -167,9 +129,9 @@ public extension CornerStyle {
             case .point, .rounded, .concave:
                 break
             case .straight:
-                self = .straight(radius, cornerStyles: newValue)
+                self = .straight(radius: radius, cornerStyles: newValue)
             case .cutout:
-                self = .cutout(radius, cornerStyles: newValue)
+                self = .cutout(radius: radius, cornerStyles: newValue)
             case .custom:
                 relativeCorners.cornerStyles = newValue
             }
@@ -190,7 +152,7 @@ public extension CornerStyle {
             case .point, .rounded, .concave, .straight, .cutout:
                 break
             case .custom:
-                self = .custom(radius, relativeCorners: newValue)
+                self = .custom(radius: radius, relativeCorners: newValue)
             }
         }
     }
@@ -220,15 +182,15 @@ public extension CornerStyle {
         case .point:
             self
         case .rounded:
-            .rounded(radius)
+                .rounded(radius: radius)
         case let .concave(_, radiusOffset):
-            .concave(radius, radiusOffset: radiusOffset)
+                .concave(radius: radius, radiusOffset: radiusOffset)
         case let .straight(_, cornerStyles):
-            .straight(radius, cornerStyles: cornerStyles)
+                .straight(radius: radius, cornerStyles: cornerStyles)
         case let .cutout(_, cornerStyles):
-            .cutout(radius, cornerStyles: cornerStyles)
+                .cutout(radius: radius, cornerStyles: cornerStyles)
         case let .custom(_, relativeCorners):
-            .custom(radius, relativeCorners: relativeCorners)
+                .custom(radius: radius, relativeCorners: relativeCorners)
         }
     }
     

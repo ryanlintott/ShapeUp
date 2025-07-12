@@ -52,16 +52,16 @@ struct CornerExample: View {
     
     let styles: [CornerStyle] = [
         .point,
-        .rounded(.zero),
-        .concave(.zero),
-        .straight(.zero),
-        .cutout(.zero),
-        .custom(.zero, relativeCorners: [.topLeft, .left, .center, .bottomLeft, .bottomRight])
+        .rounded(radius: .zero),
+        .concave(radius: .zero),
+        .straight(radius: .zero),
+        .cutout(radius: .zero),
+        .custom(radius: .zero, relativeCorners: [.topLeft, .left, .center, .bottomLeft, .bottomRight])
     ]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
     @State private var shape: ExampleShape = .custom
-    @State private var style: CornerStyle = .rounded(25)
+    @State private var style: CornerStyle = .rounded(radius: 25)
     @State private var relativeRadius = true
     @State private var relative = 0.2
     @State private var absolute = 25.0

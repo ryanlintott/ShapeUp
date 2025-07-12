@@ -13,11 +13,11 @@ struct RectangleExample3: View {
         Rectangle()
             .applyingStyles(
                 [
-                    .topLeft: .rounded(50),
-                    .topRight: .rounded(.relative(0.5)),
-                    .bottomRight: .cutout(40),
+                    .topLeft: .rounded(radius: 50),
+                    .topRight: .rounded(radius: .relative(0.5)),
+                    .bottomRight: .cutout(radius: 40),
                     .bottomLeft: .custom(
-                        .relative(0.3),
+                        radius: .relative(0.3),
                         relativeCorners: [
                             .topLeft.rounded(radius: .relative(0.5)),
                             .relative(x: 0.4, y: -0.3).concave(radius: .relative(0.3)),

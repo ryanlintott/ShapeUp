@@ -113,5 +113,5 @@ struct CornerExampleShapeView: View {
 }
 
 #Preview {
-    CornerExampleShapeView(shape: .rectangle, adjustedStyle: .rounded(15), inset: 0, shapeStyle: .regular)
+    CornerExampleShapeView(shape: .rectangle, adjustedStyle: .rounded(radius: 15), inset: 0, shapeStyle: .regular)
 }

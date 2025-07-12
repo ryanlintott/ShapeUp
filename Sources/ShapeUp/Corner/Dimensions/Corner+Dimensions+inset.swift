@@ -93,10 +93,10 @@ extension Corner.Dimensions {
             insetCornerStyle = .point
             
         case .rounded:
-            insetCornerStyle = .rounded(insetRadius)
+            insetCornerStyle = .rounded(radius: insetRadius)
             
         case .concave:
-            insetCornerStyle = .concave(insetRadius, radiusOffset: insetValues.radiusOffset)
+            insetCornerStyle = .concave(radius: insetRadius, radiusOffset: insetValues.radiusOffset)
             
         case .straight:
             let nestedCornerStyles = subCorners
@@ -104,7 +104,7 @@ extension Corner.Dimensions {
                 .corners(inset: inset)
                 .cornerStyles
 
-            insetCornerStyle = .straight(insetRadius, cornerStyles: nestedCornerStyles)
+            insetCornerStyle = .straight(radius: insetRadius, cornerStyles: nestedCornerStyles)
             
         case .cutout:
             let nestedCornerStyles = subCorners
@@ -112,7 +112,7 @@ extension Corner.Dimensions {
                 .corners(inset: inset)
                 .cornerStyles
             
-            insetCornerStyle = .cutout(insetRadius, cornerStyles: nestedCornerStyles)
+            insetCornerStyle = .cutout(radius: insetRadius, cornerStyles: nestedCornerStyles)
             
         case .custom:
             let insetSubcorners = subCorners
@@ -127,7 +127,7 @@ extension Corner.Dimensions {
                     )
                 )
             
-            insetCornerStyle = .custom(insetRadius, relativeCorners: insetSubcorners)
+            insetCornerStyle = .custom(radius: insetRadius, relativeCorners: insetSubcorners)
         }
         
         return insetPoint.corner(insetCornerStyle)

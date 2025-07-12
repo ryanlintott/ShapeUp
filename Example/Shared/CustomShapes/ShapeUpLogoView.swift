@@ -15,10 +15,10 @@ struct ShapeUpLogo: View {
                 // Pink Logo
                 CornerCustom { rect in
                     [
-                        rect[.topLeft].corner(.straight(.relative(0.27))),
-                        rect[0.925, 0.04].corner(.cutout(.relative(0.4))),
-                        rect[0.925, 0.3].corner(.rounded(.relative(0.4))),
-                        rect[0.005, 0.92].corner(.concave(.relative(0.23)))
+                        rect[.topLeft].corner(.straight(radius: .relative(0.27))),
+                        rect[0.925, 0.04].corner(.cutout(radius: .relative(0.4))),
+                        rect[0.925, 0.3].corner(.rounded(radius: .relative(0.4))),
+                        rect[0.005, 0.92].corner(.concave(radius: .relative(0.23)))
                     ]
                         .rotated(.degrees(9))
                         .moved(rect[0.06, 0.02])
@@ -30,10 +30,10 @@ struct ShapeUpLogo: View {
                 /// Purple Logo
                 CornerCustom { rect in
                     [
-                        rect[.topLeft].corner(.rounded(.relative(0.12))),
-                        rect[0.271, 0].corner(.concave(.relative(0.12))),
-                        rect[0.271, 1 - 0.15].corner(.straight(.relative(0.18))),
-                        rect[0, 1 - 0.15].corner(.rounded(.relative(0.23)))
+                        rect[.topLeft].corner(.rounded(radius: .relative(0.12))),
+                        rect[0.271, 0].corner(.concave(radius: .relative(0.12))),
+                        rect[0.271, 1 - 0.15].corner(.straight(radius: .relative(0.18))),
+                        rect[0, 1 - 0.15].corner(.rounded(radius: .relative(0.23)))
                     ]
                         .rotated(.degrees(-5))
                         .moved(rect[0.63, 0.11])
