@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public extension Array where Element == Corner {    
+public extension Array where Element == Corner {
     /// An array of corner dimensions used for drawing, insetting, and modifying points of a closed shape.
     var dimensions: [Corner.Dimensions] {
         dimensions()
@@ -31,14 +31,6 @@ public extension Array where Element == Corner {
             let nextPoint = i == self.count - 1 ? afterLast : self[i + 1].point
             return corner.dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
         }
-    }
-    
-    func relative(to rect: CGRect) -> [RelativeCorner] {
-        map { $0.relative(to: rect) }
-    }
-    
-    func relative(to frame: CGFrame) -> [RelativeCorner] {
-        map { $0.relative(to: frame) }
     }
     
     /// Creates a path defined by this array of corners. Closed by default.

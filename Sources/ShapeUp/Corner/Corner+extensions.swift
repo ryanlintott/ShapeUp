@@ -23,6 +23,12 @@ extension Corner: Vector2Transformable {
     }
 }
 
+extension Corner: RelativeRepresentable {
+    public func repositioned(to anchorPoint: RectAnchor) -> RelativeCorner {
+        .init(anchorPoint: anchorPoint)
+    }
+}
+
 extension Corner {
     /// Creates a corner at the same position but with the supplied style.
     /// - Parameter style: Corner style to apply.
@@ -43,13 +49,5 @@ extension Corner {
     /// - Returns: A set of saved dimensions based on the corner style and provided previous and next points.
     public func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
-    }
-    
-    public func relative(to rect: CGRect) -> RelativeCorner {
-        relative(to: CGFrame(rect))
-    }
-    
-    public func relative(to frame: CGFrame) -> RelativeCorner {
-        .init(anchorPoint: frame[point], style)
     }
 }

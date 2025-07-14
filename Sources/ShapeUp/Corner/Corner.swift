@@ -66,46 +66,23 @@ public struct Corner: Hashable, Codable, Sendable, CornerStyled {
     public var style: CornerStyle
     
     /// Create a corner with a specified style and two-dimensional point.
-    /// - Note: This initializer is deprecated. Use `Corner(x:y:_:)` instead. Move the style parameter to the end: Corner(x: x, y: y, style)
+    /// - Note: As an alternative you can use method chaining to add a style `Corner(x: 0, y: 0).rounded(20)`
     /// - Parameters:
     ///   - style: Corner style. Default is .point.
     ///   - x: x coordinate of corner.
     ///   - y: y coordinate of corner.
-    @available(*, deprecated: 100000, message: "Use Corner(x:y:_:) instead. Move the style parameter to the end: Corner(x: x, y: y, style)")
-    public init(_ style: CornerStyle?, x: CGFloat, y: CGFloat) {
+    public init(_ style: CornerStyle? = nil, x: CGFloat, y: CGFloat) {
         self.x = x
         self.y = y
         self.style = style ?? .point
     }
     
     /// Create a corner with a specified style and two-dimensional point.
-    /// - Note: This initializer is deprecated. Use `Corner(_:_:)` instead. Move the style parameter to the end: Corner(point, style)
+    /// - Note: As an alternative you can use method chaining to add a style `point.corner.rounded(20)`
     /// - Parameters:
     ///   - style: Corner style. Default is .point.
     ///   - point: Location of corner.
-    @available(*, deprecated: 100000, message: "Use Corner(_:_:) instead. Move the style parameter to the end: Corner(point, style)")
-    public init(_ style: CornerStyle?, point: some Vector2Representable) {
-        x = point.vector.dx
-        y = point.vector.dy
-        self.style = style ?? .point
-    }
-    
-    /// Create a corner with a specified style and two-dimensional point.
-    /// - Parameters:
-    ///   - x: x coordinate of corner.
-    ///   - y: y coordinate of corner.
-    ///   - style: Corner style. Default is .point.
-    public init(x: CGFloat, y: CGFloat, _ style: CornerStyle? = nil) {
-        self.x = x
-        self.y = y
-        self.style = style ?? .point
-    }
-    
-    /// Create a corner with a specified style and two-dimensional point.
-    /// - Parameters:
-    ///   - point: Location of corner.
-    ///   - style: Corner style. Default is .point.
-    public init(_ point: some Vector2Representable, _ style: CornerStyle? = nil) {
+    public init(_ style: CornerStyle? = nil, point: some Vector2Representable) {
         x = point.vector.dx
         y = point.vector.dy
         self.style = style ?? .point
