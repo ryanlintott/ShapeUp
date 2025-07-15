@@ -8,15 +8,15 @@
 import Foundation
 
 public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
-    public var anchorPoint: RectAnchor
+    public var anchor: RectAnchor
     public var style: CornerStyle
     
     /// Create a corner with a specified style and anchor point.
     /// - Parameters:
-    ///   - anchorPoint: Location of corner based on an anchor point.
+    ///   - anchor: Location of corner based on an anchor point.
     ///   - style: Corner style. Default is .point.
-    public init(anchorPoint: RectAnchor, _ style: CornerStyle? = nil) {
-        self.anchorPoint = anchorPoint
+    public init(anchor: RectAnchor, _ style: CornerStyle? = nil) {
+        self.anchor = anchor
         self.style = style ?? .point
     }
     
@@ -26,18 +26,18 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     ///   - y: Relative y location of corner based on top left anchor point.
     ///   - style: Corner style. Default is .point.
     public init(x: CGFloat, y: CGFloat, _ style: CornerStyle? = nil) {
-        self.anchorPoint = .relative(x: x, y: y)
+        self.anchor = .relative(x: x, y: y)
         self.style = style ?? .point
     }
 }
 
 public extension RelativeCorner {
     func corner(in rect: CGRect) -> Corner {
-        .init(style, point: anchorPoint.point(in: rect))
+        .init(style, point: anchor.point(in: rect))
     }
     
     func corner(in frame: CGFrame) -> Corner {
-        .init(style, point: anchorPoint.point(in: frame))
+        .init(style, point: anchor.point(in: frame))
     }
     
     /// Creates a corner at the same position but with the supplied style.
@@ -47,12 +47,12 @@ public extension RelativeCorner {
         if style == self.style {
             return self
         }
-        return .init(anchorPoint: anchorPoint, style)
+        return .init(anchor: anchor, style)
     }
 }
 
 extension RelativeCorner: RectAnchorTransformable {
-    public func repositioned(to anchorPoint: RectAnchor) -> Self {
-        .init(anchorPoint: anchorPoint, style)
+    public func repositioned(to anchor: RectAnchor) -> Self {
+        .init(anchor: anchor, style)
     }
 }

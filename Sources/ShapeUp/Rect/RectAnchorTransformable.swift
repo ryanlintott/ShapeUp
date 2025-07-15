@@ -8,11 +8,11 @@
 import SwiftUI
 
 public protocol RectAnchorTransformable {
-    var anchorPoint: RectAnchor { get }
+    var anchor: RectAnchor { get }
     
     /// Repositions this object while keeping other properties untouched.
     /// - Returns: The same object, moved to a new anchor point.
-    func repositioned(to anchorPoint: RectAnchor) -> Self
+    func repositioned(to anchor: RectAnchor) -> Self
 }
 
 // # MARK: Private extensions to use Vector2Transformable logic inside RectAnchorTransformable.
@@ -24,14 +24,14 @@ fileprivate extension RectAnchor {
 }
 
 fileprivate extension Vector2 {
-    var anchorPoint: RectAnchor {
+    var anchor: RectAnchor {
         .relative(x: vector.dx, y: vector.dy)
     }
 }
 
 fileprivate extension RectAnchorTransformable {
     func repositioned(to point: some Vector2Representable) -> Self {
-        repositioned(to: point.vector.anchorPoint)
+        repositioned(to: point.vector.anchor)
     }
 }
 
@@ -44,7 +44,7 @@ public extension RectAnchorTransformable {
     ///   - dy: Delta y
     /// - Returns: The same object, moved by the provided distance.
     func moved(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
-        repositioned(to: anchorPoint.vector.moved(dx: dx, dy: dy))
+        repositioned(to: anchor.vector.moved(dx: dx, dy: dy))
     }
     
     /// Rotates the position of this object without modifying other properties.
@@ -52,7 +52,7 @@ public extension RectAnchorTransformable {
     /// - Parameter anchor: Anchor point for the rotation.
     /// - Returns: The same object, rotated around the provided anchor by the provided angle.
     func rotated(_ angle: Angle, anchor: RectAnchor) -> Self {
-        repositioned(to: anchorPoint.vector.rotated(angle, anchor: anchor.anchorPoint.vector))
+        repositioned(to: anchor.vector.rotated(angle, anchor: anchor.anchor.vector))
     }
     
     /// Rotates the position of this object around the origin without modifying other properties.
@@ -69,7 +69,7 @@ public extension RectAnchorTransformable {
     /// - Parameter mirrorLineEnd: End point of mirror line.
     /// - Returns: The same object, flipped across the provided mirror line.
     func flipped(mirrorLineStart: RectAnchor, mirrorLineEnd: RectAnchor) -> Self {
-        repositioned(to: anchorPoint.vector.flipped(mirrorLineStart: mirrorLineStart.vector, mirrorLineEnd: mirrorLineEnd.vector))
+        repositioned(to: anchor.vector.flipped(mirrorLineStart: mirrorLineStart.vector, mirrorLineEnd: mirrorLineEnd.vector))
     }
     
     /// Inset position of this object defined by straight lines between the position of the previous object, this object, and the next object.
@@ -80,16 +80,16 @@ public extension RectAnchorTransformable {
     ///   - previousPoint: Point before this one used to determine the corner angle.
     ///   - nextPoint: Point after this one used to determine the corner angle.
     /// - Returns: Position of this point after being inset.
-    func insetAnchorPoint(_ amount: CGFloat, previousAnchorPoint: RectAnchor? = nil, nextAnchorPoint: RectAnchor? = nil) -> RectAnchor {
-        anchorPoint
+    func insetAnchor(_ amount: CGFloat, previousAnchor: RectAnchor? = nil, nextAnchor: RectAnchor? = nil) -> RectAnchor {
+        anchor
             .vector
             .insetPoint(
                 amount,
-                previousPoint: previousAnchorPoint?.point(in: .one),
-                nextPoint: nextAnchorPoint?.point(in: .one)
+                previousPoint: previousAnchor?.point(in: .one),
+                nextPoint: nextAnchor?.point(in: .one)
             )
             .vector
-            .anchorPoint
+            .anchor
     }
     
     /// Returns the position after being scaled from the origin.
@@ -98,7 +98,7 @@ public extension RectAnchorTransformable {
     ///   - anchor: Anchor point for the scale.
     /// - Returns: Position after being scaled from the origin.
     func scaledPosition(_ scale: CGSize, anchor: RectAnchor = .topLeft) -> Self {
-        repositioned(to: anchorPoint.vector.scaledPosition(scale, anchor: anchor.anchorPoint.vector))
+        repositioned(to: anchor.vector.scaledPosition(scale, anchor: anchor.anchor.vector))
     }
     
     /// Returns the position after being scaled from the origin.
@@ -128,14 +128,14 @@ public extension Collection where Element: RectAnchorTransformable {
     ///
     /// This frame only takes into account the points and not any corner shapes so the shape itself might be inset in the frame.
     var localBounds: CGRect {
-        self.map { $0.anchorPoint.vector }
+        self.map { $0.anchor.vector }
             .bounds
     }
 }
 
 public extension Array where Element: RectAnchorTransformable {
-    var anchorPoints: [RectAnchor] {
-        map { $0.anchorPoint }
+    var anchors: [RectAnchor] {
+        map { $0.anchor }
     }
     
     /// Moves the positions of this array of objects without modifying other properties.
@@ -158,7 +158,7 @@ public extension Array where Element: RectAnchorTransformable {
     }
     
     func moved(localAnchor: RectAnchor, toLocalAnchor localAnchorLocation: RectAnchor) -> Self {
-        moved(localAnchor: localAnchor, to: localBounds[localAnchorLocation].vector.anchorPoint)
+        moved(localAnchor: localAnchor, to: localBounds[localAnchorLocation].vector.anchor)
     }
     
     /// Rotates the position of this array of objects without modifying other properties.
@@ -183,7 +183,7 @@ public extension Array where Element: RectAnchorTransformable {
     ///   - anchor: Anchor point for the rotation based on the bounding frame.
     /// - Returns: The same array of objects, rotated around the provided anchor by the provided angle.
     func rotated(_ angle: Angle, localAnchor: RectAnchor) -> Self {
-        rotated(angle, anchor: localBounds[localAnchor].vector.anchorPoint)
+        rotated(angle, anchor: localBounds[localAnchor].vector.anchor)
     }
     
     /// Flips the positions of this array of objects across a mirror line without modifying other properties.
@@ -206,8 +206,8 @@ public extension Array where Element: RectAnchorTransformable {
     /// - Returns: The same array of objects flipped across the provided mirror line.
     func flipped(localMirrorLineStart: RectAnchor, localMirrorLineEnd: RectAnchor) -> Self {
         flipped(
-            mirrorLineStart: localBounds[localMirrorLineStart].vector.anchorPoint,
-            mirrorLineEnd: localBounds[localMirrorLineEnd].vector.anchorPoint
+            mirrorLineStart: localBounds[localMirrorLineStart].vector.anchor,
+            mirrorLineEnd: localBounds[localMirrorLineEnd].vector.anchor
         )
     }
     
@@ -245,10 +245,10 @@ public extension Array where Element: RectAnchorTransformable {
     /// - Parameters:
     ///   - amount: Inset amount.
     /// - Returns: Array of object positions after they have been inset.
-    func insetAnchorPoints(_ amount: CGFloat) -> [RectAnchor] {
-        self.map { $0.anchorPoint.vector.point }
+    func insetAnchors(_ amount: CGFloat) -> [RectAnchor] {
+        self.map { $0.anchor.vector.point }
             .insetPoints(amount)
-            .map { $0.vector.anchorPoint }
+            .map { $0.vector.anchor }
     }
     
     /// Returns positions after being scaled from the origin.
@@ -285,7 +285,7 @@ public extension Array where Element: RectAnchorTransformable {
     ///   - anchor: Anchor point for the scale within the bounds frame.
     /// - Returns: Positions after being scaled from the anchor point.
     func scaledPositions(_ scale: CGSize, localAnchor: RectAnchor) -> Self {
-        map { $0.scaledPosition(scale, anchor: localBounds[localAnchor].vector.anchorPoint) }
+        map { $0.scaledPosition(scale, anchor: localBounds[localAnchor].vector.anchor) }
     }
     
     /// Returns positions after being scaled from the origin using a RectAnchor within the bounds frame.
@@ -295,7 +295,7 @@ public extension Array where Element: RectAnchorTransformable {
     ///   - anchor: Anchor point for the scale within the bounds frame.
     /// - Returns: Positions after being scaled from the anchor point.
     func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, localAnchor: RectAnchor) -> Self {
-        map { $0.scaledPosition(x: x, y: y, anchor: localBounds[localAnchor].vector.anchorPoint) }
+        map { $0.scaledPosition(x: x, y: y, anchor: localBounds[localAnchor].vector.anchor) }
     }
     
     /// Returns positions after being scaled from the origin using a RectAnchor within the bounds frame.
@@ -304,6 +304,6 @@ public extension Array where Element: RectAnchorTransformable {
     ///   - anchor: Anchor point for the scale within the bounds frame.
     /// - Returns: Positions after being scaled from the anchor point.
     func scaledPositions(_ scale: CGFloat, localAnchor: RectAnchor) -> Self {
-        map { $0.scaledPosition(scale, anchor: localBounds[localAnchor].vector.anchorPoint) }
+        map { $0.scaledPosition(scale, anchor: localBounds[localAnchor].vector.anchor) }
     }
 }

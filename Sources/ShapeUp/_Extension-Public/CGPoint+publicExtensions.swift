@@ -8,8 +8,8 @@
 import SwiftUI
 
 extension CGPoint: RelativeRepresentable {
-    public func repositioned(to anchorPoint: RectAnchor) -> RectAnchor {
-        anchorPoint
+    public func repositioned(to anchor: RectAnchor) -> RectAnchor {
+        anchor
     }
 }
 

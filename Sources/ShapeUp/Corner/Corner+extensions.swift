@@ -8,8 +8,8 @@
 import SwiftUI
 
 extension Corner: RelativeRepresentable {
-    public func repositioned(to anchorPoint: RectAnchor) -> RelativeCorner {
-        .init(anchorPoint: anchorPoint)
+    public func repositioned(to anchor: RectAnchor) -> RelativeCorner {
+        .init(anchor: anchor)
     }
 }
 

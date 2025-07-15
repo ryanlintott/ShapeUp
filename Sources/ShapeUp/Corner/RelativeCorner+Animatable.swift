@@ -16,10 +16,10 @@ extension RelativeCorner: NestedAnimatable {
 
     public var nestedAnimatableData: NestedAnimatableData {
         get {
-            .init(anchorPoint, style.nestedAnimatableData)
+            .init(anchor, style.nestedAnimatableData)
         }
         set {
-            anchorPoint = newValue.first
+            anchor = newValue.first
             style.nestedAnimatableData = newValue.second
         }
     }
@@ -32,10 +32,10 @@ extension RelativeCorner: NestedAnimatable {
     
     public var animatableData: AnimatableData {
         get {
-            .init(anchorPoint, style.animatableData)
+            .init(anchor, style.animatableData)
         }
         set {
-            anchorPoint = newValue.first
+            anchor = newValue.first
             style.animatableData = newValue.second
         }
     }
