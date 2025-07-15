@@ -52,9 +52,7 @@ public extension RelativeCorner {
 }
 
 extension RelativeCorner: RectAnchorTransformable {
-    public func repositioned(to anchorPoint: some RectAnchorRepresentable) -> Self {
-        self.anchorPoint
-            .repositioned(to: anchorPoint)
-            .relativeCorner(style)
+    public func repositioned(to anchorPoint: RectAnchor) -> Self {
+        .init(anchorPoint: anchorPoint, style)
     }
 }

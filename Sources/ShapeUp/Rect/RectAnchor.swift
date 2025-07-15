@@ -120,12 +120,10 @@ extension RectAnchor {
     public static let vertices: [Self] = [.topLeft, .topRight, .bottomRight, .bottomLeft]
 }
 
-extension RectAnchor: RectAnchorRepresentable {
-    public var anchorPoint: RectAnchor { self }
-}
-
 extension RectAnchor: RectAnchorTransformable {
-    public func repositioned(to anchorPoint: some RectAnchorRepresentable) -> RectAnchor {
-        anchorPoint.anchorPoint
+    public var anchorPoint: RectAnchor { self }
+    
+    public func repositioned(to anchorPoint: RectAnchor) -> RectAnchor {
+        anchorPoint
     }
 }

@@ -46,9 +46,10 @@ public struct RelativeCornerShape: CornerShape {
                 .relative(x: 1, y: 0.1),
                 .relative(x: 0.3, y: 1).rounded(radius: 40),
             ]
-//                .moved(dx: 0.2)
-//                .rotated(.degrees(20))
-//                .scaledPositions(x: 0.5, y: 0.5, anchor: .topLeft)
+                .moved(dx: 0.2)
+                .rotated(.degrees(20))
+                .scaledPositions(x: 0.5, y: 0.5, anchor: .topLeft)
+                .flippedVertically(across: 0.5)
         )
         .fill()
     }

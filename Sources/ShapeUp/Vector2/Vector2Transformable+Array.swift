@@ -29,7 +29,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - anchor: Start point of the move relative to the bounds of the object locations.
     ///   - location: End location of anchor point.
     /// - Returns: The same array of objects, moved from the anchor provided to the end location.
-    func moved(_ anchor: RectAnchor = .topLeft, to location: some Vector2Representable) -> Self {
+    func moved(anchor: RectAnchor = .topLeft, to location: some Vector2Representable) -> Self {
         let vector = location.vector - bounds[anchor].vector
         return moved(vector)
     }
@@ -39,8 +39,8 @@ public extension Array where Element: Vector2Transformable {
     ///   - anchor: Start point of the move relative to the bounds of the object locations.
     ///   - location: End point of the move relative to the bounds of the object locations.
     /// - Returns: The same array of objects, moved from one provided anchor point to another.
-    func moved(_ anchor: RectAnchor = .topLeft, to location: RectAnchor) -> Self {
-        moved(anchor, to: bounds[location])
+    func moved(anchor: RectAnchor = .topLeft, to location: RectAnchor) -> Self {
+        moved(anchor: anchor, to: bounds[location])
     }
     
     /// Rotates the position of this array of objects without modifying other properties.
@@ -115,7 +115,7 @@ public extension Array where Element: Vector2Transformable {
     /// - Parameter anchor: The position of the horizontal mirror line based on the bounding frame.
     /// - Returns: The same array of points flipped vertically across a horizontal mirror line.
     func flippedVertically(across anchor: RectAnchor) -> Self {
-        flippedVertically(across: bounds[anchor].x)
+        flippedVertically(across: bounds[anchor].y)
     }
     
     /// Returns positions inset by a specified amount.
