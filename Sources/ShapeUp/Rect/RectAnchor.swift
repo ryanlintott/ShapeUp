@@ -119,3 +119,13 @@ extension RectAnchor {
     /// An array of four corners clockwise starting from top left.
     public static let vertices: [Self] = [.topLeft, .topRight, .bottomRight, .bottomLeft]
 }
+
+extension RectAnchor: RectAnchorRepresentable {
+    public var anchorPoint: RectAnchor { self }
+}
+
+extension RectAnchor: RectAnchorTransformable {
+    public func repositioned(to anchorPoint: some RectAnchorRepresentable) -> RectAnchor {
+        anchorPoint.anchorPoint
+    }
+}

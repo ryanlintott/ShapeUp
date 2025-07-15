@@ -12,7 +12,7 @@ public extension Array where Element: Vector2Transformable {
     /// - Parameter distance: A vector representing the distance to move.
     /// - Returns: The same array of objects, moved by the provided distance.
     func moved(_ distance: some Vector2Representable) -> Self {
-        map { $0.moved(distance)}
+        map { $0.moved(distance) }
     }
     
     /// Moves the positions of this array of objects without modifying other properties.
@@ -160,7 +160,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale.
     /// - Returns: Positions after being scaled from the origin.
-    func scaledPositions(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> [CGPoint] {
+    func scaledPositions(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         map { $0.scaledPosition(scale, anchor: anchor) }
     }
     
@@ -170,7 +170,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - y: Used to scale the y positions.
     ///   - anchor: Anchor point for the scale.
     /// - Returns: Positions after being scaled from the origin.
-    func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> [CGPoint] {
+    func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         map { $0.scaledPosition(x: x, y: y, anchor: anchor) }
     }
     
@@ -179,7 +179,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale.
     /// - Returns: Positions after being scaled from the origin.
-    func scaledPositions(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> [CGPoint] {
+    func scaledPositions(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         map { $0.scaledPosition(scale, anchor: anchor) }
     }
     
@@ -188,7 +188,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale within the bounds frame.
     /// - Returns: Positions after being scaled from the anchor point.
-    func scaledPositions(_ scale: CGSize, anchor: RectAnchor) -> [CGPoint] {
+    func scaledPositions(_ scale: CGSize, anchor: RectAnchor) -> Self {
         map { $0.scaledPosition(scale, anchor: bounds[anchor]) }
     }
     
@@ -198,7 +198,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - y: Used to scale the y positions.
     ///   - anchor: Anchor point for the scale within the bounds frame.
     /// - Returns: Positions after being scaled from the anchor point.
-    func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: RectAnchor) -> [CGPoint] {
+    func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: RectAnchor) -> Self {
         map { $0.scaledPosition(x: x, y: y, anchor: bounds[anchor]) }
     }
     
@@ -207,7 +207,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale within the bounds frame.
     /// - Returns: Positions after being scaled from the anchor point.
-    func scaledPositions(_ scale: CGFloat, anchor: RectAnchor) -> [CGPoint] {
+    func scaledPositions(_ scale: CGFloat, anchor: RectAnchor) -> Self {
         map { $0.scaledPosition(scale, anchor: bounds[anchor]) }
     }
     

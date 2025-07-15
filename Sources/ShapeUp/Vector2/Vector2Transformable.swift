@@ -62,7 +62,7 @@ public extension Vector2Transformable {
     /// - Returns: The same object, flipped across the provided mirror line.
     func flipped(mirrorLineStart: some Vector2Representable, mirrorLineEnd: some Vector2Representable) -> Self {
         // If the mirror line is just a point, don't make any changes.
-        if mirrorLineStart.point == mirrorLineEnd.point { return self }
+        if mirrorLineStart.vector == mirrorLineEnd.vector { return self }
         
         let vector = self.vector
         let vectorToPoint = vector - mirrorLineStart.vector
@@ -133,8 +133,8 @@ public extension Vector2Transformable {
     ///   - scale: Used to scale the position.
     ///   - anchor: Anchor point for the scale.
     /// - Returns: Position after being scaled from the origin.
-    func scaledPosition(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> CGPoint {
-        .init(vector: (vector - anchor.vector) * scale + anchor.vector)
+    func scaledPosition(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> Self {
+        repositioned(to: (vector - anchor.vector) * scale + anchor.vector)
     }
     
     /// Returns the position after being scaled from the origin.
@@ -143,7 +143,7 @@ public extension Vector2Transformable {
     ///   - y: Used to scale the y position.
     ///   - anchor: Anchor point for the scale.
     /// - Returns: Position after being scaled from the origin.
-    func scaledPosition(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> CGPoint {
+    func scaledPosition(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         scaledPosition(.init(width: x, height: y), anchor: anchor)
     }
     
@@ -152,7 +152,7 @@ public extension Vector2Transformable {
     ///   - scale: Used to scale the position.
     ///   - anchor: Anchor point for the scale.
     /// - Returns: Position after being scaled from the origin.
-    func scaledPosition(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> CGPoint {
+    func scaledPosition(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         scaledPosition(.init(width: scale, height: scale), anchor: anchor)
     }
     
@@ -162,6 +162,6 @@ public extension Vector2Transformable {
     ///   - destination: Resulting frame of reference.
     /// - Returns: The same object, repositioned from one frame of reference to another.
     func repositioned(from source: CGRect, to destination: CGRect) -> Self {
-        repositioned(to: destination[point.relative(to: source)])
+        repositioned(to: destination[vector.point.relative(to: source)])
     }
 }

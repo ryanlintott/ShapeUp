@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+extension Corner: RelativeRepresentable {
+    public func repositioned(to anchorPoint: RectAnchor) -> RelativeCorner {
+        .init(anchorPoint: anchorPoint)
+    }
+}
+
 extension Corner: Vector2Transformable {
     public var vector: Vector2 {
         Vector2(dx: x, dy: y)
@@ -20,12 +26,6 @@ extension Corner: Vector2Transformable {
     
     public func repositioned(to point: some Vector2Representable) -> Corner {
         Corner(style, point: point)
-    }
-}
-
-extension Corner: RelativeRepresentable {
-    public func repositioned(to anchorPoint: RectAnchor) -> RelativeCorner {
-        .init(anchorPoint: anchorPoint)
     }
 }
 
