@@ -38,8 +38,21 @@ struct CornerCustomExample: View {
             
             Text("Closed Shape")
             
+            RelativeCornerShape(
+                .relative(x: 0.0, y: 1.0),
+                .relative(x: 0.0, y: 0.4).rounded(radius: .relative(0.4)),
+                .relative(x: 0.4, y: 0.7).concave(radius: .relative(0.3)),
+                .relative(x: 0.4, y: 0.1).straight(radius: .relative(0.3)),
+                .relative(x: 0.7, y: 0.3).cutout(radius: .relative(0.1)),
+                .relative(x: 1.0, y: 0),
+                .relative(x: 0.8, y: 1.0)
+            )
+            .closed(false)
+            .stroke(Color.suYellow, lineWidth: 10)
+            .frame(width: 200, height: 150)
+            
             CornerCustom(closed: false) { rect in
-                rect[
+                rect.points(
                     (0.0, 1.0),
                     (0.0, 0.4),
                     (0.4, 0.7),
@@ -47,7 +60,7 @@ struct CornerCustomExample: View {
                     (0.7, 0.3),
                     (1.0, 0),
                     (0.8, 1.0)
-                ]
+                )
                     .corners([
                         nil,
                         .rounded(radius: .relative(0.4)),

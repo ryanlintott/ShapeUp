@@ -8,7 +8,7 @@
 import SwiftUI
 
 public extension CGRect {
-    // MARK: - Points from anchor points
+    // MARK: - Subscripts for creating points, corners and anchors
 
     /// Creates a point in the location of an anchor.
     /// - Parameters:
@@ -19,6 +19,9 @@ public extension CGRect {
     }
     
     /// Transforms a relative corner into a corner.
+    ///
+    /// - Note: The additional style parameter makes this subscript act as a disfavoured overload to the subscript that outputs a `CGPoint`.
+    ///
     /// - Parameters:
     ///   - anchor: Anchor where the point is located.
     ///   - style: The corner style to apply. (default is .point)
@@ -27,22 +30,16 @@ public extension CGRect {
         self[anchor].corner(style)
     }
     
-    /// Creates an array of points in the locations of the supplied anchors.
-    /// - Parameter anchors: Anchors defining point locations in order.
-    /// - Returns: An array of points in the location and order of the supplied anchors.
-    subscript (_ anchors: [RectAnchor]) -> [CGPoint] {
-        anchors.points(in: self)
+    /// Returns the relative anchor for a given point within the frame.
+    /// - Parameter point: The point to convert to an anchor.
+    /// - Returns: The relative anchor representing the point's position in the frame.
+    subscript (_ point: CGPoint) -> RectAnchor {
+        let relativePosition = point.vector - origin.vector
+        let x = width == 0 ? 0 : relativePosition.dx / width
+        let y = height == 0 ? 0 : relativePosition.dy / height
+        return .relative(x: x, y: y)
     }
     
-    /// Creates an array of points in the locations of the supplied anchors.
-    /// - Parameter anchors: Anchors defining point locations in order.
-    /// - Returns: An array of points in the location and order of the supplied anchors.
-    subscript (_ anchors: RectAnchor...) -> [CGPoint] {
-        self[anchors]
-    }
-
-    // MARK: - Points from relative coordinates
-
     /// Creates a point at the relative coordinates inside this rectangle.
     ///
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
@@ -66,12 +63,33 @@ public extension CGRect {
         self[.relative(x: x, y: y)].corner(style)
     }
     
+    // MARK: - Points from anchors and relative coordinates
+    
+    /// Creates an array of points from the 4 corners of the rectangle starting with the top left and going clockwise.
+    var points: [CGPoint] {
+        points(.vertices)
+    }
+    
+    /// Creates an array of points in the locations of the supplied anchors.
+    /// - Parameter anchors: Anchors defining point locations in order.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
+    func points(_ anchors: [RectAnchor]) -> [CGPoint] {
+        anchors.map { self[$0] }
+    }
+    
+    /// Creates an array of points in the locations of the supplied anchors.
+    /// - Parameter firstAnchor: Anchors defining point locations in order.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
+    func points(_ anchors: RectAnchor...) -> [CGPoint] {
+        points(anchors)
+    }
+    
     /// Creates an array of points at relative coordinates in the rectangle.
     ///
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
     /// - Parameter relativePoints: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    subscript (_ relativePoints: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
+    func points(_ relativePoints: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
         relativePoints.map { self[$0.x, $0.y] }
     }
     
@@ -80,36 +98,33 @@ public extension CGRect {
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
     /// - Parameter relativePoints: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    subscript (_ relativePoints: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
-        relativePoints.map { self[$0.x, $0.y] }
-    }
-
-    // MARK: - Anchor points from points
-    
-    /// Returns the relative anchor for a given point within the frame.
-    /// - Parameter point: The point to convert to an anchor.
-    /// - Returns: The relative anchor representing the point's position in the frame.
-    subscript (_ point: CGPoint) -> RectAnchor {
-        let relativePosition = point.vector - origin.vector
-        let x = width == 0 ? 0 : relativePosition.dx / width
-        let y = height == 0 ? 0 : relativePosition.dy / height
-        return .relative(x: x, y: y)
+    func points(_ relativePoints: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
+        points(relativePoints)
     }
     
     // MARK: - Corners
+    
+    /// Creates an array of corners from the 4 corners of the rectangle starting with the top left and going clockwise with the `.point` style applied.
+    var corners: [Corner] {
+        points.corners
+    }
     
     /// Creates an array of corners from the rectangle.
     /// - Parameter style: Corner style used for all corners.
     /// - Returns: An array of 4 corners, with the provided style, starting with the top left and going clockwise.
     func corners(_ style: CornerStyle = .point) -> [Corner] {
-        self[.vertices].corners(style)
+        points(.vertices).corners(style)
     }
     
     /// Creates an array of corners from the rectangle.
-    /// - Parameter styles: Array of corner styles starting with the top left and going clockwise. Nil values will use "point"
+    /// - Parameter styles: Array of corner styles starting with the top left and going clockwise. Nil values will use `.point`
     /// - Returns: An array of 4 corners, with the provided styles, starting with the top left and going clockwise.
     func corners(_ styles: [CornerStyle?]) -> [Corner] {
-        self[.vertices].corners(styles)
+        points(.vertices).corners(styles)
+    }
+    
+    func corners(_ relativeCorners: RelativeCorner...) -> [Corner] {
+        relativeCorners.map { self[$0.anchor, $0.style] }
     }
 
     // MARK: - Transformations
@@ -187,12 +202,6 @@ public extension CGRect {
 
     // MARK: - Deprecated
     
-    /// Creates an array of points from the 4 corners of the rectangle starting with the top left and going clockwise.
-    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[.vertices]` instead.")
-    var points: [CGPoint] {
-        self[.vertices]
-    }
-    
     /// Creates a point in the location of an anchor.
     /// - Parameter anchor: Anchor where the point is located
     /// - Returns: A point where the anchor is located.
@@ -201,29 +210,13 @@ public extension CGRect {
         self[anchor]
     }
     
-    /// Creates an array of points in the locations of the supplied anchors.
-    /// - Parameter anchors: Anchors defining point locations in order.
-    /// - Returns: An array of points in the location and order of the supplied anchors.
-    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[anchors]` instead.")
-    func points(_ anchors: [RectAnchor]) -> [CGPoint] {
-        self[anchors]
-    }
-    
-    /// Creates an array of points in the locations of the supplied anchors.
-    /// - Parameter anchors: Anchors defining point locations in order.
-    /// - Returns: An array of points in the location and order of the supplied anchors.
-    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[anchor1, anchor2, ...]` instead.")
-    func points(_ anchors: RectAnchor...) -> [CGPoint] {
-        self[anchors]
-    }
-    
     /// Creates a point at the relative location inside this CGRect.
     ///
     /// Relative x values are multiplied by the width and positioned that distance from minX.
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocation: A tuple with relative x and y coordinates respectively.
     /// - Returns: A point at the relative location inside this CGRect.
-    @available(*, deprecated: 100000, renamed: "subscript(_:_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
+    @available(*, deprecated: 100000, renamed: "subscript(_:_:)", message: "Use `rect[x, y]` instead.")
     func point(relativeLocation: (CGFloat, CGFloat)) -> CGPoint {
         self[relativeLocation.0, relativeLocation.1]
     }
@@ -234,9 +227,9 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[tupleArray]` instead.")
+    @available(*, deprecated: 100000, renamed: "points(_:)", message: "Use `points(tupleArray)` instead.")
     func points(relativeLocations: [(CGFloat, CGFloat)]) -> [CGPoint] {
-        self[relativeLocations]
+        points(relativeLocations)
     }
     
     /// Creates an array of points at the relative locations inside this CGRect.
@@ -245,8 +238,8 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[(x1, y1), (x2, y2), ...]` instead.")
+    @available(*, deprecated: 100000, renamed: "points(_:)", message: "Use `points((x1, y1), (x2, y2), ...)` instead.")
     func points(relativeLocations: (CGFloat, CGFloat)...) -> [CGPoint] {
-        self[relativeLocations]
+        points(relativeLocations)
     }
 }

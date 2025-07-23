@@ -56,36 +56,54 @@ Or you can buy a t-shirt with the ShapeUp logo
 <a href="https://cottonbureau.com/p/JBYGB7/shirt/shapeup#/20149802"><img width="256" alt="ShapeUp T-Shirt" src="https://cottonbureau.com/mockup?vid=20149802&hash=6UJM&w=512"></a>
 - - -
 # Features
-## RectAnchor
-An enum to indicate one of 9 anchor locations on a rectangle plus any `.relative` location. It's primarily used to quickly get `CGPoint` values from `CGRect` when creating SwiftUI shapes.
+## RectAnchor and CGRect
+Inside a SwiftUI `Shape` path method, points often have positions relative to the `rect` property. Existing `CGRect` parameters make this awkward and difficult to read.
+
+`ShapeUp` adds a subscript on `CGRect` takes a new `RectAnchor` enum will quickly create points at on of 9 anchor locations plus any `.relative` location.
 
 ```swift
 func path(in rect: CGRect) -> Path {
     // Current method
     let point1 = CGPoint(x: rect.minX, y: rect.minY)
     let point2 = CGPoint(x: rect.minX + (rect.width * 0.4), y: rect.minY + (rect.width * 0.7))
+    
     // ShapeUp method
     let point1 = rect[.topLeft]
     let point2 = rect[.relative(0.4, 0.7)]
+    
+    // or an even shorter version for relative locations
+    let point2 = rect[0.4, 0.7]
     ...
 }
 ```
 
-This is especially helpful when getting an array of points
+Another new method can transform an array of `RectAnchor` into an array of `CGPoint`
 
 ```swift
 // Current method
 let points = [
     CGPoint(x: rect.minX, y: rect.midY),
     CGPoint(x: rect.midX, y: rect.midY),
-    CGPoint(x: rect.maxX, y: rect.maxY)
+    CGPoint(x: rect.minX + (rect.width * 0.4), y: rect.minY + (rect.width * 0.7))
 ]
+
 // ShapeUp method
-let points = rect[.left, .center, .bottomRight]
+let points = rect.points(
+    .left,
+    .center,
+    .relative(0.4, 0.7)
+)
+
+// Or if you want all relative points
+let points = rect.points(
+    (0.0, 0.5),
+    (0.5, 0.5),
+    (0.4, 0.7)
+)
 ```
 
 ## CGPoint
-By conforming to [`Vector2Transformable`](#vector2transformable) `CGPoint` and `Array<CGPoint>` can be moved, rotated, flipped, scaled, and inset.
+`CGPoint` conforms to a new [`Vector2Transformable`](#vector2transformable) protocol so single points or arrays can be moved, rotated, flipped, scaled, or inset.
 
 ```swift
 points
@@ -96,7 +114,7 @@ points
     .insetPoints(5)
 ```
 
-They can also be converted to relative positions through [`RectAnchor`](#rectanchor) or transformed to different coordinate spaces with [`CGFrame`](#cgframe).
+They can also be converted to [`RectAnchor`](#rectanchor) with positions relative to a `CGRect` or  [`CGFrame`](#cgframe).
 
 ```swift
 let relativeToRect: [RectAnchor] = points.relative(to: CGRect(...))
@@ -104,30 +122,12 @@ let relativeToFrame: [RectAnchor] = points.relative(to: CGFrame(...))
 ```
 
 ## CGRect
-There are lots of short subscripts to generate points, anchor points or arrays of either.
-
-```swift
-let rect = CGRect(origin: .zero, size: CGSize(width: 50, height: 50)
-let center: CGPoint = rect[.center]
-let edgeMidpoints: [CGPoint] = rect[.top, .right, .bottom, .left]
-let relativePoint: [CGPoint] = rect[1.0, 0.666]
-let relativePoints: [CGPoint] = rect[(0.0, 0.7), (0.3, 1.0), (1.0, 0.0))
-let anchorPoint: RectAnchor = rect[CGPoint(x: 15, y: 4)]
-let anchorPoints: [RectAnchor] = rect[relativePoints]
-```
-
-The `CGRect` itself can also be moved and scaled.
+`CGRect` can also be moved and scaled.
 
 ```swift
 rect
     .moved(dx: 40, dy: 2.5)
     .scaled(x: 2, y: 1.5, anchor: .center)
-```
-
-And you can quickly create corners
-
-```swift
-let roundedCorners: [Corner] = rect.corners(.rounded(20))
 ```
 
 ## CGSize
@@ -138,20 +138,15 @@ let scaledSize: CGSize = size.scaled(3)
 let rect = size.rect(at: point, anchor: .center)
 ```
 
+
 ## Corner
-A point with a specified `CornerStyle` used to draw paths and create shapes.
-
-```swift
-Corner(.rounded(radius: 5), x: 0, y: 10)
-```
-
-Corners store no information about their orientation or where the previous and next points are located. When they're put into an array their order is assumed to be their drawing order. This means you can generate a `Path` from this array. By default this path is assumed to be closed with the last point connecting back to the first.
+What if a shape were defined simply by an array of corners with a specified style? This means you can generate a `Path` from this array. By default this path is assumed to be closed with the last point connecting back to the first.
 
 ```swift
 [
-    Corner(.rounded(radius: 10), x: 0, y: 0),
-    Corner(.cutout(radius: 5), x: 10, y: 0),
-    Corner(.straight(radius: 5), x: 5, y: 10)
+    Corner(x: 0, y: 0).rounded(radius: 10),
+    Corner(x: 10, y: 0).cutout(radius: 5),
+    Corner(x: 5, y: 10).straight(radius: 5)
 ].path()
 ```
 
@@ -172,6 +167,8 @@ A straight chamfer corner where the radius determines the start and end points o
 
 <img width="50" alt="Pink triangle with a cutout corner" src="https://user-images.githubusercontent.com/2143656/157762313-c4015f99-7c53-4571-93b5-a8b476c9f5da.svg"> `.cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
 A cutout corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
+
+A custom corner uses the radius to determine the top left and bottom right corners of a rhombus in which you can add any number of relative corners to draw your shape.
 
 
 ## Basic Shapes
@@ -209,6 +206,8 @@ CornerPentagon(
 .fill()
 ```
 
+
+
 ## CornerShape
 A protocol for creating shapes built from an array of `Corner`s. The path and inset functions needed to conform to SwiftUI InsettableShape are already implemented.
 
@@ -216,15 +215,17 @@ A protocol for creating shapes built from an array of `Corner`s. The path and in
 - Set `insetAmount` to zero (this property will is used to automatically inset the CornerShape).
 - Set the `closed` property to define if your shape should be closed or left open.
 - Write a function that returns an array of corners.
+
 ```swift
 struct MyCornerShape: CornerShape {
     var insetAmount: CGFloat = .zero
-    let closed = true
+    var closed = true
    
     func corners(in rect: CGRect) -> [Corner] {
         [
-            rect[.top].corner,
-            rect[.bottomRight].corner(.rounded(radius: 5),
+            rect[.bottomLeft].rounded(radius: 5),
+            rect[.topLeft].rounded(radius: 5)
+            rect[.topRight].corner(.rounded(radius: 5),
             rect[.bottomRight].corner(.rounded(radius: 5)
         ]
     }
@@ -262,6 +263,10 @@ func path(in rect: CGRect) -> Path {
     return path
 }
 ```
+
+## RelativeCornerShape
+A protocol for creating shapes where the corners are defined by a `RelativeCorner` array. This is a bit different from `CornerShape` because the corners are defined relative to the shape.
+
 
 ## CornerCustom
 Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s. The closure itself needs to be `Sendable` so that it can be used to generate a path for a SwiftUI `Shape`.

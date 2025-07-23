@@ -28,13 +28,14 @@ struct CustomCornerShapeExample: CornerShape {
     }
     
     func corners(in rect: CGRect) -> [Corner] {
-        rect[
+        rect.points(
             .topLeft,
             .top,
             .topRight,
             .bottomRight,
             .bottomLeft
-        ].corners(style)
+        )
+        .corners(style)
     }
 }
 

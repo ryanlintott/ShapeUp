@@ -1,5 +1,5 @@
 //
-//  RectAnchorRepresentable.swift
+//  RectAnchorTransformable.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2025-07-15.

@@ -27,6 +27,21 @@ public struct RelativeCornerShape: CornerShape {
     }
 }
 
+public extension RelativeCornerShape {
+    func closed(_ isClosed: Bool) -> Self {
+        if closed == isClosed { return self }
+        var copy = self
+        copy.closed = isClosed
+        return copy
+    }
+    
+    func applyingStyle(_ cornerStyle: CornerStyle) -> Self {
+        var copy = self
+        copy.relativeCorners.applyStyle(cornerStyle)
+        return copy
+    }
+}
+
 #Preview {
     VStack {
         RelativeCornerShape(

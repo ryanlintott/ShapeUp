@@ -15,6 +15,13 @@ struct ShapeUpLogo: View {
                 // Pink Logo
                 
                 
+                RelativeCornerShape(
+                    .topLeft.straight(radius: .relative(0.27)),
+                    .relative(x: 0.925, y: 0.04).cutout(radius: .relative(0.4)),
+                    .relative(x: 0.925, y: 0.3).rounded(radius: .relative(0.4)),
+                    .relative(x: 0.005, y: 0.92).concave(radius: .relative(0.23))
+                )
+                
                 CornerCustom { rect in
                     [
                         rect[.topLeft].straight(radius: .relative(0.27)),
@@ -77,18 +84,18 @@ struct ShapeUpLogo: View {
                     
                     // Yellow Squiggle
                     CornerCustom(closed: false) { rect in
-                        rect[
+                        rect.points(
                             (0.0, 1.0),
                             (1.1, 0),
                             (2.1, 0.9),
                             (2.9, -0.1),
                             (3.8, 1),
                             (5, 0)
-                        ]
+                        )
                             .scaledPositions(x: 0.0365, y: 0.1)
                             .rotated(.degrees(-15), anchor: .bottomLeft)
                             .moved(rect[0.28, 0.23])
-                            .corners()
+                            .corners
                     }
                     .stroke(Color.suYellow, lineWidth: proxy.size.height * 0.05)
                     

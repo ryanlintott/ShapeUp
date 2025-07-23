@@ -73,7 +73,7 @@ public extension Array where Element: Vector2Representable {
     }
     
     /// Center point of the bounds rectangle containing all points in the array.
-    @available(*, deprecated: 100000, renamed: "bounds.center", message: "Use bounds[anchor] instead.")
+    @available(*, deprecated: 100000, renamed: "bounds.center", message: "Use bounds.center instead.")
     var center: CGPoint {
         bounds[.center]
     }
