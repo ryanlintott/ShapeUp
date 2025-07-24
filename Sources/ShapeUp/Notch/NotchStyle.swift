@@ -25,21 +25,24 @@ public enum NotchStyle: Sendable {
 }
 
 public extension NotchStyle {
-    /// Relative corners for all corners of the notch. Setting this value will turn the notch into a custom notch.
-    var relativeCorners: [RelativeCorner] {
+    /// Relative corners for all corners of the notch.
+    internal(set) var relativeCorners: [RelativeCorner] {
         get {
             switch self {
             case let .triangle(cornerStyles):
-                let anchors: [RectAnchor] = [.topLeft, .bottom, .topRight]
-                return anchors.relativeCorners(cornerStyles)
+                [RectAnchor.topLeft, .bottom, .topRight]
+                    .relativeCorners(cornerStyles)
+                
             case let .rectangle(cornerStyles):
-                let anchors: [RectAnchor] = [.topLeft, .bottomLeft, .bottomRight, .topRight]
-                return anchors.relativeCorners(cornerStyles)
+                [RectAnchor.topLeft, .bottomLeft, .bottomRight, .topRight]
+                    .relativeCorners(cornerStyles)
+                
             case let .custom(relativeCorners):
-                return relativeCorners
+                relativeCorners
             }
         }
         set {
+            // Setting is only used by animatableData
             switch self {
             case .triangle:
                 self = .triangle(cornerStyles: newValue.cornerStyles)

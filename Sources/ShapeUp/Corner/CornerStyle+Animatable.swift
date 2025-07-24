@@ -30,57 +30,42 @@ extension CornerStyle: NestedAnimatable {
 
     public var nestedAnimatableData: NestedAnimatableData {
         get {
-            switch self {
-            case .point, .rounded, .straight, .cutout, .custom:
-                .init(radius, .zero)
-            case let .concave(radius, radiusOffset):
-                .init(radius, radiusOffset)
-            }
+            .init(
+                radius,
+                radiusOffset
+            )
         }
         set {
-            switch self {
-            case .point, .rounded, .straight, .cutout, .custom:
-                radius = newValue.first
-            case .concave:
-                self = .concave(radius: newValue.first, radiusOffset: newValue.second)
-            }
+            radius = newValue.first
+            radiusOffset = newValue.second
         }
     }
     
     public typealias AnimatableData =
+    
     AnimatablePair<
         RelatableValue,
         AnimatablePair<
             CGFloat,
-            AnimatablePair<
-                AnimatableArray<
-                    CornerStyle.NestedAnimatableData
-                >,
-                AnimatableArray<
-                    RelativeCorner.NestedAnimatableData
-                >
+            AnimatableArray<
+                RelativeCorner.NestedAnimatableData
             >
         >
     >
-    
     public var animatableData: AnimatableData {
         get {
             .init(
                 radius,
                 .init(
                     radiusOffset,
-                    .init(
-                        cornerStyles.nestedAnimatableData,
-                        relativeCorners.nestedAnimatableData
-                    )
+                    relativeCorners.nestedAnimatableData
                 )
             )
         }
         set {
             radius = newValue.first
             radiusOffset = newValue.second.first
-            cornerStyles.nestedAnimatableData = newValue.second.second.first
-            relativeCorners.nestedAnimatableData = newValue.second.second.second
+            relativeCorners.nestedAnimatableData = newValue.second.second
         }
     }
 }

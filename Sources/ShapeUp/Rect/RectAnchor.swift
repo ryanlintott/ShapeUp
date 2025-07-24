@@ -110,7 +110,7 @@ extension RectAnchor {
     }
     
     /// An array of four edges clockwise starting with top
-    @available(*, deprecated: 100000, message: "Use `self[.top, .right, .bottom, .left]`.")
+    @available(*, deprecated: 100000, message: "Use `self.points(.top, .right, .bottom, .left)`.")
     public static let edgeAnchors: [Self] = [.top, .right, .bottom, .left]
     
     @available(*, deprecated: 100000, renamed: "vertices")

@@ -87,19 +87,19 @@ public extension CGRect {
     /// Creates an array of points at relative coordinates in the rectangle.
     ///
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
-    /// - Parameter relativePoints: An array of tuples with relative x and y coordinates respectively.
+    /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    func points(_ relativePoints: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
-        relativePoints.map { self[$0.x, $0.y] }
+    func points(relativeLocations: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
+        relativeLocations.map { self[$0.x, $0.y] }
     }
     
     /// Creates an array of points at the relative coordinates in the rectangle.
     ///
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
-    /// - Parameter relativePoints: An array of tuples with relative x and y coordinates respectively.
+    /// - Parameter relativeCoordinates: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    func points(_ relativePoints: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
-        points(relativePoints)
+    func points(relativeLocations: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
+        points(relativeLocations: relativeLocations)
     }
     
     // MARK: - Corners
@@ -219,27 +219,5 @@ public extension CGRect {
     @available(*, deprecated: 100000, renamed: "subscript(_:_:)", message: "Use `rect[x, y]` instead.")
     func point(relativeLocation: (CGFloat, CGFloat)) -> CGPoint {
         self[relativeLocation.0, relativeLocation.1]
-    }
-    
-    /// Creates an array of points at the relative locations inside this CGRect.
-    ///
-    /// Relative x values are multiplied by the width and positioned that distance from minX.
-    /// Relative y values are multiplied by the height and positioned that distance from minY.
-    /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
-    /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated: 100000, renamed: "points(_:)", message: "Use `points(tupleArray)` instead.")
-    func points(relativeLocations: [(CGFloat, CGFloat)]) -> [CGPoint] {
-        points(relativeLocations)
-    }
-    
-    /// Creates an array of points at the relative locations inside this CGRect.
-    ///
-    /// Relative x values are multiplied by the width and positioned that distance from minX.
-    /// Relative y values are multiplied by the height and positioned that distance from minY.
-    /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
-    /// - Returns: A an array of points at the relative locations inside this CGRect.
-    @available(*, deprecated: 100000, renamed: "points(_:)", message: "Use `points((x1, y1), (x2, y2), ...)` instead.")
-    func points(relativeLocations: (CGFloat, CGFloat)...) -> [CGPoint] {
-        points(relativeLocations)
     }
 }

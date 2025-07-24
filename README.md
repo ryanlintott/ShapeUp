@@ -57,9 +57,9 @@ Or you can buy a t-shirt with the ShapeUp logo
 - - -
 # Features
 ## RectAnchor and CGRect
-Inside a SwiftUI `Shape` path method, points often have positions relative to the `rect` property. Existing `CGRect` parameters make this awkward and difficult to read.
+Inside a SwiftUI `Shape` path method, points often have positions relative to the `rect` property.
 
-`ShapeUp` adds a subscript on `CGRect` takes a new `RectAnchor` enum will quickly create points at on of 9 anchor locations plus any `.relative` location.
+New subscripts on `CGRect` make it easy to create points at on of 9 anchor locations plus any `.relative` location using the new `RectAnchor` type.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -77,7 +77,7 @@ func path(in rect: CGRect) -> Path {
 }
 ```
 
-Another new method can transform an array of `RectAnchor` into an array of `CGPoint`
+The new `points(_:)` method can transform an array of `RectAnchor` or `(x: CGFloat, y: CGFloat)` into an array of `CGPoint`
 
 ```swift
 // Current method
@@ -206,10 +206,8 @@ CornerPentagon(
 .fill()
 ```
 
-
-
 ## CornerShape
-A protocol for creating shapes built from an array of `Corner`s. The path and inset functions needed to conform to SwiftUI InsettableShape are already implemented.
+A protocol for creating shapes built from an array of `Corner`s. The path and inset functions needed to conform to SwiftUI `InsettableShape` are already implemented.
 
 ### How to build a CornerShape
 - Set `insetAmount` to zero (this property will is used to automatically inset the CornerShape).
@@ -246,7 +244,7 @@ func path(in rect: CGRect) -> Path {
     
     // ...Draw some quad curves or similar complex shapes
     
-    let corners = MyCornerShape()
+    let corners: [Corner] = MyCornerShape()
         .corners(in: rect)
         .inset(by: 10)
         .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
@@ -264,8 +262,30 @@ func path(in rect: CGRect) -> Path {
 }
 ```
 
+
 ## RelativeCornerShape
-A protocol for creating shapes where the corners are defined by a `RelativeCorner` array. This is a bit different from `CornerShape` because the corners are defined relative to the shape.
+The easiest way to create your own shape out of Corners is to use RelativeCornerShape. This shape takes an array of `RelativeCorner`. This type is very similar to `Corner` except it's position information is always relative to the bound of the shape.
+
+```swift
+RelativeCornerShape(
+    RelativeCorner(anchor: .bottomLeft),
+    RelativeCorner(anchor: .top, .rounded(radius: 20)),
+    RelativeCorner(anchor: .bottomRight),
+    RelativeCorner(anchor: .relative(0.5, 0.7), .straight(radius: 10))
+)
+.fill()
+
+/// Shorter method
+RelativeCornerShape(
+    .bottomLeft,
+    .top.rounded(radius: 20),
+    .bottomRight,
+    .relative(0.5, 0.7).straight(radius: 10)
+)
+.fill()
+```
+
+
 
 
 ## CornerCustom

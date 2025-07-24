@@ -14,7 +14,7 @@ struct QuickHexagonExample: View {
     
     var body: some View {
             CornerCustom { rect in
-                rect.points(
+                rect.points(relativeLocations:
                     (taper, 0),
                     (1 - taper, 0),
                     (1, 0.5),

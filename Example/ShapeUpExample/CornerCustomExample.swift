@@ -52,7 +52,7 @@ struct CornerCustomExample: View {
             .frame(width: 200, height: 150)
             
             CornerCustom(closed: false) { rect in
-                rect.points(
+                rect.points(relativeLocations:
                     (0.0, 1.0),
                     (0.0, 0.4),
                     (0.4, 0.7),

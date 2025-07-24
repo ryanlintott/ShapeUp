@@ -84,7 +84,7 @@ struct ShapeUpLogo: View {
                     
                     // Yellow Squiggle
                     CornerCustom(closed: false) { rect in
-                        rect.points(
+                        rect.points(relativeLocations:
                             (0.0, 1.0),
                             (1.1, 0),
                             (2.1, 0.9),

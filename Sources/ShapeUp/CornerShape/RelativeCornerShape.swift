@@ -45,10 +45,10 @@ public extension RelativeCornerShape {
 #Preview {
     VStack {
         RelativeCornerShape(
-            .relative(x: 0.2, y: 0.5),
+            .relative(x: 0, y: 0.5),
             .relative(x: 0.3, y: 0.8).rounded(radius: 40),
-            .topRight,
-            .relative(x: 1, y: 0.1),
+            .topRight.cutout(radius: 10),
+            .relative(x: 1, y: 0.3),
             .relative(x: 0.3, y: 1).rounded(radius: 40),
         )
         .fill()
