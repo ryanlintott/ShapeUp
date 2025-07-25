@@ -181,4 +181,15 @@ public extension Vector2Algebraic {
     func crossProduct(with b: some Vector2Representable) -> CGFloat {
         (vector.dx * b.vector.dy) - (vector.dy * b.vector.dx)
     }
+    
+    /// Calculates the dot product of this vector with another vector.
+    ///
+    /// The dot product is a scalar value that represents how much one vector extends in the direction of another.
+    /// It can be used to determine the angle between vectors (positive for acute, zero for orthogonal, negative for obtuse),
+    /// or to project one vector onto another.
+    /// - Parameter b: The other vector to calculate the dot product with.
+    /// - Returns: The dot product as a scalar value.
+    func dotProduct(with b: some Vector2Representable) -> CGFloat {
+        (vector.dx * b.vector.dx) + (vector.dy * b.vector.dy)
+    }
 }

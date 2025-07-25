@@ -31,28 +31,10 @@ extension Corner.Dimensions {
             insetRadius = absoluteRadius - radiusInset
             
         case .concave:
-            // radius inset affects the concave radius directly and the radius indirectly
-            let insetConcaveRadius = concaveRadius + radiusInset
-            
-            // Get a perpendicular inset of the previous point. Doesn't need to be precise as any point far away on the inset line will do.
-            let insetPreviousPoint = previousPoint.insetPoint(insetAmount, nextPoint: corner.point)
-            
-            // Get the inset cut length. Concave radius center, halved non reflex angle and reflex multiplier are unchanged when insetting.
-            let insetCutLength = Self.cutLength(
-                cornerPoint: insetPoint,
-                previousPoint: insetPreviousPoint,
-                concaveRadiusCenter: concaveRadiusCenter,
-                concaveRadius: insetConcaveRadius,
-                halvedNonReflexAngle: halvedNonReflexAngle,
-                reflexMultiplier: reflexMultiplier
-            )
-            
-            // Get the inset radius from the inset cut length
-            insetRadius = Self.absoluteRadius(cutLength: insetCutLength, halvedNonReflexAngle: halvedNonReflexAngle)
-            
-            // Get the inset radius offset from the inset radius
-            insetRadiusOffset = Self.radiusOffset(concaveRadius: insetConcaveRadius, absoluteRadius: insetRadius)
-
+            // Radius doesn't change
+            insetRadius = absoluteRadius
+            // Radius offset just stores the inset value so the corner can be calculated correctly.
+            insetRadiusOffset = radiusOffset + insetAmount
         case .straight:
             // The cornerStart of the new inset point
             let insetStart = cornerStart.insetPoint(insetAmount, previousPoint: previousPoint, nextPoint: cornerEnd)

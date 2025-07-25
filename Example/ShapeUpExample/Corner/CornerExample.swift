@@ -28,12 +28,14 @@ struct CustomCornerShapeExample: CornerShape {
     }
     
     func corners(in rect: CGRect) -> [Corner] {
-        rect.points(
-            .topLeft,
-            .top,
-            .topRight,
-            .bottomRight,
-            .bottomLeft
+        rect.points(relativeLocations:
+            (0, 0.2),
+            (0.5, 0),
+            (1, 0.2),
+            (1, 0.5),
+            (1, 1),
+            (0.5, 0.8),
+            (0, 1)
         )
         .corners(style)
     }
@@ -62,11 +64,11 @@ struct CornerExample: View {
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
     @State private var shape: ExampleShape = .custom
-    @State private var style: CornerStyle = .rounded(radius: 25)
+    @State private var style: CornerStyle = .concave(radius: 0)
     @State private var relativeRadius = true
     @State private var relative = 0.2
     @State private var absolute = 25.0
-    @State private var inset = 0.0
+    @State private var inset = -10.0
     @State private var shapeStyle: ShapeStyle = .regular
     
     var adjustedStyle: CornerStyle {

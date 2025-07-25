@@ -50,32 +50,47 @@ public extension Corner.Dimensions {
             return (last.vector - first.vector).magnitude
         }
         
+        let cornerStart: CGPoint
         
-        // Get the start point of the concave curve if there is one
-        let cornerStart = intersections
-            .first {
-                // Get the direction from concave radius center to intersection point
-                // and corner to cut point
-                guard
-                    let direction = ($0.vector - concaveRadiusCenter.vector).direction,
-                    let cornerToCutDirection = (previousPoint.vector - cornerPoint.vector).rotated(-halvedNonReflexAngle * reflexMultiplier).direction
-                else {
-                    // These valus should never be nil but if they are, there's no intersections.
-                    return false
-                }
-                
-                // If the angle between the direction and corner cut direction is less than the halved radius angle then the intersection point should be used as the corner start.
-                // If this isn't true, it means there should be a line from the corner start, in to meet the concave curve start.
-                if reflexMultiplier > 0 {
-                    return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle.complementary
-                } else {
-                    return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle
-                }
-            }
-        
-        if let cornerStart {
-            return (cornerPoint.vector - cornerStart.vector).magnitude
+        // Get the intersection of the concave curve and the previous vector if there is one.
+        if let concaveStart = intersections.first(where: {
+            $0.vector.dotProduct(with: previousPoint.vector) > 0
+        }) {
+            cornerStart = concaveStart
+            
+        } else {
+            cornerStart = cornerPoint
         }
+        
+        
+        
+        
+        
+        
+        
+            
+//                // Get the direction from concave radius center to intersection point
+//                // and corner to cut point
+//                guard
+//                    let direction = ($0.vector - concaveRadiusCenter.vector).direction,
+//                    let cornerToCutDirection = (previousPoint.vector - cornerPoint.vector).rotated(-halvedNonReflexAngle * reflexMultiplier).direction
+//                else {
+//                    // These valus should never be nil but if they are, there's no intersections.
+//                    return false
+//                }
+//                
+//                // If the angle between the direction and corner cut direction is less than the halved radius angle then the intersection point should be used as the corner start.
+//                // If this isn't true, it means there should be a line from the corner start, in to meet the concave curve start.
+//                if reflexMultiplier > 0 {
+//                    return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle.complementary
+//                } else {
+//                    return direction.minRotation(from: cornerToCutDirection).positive <= halvedNonReflexAngle
+//                }
+//            }
+        
+//        if let cornerStart {
+            return (cornerPoint.vector - cornerStart.vector).magnitude
+//        }
         
         // imagine a right angle triangle with the hypotenuse from concave center to cutout point and the right angle intersecting with the line from cutout point to corner start. (it may also be negative
         // Positive values are between cutout and corner, negative valuse are on the other side of cutout.
