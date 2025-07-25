@@ -8,17 +8,25 @@
 import SwiftUI
 
 public struct RelativeCornerShape: CornerShape {
-    public var closed: Bool
+    public var closed: Bool = true
     public var insetAmount: CGFloat = 0
+    
+    /// The array of relative corners that define this shape.
     public var relativeCorners: [RelativeCorner]
     
-    public init(closed: Bool = true, _ relativeCorners: [RelativeCorner]) {
-        self.closed = closed
+    /// Creates a closed relative corner shape from variadic relative corners.
+    ///
+    /// - Note: To create an open corner shape add `.closed(false)`
+    /// - Parameter relativeCorners: An array of relative corners that define the shape.
+    public init(_ relativeCorners: [RelativeCorner]) {
         self.relativeCorners = relativeCorners
     }
     
+    /// Creates a closed relative corner shape from variadic relative corners.
+    ///
+    /// - Note: To create an open corner shape add `.closed(false)`
+    /// - Parameter relativeCorners: The relative corners that define the shape.
     public init(_ relativeCorners: RelativeCorner...) {
-        self.closed = true
         self.relativeCorners = relativeCorners
     }
     
@@ -28,6 +36,9 @@ public struct RelativeCornerShape: CornerShape {
 }
 
 public extension RelativeCornerShape {
+    /// Creates a copy of this shape with the specified closed state.
+    /// - Parameter isClosed: Whether the returned shape should be closed.
+    /// - Returns: A copy of this shape with the specified closed state.
     func closed(_ isClosed: Bool) -> Self {
         if closed == isClosed { return self }
         var copy = self
@@ -35,6 +46,9 @@ public extension RelativeCornerShape {
         return copy
     }
     
+    /// Creates a copy of this shape with the specified corner style applied to all corners.
+    /// - Parameter cornerStyle: The corner style to apply to all corners.
+    /// - Returns: A copy of this shape with the corner style applied.
     func applyingStyle(_ cornerStyle: CornerStyle) -> Self {
         var copy = self
         copy.relativeCorners.applyStyle(cornerStyle)

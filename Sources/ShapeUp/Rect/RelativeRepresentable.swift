@@ -42,7 +42,7 @@ extension Array where Element: RelativeRepresentable {
     }
     
     /// Converts this array of objects to an array of objects relative to the specified frame.
-    /// - Parameter rect: Rectangle used for relative position.
+    /// - Parameter frame: Frame used for relative position.
     /// - Returns: A relative version of this object anchored to the specified frame.
     public func relative(to frame: CGFrame) -> [Element.RelativeValue] {
         map { $0.relative(to: frame) }
