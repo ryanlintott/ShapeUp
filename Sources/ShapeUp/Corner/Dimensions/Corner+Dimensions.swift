@@ -123,7 +123,7 @@ extension Corner {
             
             radiusOffset = Self.radiusOffset(style: corner.style)
             
-            concaveRadius = Self.concaveRadius(absoluteRadius: absoluteRadius, radiusOffset: radiusOffset)
+            concaveRadius = Self.concaveRadius(absoluteRadius: absoluteRadius, radiusOffset: radiusOffset, reflexMultiplier: reflexMultiplier)
             
             cutoutPoint = Self.cutoutPoint(corner: corner, cornerStart: cornerStart, cornerEnd: cornerEnd, nextVector: nextVector, previousVector: previousVector, cutLength: cutLength, absoluteRadius: absoluteRadius, halvedRadiusAngle: halvedRadiusAngle, radiusOffset: radiusOffset, concaveRadius: concaveRadius, reflexMultiplier: reflexMultiplier)
             
@@ -141,7 +141,7 @@ public extension Corner.Dimensions {
     /// - Parameter angle: Corner angle
     /// - Returns: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
     static func reflexMultiplier(angle: Angle) -> CGFloat {
-        angle.type == .reflex ? -1 : 1
+        angle.minPositiveCoterminal > .degrees(180) ? -1 : 1
     }
     
     /// Returns an angle that is half of the non-reflex version of the corner angle.
@@ -265,9 +265,10 @@ public extension Corner.Dimensions {
     /// - Parameters:
     ///   - absoluteRadius: The non-relative radius used to size the corner.
     ///   - radiusOffset: The difference between the radius and the concave radius.
+    ///   - reflexMultiplier: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
     /// - Returns: The radius of the concave cut arc.
-    static func concaveRadius(absoluteRadius: CGFloat, radiusOffset: CGFloat) -> CGFloat {
-        absoluteRadius + radiusOffset
+    static func concaveRadius(absoluteRadius: CGFloat, radiusOffset: CGFloat, reflexMultiplier: CGFloat) -> CGFloat {
+        max(0, absoluteRadius + (radiusOffset * reflexMultiplier))
     }
     
     /// Returns the point where some corner shapes cut in to. Also used to draw concave arcs.
@@ -295,7 +296,7 @@ public extension Corner.Dimensions {
             // mirrored point
             return (cornerStart.vector + (nextVector.normalized * cutLength)).point
         case .concave:
-            if radiusOffset <= 0 {
+            if (radiusOffset <= 0) == (reflexMultiplier > 0) {
                 return (cornerStart.vector + (nextVector.normalized * cutLength)).point
             } else {
                 // Imagine a right angle triangle between the corner start, the concave radius center and the straight cut midpoint.

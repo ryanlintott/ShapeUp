@@ -27,7 +27,8 @@ extension AngleRepresentable {
 }
 
 public extension AngleRepresentable {
-    /// Type of an angle based on its magnitude
+//    /// Type of an angle based on its magnitude
+    @available(*, deprecated, message: "Angle type is no longer in use as it added complexity and was prone to error when trying to equate Double values.")
     var type: AngleType {
         AngleType.type(of: angle)
     }
@@ -86,7 +87,7 @@ public extension AngleRepresentable {
         // Possible values between 0 and 360
         let rotation = (self.angle - angle).minPositiveCoterminal
         // If it's reflex, return the negative expementary version.
-        return rotation.type == .reflex ? -rotation.explementary : rotation
+        return rotation > .degrees(180) ? -rotation.explementary : rotation
     }
 
     func maxRotation(from angle: Angle) -> Angle {

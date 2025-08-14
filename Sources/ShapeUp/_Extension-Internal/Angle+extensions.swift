@@ -16,10 +16,6 @@ internal extension Angle {
     fileprivate var _angle: _Angle {
         _Angle(radians: radians)
     }
-
-    var type: AngleType {
-        _angle.type
-    }
     
     var positive: Angle {
         _angle.positive

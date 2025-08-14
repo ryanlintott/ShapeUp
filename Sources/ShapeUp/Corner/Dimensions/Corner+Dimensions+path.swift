@@ -8,6 +8,10 @@
 import SwiftUI
 
 extension Corner.Dimensions {
+    public func isApproximatelyStraight(tolerance: Double = 0.001) -> Bool {
+        abs(angle.minPositiveCoterminal.degrees - 180) < tolerance
+    }
+    
     /// Either moves or adds a line to a provided point.
     /// - Parameters:
     ///   - path: Path that will be modified.
@@ -23,8 +27,8 @@ extension Corner.Dimensions {
     ///   - path: Path where corner shape is added.
     ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner.
     public func addCornerShape(to path: inout Path, moveToStart: Bool) {
-        guard absoluteRadius > 0 else {
-            // If the radius is negative the corner style doesn't matter.
+        if absoluteRadius <= 0 || isApproximatelyStraight() {
+            // If the radius is negative or the angle is straight, the corner style doesn't matter.
             startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)
             return
         }
