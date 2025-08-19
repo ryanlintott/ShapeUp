@@ -54,7 +54,7 @@ public extension RectAnchorTransformable {
     ///   - anchor: Anchor point for the rotation.
     /// - Returns: The same object, rotated around the provided anchor by the provided angle.
     func rotated(_ angle: Angle, anchor: RectAnchor) -> Self {
-        repositioned(to: anchor.vector.rotated(angle, anchor: anchor.anchor.vector))
+        repositioned(to: self.anchor.vector.rotated(angle, anchor: anchor.anchor.vector))
     }
     
     /// Rotates the position of this object around the origin without modifying other properties.
