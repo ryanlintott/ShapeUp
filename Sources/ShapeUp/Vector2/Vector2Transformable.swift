@@ -91,7 +91,6 @@ public extension Vector2Transformable {
         case let (.some(previousPoint), nil):
             // Find the vector from the previous point to this one and then inset to the right.
             insetVector = (self.vector - previousPoint.vector).normalized.rotated(.degrees(90)) * amount
-            return ((self.vector - previousPoint.vector).normalized.rotated(.degrees(90)) * amount).point
         case let (.some(previousPoint), .some(nextPoint)):
             // Positive clockwise angle of this corner.
             let angle = Angle.threePoint(nextPoint, self, previousPoint)
