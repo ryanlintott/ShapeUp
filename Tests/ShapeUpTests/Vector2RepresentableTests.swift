@@ -66,7 +66,7 @@ class Vector2RepresentableTests: XCTestCase {
     func testCGPointCornerMatchesCorner() throws {
         Self.testVectors.points.forEach { point in
             // given
-            let cornerStyle = CornerStyle.rounded(5)
+            let cornerStyle = CornerStyle.rounded(radius: 5)
             let corner = Corner(cornerStyle, x: point.x, y: point.y)
             
             // then

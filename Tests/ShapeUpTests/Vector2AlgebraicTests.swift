@@ -128,7 +128,9 @@ class Vector2AlgebraicTests: XCTestCase {
             (Vector2(dx: 2, dy: 0), .degrees(0)),
             (Vector2(dx: 2, dy: 2), .degrees(45)),
             (Vector2(dx: 0, dy: 2), .degrees(90)),
+            (Vector2(dx: -2, dy: 2), .degrees(135)),
             (Vector2(dx: -2, dy: 0), .degrees(180)),
+            (Vector2(dx: -2, dy: -2), .degrees(225)),
             (Vector2(dx: 0, dy: -2), .degrees(270)),
             (Vector2(dx: 2, dy: -2), .degrees(315))
         ]
