@@ -23,7 +23,7 @@ internal enum GeoMath {
         
         let det = b * b - 4 * a * c
         var detRoot = [CGFloat]()
-        if a <= 0.000001 || det < 0 {
+        if a <= 1e-12 || det < 0 {
             // No real solutions
             return []
         } else if det == 0 {

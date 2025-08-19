@@ -190,6 +190,7 @@ extension Corner {
                 concaveRadius: concaveRadius,
                 concaveRadiusCenter: concaveRadiusCenter,
                 concaveInset: concaveInset,
+                reflexMultiplier: reflexMultiplier
             )
             
             concaveEnd = Self.concaveEnd(

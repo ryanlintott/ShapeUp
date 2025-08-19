@@ -65,12 +65,13 @@ public extension Corner.Dimensions {
         concaveRadius: CGFloat,
         concaveRadiusCenter: CGPoint,
         concaveInset: CGFloat,
+        reflexMultiplier: CGFloat
     ) -> CGPoint? {
         // Both concave radius and absolute radius must be greater than zero otherwise there will be no concave starting point.
         guard concaveRadius > 0, absoluteRadius > 0 else { return nil }
         
         // If there's no inset, the corner start is the concave start
-        guard concaveInset > 0 else { return cornerStart }
+        guard concaveInset * reflexMultiplier > 0 else { return cornerStart }
         
         if concaveRadius > absoluteRadius {
             // Get the intersection points of the concave circle and the line from previous point to corner point.
