@@ -26,7 +26,7 @@ extension RelativeRepresentable {
     }
     
     /// Converts this object to one that is relative to the specified frame.
-    /// - Parameter rect: Rectangle used for relative position.
+    /// - Parameter frame: Frame used for relative position.
     /// - Returns: A relative version of this object anchored to the specified frame.
     public func relative(to frame: CGFrame) -> RelativeValue {
         repositioned(to: frame[vector.point])

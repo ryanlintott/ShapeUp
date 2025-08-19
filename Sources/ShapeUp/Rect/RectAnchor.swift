@@ -79,7 +79,7 @@ extension RectAnchor {
     }
     
     /// Creates a point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
-    /// - Parameter cornerDimensions: Dimensions of a corner that are used to define a rhombus with U and V coordinates on which the relative x and y coordinates of this anchor will be mapped.
+    /// - Parameter frame: Frame in the shape of a rhombus with U and V coordinates on which the relative x and y coordinates of this anchor will be mapped.
     /// - Returns: A point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
     public func point(in frame: CGFrame) -> CGPoint {
         frame[self]

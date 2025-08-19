@@ -78,7 +78,6 @@ public extension CGRect {
     }
     
     /// Creates an array of points in the locations of the supplied anchors.
-    /// - Parameter firstAnchor: Anchors defining point locations in order.
     /// - Returns: An array of points in the location and order of the supplied anchors.
     func points(_ anchors: RectAnchor...) -> [CGPoint] {
         points(anchors)
@@ -96,7 +95,7 @@ public extension CGRect {
     /// Creates an array of points at the relative coordinates in the rectangle.
     ///
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
-    /// - Parameter relativeCoordinates: An array of tuples with relative x and y coordinates respectively.
+    /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
     func points(relativeLocations: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
         points(relativeLocations: relativeLocations)

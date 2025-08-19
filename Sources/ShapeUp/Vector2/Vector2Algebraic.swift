@@ -193,15 +193,33 @@ public extension Vector2Algebraic {
         (vector.dx * b.vector.dx) + (vector.dy * b.vector.dy)
     }
     
+    /// Calculates the scalar projection of this vector onto another vector.
+    ///
+    /// The scalar projection represents the length of the shadow cast by this vector onto the other vector.
+    /// It can be positive (same general direction) or negative (opposite general direction).
+    /// - Parameter b: The vector to project onto.
+    /// - Returns: The scalar projection value.
     func scalarProjection(onto b: some Vector2Representable) -> CGFloat {
         dotProduct(with: b) / b.vector.magnitude
     }
     
+    /// Calculates the parallel component of this vector relative to another vector.
+    ///
+    /// This returns the vector component that lies in the same direction as the reference vector.
+    /// The result is a vector that, when added to the perpendicular component, equals the original vector.
+    /// - Parameter b: The reference vector to find the parallel component relative to.
+    /// - Returns: The parallel component as a vector.
     func parallelComponent(to b: some Vector2Representable) -> Self {
         .init(vector: b.vector.normalized.scaled(by: vector.scalarProjection(onto: b)))
     }
     
+    /// Calculates the perpendicular component of this vector relative to another vector.
+    ///
+    /// This returns the vector component that is orthogonal (perpendicular) to the reference vector.
+    /// The result is a vector that, when added to the parallel component, equals the original vector.
+    /// - Parameter b: The reference vector to find the perpendicular component relative to.
+    /// - Returns: The perpendicular component as a vector.
     func perpendicularComponent(to b: some Vector2Representable) -> Self {
-        parallelComponent(to: b) - vector
+        self - parallelComponent(to: b)
     }
 }

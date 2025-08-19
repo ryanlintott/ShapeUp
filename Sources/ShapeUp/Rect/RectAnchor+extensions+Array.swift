@@ -26,7 +26,7 @@ public extension Array where Element == RectAnchor {
     
     /// Returns an array of relative corners matching the positions of the anchors with an applied corner style.
     ///
-    /// - Parameter style: Style applied to all corners. Default is nil which renders as ``CornerStyle.point``.
+    /// - Parameter style: Style applied to all corners. Default is nil which renders as `CornerStyle.point`.
     /// - Returns: An array of relative corners matching the positions of the anchors with an applied corner style.
     func relativeCorners(_ style: CornerStyle? = nil) -> [RelativeCorner] {
         map { $0.relativeCorner(style) }

@@ -69,7 +69,7 @@ public extension Vector2Transformable {
         
         let pointToMirrorStart = self.vector - mirrorLineStart.vector
         let mirrorEndToMirrorStart = mirrorLineEnd.vector - mirrorLineStart.vector
-        let pointToMirrorPoint = pointToMirrorStart.perpendicularComponent(to: mirrorEndToMirrorStart) * 2
+        let pointToMirrorPoint = pointToMirrorStart.perpendicularComponent(to: mirrorEndToMirrorStart) * -2
         return moved(pointToMirrorPoint)
     }
     

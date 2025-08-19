@@ -21,7 +21,7 @@ public extension Rectangle {
     /// Creates a CornerRectangle applying the provided style to the specified corner.
     /// - Parameters:
     ///   - style: Style to apply to specified shape corners.
-    ///   - shapeCorners: Shape corner on which to apply the specified style. Missing values will keep current style.
+    ///   - shapeCorner: Shape corner on which to apply the specified style. Missing values will keep current style.
     /// - Returns: A copy of this shape changing the style of specified corners to the provided style.
     func applyingStyle(_ style: CornerStyle, to shapeCorner: CornerRectangle.ShapeCorner) -> CornerRectangle {
         CornerRectangle()

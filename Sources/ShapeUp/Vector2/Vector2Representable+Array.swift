@@ -41,7 +41,7 @@ public extension Array where Element: Vector2Representable {
     /// Returns an array of corners matching the positions of the points with an applied corner style.
     ///
     /// If the style is nil and the array contains ``Corner`` the existing style will remain.
-    /// - Parameter style: Style applied to all corners. Default is nil which renders as ``CornerStyle.point``.
+    /// - Parameter style: Style applied to all corners. Default is nil which renders as `CornerStyle.point`.
     /// - Returns: An array of corners matching the positions of the points with an applied corner style.
     func corners(_ style: CornerStyle? = nil) -> [Corner] {
         map { $0.corner(style) }

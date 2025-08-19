@@ -48,7 +48,7 @@ public extension Array where Element: CornerStyled {
     }
     
     /// Applies new styles to this array of corners.
-    /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
     mutating func applyStyles(_ newStyles: [CornerStyle?]) {
         self = self.applyingStyles(newStyles)
     }
