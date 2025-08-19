@@ -22,8 +22,8 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     /// With zero radius offset, this corner style looks like a rounded corner flipped, but with the same start and end points. The radius offset is used to compensate for shape insetting. By default the center point of the circle describing the radius can be found by flipping the center point of the rounded corner circle across the line described by the arc endpoints. When a shape is inset, this point needs to remain in the same location leading to a non-zero radius offset.
     ///  - Parameters:
     ///   - radius: Radius of the circle used to cutout this corner. Relative values relate to the shortest of the two lines from this corner.
-    ///   - radiusOffset: Added to radius to create concave curve radius. Default is zero.
-    case concave(radius: RelatableValue, radiusOffset: CGFloat = 0)
+    ///   - concaveInset: Inset for the concave radius. Default is 0. This value changes when insetting the corner.
+    case concave(radius: RelatableValue, concaveInset: CGFloat = 0)
     
     /// A straight chamfer corner style with a specified radius. Additional corner styles can be used on the two resulting corners of the chamfer.
     ///  - Parameters:
@@ -93,13 +93,13 @@ public extension CornerStyle {
     }
     
     /// Radius offset of the corner
-    internal(set) var radiusOffset: CGFloat {
+    internal(set) var concaveInset: CGFloat {
         get {
             switch self {
             case .point, .rounded, .straight, .cutout, .custom:
                 .zero
-            case let .concave(_, radiusOffset):
-                radiusOffset
+            case let .concave(_, concaveInset):
+                concaveInset
             }
         }
         set {
@@ -107,7 +107,7 @@ public extension CornerStyle {
             case .point, .rounded, .straight, .cutout, .custom:
                 break
             case .concave:
-                self = .concave(radius: radius, radiusOffset: newValue)
+                self = .concave(radius: radius, concaveInset: newValue)
             }
         }
     }
@@ -178,8 +178,8 @@ public extension CornerStyle {
             self
         case .rounded:
                 .rounded(radius: radius)
-        case let .concave(_, radiusOffset):
-                .concave(radius: radius, radiusOffset: radiusOffset)
+        case let .concave(_, concaveInset):
+                .concave(radius: radius, concaveInset: concaveInset)
         case let .straight(_, cornerStyles):
                 .straight(radius: radius, cornerStyles: cornerStyles)
         case let .cutout(_, cornerStyles):

@@ -8,8 +8,8 @@
 import SwiftUI
 
 extension Corner.Dimensions {
-    public func isApproximatelyStraight(tolerance: Double = 0.001) -> Bool {
-        abs(angle.minPositiveCoterminal.degrees - 180) < tolerance
+    public func isApproximatelyStraight(tolerance: Double = 1e-12) -> Bool {
+        180 - angle.nonReflexCoterminal.positive.degrees < tolerance
     }
     
     /// Either moves or adds a line to a provided point.
@@ -17,8 +17,7 @@ extension Corner.Dimensions {
     ///   - path: Path that will be modified.
     ///   - point: Point that will either be moved to or have a line added towards.
     ///   - moveToStart: A boolean value determining if the point should be moved to. If this value is false a line will be added from wherever the path currrently is to the point.
-    internal func startCornerShape(on path: inout Path, at point: CGPoint? = nil, moveToStart: Bool) {
-        let point = point ?? cornerStart
+    internal func startCornerShape(on path: inout Path, at point: CGPoint, moveToStart: Bool) {
         moveToStart ? path.move(to: point) : path.addLine(to: point)
     }
     
@@ -38,11 +37,11 @@ extension Corner.Dimensions {
             // Custom corners with no subcorners should draw as points.
         case .point:
             // Start drawing this corner shape
-            startCornerShape(on: &path, moveToStart: moveToStart)
+            startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)
             
         case .rounded:
             // Start drawing this corner shape
-            startCornerShape(on: &path, moveToStart: moveToStart)
+            startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
             // Draw a rounded arc from the cornerStart to cornerEnd
             path.addArc(
                 tangent1End: corner.point,
@@ -51,39 +50,49 @@ extension Corner.Dimensions {
             )
             
         case .concave:
-            // Start drawing this corner shape
-            startCornerShape(on: &path, moveToStart: moveToStart)
-            // If one value is nil, both are nil
-            if let concaveStart, let concaveEnd {
-                if (concaveStart.vector - cornerStart.vector).magnitude < abs(cutLength) {
-                    // Draw a line to concave start
-                    path.addLine(to: concaveStart)
-                    // Draw a concave arc from the concave start to concave end
-                    path.addArc(
-                        tangent1End: cutoutPoint,
-                        tangent2End: concaveEnd,
-                        radius: concaveRadius
-                    )
-                } else {
-                    // Just draw a line to the cutout point
-                    path.addLine(to: cutoutPoint)
-                }
-                // Draw a line to corner end.
-                path.addLine(to: cornerEnd)
-            } else {
-                // Draw a concave arc from the cornerStart to cornerEnd
-                path.addArc(
-                    tangent1End: cutoutPoint,
-                    tangent2End: cornerEnd,
-                    radius: concaveRadius
-                )
+            
+            guard absoluteRadius > 1e-12 else {
+                startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
+                return
             }
             
+            if concaveRadius > absoluteRadius {
+                guard let concaveStart, let concaveEnd else {
+                    // Sometimes the inset sides of a corner shrink the concave curve to nothing. In that case, draw a point.
+                    startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)
+                    return
+                }
+                
+                startCornerShape(on: &path, at: concaveStart, moveToStart: moveToStart)
+                path.addArc(
+                    center: concaveRadiusCenter,
+                    radius: concaveRadius,
+                    startAngle: (concaveStart.vector - concaveRadiusCenter.vector).direction ?? .zero,
+                    endAngle: (concaveEnd.vector - concaveRadiusCenter.vector).direction ?? .zero,
+                    clockwise: reflexMultiplier > 0
+                )
+                path.addLine(to: concaveEnd)
+                
+            } else {
+                guard let concaveStart, let concaveEnd else {
+                    // If an inset corner with a small radius has no concave start or end then it's likely the radius is zero and it should draw as a cutout point.
+                    startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
+                    path.addLine(to: cutoutPoint)
+                    path.addLine(to: cornerEnd)
+                    return
+                }
+                
+                startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
+                path.addLine(to: concaveStart)
+                path.addArc(tangent1End: cutoutPoint, tangent2End: concaveEnd, radius: concaveRadius)
+                path.addLine(to: concaveEnd)
+                path.addLine(to: cornerEnd)
+            }
         case let .straight(_, cornerStyles):
             if cornerStyles == [] || cornerStyles.allSatisfy({ $0 == .point }) {
                 // If all corner styles are simple points:
                 // Start drawing this corner shape
-                startCornerShape(on: &path, moveToStart: moveToStart)
+                startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
                 // Draw a line to the corner end point.
                 path.addLine(to: cornerEnd)
             } else {
@@ -97,7 +106,7 @@ extension Corner.Dimensions {
             if cornerStyles == [] || cornerStyles.allSatisfy({ $0 == .point }) {
                 // If all corner styles are simple points:
                 // Start drawing this corner shape
-                startCornerShape(on: &path, moveToStart: moveToStart)
+                startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
                 // Draw a line to the corner cut point.
                 path.addLine(to: cutoutPoint)
                 // Draw a line to the corner end point.

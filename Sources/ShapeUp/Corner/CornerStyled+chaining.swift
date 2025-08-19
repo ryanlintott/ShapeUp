@@ -20,10 +20,10 @@ public extension CornerStyled {
     /// Applies a concave corner style to this corner.
     /// - Parameters:
     ///   - radius: Radius of the concave corner.
-    ///   - radiusOffset: Offset for the radius. Default is 0.
+    ///   - concaveInset: Inset for the concave radius. Default is 0. This value changes when insetting the corner.
     /// - Returns: A corner with a concave style applied.
-    func concave(radius: RelatableValue, radiusOffset: CGFloat = 0) -> Self {
-        applyingStyle(.concave(radius: radius, radiusOffset: radiusOffset))
+    func concave(radius: RelatableValue, concaveInset: CGFloat = 0) -> Self {
+        applyingStyle(.concave(radius: radius, concaveInset: concaveInset))
     }
     
     /// Applies a straight chamfer corner style to this corner.

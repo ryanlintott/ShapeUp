@@ -192,4 +192,16 @@ public extension Vector2Algebraic {
     func dotProduct(with b: some Vector2Representable) -> CGFloat {
         (vector.dx * b.vector.dx) + (vector.dy * b.vector.dy)
     }
+    
+    func scalarProjection(onto b: some Vector2Representable) -> CGFloat {
+        dotProduct(with: b) / b.vector.magnitude
+    }
+    
+    func parallelComponent(to b: some Vector2Representable) -> Self {
+        .init(vector: b.vector.normalized.scaled(by: vector.scalarProjection(onto: b)))
+    }
+    
+    func perpendicularComponent(to b: some Vector2Representable) -> Self {
+        parallelComponent(to: b) - vector
+    }
 }

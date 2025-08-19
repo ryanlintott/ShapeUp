@@ -32,12 +32,12 @@ extension CornerStyle: NestedAnimatable {
         get {
             .init(
                 radius,
-                radiusOffset
+                concaveInset
             )
         }
         set {
             radius = newValue.first
-            radiusOffset = newValue.second
+            concaveInset = newValue.second
         }
     }
     
@@ -57,14 +57,14 @@ extension CornerStyle: NestedAnimatable {
             .init(
                 radius,
                 .init(
-                    radiusOffset,
+                    concaveInset,
                     relativeCorners.nestedAnimatableData
                 )
             )
         }
         set {
             radius = newValue.first
-            radiusOffset = newValue.second.first
+            concaveInset = newValue.second.first
             relativeCorners.nestedAnimatableData = newValue.second.second
         }
     }

@@ -36,11 +36,14 @@ public extension Vector2Transformable {
     /// - Parameter anchor: Anchor point for the rotation.
     /// - Returns: The same object, rotated around the provided anchor by the provided angle.
     func rotated(_ angle: Angle, anchor: some Vector2Representable) -> Self {
+        let theta = angle.minPositiveCoterminal.radians
+        if theta < 1e-12 { return self }
+        
         // Get relative position
         let p = self.vector - anchor.vector
-        // Get sin and cos of angle
-        let s = CGFloat(sin(angle.radians))
-        let c = CGFloat(cos(angle.radians))
+        // Get sin and cos of negative theta for positive clockwise rotations
+        let s = CGFloat(sin(theta))
+        let c = CGFloat(cos(theta))
         // Rotate the point about zero
         let pRotated = Vector2(dx: p.dx * c - p.dy * s, dy: p.dx * s + p.dy * c)
         // Move point back to anchor and return the object repositioned to the point.
@@ -62,12 +65,12 @@ public extension Vector2Transformable {
     /// - Returns: The same object, flipped across the provided mirror line.
     func flipped(mirrorLineStart: some Vector2Representable, mirrorLineEnd: some Vector2Representable) -> Self {
         // If the mirror line is just a point, don't make any changes.
-        if mirrorLineStart.vector == mirrorLineEnd.vector { return self }
+        guard (mirrorLineStart.vector - mirrorLineEnd.vector).magnitudeSquared > 1e-12 else { return self }
         
-        let vector = self.vector
-        let vectorToPoint = vector - mirrorLineStart.vector
-        let angle = Angle.threePoint(mirrorLineEnd, mirrorLineStart, self) * 2
-        return repositioned(to: vector - vectorToPoint + vectorToPoint.rotated(-angle))
+        let pointToMirrorStart = self.vector - mirrorLineStart.vector
+        let mirrorEndToMirrorStart = mirrorLineEnd.vector - mirrorLineStart.vector
+        let pointToMirrorPoint = pointToMirrorStart.perpendicularComponent(to: mirrorEndToMirrorStart) * 2
+        return moved(pointToMirrorPoint)
     }
     
     /// Inset position of this object defined by straight lines between the position of the previous object, this object, and the next object.

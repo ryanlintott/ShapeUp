@@ -88,6 +88,7 @@ struct CornerExampleShapeView: View {
     
     var body: some View {
         ZStack {
+            #if swift(>=6.2)
             if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *),
                shapeStyle != .regular {
                 ZStack {
@@ -107,6 +108,10 @@ struct CornerExampleShapeView: View {
                 solidShape
                     .padding()
             }
+            #else
+            solidShape
+                .padding()
+            #endif
         }
         .accentColor(.suPink)
     }

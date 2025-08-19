@@ -60,8 +60,8 @@ extension Corner {
         /// Center point of the radius used to cut the corner.
         public let radiusCenter: CGPoint
         
-        /// Difference between the corner radius (used to determine the cut length) and the concave radius (used to draw a concave cut arc). Zero is default.
-        public let radiusOffset: CGFloat
+        /// The inset value for a concave corner. This is required for drawing inset concave corners and is not used for other corner types.
+        public let concaveInset: CGFloat
         
         /// The radius of the concave cut arc.
         public let concaveRadius: CGFloat
@@ -103,35 +103,100 @@ extension Corner {
             
             halvedRadiusAngle = Self.halvedRadiusAngle(halvedNonReflexAngle: halvedNonReflexAngle)
             
-            previousVector = Self.previousVector(previousPoint: self.previousPoint, cornerPoint: corner.point)
+            previousVector = Self.previousVector(
+                previousPoint: self.previousPoint,
+                cornerPoint: corner.point
+            )
             
-            nextVector = Self.nextVector(nextPoint: self.nextPoint, cornerPoint: corner.point)
+            nextVector = Self.nextVector(
+                nextPoint: self.nextPoint,
+                cornerPoint: corner.point
+            )
             
-            maxCutLength = Self.maxCutLength(previousVector: previousVector, nextVector: nextVector)
+            maxCutLength = Self.maxCutLength(
+                previousVector: previousVector,
+                nextVector: nextVector
+            )
             
-            maxRadius = Self.maxRadius(maxCutLength: maxCutLength, halvedRadiusAngle: halvedRadiusAngle)
+            maxRadius = Self.maxRadius(
+                maxCutLength: maxCutLength,
+                halvedRadiusAngle: halvedRadiusAngle
+            )
             
-            absoluteRadius = Self.absoluteRadius(radius: corner.radius, maxRadius: maxRadius)
+            absoluteRadius = Self.absoluteRadius(
+                radius: corner.radius,
+                maxRadius: maxRadius
+            )
             
-            cutLength = Self.cutLength(absoluteRadius: absoluteRadius, halvedNonReflexAngle: halvedNonReflexAngle)
+            cutLength = Self.cutLength(
+                absoluteRadius: absoluteRadius,
+                halvedNonReflexAngle: halvedNonReflexAngle
+            )
             
-            cornerStart = Self.cornerStart(cornerPoint: corner.point, previousVector: previousVector, cutLength: cutLength)
+            cornerStart = Self.cornerStart(
+                cornerPoint: corner.point,
+                previousVector: previousVector,
+                cutLength: cutLength
+            )
             
-            cornerEnd = Self.cornerEnd(cornerPoint: corner.point, nextVector: nextVector, cutLength: cutLength)
+            cornerEnd = Self.cornerEnd(
+                cornerPoint: corner.point,
+                nextVector: nextVector,
+                cutLength: cutLength
+            )
             
-            radiusCenter = Self.radiusCenter(cornerStart: cornerStart, absoluteRadius: absoluteRadius, previousVector: previousVector, reflexMultiplier: reflexMultiplier)
+            cutoutPoint = Self.cutoutPoint(
+                corner: corner,
+                cornerStart: cornerStart,
+                cornerEnd: cornerEnd,
+                nextVector: nextVector,
+                cutLength: cutLength,
+            )
             
-            radiusOffset = Self.radiusOffset(style: corner.style)
+            radiusCenter = Self.radiusCenter(
+                cornerStart: cornerStart,
+                absoluteRadius: absoluteRadius,
+                previousVector: previousVector,
+                reflexMultiplier: reflexMultiplier
+            )
             
-            concaveRadius = Self.concaveRadius(absoluteRadius: absoluteRadius, radiusOffset: radiusOffset, reflexMultiplier: reflexMultiplier)
+            /// Only used for concave corners
+            concaveInset = Self.concaveInset(style: corner.style)
             
-            cutoutPoint = Self.cutoutPoint(corner: corner, cornerStart: cornerStart, cornerEnd: cornerEnd, nextVector: nextVector, previousVector: previousVector, cutLength: cutLength, absoluteRadius: absoluteRadius, halvedRadiusAngle: halvedRadiusAngle, radiusOffset: radiusOffset, concaveRadius: concaveRadius, reflexMultiplier: reflexMultiplier)
+            concaveRadius = Self.concaveRadius(
+                absoluteRadius: absoluteRadius,
+                concaveInset: concaveInset,
+                reflexMultiplier: reflexMultiplier
+            )
             
-            concaveStart = Self.concaveStart(absoluteRadius: absoluteRadius, concaveRadius: concaveRadius, cornerStart: cornerStart, cutLength: cutLength, nextVector: nextVector, halvedNonReflexAngle: halvedNonReflexAngle, reflexMultiplier: reflexMultiplier)
+            concaveRadiusCenter = Self.concaveRadiusCenter(
+                cornerPoint: corner.point,
+                previousPoint: previousPoint.point,
+                nextPoint: nextPoint.point,
+                absoluteRadius: absoluteRadius,
+                concaveInset: concaveInset,
+                cornerStart: cornerStart,
+                cornerEnd: cornerEnd,
+                radiusCenter: radiusCenter
+            )
             
-            concaveEnd = Self.concaveEnd(concaveStart: concaveStart, cornerPoint: corner.point, radiusCenter: radiusCenter)
+            concaveStart = Self.concaveStart(
+                cornerPoint: corner.point,
+                previousPoint: previousPoint.point,
+                absoluteRadius: absoluteRadius,
+                cornerStart: cornerStart,
+                cutLength: cutLength,
+                nextVector: nextVector,
+                concaveRadius: concaveRadius,
+                concaveRadiusCenter: concaveRadiusCenter,
+                concaveInset: concaveInset,
+            )
             
-            concaveRadiusCenter = Self.concaveRadiusCenter(concaveStart: concaveStart ?? cornerStart, cutoutPoint: cutoutPoint, concaveRadius: concaveRadius, reflexMultiplier: reflexMultiplier)
+            concaveEnd = Self.concaveEnd(
+                concaveStart: concaveStart,
+                cornerPoint: corner.point,
+                radiusCenter: radiusCenter
+            )
         }
     }
 }
@@ -249,113 +314,31 @@ public extension Corner.Dimensions {
         (cornerStart.vector + (previousVector.normalized.rotated(.degrees(-90 * reflexMultiplier)) * absoluteRadius)).point
     }
     
-    /// Difference between the corner radius (used to determine the cut length) and the concave radius (used to draw a concave cut arc). Zero is default.
-    /// - Parameter style: Corner style.
-    /// - Returns: Difference between the corner radius (used to determine the cut length) and the concave radius (used to draw a concave cut arc). Zero is default.
-    static func radiusOffset(style: CornerStyle) -> CGFloat {
-        switch style {
-        case let .concave(_, radiusOffset):
-            return radiusOffset
-        default:
-            return .zero
-        }
-    }
-    
-    /// Returns the radius of the concave cut arc.
-    /// - Parameters:
-    ///   - absoluteRadius: The non-relative radius used to size the corner.
-    ///   - radiusOffset: The difference between the radius and the concave radius.
-    ///   - reflexMultiplier: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
-    /// - Returns: The radius of the concave cut arc.
-    static func concaveRadius(absoluteRadius: CGFloat, radiusOffset: CGFloat, reflexMultiplier: CGFloat) -> CGFloat {
-        max(0, absoluteRadius + (radiusOffset * reflexMultiplier))
-    }
-    
-    /// Returns the point where some corner shapes cut in to. Also used to draw concave arcs.
+    /// Returns the point where some corner shapes cut in to.
     /// - Parameters:
     ///   - corner: Corner including style and point.
     ///   - cornerStart: The point where the corner shape starts.
     ///   - cornerEnd: The point where the corner shape ends.
     ///   - nextVector: Vector from the corner to the next point.
-    ///   - previousVector: Vector from the corner to the previous point.
     ///   - cutLength: Length from corner to corner start (or corner to corner end)
-    ///   - absoluteRadius: Non-relative radius used to size the corner.
-    ///   - halvedRadiusAngle: Half of the angle from corner start to corner end with the anchor at radius center
-    ///   - radiusOffset: Difference between the corner radius (used to determine the cut length) and the concave radius (used to draw a concave cut arc).
-    ///   - concaveRadius: The radius of the concave cut arc.
-    ///   - reflexMultiplier: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
     /// - Returns: The point where some corner shapes cut in to. Also used to draw concave arcs.
-    static func cutoutPoint(corner: Corner, cornerStart: CGPoint, cornerEnd: CGPoint, nextVector: Vector2, previousVector: Vector2, cutLength: CGFloat, absoluteRadius: CGFloat, halvedRadiusAngle: Angle, radiusOffset: CGFloat, concaveRadius: CGFloat, reflexMultiplier: CGFloat) -> CGPoint {
+    static func cutoutPoint(
+        corner: Corner,
+        cornerStart: CGPoint,
+        cornerEnd: CGPoint,
+        nextVector: Vector2,
+        cutLength: CGFloat
+    ) -> CGPoint {
         let halfStraightVector = (cornerEnd.vector - cornerStart.vector) / 2
         switch corner.style {
         case .point, .rounded, .custom:
             return corner.point
         case .straight:
-            return (cornerStart.vector + halfStraightVector).point
-        case .cutout:
+            return cornerStart.moved(halfStraightVector)
+        case .cutout, .concave:
             // mirrored point
-            return (cornerStart.vector + (nextVector.normalized * cutLength)).point
-        case .concave:
-            if (radiusOffset <= 0) == (reflexMultiplier > 0) {
-                return (cornerStart.vector + (nextVector.normalized * cutLength)).point
-            } else {
-                // Imagine a right angle triangle between the corner start, the concave radius center and the straight cut midpoint.
-                let halfStraightLength = halfStraightVector.magnitude
-                let concaveRadiusCenterToStraightMiddle = sqrt(pow(concaveRadius, 2) - pow(halfStraightLength, 2))
-                
-                // This is a similar triangle (same angles) to one between the corner cut, the corner start, and the straight cut middle.
-                let straightMiddleToCutoutLength = pow(halfStraightLength, 2) / concaveRadiusCenterToStraightMiddle
-                
-                let cornerToHalfStraight = (cornerStart.vector + halfStraightVector) - corner.vector
-                let cornerToCutout = cornerToHalfStraight + (cornerToHalfStraight.normalized * straightMiddleToCutoutLength)
-                return (corner.vector + cornerToCutout).point
-            }
+            return cornerStart.moved(nextVector.normalized * cutLength)
         }
-    }
-    
-    /// Returns the point where the concave arc starts when the corner start does not intersect the concave radius. Nil value if not used or same as the corner start.
-    /// - Parameters:
-    ///   - absoluteRadius: Non-relative radius used to size the corner.
-    ///   - concaveRadius: The radius of the concave cut arc.
-    ///   - cornerStart: The point where the corner shape starts.
-    ///   - cutLength: Length from corner to corner start (or corner to corner end)
-    ///   - nextVector: Vector from the corner to the next point.
-    ///   - halvedNonReflexAngle: Half of the angle from corner start to corner end with the anchor at radius center
-    ///   - reflexMultiplier: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
-    /// - Returns: The point where the concave arc starts when the corner start does not intersect the concave radius. Nil value if not used or same as the corner start.
-    static func concaveStart(absoluteRadius: CGFloat, concaveRadius: CGFloat, cornerStart: CGPoint, cutLength: CGFloat, nextVector: Vector2, halvedNonReflexAngle: Angle, reflexMultiplier: CGFloat) -> CGPoint? {
-        
-        guard absoluteRadius > concaveRadius else { return nil }
-        // Imagine a right angle triangle with a hypotenuse from the concave center to cutout center and the right angle at concave start.
-        let concaveStartToCutout = concaveRadius / abs(tan(halvedNonReflexAngle.radians))
-        let cornerStartToConcaveStart = cutLength - concaveStartToCutout
-        let cornerStartToConcaveStartVector = nextVector.normalized * cornerStartToConcaveStart
-        
-        return (cornerStart.vector + cornerStartToConcaveStartVector).point
-    }
-    
-    /// Returns the point where the concave arc ends when the corner end does not intersect the concave radius. Nil value if not used or same as the corner end.
-    /// - Parameters:
-    ///   - concaveStart: The point where the concave arc starts when the corner start does not intersect the concave radius. Nil value if not used or same as the corner start.
-    ///   - cornerPoint: Corner point.
-    ///   - radiusCenter: Center point of the radius used to cut the corner.
-    /// - Returns: The point where the concave arc ends when the corner end does not intersect the concave radius. Nil value if not used or same as the corner end.
-    static func concaveEnd(concaveStart: CGPoint?, cornerPoint: CGPoint, radiusCenter: CGPoint) -> CGPoint? {
-        concaveStart?.flipped(mirrorLineStart: cornerPoint, mirrorLineEnd: radiusCenter)
-    }
-    
-    /// Returns the center point of circle that forms a concave cut. This will be the corner point for non-concave corners.
-    /// - Parameters:
-    ///   - concaveStart: The point where the concave arc starts when the corner start does not intersect the concave radius. Nil value if not used or same as the corner start.
-    ///   - cutoutPoint: The point where some corner shapes cut in to. Also used to draw concave arcs
-    ///   - concaveRadius: The radius of the concave cut arc.
-    ///   - reflexMultiplier: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
-    /// - Returns: Center point of circle that forms a concave cut. This will be the corner point for non-concave corners.
-    static func concaveRadiusCenter(concaveStart: CGPoint, cutoutPoint: CGPoint, concaveRadius: CGFloat, reflexMultiplier: CGFloat) -> CGPoint {
-        let negativeRadiusMultiplier = concaveRadius > 0 ? 1.0 : -1.0
-        let concaveStartToRadiusCenter =
-        (concaveStart.vector - cutoutPoint.vector).normalized.rotated(.degrees(90)) * concaveRadius * reflexMultiplier * negativeRadiusMultiplier
-        return (concaveStart.vector + concaveStartToRadiusCenter).point
     }
 }
 

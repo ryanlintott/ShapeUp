@@ -14,13 +14,16 @@ struct ShapeUpLogo: View {
             GeometryReader { proxy in
                 // Pink Logo
                 
-                
-                RelativeCornerShape(
-                    .topLeft.straight(radius: .relative(0.27)),
-                    .relative(x: 0.925, y: 0.04).cutout(radius: .relative(0.4)),
-                    .relative(x: 0.925, y: 0.3).rounded(radius: .relative(0.4)),
-                    .relative(x: 0.005, y: 0.92).concave(radius: .relative(0.23))
-                )
+//                RelativeCornerShape([
+//                    .topLeft.straight(radius: .relative(0.27)),
+//                    .relative(x: 0.925, y: 0.04).cutout(radius: .relative(0.4)),
+//                    .relative(x: 0.925, y: 0.3).rounded(radius: .relative(0.4)),
+//                    .relative(x: 0.005, y: 0.92).concave(radius: .relative(0.23))
+//                    ]
+//                    .rotated(.degrees(9))
+//                    .moved(dx: 0.06, dy: 0.02)
+//                )
+//                .fill(Color.green)
                 
                 CornerCustom { rect in
                     [

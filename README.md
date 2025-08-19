@@ -159,8 +159,8 @@ A simple point corner with no properties.
 <img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue)`
 A rounded corner with a radius.
 
-<img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, radiusOffset: CGFloat)`
-A concave corner where the radius determines the start and end points of the cut and the radius offset is the difference between the concave radius and the radius. The radiusOffset is mainly used when insetting a concave corner and is often left with the default value of zero.
+<img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, concaveInset: CGFloat)`
+A concave corner where the radius determines the start and end points of the cut. The concave inset value is used to store the corner inset value as this is needed to properly draw inset variations.
 
 <img width="50" alt="Pink triangle with a straight cut corner" src="https://user-images.githubusercontent.com/2143656/157762299-437bcec4-2fc8-475b-bbbb-ed810d86ca7f.svg"> `.straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
 A straight chamfer corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the two resulting corners of the chamfer. (You can continue nesting recursively.)
