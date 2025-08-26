@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  RelativeCornerArrayBuilder.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2025-08-19.
@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Builds an array of  Corners from both ``Corner`` and `CGPoint` types
 @resultBuilder
 public enum RelativeCornerArrayBuilder { }
 

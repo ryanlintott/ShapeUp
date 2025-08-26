@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// An object that has a corner style that can be changed
 public protocol CornerStyled {
     var style: CornerStyle { get set }
     func applyingStyle(_ newStyle: CornerStyle) -> Self

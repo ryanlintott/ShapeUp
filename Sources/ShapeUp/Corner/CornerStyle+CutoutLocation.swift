@@ -7,11 +7,10 @@
 
 import Foundation
 
-
 internal extension CornerStyle {
     /// An enumeration representing the cutout location on cutout style corners.
     ///
-    /// Not in use yet.
+    /// *Not in use yet.*
     enum CutoutLocation {
         /// The center of the corner radius.
         case radiusCenter
