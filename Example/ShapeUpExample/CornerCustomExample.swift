@@ -9,96 +9,89 @@ import ShapeUp
 import SwiftUI
 
 struct CornerCustomExample: View {
+    @State private var bottomOffset = 0.2
     @State private var inset = 10.0
+    @State private var isClosed = true
     
     var body: some View {
         VStack {
-            HStack {
+            VStack {
                 CornerCustom { rect in
-                    [
-                        Corner(.straight(radius: .relative(0.4)),x: rect.minX, y: rect.minY),
-                        Corner(.rounded(radius: .relative(0.1)), x: rect.midX, y: rect.midY),
-                        Corner(.concave(radius: 20),x: rect.maxX, y: rect.minY),
-                        Corner(.cutout(radius: .relative(0.3)),x: rect.maxX, y: rect.maxY),
-                        Corner(.concave(radius: 40), x: rect.midX, y: rect.midY + (rect.height * 0.1)),
-                        Corner(x: rect.minX, y: rect.maxY)
-                    ]
+                    Corner(x: rect.minX, y: rect.minY)
+                    Corner(x: rect.maxX, y: rect.minY)
+                    Corner(x: rect.minX + rect.width * 0.2, y: rect.maxY)
                 }
+                .applyingStyle(.rounded(radius: .relative(0.2)))
                 .inset(by: inset)
-                .fill(Color.suPink)
-                .frame(width: 200, height: 150)
-                .animation(.default, value: inset)
+                .closed(isClosed)
+                .stroke(lineWidth: 2)
                 
                 CornerCustom { rect in
                     rect[.topLeft]
-                        .straight(radius: .relative(0.4))
-                    
-                    rect[.center]
-                        .rounded(radius: .relative(0.1))
-                    
                     rect[.topRight]
-                        .concave(radius: 20)
-                    
-                    rect[.bottomRight]
-                        .cutout(radius: .relative(0.3))
-                    
-                    rect[0.5, 0.6]
-                        .concave(radius: 40)
-                    
-                    rect[.bottomLeft]
+                    rect[0.2, 1.0]
+                }
+                .applyingStyle(.rounded(radius: .relative(0.2)))
+                .inset(by: inset)
+                .closed(isClosed)
+                .stroke(lineWidth: 2)
+                
+                RelativeCornerCustom {
+                    RelativeCorner.topLeft
+                    RelativeCorner.topRight
+                    RelativeCorner(x: bottomOffset, y: 1.0)
+                }
+                .applyingStyle(.rounded(radius: .relative(0.2)))
+                .inset(by: inset)
+                .closed(isClosed)
+                .stroke(lineWidth: 2)
+                
+                RelativeCornerCustom(.topLeft, .topRight, .init(x: bottomOffset, y: 1.0))
+                    .applyingStyle(.rounded(radius: .relative(0.2)))
+                    .inset(by: inset)
+                    .closed(isClosed)
+                    .stroke(lineWidth: 2)
+                
+                RelativeCornerCustom {
+                    RelativeCorners {
+                        RelativeCorner.topLeft.concave(radius: .relative(0.2))
+                        RelativeCorner.topRight.rounded(radius: .relative(0.3))
+                        RelativeCorner.relative(x: bottomOffset, y: 1.0).straight(radius: 20)
+                    }
+                    .moved(dx: 0.1)
+                    .flippedVertically(across: 0.5)
+                    .reversed()
                 }
                 .inset(by: inset)
-                    .fill(Color.suPink)
-                    .frame(width: 200, height: 150)
-                    .animation(.default, value: inset)
+                .closed(isClosed)
+                .stroke(lineWidth: 2)
                 
+                VStack {
+                    CrossPlatformStepper(
+                        label: "Inset",
+                        value: $inset,
+                        minValue: -30,
+                        maxValue: 30,
+                        step: 10
+                    )
+                    
+                    CrossPlatformStepper(
+                        label: "BottomOffset",
+                        value: $bottomOffset,
+                        minValue: 0.0,
+                        maxValue: 1.0,
+                        step: 0.2,
+                        decimalPlaces: 1
+                    )
+                    
+                    Toggle("Closed", isOn: $isClosed)
+                }
             }
+            .animation(.default, value: bottomOffset)
+            .animation(.default, value: inset)
+            .foregroundColor(.suPink)
+            .padding()
             
-            CrossPlatformStepper(
-                label: "Inset",
-                value: $inset,
-                minValue: -30,
-                maxValue: 30,
-                step: 10
-            )
-            
-            Text("Closed Shape")
-            
-            RelativeCornerShape(
-                .relative(x: 0.0, y: 1.0),
-                .relative(x: 0.0, y: 0.4).rounded(radius: .relative(0.4)),
-                .relative(x: 0.4, y: 0.7).concave(radius: .relative(0.3)),
-                .relative(x: 0.4, y: 0.1).straight(radius: .relative(0.3)),
-                .relative(x: 0.7, y: 0.3).cutout(radius: .relative(0.1)),
-                .relative(x: 1.0, y: 0),
-                .relative(x: 0.8, y: 1.0)
-            )
-            .closed(false)
-            .stroke(Color.suYellow, lineWidth: 10)
-            .frame(width: 200, height: 150)
-            
-            CornerCustom(closed: false) { rect in
-                rect.points(relativeLocations:
-                    (0.0, 1.0),
-                    (0.0, 0.4),
-                    (0.4, 0.7),
-                    (0.4, 0.1),
-                    (0.7, 0.3),
-                    (1.0, 0),
-                    (0.8, 1.0)
-                )
-                    .corners([
-                        nil,
-                        .rounded(radius: .relative(0.4)),
-                        .concave(radius: .relative(0.3)),
-                        .straight(radius: .relative(0.3)),
-                        .cutout(radius: .relative(0.1))
-                    ])
-            }
-                .stroke(Color.suYellow, lineWidth: 10)
-                .frame(width: 200, height: 150)
-            
-            Text("Open Shape")
         }
         .navigationTitle("CornerCustom")
     }

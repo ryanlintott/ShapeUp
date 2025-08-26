@@ -68,13 +68,13 @@ struct BasicCompareExample: View {
             ShapeUpBasicShape(radius: .absolute(radius))
                 .fill(Color.suPink)
             
-            Text("ShapeUp CornerShape - 12 lines of code\n(Insettable)")
+            Text("ShapeUp CornerShape - 12 lines of code\n(Insettable with Animation)")
             
-            RelativeCornerShape(.bottomLeft, .top, .bottomRight, .relative(x: 0.5, y: 0.8))
+            RelativeCornerCustom(.bottomLeft, .top, .bottomRight, .relative(x: 0.5, y: 0.8))
                 .applyingStyle(.rounded(radius: .absolute(radius)))
                 .fill(Color.suCyan)
             
-            Text("ShapeUp RelativeCornerShape - 2 lines of code\n(Insettable)")
+            Text("ShapeUp RelativeCornerShape - 2 lines of code\n(Insettable & Fully Animatable)")
         }
         .multilineTextAlignment(.center)
         .padding()

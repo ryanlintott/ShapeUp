@@ -26,8 +26,8 @@ public extension RelativeCornerArrayBuilder {
         [expression.relativeCorner()]
     }
     
-    static func buildExpression(_ expression: Corner) -> [RelativeCorner] {
-        [RelativeCorner(x: expression.x, y: expression.y)]
+    static func buildExpression(_ expression: [RectAnchor]) -> [RelativeCorner] {
+        expression.relativeCorners
     }
     
     static func buildExpression(_ expression: (x: CGFloat, y: CGFloat)) -> [RelativeCorner] {
@@ -42,10 +42,6 @@ public extension RelativeCornerArrayBuilder {
         expression
     }
     
-    static func buildExpression(_ expression: [RectAnchor]) -> [RelativeCorner] {
-        expression.relativeCorners
-    }
-    
     static func buildBlock(_ components: [RelativeCorner]...) -> [RelativeCorner] {
         components.flatMap { $0 }
     }
@@ -53,6 +49,8 @@ public extension RelativeCornerArrayBuilder {
 
 /// An object used to easily create an array of corners using a trailing closure.
 public struct RelativeCorners {
+    public init() { }
+    
     public func callAsFunction(@RelativeCornerArrayBuilder _ corners: () -> [RelativeCorner]) -> [RelativeCorner] {
         corners()
     }

@@ -13,13 +13,11 @@ struct TestClosedShape: CornerShape {
     var insetAmount: CGFloat = 0
     
     func corners(in rect: CGRect) -> [Corner] {
-        [
-            rect[.topLeft].rounded(radius: .relative(0.3)),
-            rect[.center].straight(radius: .relative(0.1)),
-            rect[.topRight].cutout(radius: 20),
-            rect[.bottomRight].concave(radius: .relative(0.3)),
-            rect[.bottom]
-        ]
+        rect[.topLeft].rounded(radius: .relative(0.3))
+        rect[.center].straight(radius: .relative(0.1))
+        rect[.topRight].cutout(radius: 20)
+        rect[.bottomRight].concave(radius: .relative(0.3))
+        rect[.bottom]
         
         // Old method
 //        [
@@ -37,14 +35,12 @@ struct TestOpenShape: CornerShape {
     var insetAmount: CGFloat = 0
     
     func corners(in rect: CGRect) -> [Corner] {
-        [
-            rect[.bottomLeft],
-            rect[.left].rounded(radius: .relative(0.4)),
-            rect[.bottom].concave(radius: .relative(0.3)),
-            rect[.top].straight(radius: .relative(0.3)),
-            rect[.right].cutout(radius: .relative(0.1)),
-            rect[.topRight],
-        ]
+        rect[.bottomLeft]
+        rect[.left].rounded(radius: .relative(0.4))
+        rect[.bottom].concave(radius: .relative(0.3))
+        rect[.top].straight(radius: .relative(0.3))
+        rect[.right].cutout(radius: .relative(0.1))
+        rect[.topRight]
     }
 }
 

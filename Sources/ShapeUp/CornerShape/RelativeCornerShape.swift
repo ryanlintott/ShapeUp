@@ -7,12 +7,31 @@
 
 import SwiftUI
 
-public struct RelativeCornerShape: CornerShape {
+public struct RelativeCornerCustom: CornerShape {
     public var closed: Bool = true
     public var insetAmount: CGFloat = 0
     
     /// The array of relative corners that define this shape.
     public var relativeCorners: [RelativeCorner]
+    
+    public typealias AnimatableData =
+    AnimatablePair<
+    CGFloat,
+    AnimatableArray<RelativeCorner.AnimatableData>
+    >
+    
+    public var animatableData: AnimatableData {
+        get {
+            .init(
+                insetAmount,
+                relativeCorners.animatableData
+            )
+        }
+        set {
+            insetAmount = newValue.first
+            relativeCorners.animatableData = newValue.second
+        }
+    }
     
     /// Creates a closed relative corner shape from variadic relative corners.
     ///
@@ -39,7 +58,7 @@ public struct RelativeCornerShape: CornerShape {
     }
 }
 
-public extension RelativeCornerShape {
+public extension RelativeCornerCustom {
     /// Creates a copy of this shape with the specified closed state.
     /// - Parameter isClosed: Whether the returned shape should be closed.
     /// - Returns: A copy of this shape with the specified closed state.
@@ -50,53 +69,53 @@ public extension RelativeCornerShape {
         return copy
     }
     
-    /// Creates a copy of this shape with the specified corner style applied to all corners.
-    /// - Parameter cornerStyle: The corner style to apply to all corners.
-    /// - Returns: A copy of this shape with the corner style applied.
-    func applyingStyle(_ cornerStyle: CornerStyle) -> Self {
+    internal func transformRelativeCorners(_ transform: ([RelativeCorner]) -> [RelativeCorner]) -> Self {
         var copy = self
-        copy.relativeCorners.applyStyle(cornerStyle)
+        copy.relativeCorners = transform(relativeCorners)
         return copy
+    }
+    
+    /// Creates a copy of this shape with the specified corner style applied to all corners.
+    /// - Parameter newStyle: The corner style to apply to all corners.
+    /// - Returns: A copy of this shape with the corner style applied.
+    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        transformRelativeCorners {
+            $0.applyingStyle(newStyle)
+        }
     }
 }
 
+@available(iOS 17, tvOS 17, macOS 14, watchOS 10, *)
 #Preview {
+    @Previewable @State var bottomOffset = 0.2
+    
     VStack {
-        RelativeCornerShape {
+        RelativeCornerCustom {
+            RelativeCorner.topLeft
+            RelativeCorner.topRight
+            RelativeCorner(x: bottomOffset, y: 1.0)
+        }
+        .applyingStyle(.rounded(radius: .relative(0.2)))
+        
+        RelativeCornerCustom(.topLeft, .topRight, .init(x: bottomOffset, y: 1.0))
+            .applyingStyle(.rounded(radius: .relative(0.2)))
+        
+        RelativeCornerCustom {
             RelativeCorners {
-                RelativeCorner(x: 0, y: 0.5)
-                RelativeCorner(x: 0.3, y: 0.8).rounded(radius: 40)
-                RelativeCorner.topRight.cutout(radius: 10)
-                RelativeCorner(x: 1, y: 0.3)
-                RelativeCorner(x: 0.3, y: 1).rounded(radius: 40)
+                RelativeCorner.topLeft
+                    .concave(radius: .relative(0.2))
+                
+                RelativeCorner.topRight
+                    .rounded(radius: .relative(0.3))
+                
+                RelativeCorner(x: bottomOffset, y: 1.0)
+                    .straight(radius: 20)
             }
             .moved(dx: 0.1)
             .flippedVertically(across: 0.5)
         }
-        .fill()
         
-        RelativeCornerShape(
-            .relative(x: 0, y: 0.5),
-            .relative(x: 0.3, y: 0.8).rounded(radius: 40),
-            .topRight.cutout(radius: 10),
-            .relative(x: 1, y: 0.3),
-            .relative(x: 0.3, y: 1).rounded(radius: 40),
-        )
-        .fill()
-        
-        RelativeCornerShape(
-            [
-                .relative(x: 0.2, y: 0.5),
-                .relative(x: 0.3, y: 0.8).rounded(radius: 40),
-                .topRight,
-                .relative(x: 1, y: 0.1),
-                .relative(x: 0.3, y: 1).rounded(radius: 40),
-            ]
-                .moved(dx: 0.2)
-                .rotated(.degrees(20))
-                .scaledPositions(x: 0.5, y: 0.5, anchor: .topLeft)
-                .flippedVertically(across: 0.5)
-        )
-        .fill()
+        Slider(value: $bottomOffset, in: 0...1)
+            .padding()
     }
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 
+/// Builds an array of  Corners from both ``Corner`` and `CGPoint` types
 @resultBuilder
 public enum CornerArrayBuilder { }
 
@@ -44,8 +45,10 @@ public extension CornerArrayBuilder {
     }
 }
 
-/// An object used to easily create an array of corners using a trailing closure.
+/// An object used to easily create an array of corners using a trailing closure with ``CornerArrayBuilder``
 public struct Corners {
+    public init() { }
+    
     public func callAsFunction(@CornerArrayBuilder _ corners: () -> [Corner]) -> [Corner] {
         corners()
     }

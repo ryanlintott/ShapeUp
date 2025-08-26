@@ -17,14 +17,16 @@ struct FoldButton: View {
                 .fill(.purple)
                 .frame(width: 300)
             
-            RelativeCornerShape(
-                .topLeft.rounded(radius: .relative(0.5)),
-                .topRight.rounded(radius: .relative(1.0)),
-                .relative(x: 1, y: -0.5),
-                .topRight,
-                .bottomRight.rounded(radius: .relative(0.5)),
-                .bottomLeft.rounded(radius: .relative(0.4))
-            )
+            RelativeCornerCustom {
+                [
+                    .topLeft.rounded(radius: .relative(0.5)),
+                    .topRight.rounded(radius: .relative(1.0)),
+                    .relative(x: 1, y: -0.5),
+                    .topRight,
+                    .bottomRight.rounded(radius: .relative(0.5)),
+                    .bottomLeft.rounded(radius: .relative(0.4))
+                ]
+            }
             .fill(.blue)
             .frame(width: 100)            
         }
