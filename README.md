@@ -59,7 +59,7 @@ Or you can buy a t-shirt with the ShapeUp logo
 ## RectAnchor and CGRect
 Inside a SwiftUI `Shape` path method, points often have positions relative to the `rect` property.
 
-New subscripts on `CGRect` make it easy to create points at on of 9 anchor locations plus any `.relative` location using the new `RectAnchor` type.
+New subscripts on `CGRect` make it easy to create points at on of 9 anchor locations (`.topLeft`, `bottomRight`, etc...) plus any `.relative` location using the new `RectAnchor` type.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -94,7 +94,7 @@ let points = rect.points(
     .relative(0.4, 0.7)
 )
 
-// Or if you want all relative points
+// Or if you want all relative points you can use this shorthand version
 let points = rect.points(
     (0.0, 0.5),
     (0.5, 0.5),

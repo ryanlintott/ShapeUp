@@ -123,7 +123,7 @@ public extension CGRect {
     }
     
     func corners(_ relativeCorners: RelativeCorner...) -> [Corner] {
-        relativeCorners.map { self[$0.anchor, $0.style] }
+        relativeCorners.map { self[$0.anchor].corner($0.style) }
     }
 
     // MARK: - Transformations

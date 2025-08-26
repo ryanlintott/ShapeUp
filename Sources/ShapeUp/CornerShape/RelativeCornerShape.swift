@@ -30,6 +30,10 @@ public struct RelativeCornerShape: CornerShape {
         self.relativeCorners = relativeCorners
     }
     
+    public init(@RelativeCornerArrayBuilder _ relativeCorners: () -> [RelativeCorner]) {
+        self.relativeCorners = relativeCorners()
+    }
+    
     public func corners(in rect: CGRect) -> [Corner] {
         relativeCorners.corners(in: rect)
     }
@@ -58,6 +62,19 @@ public extension RelativeCornerShape {
 
 #Preview {
     VStack {
+        RelativeCornerShape {
+            RelativeCorners {
+                RelativeCorner(x: 0, y: 0.5)
+                RelativeCorner(x: 0.3, y: 0.8).rounded(radius: 40)
+                RelativeCorner.topRight.cutout(radius: 10)
+                RelativeCorner(x: 1, y: 0.3)
+                RelativeCorner(x: 0.3, y: 1).rounded(radius: 40)
+            }
+            .moved(dx: 0.1)
+            .flippedVertically(across: 0.5)
+        }
+        .fill()
+        
         RelativeCornerShape(
             .relative(x: 0, y: 0.5),
             .relative(x: 0.3, y: 0.8).rounded(radius: 40),

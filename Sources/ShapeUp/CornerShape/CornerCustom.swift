@@ -43,7 +43,7 @@ public struct CornerCustom: CornerShape {
     /// - Parameters:
     ///  - closed: A boolean determining if the shape should be closed. Default is true.
     ///  - corners: Closure used to draw corners in a defined frame.
-    public init(closed: Bool = true, _ corners: @Sendable @escaping (CGRect) -> [Corner]) {
+    public init(closed: Bool = true, @CornerArrayBuilder _ corners: @Sendable @escaping (CGRect) -> [Corner]) {
         self.closed = closed
         self.corners = corners
     }

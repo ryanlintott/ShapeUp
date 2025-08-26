@@ -13,20 +13,46 @@ struct CornerCustomExample: View {
     
     var body: some View {
         VStack {
-            CornerCustom { rect in
-                [
-                    Corner(.straight(radius: .relative(0.4)),x: rect.minX, y: rect.minY),
-                    Corner(.rounded(radius: .relative(0.1)), x: rect.midX, y: rect.midY),
-                    Corner(.concave(radius: 20),x: rect.maxX, y: rect.minY),
-                    Corner(.cutout(radius: .relative(0.3)),x: rect.maxX, y: rect.maxY),
-                    Corner(.concave(radius: 40), x: rect.midX, y: rect.midY + (rect.height * 0.1)),
-                    Corner(x: rect.minX, y: rect.maxY)
-                ]
-            }
-            .inset(by: inset)
+            HStack {
+                CornerCustom { rect in
+                    [
+                        Corner(.straight(radius: .relative(0.4)),x: rect.minX, y: rect.minY),
+                        Corner(.rounded(radius: .relative(0.1)), x: rect.midX, y: rect.midY),
+                        Corner(.concave(radius: 20),x: rect.maxX, y: rect.minY),
+                        Corner(.cutout(radius: .relative(0.3)),x: rect.maxX, y: rect.maxY),
+                        Corner(.concave(radius: 40), x: rect.midX, y: rect.midY + (rect.height * 0.1)),
+                        Corner(x: rect.minX, y: rect.maxY)
+                    ]
+                }
+                .inset(by: inset)
                 .fill(Color.suPink)
                 .frame(width: 200, height: 150)
                 .animation(.default, value: inset)
+                
+                CornerCustom { rect in
+                    rect[.topLeft]
+                        .straight(radius: .relative(0.4))
+                    
+                    rect[.center]
+                        .rounded(radius: .relative(0.1))
+                    
+                    rect[.topRight]
+                        .concave(radius: 20)
+                    
+                    rect[.bottomRight]
+                        .cutout(radius: .relative(0.3))
+                    
+                    rect[0.5, 0.6]
+                        .concave(radius: 40)
+                    
+                    rect[.bottomLeft]
+                }
+                .inset(by: inset)
+                    .fill(Color.suPink)
+                    .frame(width: 200, height: 150)
+                    .animation(.default, value: inset)
+                
+            }
             
             CrossPlatformStepper(
                 label: "Inset",
