@@ -32,7 +32,11 @@ public extension RelativeCornerArrayBuilder {
     }
     
     static func buildExpression(_ expression: (x: CGFloat, y: CGFloat)) -> [RelativeCorner] {
-        [RelativeCorner(x: expression.x, y: expression.y)]
+        [.relative(x: expression.x, y: expression.y)]
+    }
+    
+    static func buildExpression(_ expression: [(x: CGFloat, y: CGFloat)]) -> [RelativeCorner] {
+        expression.map { .relative(x: $0.x, y: $0.y) }
     }
     
     static func buildExpression(_ expression: RelativeCorner) -> [RelativeCorner] {
@@ -45,6 +49,16 @@ public extension RelativeCornerArrayBuilder {
     
     static func buildBlock(_ components: [RelativeCorner]...) -> [RelativeCorner] {
         components.flatMap { $0 }
+    }
+    
+    @available(*, unavailable, message: "Corner is not compatible with RelativeCornerArrayBuilder. Use RelativeCorner, RectAnchor, or a Tuple (CGFloat, CGFloat)")
+    static func buildExpression(_ expression: Corner) -> [RelativeCorner] {
+        fatalError()
+    }
+    
+    @available(*, unavailable, message: "Corner is not compatible with RelativeCornerArrayBuilder. Use RelativeCorner, RectAnchor, or a Tuple (CGFloat, CGFloat)")
+    static func buildExpression(_ expression: [Corner]) -> [RelativeCorner] {
+        fatalError()
     }
 }
 

@@ -46,17 +46,10 @@ public extension Array where Element: Vector2Transformable {
     /// Rotates the position of this array of objects without modifying other properties.
     /// - Parameters:
     ///   - angle: Angle of rotation.
-    ///   - anchor: Anchor point for the rotation.
+    ///   - anchor: Anchor point for the rotation. Default is (0,0)
     /// - Returns: The same array of objects, rotated around the provided anchor point by the provided angle.
-    func rotated(_ angle: Angle, anchor: some Vector2Representable) -> Self {
+    func rotated(_ angle: Angle, anchor: some Vector2Representable = Vector2.zero) -> Self {
         map { $0.rotated(angle, anchor: anchor) }
-    }
-    
-    /// Rotates the position of this array of objects around the origin without modifying other properties.
-    /// - Parameter angle: Rotation angle.
-    /// - Returns: The same array of objects rotated around the origin by the provided angle.
-    func rotated(_ angle: Angle) -> Self {
-        rotated(angle, anchor: Vector2.zero)
     }
     
     /// Rotates the position of this array of objects without modifying other properties.

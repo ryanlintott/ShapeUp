@@ -43,9 +43,19 @@ public extension CornerArrayBuilder {
     static func buildBlock(_ components: [Corner]...) -> [Corner] {
         components.flatMap { $0 }
     }
+    
+    @available(*, unavailable, message: "RelativeCorner is not compatible with CornerArrayBuilder. Use Corner or CGPoint")
+    static func buildExpression(_ expression: RelativeCorner) -> [Corner] {
+        fatalError()
+    }
+    
+    @available(*, unavailable, message: "RelativeCorner is not compatible with CornerArrayBuilder. Use Corner or CGPoint")
+    static func buildExpression(_ expression: [RelativeCorner]) -> [Corner] {
+        fatalError()
+    }
 }
 
-/// An object used to easily create an array of corners using a trailing closure with ``CornerArrayBuilder``
+/// An object used to easily create an array of ``Corner`` using a trailing closure with ``CornerArrayBuilder``
 public struct Corners {
     public init() { }
     

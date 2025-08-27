@@ -16,8 +16,8 @@ public struct RelativeCornerCustom: CornerShape {
     
     public typealias AnimatableData =
     AnimatablePair<
-    CGFloat,
-    AnimatableArray<RelativeCorner.AnimatableData>
+        CGFloat,
+        AnimatableArray<RelativeCorner.AnimatableData>
     >
     
     public var animatableData: AnimatableData {
@@ -97,7 +97,7 @@ public extension RelativeCornerCustom {
         }
         .applyingStyle(.rounded(radius: .relative(0.2)))
         
-        RelativeCornerCustom(.topLeft, .topRight, .init(x: bottomOffset, y: 1.0))
+        RelativeCornerCustom(.topLeft, .topRight, .relative(x: bottomOffset, y: 1.0))
             .applyingStyle(.rounded(radius: .relative(0.2)))
         
         RelativeCornerCustom {

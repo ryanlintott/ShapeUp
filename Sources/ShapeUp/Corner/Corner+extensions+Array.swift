@@ -140,8 +140,8 @@ public extension Array where Element == Corner {
     /// Creates a copy of the corner array with additional corners based on the specified notch after the specified index.
     /// - Parameters:
     ///   - notch: Notch that define additional corners to add after the specified index.
-    ///   - cornerIndex: Index after which the corners will be added.
-    func addingNotch(_ notch: Notch, afterCornerIndex cornerIndex: Int) -> [Corner] {
+    ///   - cornerIndex: Index after which the corners will be added. Default is 0
+    func addingNotch(_ notch: Notch, afterCornerIndex cornerIndex: Int = 0) -> [Corner] {
         self.addingNotches(Array<Notch?>(repeating: nil, count: cornerIndex) + [notch])
     }
     

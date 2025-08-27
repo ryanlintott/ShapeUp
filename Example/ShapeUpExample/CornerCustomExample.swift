@@ -38,6 +38,8 @@ struct CornerCustomExample: View {
                 
                 RelativeCornerCustom {
                     RelativeCorner.topLeft
+                        .moved(dx: 0.2)
+                        .offset(dy: 10)
                     RelativeCorner.topRight
                     RelativeCorner(x: bottomOffset, y: 1.0)
                 }
@@ -46,7 +48,7 @@ struct CornerCustomExample: View {
                 .closed(isClosed)
                 .stroke(lineWidth: 2)
                 
-                RelativeCornerCustom(.topLeft, .topRight, .init(x: bottomOffset, y: 1.0))
+                RelativeCornerCustom(.topLeft, .topRight, .relative(x: bottomOffset, y: 1.0))
                     .applyingStyle(.rounded(radius: .relative(0.2)))
                     .inset(by: inset)
                     .closed(isClosed)
@@ -55,8 +57,10 @@ struct CornerCustomExample: View {
                 RelativeCornerCustom {
                     RelativeCorners {
                         RelativeCorner.topLeft.concave(radius: .relative(0.2))
+                            .offset(dx: 10, dy: 10)
+                        
                         RelativeCorner.topRight.rounded(radius: .relative(0.3))
-                        RelativeCorner.relative(x: bottomOffset, y: 1.0).straight(radius: 20)
+                        RelativeCorner(x: bottomOffset, y: 1.0).straight(radius: 20)
                     }
                     .moved(dx: 0.1)
                     .flippedVertically(across: 0.5)

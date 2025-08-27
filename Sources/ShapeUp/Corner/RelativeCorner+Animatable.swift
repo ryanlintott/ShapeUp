@@ -11,32 +11,52 @@ extension RelativeCorner: NestedAnimatable {
     public typealias NestedAnimatableData =
     AnimatablePair<
         RectAnchor,
-        CornerStyle.NestedAnimatableData
+        AnimatablePair<
+            Vector2,
+            CornerStyle.NestedAnimatableData
+        >
     >
 
     public var nestedAnimatableData: NestedAnimatableData {
         get {
-            .init(anchor, style.nestedAnimatableData)
+            .init(
+                anchor,
+                .init(
+                    offset,
+                    style.nestedAnimatableData
+                )
+            )
         }
         set {
             anchor = newValue.first
-            style.nestedAnimatableData = newValue.second
+            offset = newValue.second.first
+            style.nestedAnimatableData = newValue.second.second
         }
     }
     
     public typealias AnimatableData =
     AnimatablePair<
         RectAnchor,
-        CornerStyle.AnimatableData
+        AnimatablePair<
+            Vector2,
+            CornerStyle.AnimatableData
+        >
     >
     
     public var animatableData: AnimatableData {
         get {
-            .init(anchor, style.animatableData)
+            .init(
+                anchor,
+                .init(
+                    offset,
+                    style.animatableData
+                )
+            )
         }
         set {
             anchor = newValue.first
-            style.animatableData = newValue.second
+            offset = newValue.second.first
+            style.animatableData = newValue.second.second
         }
     }
 }

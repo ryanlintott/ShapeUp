@@ -33,9 +33,9 @@ public extension Vector2Transformable {
     
     /// Rotates the position of this object without modifying other properties.
     /// - Parameter angle: Angle of rotation. Clockwise is positive for SwiftUI.
-    /// - Parameter anchor: Anchor point for the rotation.
+    /// - Parameter anchor: Anchor point for the rotation. Default is (0,0)
     /// - Returns: The same object, rotated around the provided anchor by the provided angle.
-    func rotated(_ angle: Angle, anchor: some Vector2Representable) -> Self {
+    func rotated(_ angle: Angle, anchor: some Vector2Representable = Vector2.zero) -> Self {
         let theta = angle.minPositiveCoterminal.radians
         if theta < 1e-12 { return self }
         
@@ -48,13 +48,6 @@ public extension Vector2Transformable {
         let pRotated = Vector2(dx: p.dx * c - p.dy * s, dy: p.dx * s + p.dy * c)
         // Move point back to anchor and return the object repositioned to the point.
         return repositioned(to: pRotated + anchor.vector)
-    }
-    
-    /// Rotates the position of this object around the origin without modifying other properties.
-    /// - Parameter angle: Rotation angle.
-    /// - Returns: The same object, rotated around the origin by the provided angle.
-    func rotated(_ angle: Angle) -> Self {
-        rotated(angle, anchor: CGPoint.zero)
     }
     
     /// Flips the position of this object across a mirror line without modifying other properties.

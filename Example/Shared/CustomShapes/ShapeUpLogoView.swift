@@ -14,40 +14,29 @@ struct ShapeUpLogo: View {
             GeometryReader { proxy in
                 // Pink Logo
                 
-//                RelativeCornerShape([
-//                    .topLeft.straight(radius: .relative(0.27)),
-//                    .relative(x: 0.925, y: 0.04).cutout(radius: .relative(0.4)),
-//                    .relative(x: 0.925, y: 0.3).rounded(radius: .relative(0.4)),
-//                    .relative(x: 0.005, y: 0.92).concave(radius: .relative(0.23))
-//                    ]
-//                    .rotated(.degrees(9))
-//                    .moved(dx: 0.06, dy: 0.02)
-//                )
-//                .fill(Color.green)
-                
                 CornerCustom { rect in
-                    [
-                        rect[.topLeft].straight(radius: .relative(0.27)),
-                        rect[0.925, 0.04].cutout(radius: .relative(0.4)),
-                        rect[0.925, 0.3].rounded(radius: .relative(0.4)),
+                    Corners {
+                        rect[.topLeft].straight(radius: .relative(0.27))
+                        rect[0.925, 0.04].cutout(radius: .relative(0.4))
+                        rect[0.925, 0.3].rounded(radius: .relative(0.4))
                         rect[0.005, 0.92].concave(radius: .relative(0.23))
-                    ]
-                        .rotated(.degrees(9))
-                        .moved(rect[0.06, 0.02])
+                    }
+                    .rotated(.degrees(9))
+                    .moved(rect[0.06, 0.02])
                 }
-                    .fill(Color.suPink)
-                    .shadow(color: .suBlack, radius: 0.01, x: proxy.size.width * 0.006, y: proxy.size.width * 0.0076)
+                .fill(Color.suPink)
+                .shadow(color: .suBlack, radius: 0.01, x: proxy.size.width * 0.006, y: proxy.size.width * 0.0076)
                 
                 /// Purple Logo
                 CornerCustom { rect in
-                    [
-                        rect[.topLeft].rounded(radius: .relative(0.12)),
-                        rect[0.271, 0].concave(radius: .relative(0.12)),
-                        rect[0.271, 1 - 0.15].straight(radius: .relative(0.18)),
+                    Corners {
+                        rect[.topLeft].rounded(radius: .relative(0.12))
+                        rect[0.271, 0].concave(radius: .relative(0.12))
+                        rect[0.271, 1 - 0.15].straight(radius: .relative(0.18))
                         rect[0, 1 - 0.15].rounded(radius: .relative(0.23))
-                    ]
-                        .rotated(.degrees(-5))
-                        .moved(rect[0.63, 0.11])
+                    }
+                    .rotated(.degrees(-5))
+                    .moved(rect[0.63, 0.11])
                 }
                 .fill(Color.suPurple)
                 
@@ -87,18 +76,18 @@ struct ShapeUpLogo: View {
                     
                     // Yellow Squiggle
                     CornerCustom(closed: false) { rect in
-                        rect.points(relativeLocations:
-                            (0.0, 1.0),
-                            (1.1, 0),
-                            (2.1, 0.9),
-                            (2.9, -0.1),
-                            (3.8, 1),
+                        RelativeCorners {
+                            (0.0, 1.0)
+                            (1.1, 0)
+                            (2.1, 0.9)
+                            (2.9, -0.1)
+                            (3.8, 1)
                             (5, 0)
-                        )
-                            .scaledPositions(x: 0.0365, y: 0.1)
-                            .rotated(.degrees(-15), anchor: .bottomLeft)
-                            .moved(rect[0.28, 0.23])
-                            .corners
+                        }
+                        .corners(in: rect)
+                        .scaledPositions(x: 0.0365, y: 0.1)
+                        .rotated(.degrees(-15), anchor: .bottomLeft)
+                        .moved(rect[0.28, 0.23])
                     }
                     .stroke(Color.suYellow, lineWidth: proxy.size.height * 0.05)
                     
