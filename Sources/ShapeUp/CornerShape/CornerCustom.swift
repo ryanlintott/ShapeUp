@@ -82,7 +82,10 @@ public extension CornerCustom {
         return copy
     }
     
-    public func applyingStyles(_ newStyles: [CornerStyle]) -> Self {
+    /// Creates a copy this shape with new corner styles applied to specified corners.
+    /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    /// - Returns: The same shape with new corner styles applied to specified corners.
+    public func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
         transformCorners { rect, corners in
             corners.applyingStyles(newStyles)
         }

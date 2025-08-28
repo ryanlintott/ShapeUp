@@ -1,5 +1,5 @@
 //
-//  RectAnchorTransformable.swift
+//  RectAnchor+transformExtensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2025-07-15.
@@ -7,16 +7,7 @@
 
 import SwiftUI
 
-public protocol RectAnchorTransformable {
-    var anchor: RectAnchor { get }
-    
-    /// Repositions this object while keeping other properties untouched.
-    /// - Parameter anchor: The new anchor to reposition to.
-    /// - Returns: The same object, moved to a new anchor point.
-    func repositioned(to anchor: RectAnchor) -> Self
-}
-
-// # MARK: Private extensions to use Vector2Transformable logic inside RectAnchorTransformable.
+// # MARK: Internal extensions to switch RectAnchor into Vector2 to use Vector2Transformable
 
 internal extension RectAnchor {
     var vector: Vector2 {
@@ -24,28 +15,24 @@ internal extension RectAnchor {
     }
 }
 
-fileprivate extension Vector2 {
+internal extension Vector2 {
     var anchor: RectAnchor {
         .relative(x: vector.dx, y: vector.dy)
     }
 }
 
-fileprivate extension RectAnchorTransformable {
-    func repositioned(to point: some Vector2Representable) -> Self {
-        repositioned(to: point.vector.anchor)
-    }
-}
+// # MARK: Methods to move, rotate, flip, inset and scale RectAnchor.
 
-// # MARK: Methods to move, rotate, flip, inset and scale RectAnchorTransformable types.
-
-public extension RectAnchorTransformable {
+public extension RectAnchor {
     /// Moves the position of this object without modifying other properties.
     /// - Parameters:
     ///   - dx: Delta x
     ///   - dy: Delta y
     /// - Returns: The same object, moved by the provided distance.
     func moved(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
-        repositioned(to: anchor.vector.moved(dx: dx, dy: dy))
+        vector
+            .moved(dx: dx, dy: dy)
+            .anchor
     }
     
     /// Rotates the position of this object without modifying other properties.
@@ -54,7 +41,10 @@ public extension RectAnchorTransformable {
     ///   - anchor: Anchor point for the rotation. Default is `.topLeft`
     /// - Returns: The same object, rotated around the provided anchor by the provided angle.
     func rotated(_ angle: Angle, anchor: RectAnchor = .topLeft) -> Self {
-        repositioned(to: self.anchor.vector.rotated(angle, anchor: anchor.anchor.vector))
+        vector
+            .rotated(angle, anchor: anchor.vector)
+            .anchor
+
     }
     
     /// Flips the position of this object across a mirror line without modifying other properties.
@@ -65,7 +55,12 @@ public extension RectAnchorTransformable {
     ///   - mirrorLineEnd: End anchor point of mirror line.
     /// - Returns: The same object, flipped across the provided mirror line.
     func flipped(mirrorLineStart: RectAnchor, mirrorLineEnd: RectAnchor) -> Self {
-        repositioned(to: anchor.vector.flipped(mirrorLineStart: mirrorLineStart.vector, mirrorLineEnd: mirrorLineEnd.vector))
+        vector
+            .flipped(
+                mirrorLineStart: mirrorLineStart.vector,
+                mirrorLineEnd: mirrorLineEnd.vector
+            )
+            .anchor
     }
     
     /// Returns the position after being scaled from the anchor point.
@@ -74,7 +69,9 @@ public extension RectAnchorTransformable {
     ///   - anchor: Anchor point for the scale.
     /// - Returns: The same object with position scaled from the anchor point.
     func scaledPosition(_ scale: CGSize, anchor: RectAnchor = .topLeft) -> Self {
-        repositioned(to: self.anchor.vector.scaledPosition(scale, anchor: anchor.anchor.vector))
+        vector
+            .scaledPosition(scale, anchor: anchor.vector)
+            .anchor
     }
     
     /// Returns the position after being scaled from the anchor point.
@@ -99,11 +96,7 @@ public extension RectAnchorTransformable {
 
 // # MARK: Array methods
 
-public extension Array where Element: RectAnchorTransformable {
-    var anchors: [RectAnchor] {
-        map { $0.anchor }
-    }
-    
+public extension Array where Element == RectAnchor {
     /// Moves the positions of this array of objects without modifying other properties.
     /// - Parameters:
     ///   - dx: Delta x
