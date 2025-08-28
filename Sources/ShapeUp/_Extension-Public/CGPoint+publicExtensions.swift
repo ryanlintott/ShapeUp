@@ -52,3 +52,14 @@ public extension CGPoint {
         rect(size: .init(width: width, height: height), anchor: anchor)
     }
 }
+
+public extension Array where Element == CGPoint {
+    /// Creates a path defined by this array of points. Closed by default.
+    /// - Parameters:
+    ///   - closed: Boolean determining if the path is closed. Default is true.
+    /// - Returns: A path defined by this array of points. Closed by default.
+    func path(closed: Bool = true) -> Path {
+        // Creates corners which have a default .point type and returns their path
+        corners.path(closed: closed)
+    }
+}

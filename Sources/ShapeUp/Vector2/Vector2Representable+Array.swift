@@ -7,26 +7,6 @@
 
 import SwiftUI
 
-public extension Collection where Element: Vector2Representable {
-    /// A bounding frame containing all the points in the array.
-    ///
-    /// This frame only takes into account the points and not any corner shapes so the shape itself might be inset in the frame.
-    var bounds: CGRect {
-        guard !isEmpty else {
-            return .zero
-        }
-        
-        let xArray = self.map { $0.vector.dx }
-        let yArray = self.map { $0.vector.dy }
-        let minX = xArray.min() ?? .zero
-        let minY = yArray.min() ?? .zero
-        let maxX = xArray.max() ?? .zero
-        let maxY = yArray.max() ?? .zero
-
-        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
-    }
-}
-
 public extension Array where Element: Vector2Representable {
     /// A Vector2 array.
     var vectors: [Vector2] {
@@ -62,6 +42,24 @@ public extension Array where Element: Vector2Representable {
     /// If the array contains ``Corner`` the existing style will remain otherwise a point style will be used.
     var corners: [Corner] {
         map(\.corner)
+    }
+    
+    /// A bounding frame containing all the points in the array.
+    ///
+    /// This frame only takes into account the points and not any corner shapes so the shape itself might be inset in the frame.
+    var bounds: CGRect {
+        guard !isEmpty else {
+            return .zero
+        }
+        
+        let xArray = self.map { $0.vector.dx }
+        let yArray = self.map { $0.vector.dy }
+        let minX = xArray.min() ?? .zero
+        let minY = yArray.min() ?? .zero
+        let maxX = xArray.max() ?? .zero
+        let maxY = yArray.max() ?? .zero
+
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
     
     /// Creates a point in the location of an anchor on the bounds.

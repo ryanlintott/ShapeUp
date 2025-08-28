@@ -56,10 +56,10 @@ Or you can buy a t-shirt with the ShapeUp logo
 <a href="https://cottonbureau.com/p/JBYGB7/shirt/shapeup#/20149802"><img width="256" alt="ShapeUp T-Shirt" src="https://cottonbureau.com/mockup?vid=20149802&hash=6UJM&w=512"></a>
 - - -
 # Features
-## RectAnchor and CGRect
-Inside a SwiftUI `Shape` path method, points often have positions relative to the `rect` property.
+## RectAnchor
+`RectAnchor` references a relative locations to a `CGRect` like `.topLeft`, `bottomRight`, and `.relative(x: 0.2, y: 0.8)`. It's similar to `UnitPoint` but it uses left and right instead of leading and trailing as it cannot respond to locale changes.
 
-New subscripts on `CGRect` make it easy to create points at on of 9 anchor locations (`.topLeft`, `bottomRight`, etc...) plus any `.relative` location using the new `RectAnchor` type.
+Inside the `path(in:)` method of a SwiftUI `Shape` points often use positions relative to the `rect` parameter. `ShapeUp` adds a subscript on `CGPoint` that uses `RectAnchor` to clarify this code.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -77,76 +77,70 @@ func path(in rect: CGRect) -> Path {
 }
 ```
 
-The new `points(_:)` method can transform an array of `RectAnchor` or `(x: CGFloat, y: CGFloat)` into an array of `CGPoint`
-
-```swift
-// Current method
-let points = [
-    CGPoint(x: rect.minX, y: rect.midY),
-    CGPoint(x: rect.midX, y: rect.midY),
-    CGPoint(x: rect.minX + (rect.width * 0.4), y: rect.minY + (rect.width * 0.7))
-]
-
-// ShapeUp method
-let points = rect.points(
-    .left,
-    .center,
-    .relative(0.4, 0.7)
-)
-
-// Or if you want all relative points you can use this shorthand version
-let points = rect.points(
-    (0.0, 0.5),
-    (0.5, 0.5),
-    (0.4, 0.7)
-)
-```
-
 ## CGPoint
-`CGPoint` conforms to a new [`Vector2Transformable`](#vector2transformable) protocol so single points or arrays can be moved, rotated, flipped, scaled, or inset.
+`CGPoint` conforms to a new [`Vector2Transformable`](#vector2transformable) protocol so single points or arrays can be moved, rotated, flipped, scaled, or inset. At the end you can create a `Path` from the array that will draw lines between all the points.
 
 ```swift
-points
+func path(in rect: CGRect) -> Path {
+    [
+        rect[.topLeft],
+        rect[.topRight],
+        rect[.bottom]    
+    ]
     .moved(dx: 100, dy: 50)
     .rotated(.degrees(45), anchor: .center)
     .flipped(mirrorLineStart: .topLeft, mirrorLineEnd: .bottomLeft)
     .scaledPositions(2.5, anchor: .bottomRight)
     .insetPoints(5)
+    .path(closed: true)
+}
 ```
-
-They can also be converted to [`RectAnchor`](#rectanchor) with positions relative to a `CGRect` or  [`CGFrame`](#cgframe).
-
-```swift
-let relativeToRect: [RectAnchor] = points.relative(to: CGRect(...))
-let relativeToFrame: [RectAnchor] = points.relative(to: CGFrame(...))
-```
-
-## CGRect
-`CGRect` can also be moved and scaled.
-
-```swift
-rect
-    .moved(dx: 40, dy: 2.5)
-    .scaled(x: 2, y: 1.5, anchor: .center)
-```
-
-## CGSize
-`CGSize` can also be scaled or it can be used to quickly create a `CGRect`
-
-```swift
-let scaledSize: CGSize = size.scaled(3)
-let rect = size.rect(at: point, anchor: .center)
-```
-
 
 ## Corner
-What if a shape were defined simply by an array of corners with a specified style? This means you can generate a `Path` from this array. By default this path is assumed to be closed with the last point connecting back to the first.
+What if you wanted to round those corners? Simple!
 
 ```swift
+func path(in rect: CGRect) -> Path {
+    [
+        rect[.topLeft],
+        rect[.topRight],
+        rect[.bottom]    
+    ]
+    .applyingStyle(.rounded(radius: 20))
+    .path()
+}
+```
+
+What's happening here is all of these points are changing into corners. A `Corner` is like a `CGPoint` with a `CornerStyle`.
+
+
+a shape were defined simply by an array of corners with a specified style? This means you can generate a `Path` from this array. By default this path is assumed to be closed with the last point connecting back to the first.
+
+```swift
+func path(in rect: CGRect) -> Path {
+    [
+        rect[.topLeft],
+        rect[.topRight],
+        rect[.bottom]    
+    ]
+    .path()
+}
+
 [
     Corner(x: 0, y: 0).rounded(radius: 10),
     Corner(x: 10, y: 0).cutout(radius: 5),
     Corner(x: 5, y: 10).straight(radius: 5)
+].path()
+```
+
+Remember that locations are often relative so we can use the same subscripts on `CGRect` to create corners.
+
+```swift
+[
+    rect[.topLeft].rounded(radius: 10),
+    rect[0.8, 0.0].cutout(radius: 5),
+    rect[.bottomRight].straight(radius: 5)
+    rect[0.0, 0.2]
 ].path()
 ```
 
@@ -388,6 +382,24 @@ For ease of use, `RelatableValue` conforms to `ExpressibleByIntegerLiteral` and 
 // Both are the same
 let cornerStyle = .rounded(radius: .absolute(5))
 let cornerStyle = .rounded(radius: 5)
+```
+
+## CGRect and CGSize
+Scale and move `CGRect`
+```swift
+let transformedRect = rect
+    .moved(dx: 40, dy: 2.5)
+    .scaled(x: 2, y: 1.5, anchor: .center)
+```
+
+Scale CGSize
+```swift
+let scaledSize: CGSize = size.scaled(3)
+```
+
+Create a CGRect from a CGSize
+```swift
+let rect = size.rect(at: point, anchor: .center)
 ```
 
 ## CGFrame
