@@ -177,15 +177,15 @@ public extension CornerStyle {
         case .point:
             self
         case .rounded:
-                .rounded(radius: radius)
+            .rounded(radius: radius)
         case let .concave(_, concaveInset):
-                .concave(radius: radius, concaveInset: concaveInset)
+            .concave(radius: radius, concaveInset: concaveInset)
         case let .straight(_, cornerStyles):
-                .straight(radius: radius, cornerStyles: cornerStyles)
+            .straight(radius: radius, cornerStyles: cornerStyles)
         case let .cutout(_, cornerStyles):
-                .cutout(radius: radius, cornerStyles: cornerStyles)
+            .cutout(radius: radius, cornerStyles: cornerStyles)
         case let .custom(_, relativeCorners):
-                .custom(radius: radius, relativeCorners: relativeCorners)
+            .custom(radius: radius, relativeCorners: relativeCorners)
         }
     }
     

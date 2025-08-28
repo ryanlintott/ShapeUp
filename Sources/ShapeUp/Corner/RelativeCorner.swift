@@ -53,18 +53,6 @@ public extension RelativeCorner {
                 .moved(frame.yAxis.normalized * offset.dy)
         )
     }
-    
-    /// Creates a corner at the same position but with the supplied style.
-    /// - Parameter style: Corner style to apply.
-    /// - Returns: A corner at the same position but with the supplied style.
-    func applyingStyle(_ style: CornerStyle) -> Self {
-        if style == self.style {
-            return self
-        }
-        var copy = self
-        copy.style = style
-        return copy
-    }
 }
 
 public extension RelativeCorner {

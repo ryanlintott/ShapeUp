@@ -53,6 +53,20 @@ public struct CornerCustom: CornerShape {
     }
 }
 
+extension CornerCustom: CornerStylable {
+    public func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        transformCorners { rect, corners in
+            corners.applyingStyle(newStyle)
+        }
+    }
+    
+    public func changingRadius(to newRadius: RelatableValue) -> Self {
+        transformCorners { rect, corners in
+            corners.changingRadius(to: newRadius)
+        }
+    }
+}
+
 public extension CornerCustom {
     func closed(_ isClosed: Bool) -> Self {
         var copy = self
@@ -68,13 +82,7 @@ public extension CornerCustom {
         return copy
     }
     
-    func applyingStyle(_ newStyle: CornerStyle) -> Self {
-        transformCorners { rect, corners in
-            corners.applyingStyle(newStyle)
-        }
-    }
-    
-    func applyingStyles(_ newStyles: [CornerStyle]) -> Self {
+    public func applyingStyles(_ newStyles: [CornerStyle]) -> Self {
         transformCorners { rect, corners in
             corners.applyingStyles(newStyles)
         }

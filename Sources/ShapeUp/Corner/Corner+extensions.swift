@@ -30,16 +30,6 @@ extension Corner: Vector2Transformable {
 }
 
 extension Corner {
-    /// Creates a corner at the same position but with the supplied style.
-    /// - Parameter style: Corner style to apply.
-    /// - Returns: A corner at the same position but with the supplied style.
-    public func applyingStyle(_ style: CornerStyle) -> Corner {
-        if style == self.style {
-            return self
-        }
-        return Corner(style, point: point)
-    }
-    
     /// Creates a set of saved dimensions based on the corner style and provided previous and next points.
     ///
     /// Used for creating paths, insetting, flattening, etc.
