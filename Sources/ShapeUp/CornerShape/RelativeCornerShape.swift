@@ -74,13 +74,18 @@ public extension RelativeCornerCustom {
         copy.relativeCorners = transform(relativeCorners)
         return copy
     }
-    
-    /// Creates a copy of this shape with the specified corner style applied to all corners.
-    /// - Parameter newStyle: The corner style to apply to all corners.
-    /// - Returns: A copy of this shape with the corner style applied.
-    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+}
+
+extension RelativeCornerCustom: CornerStylable {
+    public func applyingStyle(_ newStyle: CornerStyle) -> Self {
         transformRelativeCorners {
             $0.applyingStyle(newStyle)
+        }
+    }
+    
+    public func changingRadius(to newRadius: RelatableValue) -> Self {
+        transformRelativeCorners {
+            $0.changingRadius(to: newRadius)
         }
     }
 }

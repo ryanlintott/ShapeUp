@@ -13,7 +13,7 @@ public protocol EnumeratedCorner: CaseIterable, Hashable, Sendable { }
 /// A corner shape defined by a named set of shape corners.
 ///
 /// For example a triangle would include the corners top, bottom left, and bottom right.
-public protocol EnumeratedCornerShape: CornerShape {
+public protocol EnumeratedCornerShape: CornerShape, CornerStylable {
     /// An enumeration containing each named corner in the order they will be drawn.
     associatedtype ShapeCorner: EnumeratedCorner
     
@@ -35,12 +35,23 @@ public extension EnumeratedCornerShape {
     
     /// Creates a copy of this shape changing the style of specified corners to the provided style.
     /// - Parameters:
-    ///   - style: Style to apply to specified shape corners.
+    ///   - newStyle: Style to apply to specified shape corners.
     ///   - shapeCorners: Shape corners on which to apply the specified style. Missing values will keep current style.
     /// - Returns: A copy of this shape changing the style of specified corners to the provided style.
-    func applyingStyle(_ style: CornerStyle, shapeCorners: Set<ShapeCorner> = Set(ShapeCorner.allCases)) -> Self {
+    func applyingStyle(_ newStyle: CornerStyle, shapeCorners: Set<ShapeCorner>) -> Self {
         var shape = self
-        shapeCorners.forEach { shape.styles[$0] = style }
+        shapeCorners.forEach { shape.styles[$0] = newStyle }
+        return shape
+    }
+    
+    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        applyingStyle(newStyle, shapeCorners: Set(ShapeCorner.allCases))
+    }
+    
+    public func changingRadius(to newRadius: RelatableValue) -> Self {
+        var shape = self
+        // Only change the radius of styles that are set.
+        shape.styles = shape.styles.mapValues { $0.changingRadius(to: newRadius) }
         return shape
     }
     
