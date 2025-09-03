@@ -322,31 +322,36 @@ Sometimes you want to cut a notch in the side of a shape. This can be tricky to 
 The following code adds a rectangular notch between the second and third corner. The `addingNotch()` function makes all the necessary calculations to add the corners representing that notch into the `Corner` array.
 
 ```swift
-let notch = Notch(.rectangle, position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1))
+let notch = Notch(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1))
 
 let corners = corners.addingNotch(notch, afterCornerIndex: 1)
 ```
 
 ### NotchStyle
-Notches styles are essentially arrays of `RelativeCorner` so you can create any shape you like.
+Rectangular is the default style but triangular notches are just as easy to make. Both styles can have custom corner styles applied to each corner.
 
-```swift
-let notchStyle = NotchStyle(relativeCorners: [
-    RelativeCorner.topLeft,
-    RelativeCorner.left,
-    RelativeCorner.bottom.rounded(radius: 15),
-    RelativeCorner.right,
-    RelativeCorner.topRight
-])
-```
-
-Or you can quickly create triangular or rectangular notches with custom corner styles.
 ```swift
 /// Specify styles for each corner
-let triangleStyle: NotchStyle = .triangle(cornerStyles: [.rounded(radius: 10), .point, .straight(radius: 5)])
+Notch(depth: 20)
+    .triangle(cornerStyles: [.rounded(radius: 10), .point, .straight(radius: 5)])
+
 /// Or specify one style for all
-let rectangleStyle: NotchStyle = .rectangle(cornerStyle: .rounded(radius: .relative(0.2))
+Notch(length: .relative(0.2), depth: 50)
+    .rectangle(cornerStyle: .rounded(radius: .relative(0.2))
 ```
+
+### Custom NotchStyle
+Notche styles are essentially arrays of `RelativeCorner` so you can create any shape you like.
+```swift
+Notch(depth: .relative(0.1)) {
+    RelativeCorner.topLeft
+    RelativeCorner.left
+    RelativeCorner.bottom.rounded(radius: 15)
+    RelativeCorner.right
+    RelativeCorner.topRight
+}
+```
+
 
 ## Add CornerShape
 Shapes made completely with corners have their limitations. Only straight lines and arcs are possible. If you want to use corners to draw only a portion of your shape you can do that too with `.addOpenCornerShape()` and `.addClosedCornerShape()` functions added to `Path`
@@ -382,7 +387,6 @@ Functions include: magnitude, direction, normalized, addition, subtraction, and 
 
 ## Vector2Transformable
 A protocol that adds transformation functions (move, rotate, flip, inset) to any `Vector2Representable` or array of that type. Applied to `Vector2`, `CGPoint`, and `Corner`.
-
 
 
 ## CGRect and CGSize
