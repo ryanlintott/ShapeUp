@@ -57,4 +57,12 @@ public extension Notch {
     func custom(relativeCorners: [RelativeCorner]) -> Notch {
         applyingStyle(.custom(relativeCorners: relativeCorners))
     }
+    
+    /// Applies a custom style to this notch.
+    /// - Parameters:
+    ///   - relativeCorners: Relative corners that define the notch shape.
+    /// - Returns: A notch with a custom style.
+    func custom(@RelativeCornerArrayBuilder relativeCorners: () -> [RelativeCorner]) -> Notch {
+        custom(relativeCorners: relativeCorners())
+    }
 }

@@ -38,8 +38,8 @@ struct CornerCustomExample: View {
                 
                 RelativeCornerCustom {
                     RelativeCorner.topLeft
-                        .moved(dx: 0.2)
-                        .offset(dy: 10)
+                        .moved(dx: .relative(0.2))
+                        .moved(dy: 10)
                     RelativeCorner.topRight
                     RelativeCorner(x: bottomOffset, y: 1.0)
                 }
@@ -57,7 +57,7 @@ struct CornerCustomExample: View {
                 RelativeCornerCustom {
                     RelativeCorners {
                         RelativeCorner.topLeft.concave(radius: .relative(0.2))
-                            .offset(dx: 10, dy: 10)
+                            .moved(dx: 10, dy: 10)
                         
                         RelativeCorner.topRight.rounded(radius: .relative(0.3))
                         RelativeCorner(x: bottomOffset, y: 1.0).straight(radius: 20)

@@ -97,10 +97,14 @@ extension RelativeCornerCustom: CornerStylable {
     VStack {
         RelativeCornerCustom {
             RelativeCorner.topLeft
-            RelativeCorner.topRight
-            RelativeCorner(x: bottomOffset, y: 1.0)
+                .moved(dx: 10)
+                .rounded(radius: 20)
+                
+            RelativeCorner.right
+            
+            RelativeCorner(x: 0.7, y: 1.0)
+                .cutout(radius: .relative(0.4))
         }
-        .applyingStyle(.rounded(radius: .relative(0.2)))
         
         RelativeCornerCustom(.topLeft, .topRight, .relative(x: bottomOffset, y: 1.0))
             .applyingStyle(.rounded(radius: .relative(0.2)))

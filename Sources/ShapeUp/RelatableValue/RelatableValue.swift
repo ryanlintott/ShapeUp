@@ -49,13 +49,17 @@ public extension RelatableValue {
     /// Returns a mixed relatable value of this value based on a provided total.
     /// - Returns: A mixed relatable value of this value.
     var mixed: Self {
+        .mixed(absolute: components.absolute, relative: components.relative)
+    }
+    
+    var components: (absolute: CGFloat, relative: CGFloat) {
         switch self {
         case let .absolute(value):
-            return .mixed(absolute: value, relative: 0)
+            (absolute: value, relative: 0)
         case let .relative(value):
-            return .mixed(absolute: 0, relative: value)
-        case .mixed:
-            return self
+            (absolute: 0, relative: value)
+        case let .mixed(absolute, relative):
+            (absolute: absolute, relative: relative)
         }
     }
 }

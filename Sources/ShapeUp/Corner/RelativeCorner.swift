@@ -67,12 +67,11 @@ public extension RelativeCorner {
         return copy
     }
     
-    func moved(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
-        repositioned(anchor: anchor.moved(dx: dx, dy: dy))
-    }
-    
-    func offset(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
-        repositioned(offset: offset.moved(dx: dx, dy: dy))
+    func moved(dx: RelatableValue = .zero, dy: RelatableValue = .zero) -> Self {
+        repositioned(
+            anchor: anchor.moved(dx: dx.components.relative, dy: dy.components.relative),
+            offset: offset.moved(dx: dx.components.absolute, dy: dy.components.absolute)
+        )
     }
     
     func rotated(_ angle: Angle, anchor: RectAnchor = .topLeft) -> Self {
@@ -106,12 +105,8 @@ public extension RelativeCorner {
 }
 
 public extension Array where Element == RelativeCorner {
-    func moved(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
+    func moved(dx: RelatableValue = .zero, dy: RelatableValue = .zero) -> Self {
         map { $0.moved(dx: dx, dy: dy) }
-    }
-    
-    func offset(dx: CGFloat = .zero, dy: CGFloat = .zero) -> Self {
-        map { $0.offset(dx: dx, dy: dy) }
     }
     
     func rotated(_ angle: Angle, anchor: RectAnchor = .topLeft) -> Self {

@@ -37,4 +37,11 @@ public struct Notch: Sendable {
         self.length = length ?? depth
         self.depth = depth
     }
+    
+    public init(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, @RelativeCornerArrayBuilder relativeCorners: () -> [RelativeCorner]) {
+        self.position = position ?? .relative(0.5)
+        self.length = length ?? depth
+        self.depth = depth
+        self.style = .custom(relativeCorners: relativeCorners())
+    }
 }
