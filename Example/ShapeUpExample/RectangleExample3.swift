@@ -10,7 +10,7 @@ import SwiftUI
 
 struct RectangleExample3: View {
     var body: some View {
-        Rectangle()
+        CornerRectangle()
             .applyingStyles(
                 [
                     .topLeft: .rounded(radius: 50),

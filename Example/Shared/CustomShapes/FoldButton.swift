@@ -11,7 +11,7 @@ import SwiftUI
 struct FoldButton: View {
     var body: some View {
         ZStack(alignment: .trailing) {
-            Rectangle()
+            CornerRectangle()
                 .applyingStyle(.rounded(radius: .relative(0.5)))
                 .applyingStyle(.point, to: .topRight)
                 .fill(.purple)
