@@ -9,6 +9,7 @@ import SwiftUI
 
 public protocol Vector2Transformable: Vector2Representable {
     /// Repositions this object while keeping other properties untouched.
+    /// - Parameter point: Object will be repositioned to this point.
     /// - Returns: The same object, moved to a new position.
     func repositioned(to point: some Vector2Representable) -> Self
 }
@@ -123,30 +124,30 @@ public extension Vector2Transformable {
         scaledPosition(scale: .init(width: width ?? 1, height: height ?? 1))
     }
     
-    /// Returns the position after being scaled from the origin.
+    /// Scales the position of this object without modifying other properties.
     /// - Parameters:
     ///   - scale: Used to scale the position.
     ///   - anchor: Anchor point for the scale.
-    /// - Returns: Position after being scaled from the origin.
+    /// - Returns: The same object, scaled by the specified amount.
     func scaledPosition(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         repositioned(to: (vector - anchor.vector) * scale + anchor.vector)
     }
     
-    /// Returns the position after being scaled from the origin.
+    /// Scales the position of this object without modifying other properties.
     /// - Parameters:
     ///   - x: Used to scale the x position.
     ///   - y: Used to scale the y position.
     ///   - anchor: Anchor point for the scale.
-    /// - Returns: Position after being scaled from the origin.
+    /// - Returns: The same object, scaled by the specified amount.
     func scaledPosition(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         scaledPosition(.init(width: x, height: y), anchor: anchor)
     }
     
-    /// Returns the position after being scaled from the origin.
+    /// Scales the position of this object without modifying other properties.
     /// - Parameters:
     ///   - scale: Used to scale the position.
     ///   - anchor: Anchor point for the scale.
-    /// - Returns: Position after being scaled from the origin.
+    /// - Returns: The same object, scaled by the specified amount.
     func scaledPosition(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         scaledPosition(.init(width: scale, height: scale), anchor: anchor)
     }

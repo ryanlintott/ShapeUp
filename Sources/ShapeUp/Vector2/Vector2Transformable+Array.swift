@@ -152,63 +152,63 @@ public extension Array where Element: Vector2Transformable {
     /// - Parameters:
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale.
-    /// - Returns: Positions after being scaled from the origin.
+    /// - Returns: The same objects, scaled by the specified amount.
     func scaledPositions(_ scale: CGSize, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         map { $0.scaledPosition(scale, anchor: anchor) }
     }
     
-    /// Returns positions after being scaled from the origin.
+    /// Scales the position of these objects without modifying other properties.
     /// - Parameters:
     ///   - x: Used to scale the x positions.
     ///   - y: Used to scale the y positions.
     ///   - anchor: Anchor point for the scale.
-    /// - Returns: Positions after being scaled from the origin.
+    /// - Returns: The same objects, scaled by the specified amount.
     func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         map { $0.scaledPosition(x: x, y: y, anchor: anchor) }
     }
     
-    /// Returns positions after being scaled from the origin.
+    /// Scales the position of these objects without modifying other properties.
     /// - Parameters:
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale.
-    /// - Returns: Positions after being scaled from the origin.
+    /// - Returns: The same objects, scaled by the specified amount.
     func scaledPositions(_ scale: CGFloat, anchor: some Vector2Representable = CGPoint.zero) -> Self {
         map { $0.scaledPosition(scale, anchor: anchor) }
     }
     
-    /// Returns positions after being scaled from the origin.
+    /// Scales the position of these objects without modifying other properties.
     /// - Parameters:
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale within the bounds frame.
-    /// - Returns: Positions after being scaled from the anchor point.
+    /// - Returns: The same objects, scaled by the specified amount.
     func scaledPositions(_ scale: CGSize, anchor: RectAnchor) -> Self {
         map { $0.scaledPosition(scale, anchor: bounds[anchor]) }
     }
     
-    /// Returns positions after being scaled from the origin using a RectAnchor within the bounds frame.
+    /// Scales the position of these objects without modifying other properties.
     /// - Parameters:
     ///   - x: Used to scale the x positions.
     ///   - y: Used to scale the y positions.
     ///   - anchor: Anchor point for the scale within the bounds frame.
-    /// - Returns: Positions after being scaled from the anchor point.
+    /// - Returns: The same objects, scaled by the specified amount.
     func scaledPositions(x: CGFloat = 1, y: CGFloat = 1, anchor: RectAnchor) -> Self {
         map { $0.scaledPosition(x: x, y: y, anchor: bounds[anchor]) }
     }
     
-    /// Returns positions after being scaled from the origin using a RectAnchor within the bounds frame.
+    /// Scales the position of these objects without modifying other properties.
     /// - Parameters:
     ///   - scale: Used to scale the positions.
     ///   - anchor: Anchor point for the scale within the bounds frame.
-    /// - Returns: Positions after being scaled from the anchor point.
+    /// - Returns: The same objects, scaled by the specified amount.
     func scaledPositions(_ scale: CGFloat, anchor: RectAnchor) -> Self {
         map { $0.scaledPosition(scale, anchor: bounds[anchor]) }
     }
     
-    /// Returns positions after being moved from one frame of reference to another.
+    /// Repositions these objects from one frame of reference to another.
     /// - Parameters:
     ///   - source: Initial frame of reference for the position.
     ///   - destination: Resulting frame of reference.
-    /// - Returns: Positions after being moved from one frame of reference to another.
+    /// - Returns: The same objects repositioned from one frame of reference to another.
     func repositioned(from source: CGRect, to destination: CGRect) -> Self {
         map { $0.repositioned(from: source, to: destination) }
     }
