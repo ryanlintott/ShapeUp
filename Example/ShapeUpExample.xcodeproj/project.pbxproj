@@ -58,6 +58,7 @@
 		CFB5482927ECD217009B699A /* MessageBubble4Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB5482827ECD217009B699A /* MessageBubble4Example.swift */; };
 		CFB5482C27ECD2E6009B699A /* MessageBubble0Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB5482B27ECD2E6009B699A /* MessageBubble0Example.swift */; };
 		CFB65EB92AB78673006167EA /* AnimatablePackExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF37C2A2AA90A0600052FE2 /* AnimatablePackExample.swift */; };
+		CFC7F8A72E7DDC67009881FE /* RelativeCornerCustomExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC7F8A62E7DDC67009881FE /* RelativeCornerCustomExample.swift */; };
 		CFCBC9752A18641A00C28E68 /* CornerExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCBC9742A18641A00C28E68 /* CornerExample.swift */; };
 		CFCBC9772A19236E00C28E68 /* CornerTriangleExample2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCBC9762A19236E00C28E68 /* CornerTriangleExample2.swift */; };
 		CFCBC9792A1961AE00C28E68 /* CornerPentagonExample2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFCBC9782A1961AE00C28E68 /* CornerPentagonExample2.swift */; };
@@ -136,6 +137,7 @@
 		CFB5482627ECCEAB009B699A /* MessageBubble3Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble3Example.swift; sourceTree = "<group>"; };
 		CFB5482827ECD217009B699A /* MessageBubble4Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble4Example.swift; sourceTree = "<group>"; };
 		CFB5482B27ECD2E6009B699A /* MessageBubble0Example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble0Example.swift; sourceTree = "<group>"; };
+		CFC7F8A62E7DDC67009881FE /* RelativeCornerCustomExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeCornerCustomExample.swift; sourceTree = "<group>"; };
 		CFCBC9742A18641A00C28E68 /* CornerExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerExample.swift; sourceTree = "<group>"; };
 		CFCBC9762A19236E00C28E68 /* CornerTriangleExample2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerTriangleExample2.swift; sourceTree = "<group>"; };
 		CFCBC9782A1961AE00C28E68 /* CornerPentagonExample2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerPentagonExample2.swift; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 				CFCBC9742A18641A00C28E68 /* CornerExample.swift */,
 				CF9E0D122DFB4F040053725B /* CornerExampleShapeView.swift */,
 				CF2FE30726C708D20040A985 /* CornerShapeExample.swift */,
+				CFC7F8A62E7DDC67009881FE /* RelativeCornerCustomExample.swift */,
 				CF03C8A727D957EB008B415E /* NestedCornerStyleExample.swift */,
 				CF6E1FA427B6CC8A00D1F169 /* AddOpenCornerShapeExample.swift */,
 				CFD47CCC27DA499600428F9B /* CornerStyleExampleOld.swift */,
@@ -481,6 +484,7 @@
 				CF1A935F2E31774700653C2B /* CornerShapeExample2.swift in Sources */,
 				CFA245F927ED217500953C2B /* RectangleExample2.swift in Sources */,
 				CF2FE30826C708D20040A985 /* CornerShapeExample.swift in Sources */,
+				CFC7F8A72E7DDC67009881FE /* RelativeCornerCustomExample.swift in Sources */,
 				CFB5482527ECCD29009B699A /* MessageBubble2Example.swift in Sources */,
 				CF6E1FA527B6CC8A00D1F169 /* AddOpenCornerShapeExample.swift in Sources */,
 				CF2FE30A26C70DC30040A985 /* NotchedRectangleExample.swift in Sources */,

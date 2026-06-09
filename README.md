@@ -117,15 +117,20 @@ Addding a `CornerStyle` to an array of `CGPoint` changes it into an array of `Co
 ```swift
 func path(in rect: CGRect) -> Path {
     [
-        rect[.topLeft].moved(dx: 10).rounded(radius: 20),
+        rect[.topLeft]
+            .moved(dx: 10)
+            .rounded(radius: 20),
+            
         rect[.right],
-        rect[0.7, 1.0].cutout(radius: .relative(0.4))
+        
+        rect[0.7, 1.0]
+            .cutout(radius: .relative(0.4))
     ]
     .path()
 }
 ```
 
-Arrays of corners with styles can be hard to read. `Corners` can build an array of corners using `CornerArrayBuilder` (similar to `ViewBuilder`)
+Arrays of corners with styles can be awkward to format. `Corners` can build an array of corners using `CornerArrayBuilder` (similar to `ViewBuilder`) so you can omit all those commas.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -362,34 +367,52 @@ A vector type used as an alternative to CGPoint that conforms to all the Vector2
 ## Vector2Representable
 A protocol that adds the `vector: Vector2` property. `Vector2`, `CGPoint`, and `Corner` all conform to this and it's required for any other Vector2 protocols.
 
-Other properties and methods:
+Properties and methods:
 ```swift
 point: CGPoint
 corner(_ style:) -> Corner
+corner: Corner
 ```
 
 Array extensions:
 ```swift
-points: [CGPoint]
 vectors: [Vector2]
+points: [CGPoint]
 corners(_ style: CornerStyle?) -> [Corner]
 corners(_ styles: [CornerStyle?]) -> [Corner]
+corners: [Corner]
 bounds: CGRect
-center: CGPoint
-anchorPoint(_ anchor: RectAnchor) -> CGPoint
 angles: [Angle]
 ```
 
 ## Vector2Algebraic
-A protocol that adds vector math. Only applied to `Vector2` by default but can be added to any other `Vector2Representable` if need be.
+A protocol that adds vector math and adds conformance to `AdditiveArithmetic`. Only applied to `Vector2` by default but can be added to any other `Vector2Representable` type if need be.
 
-Functions include: magnitude, direction, normalized, addition, subtraction, and multiplication or division with scalars.
+Functions include: magnitude, magnitudeSquared, direction, normalized, addition, subtraction, multiplication or division with scalars, cross product, dot product, scalar projection, parallel component and perpendicular component.
 
 ## Vector2Transformable
-A protocol that adds transformation functions (move, rotate, flip, inset) to any `Vector2Representable` or array of that type. Applied to `Vector2`, `CGPoint`, and `Corner`.
+A protocol that adds transformation functions (move, rotate, flip, inset, scale) to any `Vector2Representable` or array of that type. Applied to `Vector2`, `CGPoint`, and `Corner`.
 
 
-## CGRect and CGSize
+## CGRect
+Create a `CGPoint` or `Corner` from a relative anchor position `RectAnchor` of a `CGRect`.
+```swift
+/// Default will return a CGPoint
+let point = rect[.topRight]
+
+/// When a Corner type is required there is an overload that will return a Corner instead
+let corners = Corners {
+    rect[.topRight]
+    rect[1.0, 0.2]
+    rect[.bottom].rounded(radius: 20)
+}
+```
+
+Get the relative anchor position (`RectAnchor`) of a `CGPoint`` within a `CGRect`.
+```swift
+let anchor: RectAnchor = rect[point]
+```
+
 Scale and move `CGRect`
 ```swift
 let transformedRect = rect
@@ -397,7 +420,8 @@ let transformedRect = rect
     .scaled(x: 2, y: 1.5, anchor: .center)
 ```
 
-Scale CGSize
+## CGSize
+Scale
 ```swift
 let scaledSize: CGSize = size.scaled(3)
 ```

@@ -17,7 +17,7 @@ struct TestClosedShape: CornerShape {
         rect[.center].straight(radius: .relative(0.1))
         rect[.topRight].cutout(radius: 20)
         rect[.bottomRight].concave(radius: .relative(0.3))
-        rect[.bottom]
+        rect[0.2, 0.9]
         
         // Old method
 //        [
@@ -28,20 +28,30 @@ struct TestClosedShape: CornerShape {
 //            Corner(x: rect.midX, y: rect.maxY),
 //        ]
     }
-}
-
-struct TestOpenShape: CornerShape {
-    let closed: Bool
-    var insetAmount: CGFloat = 0
     
-    func corners(in rect: CGRect) -> [Corner] {
-        rect[.bottomLeft]
-        rect[.left].rounded(radius: .relative(0.4))
-        rect[.bottom].concave(radius: .relative(0.3))
-        rect[.top].straight(radius: .relative(0.3))
-        rect[.right].cutout(radius: .relative(0.1))
-        rect[.topRight]
-    }
+    static let code: String =
+"""
+struct TestClosedShape: CornerShape {
+  let closed: Bool
+  var insetAmount: CGFloat = 0
+
+  func corners(in rect: CGRect) -> [Corner] {
+    rect[.topLeft]
+        .rounded(radius: .relative(0.3))
+
+    rect[.center]
+        .straight(radius: .relative(0.1))
+
+    rect[.topRight]
+        .cutout(radius: 20)
+
+    rect[.bottomRight]
+        .concave(radius: .relative(0.3))
+
+    rect[0.2, 0.9]
+  }
+}
+"""
 }
 
 struct CornerShapeExample: View {
@@ -50,53 +60,51 @@ struct CornerShapeExample: View {
     
     var body: some View {
         VStack {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Text("Build `CornerShape` from an array of `Corner` elements easily generated from relative `RectAnchor` positions and it automatically cornforms to `InsettableShape`.")
+                    
+                    ZStack {
+                        TestClosedShape(closed: closed, insetAmount: insetAmount)
+                            .fill(Color.suCyan)
+                        
+                        TestClosedShape(closed: closed, insetAmount: insetAmount)
+                            .stroke(Color.suPink, lineWidth: 12)
+                    }
+                    .frame(width: 200, height: 150)
+                    .border(.suBlack)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    
+                    Text(TestClosedShape.code)
+                        .font(.system(size: 12, design: .monospaced))
+                        .padding(.vertical, 6)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+            }
+            
             VStack(alignment: .leading) {
-                Text("Create any array of `Corner` using")
-                Text("`corners(in: CGRect) -> [Corner]`").padding(.vertical, 4)
-                Text("instead of the `Shape` function")
-                Text("`path(in: CGRect) -> Path`").padding(.vertical, 4)
-                Text("to make a `CornerShape` that can be open or closed and is insettable automatically!")
+                Section {
+                    Picker("Shape Options", selection: $closed) {
+                        Text("Closed").tag(true)
+                        Text("Open").tag(false)
+                    }
+                    .pickerStyle(.segmented)
+                    
+                    CrossPlatformSlider(
+                        label: "Inset Amount",
+                        value: $insetAmount,
+                        minValue: -30,
+                        maxValue: 30,
+                        step: 5,
+                        labelPrefix: true
+                    )
+                } header: {
+                    Text("Shape Style")
+                        .font(.headline)
+                }
             }
-            Spacer()
-            
-            ZStack {
-                TestClosedShape(closed: closed, insetAmount: insetAmount)
-                    .fill(Color.suCyan)
-                
-                TestClosedShape(closed: closed, insetAmount: insetAmount)
-                    .stroke(Color.suPink, lineWidth: 12)
-            }
-            .frame(width: 200, height: 150)
-            
-            Spacer()
-            
-            ZStack {
-                TestOpenShape(closed: closed)
-                    .inset(by: insetAmount)
-                    .fill(Color.suYellow)
-                
-                TestOpenShape(closed: closed)
-                    .inset(by: insetAmount)
-                    .stroke(Color.suPurple, lineWidth: 12)
-            }
-            .frame(width: 200, height: 150)
-            
-            Spacer()
-            
-            Picker("Shape Style", selection: $closed) {
-                Text("Closed").tag(true)
-                Text("Open").tag(false)
-            }
-            .pickerStyle(.segmented)
-            
-            CrossPlatformSlider(
-                label: "Inset Amount",
-                value: $insetAmount,
-                minValue: -30,
-                maxValue: 30,
-                step: 5,
-                labelPrefix: true
-            )
         }
         .padding()
         .navigationTitle("CornerShape")
@@ -110,3 +118,4 @@ struct CornerShapeView_Previews: PreviewProvider {
         }
     }
 }
+
