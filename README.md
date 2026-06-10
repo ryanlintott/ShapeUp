@@ -19,7 +19,8 @@ Features:
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
 - [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners.
 - [`CornerCustom`](#cornercustom), for building corner shapes inline without making a new type.
-- Add a [`Notch`](#notch) of any `NotchStyle` inbetween two corners.
+- [`RelativeCornerCustom`](#relativecornercustom), for building animatable corner shapes from relative positions.
+- Add a [`Notch`](#notch) of any `NotchStyle` between two corners.
 - [`.addOpenCornerShape()`](#add-cornershape) or [`.addClosedCornerShape()`](#add-cornershape) for adding a few corners to a SwiftUI `Path`
 - [`Vector2`](#vector2), a new type similar to `CGPoint` but used to do vector math.
 - [`Vector2Representable`](#vector2representable) protocol that adds a `.vector` property needed to conform to other Vector2-related protocols.
@@ -35,7 +36,7 @@ Features:
 The `Example` folder has an app that demonstrates the features of this package.
 
 # Installation and Usage
-This package is compatible with iOS 14+, macOS 11+, watchOS 7+, tvOS 14+, and visionOS.
+This package is compatible with iOS 14+, macOS 11+, watchOS 7+, tvOS 14+, and visionOS 1+.
 
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/ShapeUp` and select by version.
@@ -57,9 +58,9 @@ Or you can buy a t-shirt with the ShapeUp logo
 - - -
 # Features
 ## RectAnchor
-`RectAnchor` references a relative locations to a `CGRect` like `.topLeft`, `bottomRight`, and `.relative(x: 0.2, y: 0.8)`. It's similar to `UnitPoint` but it uses left and right instead of leading and trailing as it cannot respond to locale changes.
+`RectAnchor` references a relative location in a `CGRect` like `.topLeft`, `.bottomRight`, and `.relative(x: 0.2, y: 0.8)`. It's similar to `UnitPoint` but it uses left and right instead of leading and trailing as it cannot respond to locale changes.
 
-Inside the `path(in:)` method of a SwiftUI `Shape` points often use positions relative to the `rect` parameter. `ShapeUp` adds a subscript on `CGPoint` that uses `RectAnchor` to clarify this code.
+Inside the `path(in:)` method of a SwiftUI `Shape`, points often use positions relative to the `rect` parameter. `ShapeUp` adds a subscript on `CGRect` that uses `RectAnchor` to clarify this code.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -112,7 +113,7 @@ func path(in rect: CGRect) -> Path {
 }
 ```
 
-Addding a `CornerStyle` to an array of `CGPoint` changes it into an array of `Corner`. You can also apply different styles to individual corners.
+Adding a `CornerStyle` to an array of `CGPoint` changes it into an array of `Corner`. You can also apply different styles to individual corners.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -190,9 +191,9 @@ Internally, the final value is determined by running the `value(using total:)` f
 
 
 ## CornerShape
-An alternative to SwiftUI `Shape` where shapes built from an array of `Corner`s. The resulting shape automatically conforms to `InsettableShape` with no additional work.
+An alternative to SwiftUI `Shape` where shapes are built from an array of `Corner`s. The resulting shape automatically conforms to `InsettableShape` with no additional work.
 
-CornerShape onlys draw straight lines between corners of different styles so if you want bezier curves you will need to use corners inside a `Shape` and generate a path instead.
+`CornerShape` onlys draws straight lines between corners of different styles so if you want bezier curves you will need to use `Shape` and `addOpenCornerShape` to the path instead.
 
 ### How to build a CornerShape
 - Set `insetAmount` to zero (this property is used to automatically inset the CornerShape).
@@ -269,7 +270,7 @@ CornerCustom { rect in
 ```
 
 ## RelativeCornerCustom
-An alternative to `CornerCustom` with a closure than can capture @State values. This shape takes an array of `RelativeCorner`, a type similar to `Corner` except its position is a relative anchor point with an absolute offset.
+An alternative to `CornerCustom` that can use `@State` values and can therefore be animated. This shape takes an array of `RelativeCorner`, a type similar to `Corner` except its position is a relative anchor point with an absolute offset.
 
 ```swift
 RelativeCornerCustom {
@@ -342,11 +343,11 @@ Notch(depth: 20)
 
 /// Or specify one style for all
 Notch(length: .relative(0.2), depth: 50)
-    .rectangle(cornerStyle: .rounded(radius: .relative(0.2))
+    .rectangle(cornerStyle: .rounded(radius: .relative(0.2)))
 ```
 
 ### Custom NotchStyle
-Notche styles are essentially arrays of `RelativeCorner` so you can create any shape you like.
+Notch styles are essentially arrays of `RelativeCorner` so you can create any shape you like.
 ```swift
 Notch(depth: .relative(0.1)) {
     RelativeCorner.topLeft
@@ -359,7 +360,28 @@ Notch(depth: .relative(0.1)) {
 
 
 ## Add CornerShape
-Shapes made completely with corners have their limitations. Only straight lines and arcs are possible. If you want to use corners to draw only a portion of your shape you can do that too with `.addOpenCornerShape()` and `.addClosedCornerShape()` functions added to `Path`
+If you have a more complex shape with curves but still want to add corners you can use the `.addOpenCornerShape()` and `.addClosedCornerShape()` functions added to `Path`.
+
+Both functions accept an array or a trailing `CornerArrayBuilder` closure:
+
+```swift
+var path = Path()
+
+path.addOpenCornerShape(
+    previousPoint: path.currentPoint,
+    nextPoint: rect[.bottomRight]
+) {
+    rect[.topLeft]
+    rect[.top].rounded(radius: 12)
+    rect[.right]
+}
+
+path.addClosedCornerShape {
+    rect[.topLeft]
+    rect[.topRight]
+    rect[.bottom].rounded(radius: 20)
+}
+```
 
 ## Vector2
 A vector type used as an alternative to CGPoint that conforms to all the Vector2 protocols.
@@ -408,7 +430,7 @@ let corners = Corners {
 }
 ```
 
-Get the relative anchor position (`RectAnchor`) of a `CGPoint`` within a `CGRect`.
+Get the relative anchor position (`RectAnchor`) of a `CGPoint` within a `CGRect`.
 ```swift
 let anchor: RectAnchor = rect[point]
 ```
@@ -432,18 +454,22 @@ let rect = size.rect(at: point, anchor: .center)
 ```
 
 ## CGFrame
-For more complex transformations a coordinate space or rhombus defined only by an origin and a vector for each axis can be helpful. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems. Specifically this is used to draw custom cornerStyles
+For more complex transformations, a coordinate space or rhombus defined only by an origin and a vector for each axis can be helpful. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems. Specifically, this is used to draw custom corner styles.
 
-Similar to `CGRect` you can easily create points, anchor points or arrays of either.
+Similar to `CGRect`, you can easily create points and convert between points and relative anchors.
 
 ```swift
 let frame = CGFrame(origin: .zero, xAxis: Vector2(dx: 10, dy: 0), yAxis: Vector2(dx: 10, dy: 8))
 let center: CGPoint = frame[.center]
-let edgeMidpoints: [CGPoint] = frame[.top, .right, .bottom, .left]
-let relativePoint: [CGPoint] = frame[1.0, 0.666]
-let relativePoints: [CGPoint] = frame[(0.0, 0.7), (0.3, 1.0), (1.0, 0.0))
+let edgeMidpoints = [RectAnchor.top, .right, .bottom, .left].points(in: frame)
+let relativePoint: CGPoint = frame[1.0, 0.666]
+let relativePoints = [
+    RectAnchor.relative(x: 0.0, y: 0.7),
+    .relative(x: 0.3, y: 1.0),
+    .relative(x: 1.0, y: 0.0)
+].points(in: frame)
 let anchorPoint: RectAnchor = frame[CGPoint(x: 15, y: 4)]
-let anchorPoints: [RectAnchor] = rect[relativePoints]
+let anchorPoints: [RectAnchor] = relativePoints.map { frame[$0] }
 ```
 
 ```swift
@@ -451,7 +477,7 @@ CGFrame(origin: .zero, size: CGSize(width: 10, height: 20), anchor: .center, rot
 ```
 
 ## SketchyLine
-A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
+An animatable line `Shape` with ends that can extend and a position that can offset perpendicular to its direction.
 
 <img width="195" alt="image" src="https://user-images.githubusercontent.com/2143656/157765981-3f48e2bb-50c8-46ba-b2b3-80d7491f1473.png">
 
