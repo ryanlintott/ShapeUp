@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Builds an array of  Corners from both ``Corner`` and `CGPoint` types
+/// Builds an array of ``RelativeCorner`` from  ``RelativeCorner``,  `RectAnchor` and `(CGFloat, CGFloat)` types
 @resultBuilder
 public enum RelativeCornerArrayBuilder { }
 
@@ -19,12 +19,13 @@ public extension RelativeCornerArrayBuilder {
     static func buildEither(second component: [RelativeCorner]) -> [RelativeCorner] {
         component
     }
+    
     static func buildOptional(_ component: [RelativeCorner]?) -> [RelativeCorner] {
         component ?? []
     }
     
     static func buildExpression(_ expression: RectAnchor) -> [RelativeCorner] {
-        [expression.relativeCorner()]
+        [expression.relativeCorner]
     }
     
     static func buildExpression(_ expression: [RectAnchor]) -> [RelativeCorner] {

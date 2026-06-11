@@ -62,7 +62,7 @@ public extension Array where Element: CornerStylable {
     }
 }
 
-/// An object that has a corner style that can be changed
+/// An object that has a single corner style that can be changed
 public protocol CornerStyled: CornerStylable {
     var style: CornerStyle { get set }
 }

@@ -18,33 +18,28 @@ public protocol RelativeRepresentable: Vector2Representable {
 }
 
 extension RelativeRepresentable {
-    /// Converts this object to one that is relative to the specified rectangle.
-    /// - Parameter rect: Rectangle used for relative position.
-    /// - Returns: A relative version of this object anchored to the specified rectangle.
-    public func relative(to rect: CGRect) -> RelativeValue {
-        relative(to: CGFrame(rect))
-    }
-    
     /// Converts this object to one that is relative to the specified frame.
     /// - Parameter frame: Frame used for relative position.
     /// - Returns: A relative version of this object anchored to the specified frame.
-    public func relative(to frame: CGFrame) -> RelativeValue {
-        repositioned(to: frame[vector.point])
+    public func relative(to frame: some CGFrameRepresentable) -> RelativeValue {
+        /// Vector from origin to the point.
+        let relativeVector = vector - frame.origin.vector
+        
+        let denominator = frame.xAxis.crossProduct(with: frame.yAxis)
+        guard abs(denominator) > 1e-8 else { return repositioned(to: .topLeft) }
+        
+        let x = relativeVector.crossProduct(with: frame.yAxis) / denominator
+        let y = frame.xAxis.crossProduct(with: relativeVector) / denominator
+        
+        return repositioned(to: .relative(x: x, y: y))
     }
 }
 
 extension Array where Element: RelativeRepresentable {
-    /// Converts this array of objects to an array of objects relative to the specified rectangle.
-    /// - Parameter rect: Rectangle used for relative position.
-    /// - Returns: A relative version of this object anchored to the specified rectangle.
-    public func relative(to rect: CGRect) -> [Element.RelativeValue] {
-        map { $0.relative(to: rect) }
-    }
-    
     /// Converts this array of objects to an array of objects relative to the specified frame.
     /// - Parameter frame: Frame used for relative position.
     /// - Returns: A relative version of this object anchored to the specified frame.
-    public func relative(to frame: CGFrame) -> [Element.RelativeValue] {
+    public func relative(to frame: some CGFrameRepresentable) -> [Element.RelativeValue] {
         map { $0.relative(to: frame) }
     }
     

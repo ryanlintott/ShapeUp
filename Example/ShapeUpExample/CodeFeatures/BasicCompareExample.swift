@@ -45,13 +45,13 @@ struct ShapeUpBasicShape: CornerShape {
     var radius: RelatableValue
     
     func corners(in rect: CGRect) -> [Corner] {
-        rect.corners(
+        rect.points(
             .bottomLeft,
             .top,
             .bottomRight,
             .relative(x: 0.5, y: 0.7)
         )
-        .applyingStyle(.rounded(radius: radius))
+        .corners(.rounded(radius: radius))
     }
 }
 

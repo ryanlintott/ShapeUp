@@ -32,6 +32,7 @@ public extension Notch {
         applyingStyle(.triangle(cornerStyles: cornerStyles))
     }
     
+    /// Applies a rectangular style to this notch.
     var rectangle: Self { rectangle() }
     
     /// Applies a rectangular style to this notch.

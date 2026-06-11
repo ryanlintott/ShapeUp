@@ -30,12 +30,12 @@ public extension NotchStyle {
         get {
             switch self {
             case let .triangle(cornerStyles):
-                [RectAnchor.topLeft, .bottom, .topRight]
-                    .relativeCorners(cornerStyles)
+                [RelativeCorner.topLeft, .bottom, .topRight]
+                    .applyingStyles(cornerStyles)
                 
             case let .rectangle(cornerStyles):
-                [RectAnchor.topLeft, .bottomLeft, .bottomRight, .topRight]
-                    .relativeCorners(cornerStyles)
+                [RelativeCorner.topLeft, .bottomLeft, .bottomRight, .topRight]
+                    .applyingStyles(cornerStyles)
                 
             case let .custom(relativeCorners):
                 relativeCorners

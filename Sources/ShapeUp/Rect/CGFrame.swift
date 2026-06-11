@@ -7,6 +7,99 @@
 
 import SwiftUI
 
+public protocol CGFrameRepresentable {
+    /// The origin point of the coordinate frame.
+    var origin: CGPoint { get }
+    /// The vector defining the x-axis direction and magnitude.
+    var xAxis: Vector2 { get }
+    /// The vector defining the y-axis direction and magnitude.
+    var yAxis: Vector2 { get }
+    
+    /// Creates a point in the location of an anchor.
+    /// - Parameters:
+    ///   - anchor: Anchor where the point is located.
+    /// - Returns: A point where the anchor is located.
+    subscript (_ anchor: RectAnchor) -> CGPoint { get }
+}
+
+public extension CGFrameRepresentable {
+    /// Transforms a relative corner into a corner.
+    ///
+    /// - Note: The additional style parameter makes this subscript act as a disfavoured overload to the subscript that outputs a `CGPoint`.
+    ///
+    /// - Parameters:
+    ///   - anchor: Anchor where the point is located.
+    ///   - style: The corner style to apply. (default is .point)
+    /// - Returns: A corner based on the relative corner.
+    subscript (_ anchor: RectAnchor, _ style: CornerStyle = .point) -> Corner {
+        self[anchor].corner(style)
+    }
+    
+    /// Creates a point at the specified relative coordinates in the frame.
+    ///
+    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the frame.
+    /// - Parameters:
+    ///   - x: Relative x coordinate.
+    ///   - y: Relative y coordinate.
+    /// - Returns: The point at the relative coordinates.
+    subscript (x: CGFloat, y: CGFloat) -> CGPoint {
+        self[.relative(x: x, y: y)]
+    }
+    
+    /// Creates a point at the relative coordinates inside this rectangle.
+    ///
+    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
+    /// - Parameters:
+    ///   - x: Relative x coordinate.
+    ///   - y: Relative y coordinate.
+    ///   - style: The corner style to apply. (default is .point)
+    /// - Returns: A corner at the relative location inside this CGRect with the applied style.
+    subscript (x: CGFloat, y: CGFloat, _ style: CornerStyle = .point) -> Corner {
+        self[.relative(x: x, y: y)].corner(style)
+    }
+    
+    /// Creates an array of points in the locations of the supplied anchors.
+    /// - Parameter anchors: Anchors defining point locations in order.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
+    func points(_ anchors: [RectAnchor]) -> [CGPoint] {
+        anchors.map { self[$0] }
+    }
+    
+    /// Creates an array of points in the locations of the supplied anchors.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
+    func points(_ anchors: RectAnchor...) -> [CGPoint] {
+        points(anchors)
+    }
+    
+    func points(@RectAnchorArrayBuilder _ anchors: () -> [RectAnchor]) -> [CGPoint] {
+        points(anchors())
+    }
+    
+    /// Creates an array of corners from the 4 corners of the rectangle starting with the top left and going clockwise with the `.point` style applied.
+    var corners: [Corner] {
+        corners()
+    }
+    
+    /// Creates an array of corners from the rectangle.
+    /// - Parameter style: Corner style used for all corners.
+    /// - Returns: An array of 4 corners, with the provided style, starting with the top left and going clockwise.
+    func corners(_ style: CornerStyle = .point) -> [Corner] {
+        points(.vertices).corners(style)
+    }
+    
+    /// Creates an array of corners from the rectangle.
+    /// - Parameter styles: Array of corner styles starting with the top left and going clockwise. Nil values will use `.point`
+    /// - Returns: An array of 4 corners, with the provided styles, starting with the top left and going clockwise.
+    func corners(_ styles: [CornerStyle?]) -> [Corner] {
+        points(.vertices).corners(styles)
+    }
+    
+    func corners(@RelativeCornerArrayBuilder _ relativeCorners: () -> [RelativeCorner]) -> [Corner] {
+        relativeCorners().map { $0.corner(in: self) }
+    }
+}
+
+
 /// A coordinate space or rhombus defined only by an origin and a vector for each axis.
 public struct CGFrame {
     /// The origin point of the coordinate frame.
@@ -15,6 +108,14 @@ public struct CGFrame {
     public var xAxis: Vector2
     /// The vector defining the y-axis direction and magnitude.
     public var yAxis: Vector2
+}
+
+extension CGFrame: CGFrameRepresentable {
+    public subscript (_ anchor: RectAnchor) -> CGPoint {
+        origin
+            .moved(xAxis * anchor.relativePoint.x)
+            .moved(yAxis * anchor.relativePoint.y)
+    }
 }
 
 public extension CGFrame {
@@ -41,47 +142,5 @@ public extension CGFrame {
     /// - Parameter rect: The rectangle to convert to a coordinate frame.
     init(_ rect: CGRect) {
         self.init(origin: rect.origin, size: rect.size)
-    }
-    
-    // MARK: - Points from anchor points
-    
-    /// Returns the point at the specified anchor location within the frame.
-    /// - Parameter anchor: The anchor defining the point location.
-    /// - Returns: The point at the anchor location.
-    subscript (_ anchor: RectAnchor) -> CGPoint {
-        origin
-            .moved(xAxis * anchor.relativePoint.x)
-            .moved(yAxis * anchor.relativePoint.y)
-    }
-    
-    // MARK: - Points from relative coordinates
-
-    /// Creates a point at the specified relative coordinates in the frame.
-    ///
-    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the frame.
-    /// - Parameters:
-    ///   - x: Relative x coordinate.
-    ///   - y: Relative y coordinate.
-    /// - Returns: The point at the relative coordinates.
-    subscript (_ x: CGFloat, _ y: CGFloat) -> CGPoint {
-        self[.relative(x: x, y: y)]
-    }
-
-    // MARK: - Anchor points from points
-    
-    /// Returns the relative anchor for a given point within the frame.
-    /// - Parameter point: The point to convert to an anchor.
-    /// - Returns: The relative anchor representing the point's position in the frame.
-    subscript (_ point: CGPoint) -> RectAnchor {
-        /// Vector from origin to the point.
-        let relativeVector = point.vector - origin.vector
-        
-        let denominator = xAxis.crossProduct(with: yAxis)
-        guard abs(denominator) > 1e-8 else { return .topLeft }
-        
-        let x = relativeVector.crossProduct(with: yAxis) / denominator
-        let y = xAxis.crossProduct(with: relativeVector) / denominator
-        
-        return .relative(x: x, y: y)
     }
 }

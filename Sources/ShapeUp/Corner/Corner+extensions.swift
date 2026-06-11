@@ -9,7 +9,7 @@ import SwiftUI
 
 extension Corner: RelativeRepresentable {
     public func repositioned(to anchor: RectAnchor) -> RelativeCorner {
-        anchor.relativeCorner(style)
+        anchor.relativeCorner.applyingStyle(style)
     }
 }
 

@@ -16,23 +16,30 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     
     /// Create a corner with a specified style and anchor point.
     /// - Parameters:
+    ///   - style: Corner style. Default is .point.
     ///   - anchor: Location of corner based on an anchor point.
     ///   - offset: Absolute distance from the anchor point using the same x and y diretions of the frame of reference.
-    ///   - style: Corner style. Default is .point.
-    public init(anchor: RectAnchor, offset: some Vector2Representable = Vector2.zero, _ style: CornerStyle? = nil) {
+    internal init(_ style: CornerStyle? = nil, anchor: RectAnchor, offset: some Vector2Representable) {
         self.anchor = anchor
         self.offset = offset.vector
         self.style = style ?? .point
     }
     
+    /// Create a corner with a specified style and anchor point.
+    /// - Parameters:
+    ///   - style: Corner style. Default is .point.
+    ///   - anchor: Location of corner based on an anchor point.
+    public init(_ style: CornerStyle? = nil, anchor: RectAnchor) {
+        self = .init(style, anchor: anchor, offset: Vector2.zero)
+    }
+    
     /// Create a corner with a `.point` style at the specified relative location.
     /// - Parameters:
+    ///   - style: Corner style. Default is .point.
     ///   - x: Relative x location of corner based on top left anchor point.
     ///   - y: Relative y location of corner based on top left anchor point.
-    public init(x: CGFloat, y: CGFloat) {
-        self.anchor = .relative(x: x, y: y)
-        self.style = .point
-        self.offset = .zero
+    public init(_ style: CornerStyle? = nil, x: CGFloat, y: CGFloat) {
+        self = .init(style, anchor: .relative(x: x, y: y))
     }
 }
 
@@ -48,7 +55,7 @@ public extension RelativeCorner {
     func corner(in frame: CGFrame) -> Corner {
         .init(
             style,
-            point: anchor.point(in: frame)
+            point: frame[anchor]
                 .moved(frame.xAxis.normalized * offset.dx)
                 .moved(frame.yAxis.normalized * offset.dy)
         )
