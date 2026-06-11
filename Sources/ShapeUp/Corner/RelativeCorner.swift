@@ -44,21 +44,23 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
 }
 
 public extension RelativeCorner {
-    func corner(in rect: CGRect) -> Corner {
-        .init(
-            style,
-            point: anchor.point(in: rect)
-                .moved(offset)
-        )
-    }
-    
-    func corner(in frame: CGFrame) -> Corner {
-        .init(
-            style,
-            point: frame[anchor]
-                .moved(frame.xAxis.normalized * offset.dx)
-                .moved(frame.yAxis.normalized * offset.dy)
-        )
+    func corner(in frame: some CGFrameRepresentable) -> Corner {
+        if let rect = frame as? CGRect {
+            // This special case ensures the offset isn't zero when the width or height is zero
+            .init(
+                style,
+                point: anchor.point(in: rect)
+                    .moved(offset)
+            )
+        } else {
+            // When either the axis is zero the offset in that direction will also be zero
+            .init(
+                style,
+                point: frame[anchor]
+                    .moved(frame.xAxis.normalized * offset.dx)
+                    .moved(frame.yAxis.normalized * offset.dy)
+            )
+        }
     }
 }
 

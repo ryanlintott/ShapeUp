@@ -125,17 +125,15 @@ public extension CGFrame {
     /// - Parameters:
     ///   - origin: The origin point of the frame.
     ///   - size: The size of the frame.
-    ///   - anchor: The anchor point for positioning (default: .topLeft).
     ///   - rotation: The rotation angle of the frame (default: .zero).
     init(
         origin: CGPoint,
         size: CGSize,
-        anchor: RectAnchor = .topLeft,
         rotation: Angle = .zero
     ) {
         self.origin = origin
         self.xAxis = Vector2(magnitude: size.width, direction: rotation)
-        self.yAxis = Vector2(magnitude: size.width, direction: rotation + Angle.degrees(90))
+        self.yAxis = Vector2(magnitude: size.height, direction: rotation + Angle.degrees(90))
     }
     
     /// Creates a coordinate frame equivalent for a CGRect.

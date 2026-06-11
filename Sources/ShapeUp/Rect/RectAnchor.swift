@@ -41,6 +41,11 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable, Codable {
 }
 
 extension RectAnchor {
+    /// Hash value is based on the relative point instead of the enum values so `.center` and `.relative(x: 0.5, y: 0.5)` are equal
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(relativePoint.vector)
+    }
+    
     /// Returns a Boolean value indicating whether two values are equal.
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.relativePoint == rhs.relativePoint

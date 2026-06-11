@@ -110,8 +110,7 @@ public extension CGRect {
     ///   - location: End location.
     /// - Returns: A rectangle of the same size and a new origin determined by moving an anchor point from one location to another.
     func moved(_ anchor: RectAnchor = .topLeft, to location: some Vector2Representable) -> Self {
-        let vector = location.vector - self[anchor].vector
-        return repositioned(to: vector)
+        moved(location.vector - self[anchor].vector)
     }
     
     /// Moves the rectangle from one relative position to another
