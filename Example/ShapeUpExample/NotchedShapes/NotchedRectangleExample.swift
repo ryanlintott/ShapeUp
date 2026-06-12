@@ -20,9 +20,9 @@ struct NotchedRectangleExample: View {
                 ])
                 .addingNotches(
                     [
-                        Notch(depth: 50).rectangle(cornerStyle: .rounded(radius: 10)),
+                        Notch(depth: 50).cornerStyle(.rounded(radius: 10)),
                         nil,
-                        Notch(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)).triangle,
+                        Notch(.triangle, position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)),
                         Notch(depth: 60) {
                             RelativeCorner.top
                             RelativeCorner.bottomLeft

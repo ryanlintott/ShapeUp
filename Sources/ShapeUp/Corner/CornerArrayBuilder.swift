@@ -80,7 +80,7 @@ struct CornerArrayBuilderShapeExample: CornerShape {
             
             rect[.topRight]
         }
-        .applyingStyle(.rounded(radius: .absolute(radius)))
+        .cornerStyle(.rounded(radius: .absolute(radius)))
         
         rect[.bottomRight]
         

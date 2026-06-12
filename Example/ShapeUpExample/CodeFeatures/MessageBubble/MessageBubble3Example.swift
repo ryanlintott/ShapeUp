@@ -20,8 +20,8 @@ struct MessageBubble3: CornerShape {
         rect
             .corners(.rounded(radius: cornerRadius))
             .addingNotch(
-                Notch(depth: -pointSize)
-                    .triangle(cornerStyles: [
+                Notch(.triangle, depth: -pointSize)
+                    .cornerStyles([
                         .rounded(radius: pointRadius),
                         .point,
                         .rounded(radius: pointRadius)

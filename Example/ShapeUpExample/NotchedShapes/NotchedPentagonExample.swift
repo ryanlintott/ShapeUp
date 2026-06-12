@@ -17,7 +17,7 @@ struct NotchedPentagonExample: View {
                 bottomTaper: .zero
             )
             .corners(in: rect)
-            .applyingStyle(.rounded(radius: 20))
+            .cornerStyle(.rounded(radius: 20))
             .addingNotches([
                 .triangle(depth: .relative(0.2)),
                 nil,

@@ -24,12 +24,12 @@ struct CornerPentagonExample: View {
                 .frame(width: 200, height: 100)
             
             CornerPentagon(pointHeight: 10)
-                .applyingStyle(.concave(radius: 10))
+                .cornerStyle(.concave(radius: 10))
                 .strokeBorder(Color.suPink, lineWidth: 8)
                 .frame(width: 200, height: 100)
             
             CornerPentagon(pointHeight: .relative(0.5), topTaper: .relative(0.3))
-                .applyingStyle(.rounded(radius: .relative(0.3)), shapeCorners: [.bottomLeft, .bottomRight])
+                .cornerStyle(.rounded(radius: .relative(0.3)), shapeCorners: [.bottomLeft, .bottomRight])
                 .fill(Color.suYellow)
                 .frame(width: 200, height: 100)
         }

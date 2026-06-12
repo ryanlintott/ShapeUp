@@ -21,7 +21,7 @@ struct QuickHexagonExample: View {
             (taper, 1)
             (0, 0.5)
         }
-        .applyingStyle(.rounded(radius: 20))
+        .cornerStyle(.rounded(radius: 20))
     }
 }
 

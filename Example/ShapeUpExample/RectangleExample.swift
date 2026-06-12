@@ -20,7 +20,7 @@ struct RectangleExample: View {
         VStack {
             ForEach(styles, id: \.self) { style in
                 CornerRectangle()
-                    .applyingStyle(style)
+                    .cornerStyle(style)
                     .fill(Color.suPurple)
                     .padding()
             }

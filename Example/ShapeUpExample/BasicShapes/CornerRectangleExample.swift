@@ -12,7 +12,7 @@ struct CornerRectangleExample: View {
     var body: some View {
         VStack {
             CornerRectangle()
-            .applyingStyle(
+            .cornerStyle(
                 .custom(radius: .relative(0.3), relativeCorners: [.topLeft, .left, .top])
                 .changingRadius(to: 20)
             )
@@ -44,12 +44,12 @@ struct CornerRectangleExample: View {
                 .frame(width: 200, height: 100)
             
             CornerRectangle()
-                .applyingStyle(.straight(radius: 20))
+                .cornerStyle(.straight(radius: 20))
                 .strokeBorder(Color.suPink, lineWidth: 8)
                 .frame(width: 200, height: 100)
             
             CornerRectangle()
-                .applyingStyle(.rounded(radius: 30), shapeCorners: [.bottomLeft, .bottomRight])
+                .cornerStyle(.rounded(radius: 30), shapeCorners: [.bottomLeft, .bottomRight])
                 .fill(Color.suYellow)
                 .frame(width: 100, height: 100)
         }

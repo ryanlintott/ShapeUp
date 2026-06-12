@@ -16,7 +16,7 @@ public extension Rectangle {
     @available(*, deprecated, message: "Use CornerRectangle instead.")
     func applyingStyle(_ style: CornerStyle, shapeCorners: Set<CornerRectangle.ShapeCorner> = Set(CornerRectangle.ShapeCorner.allCases)) -> CornerRectangle {
         CornerRectangle()
-            .applyingStyle(style, shapeCorners: shapeCorners)
+            .cornerStyle(style, shapeCorners: shapeCorners)
     }
     
     /// Creates a CornerRectangle applying the styles of specified corners.
@@ -26,6 +26,6 @@ public extension Rectangle {
     @available(*, deprecated, message: "Use CornerRectangle instead.")
     func applyingStyles(_ styles: [CornerRectangle.ShapeCorner: CornerStyle?]) -> CornerRectangle {
         CornerRectangle()
-            .applyingStyles(styles)
+            .cornerStyles(styles)
     }
 }

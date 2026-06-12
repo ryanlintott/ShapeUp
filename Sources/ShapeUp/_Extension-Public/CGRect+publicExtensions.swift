@@ -8,10 +8,6 @@
 import SwiftUI
 
 extension CGRect: CGFrameRepresentable {
-//    public var frame: CGFrame {
-//        CGFrame(self)
-//    }
-    
     public var xAxis: Vector2 {
         CGFrame(self).xAxis
     }
@@ -38,7 +34,7 @@ public extension CGRect {
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    @available(*, deprecated: 100000, renamed: "points(_:)", message: "Use `points { }` instead.")
+    @available(*, deprecated, renamed: "points(_:)", message: "Use `points { }` instead.")
     func points(relativeLocations: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
         relativeLocations.map { self[$0.x, $0.y] }
     }
@@ -48,21 +44,17 @@ public extension CGRect {
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    @available(*, deprecated: 100000, renamed: "points(_:)", message: "Use `points { }` instead.")
+    @available(*, deprecated, renamed: "points(_:)", message: "Use `points { }` instead.")
     func points(relativeLocations: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
         points(relativeLocations: relativeLocations)
     }
-    
-    // MARK: - Corners
-    
-    
     
     // MARK: - Deprecated
     
     /// Creates a point in the location of an anchor.
     /// - Parameter anchor: Anchor where the point is located
     /// - Returns: A point where the anchor is located.
-    @available(*, deprecated: 100000, renamed: "subscript(_:)", message: "Use `rect[anchor]` instead.")
+    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchor]` instead.")
     func point(_ anchor: RectAnchor) -> CGPoint {
         self[anchor]
     }
@@ -73,7 +65,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocation: A tuple with relative x and y coordinates respectively.
     /// - Returns: A point at the relative location inside this CGRect.
-    @available(*, deprecated: 100000, renamed: "subscript(_:_:)", message: "Use `rect[x, y]` instead.")
+    @available(*, deprecated, renamed: "subscript(_:_:)", message: "Use `rect[x, y]` instead.")
     func point(relativeLocation: (CGFloat, CGFloat)) -> CGPoint {
         self[relativeLocation.0, relativeLocation.1]
     }

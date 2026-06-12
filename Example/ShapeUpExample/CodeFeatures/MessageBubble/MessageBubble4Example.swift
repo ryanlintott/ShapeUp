@@ -19,11 +19,12 @@ struct MessageBubble4: View {
             rect
                 .corners(.rounded(radius: cornerRadius))
                 .addingNotch(
-                    .triangle(depth: -pointSize, cornerStyles: [
-                        .rounded(radius: pointRadius),
-                        .point,
-                        .rounded(radius: pointRadius)
-                    ]),
+                    Notch(.triangle, depth: -pointSize)
+                        .cornerStyles([
+                            .rounded(radius: pointRadius),
+                            .point,
+                            .rounded(radius: pointRadius)
+                        ]),
                     afterCornerIndex: 2
                 )
         }

@@ -46,13 +46,13 @@ struct CornerExampleShapeView: View {
         switch shape {
         case .rectangle:
             CornerRectangle()
-                .applyingStyle(adjustedStyle)
+                .cornerStyle(adjustedStyle)
         case .triangle:
             CornerTriangle()
-                .applyingStyle(adjustedStyle)
+                .cornerStyle(adjustedStyle)
         case .pentagon:
             CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
-                .applyingStyle(adjustedStyle)
+                .cornerStyle(adjustedStyle)
         case .custom:
             CustomCornerShapeExample(style: adjustedStyle)
         }

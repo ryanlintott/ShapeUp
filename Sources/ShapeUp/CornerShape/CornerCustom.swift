@@ -54,9 +54,9 @@ public struct CornerCustom: CornerShape {
 }
 
 extension CornerCustom: CornerStylable {
-    public func applyingStyle(_ newStyle: CornerStyle) -> Self {
+    public func cornerStyle(_ newStyle: CornerStyle) -> Self {
         transformCorners { rect, corners in
-            corners.applyingStyle(newStyle)
+            corners.cornerStyle(newStyle)
         }
     }
     
@@ -87,7 +87,7 @@ public extension CornerCustom {
     /// - Returns: The same shape with new corner styles applied to specified corners.
     public func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
         transformCorners { rect, corners in
-            corners.applyingStyles(newStyles)
+            corners.cornerStyles(newStyles)
         }
     }
 }
@@ -102,14 +102,14 @@ public extension CornerCustom {
             Corner(x: rect.maxX, y: rect.minY)
             Corner(x: rect.minX + rect.width * bottomOffset, y: rect.maxY)
         }
-        .applyingStyle(.rounded(radius: .relative(0.2)))
+        .cornerStyle(.rounded(radius: .relative(0.2)))
         
         CornerCustom { rect in
             rect[.topLeft]
             rect[.topRight]
             rect[bottomOffset, 1.0]
         }
-        .applyingStyle(.rounded(radius: .relative(0.2)))
+        .cornerStyle(.rounded(radius: .relative(0.2)))
         
         Slider(value: $bottomOffset, in: 0...1)
             .padding()

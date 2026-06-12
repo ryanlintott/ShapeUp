@@ -11,7 +11,7 @@ import SwiftUI
 struct RectangleExample3: View {
     var body: some View {
         CornerRectangle()
-            .applyingStyles(
+            .cornerStyles(
                 [
                     .topLeft: .rounded(radius: 50),
                     .topRight: .rounded(radius: .relative(0.5)),

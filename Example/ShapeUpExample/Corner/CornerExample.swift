@@ -38,7 +38,7 @@ struct CustomCornerShapeExample: CornerShape {
             (0, 1)
         }
         .corners(in: rect)
-        .applyingStyle(style)
+        .cornerStyle(style)
     }
 }
 

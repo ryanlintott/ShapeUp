@@ -15,7 +15,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyle: Corner style used for all corners in the notch. Default is a .point style.
     /// - Returns: A triangular shaped notch with specified position, length, depth, and corner styles.
-    @available(*, deprecated: 1000000, message: "Use `Notch(depth: 20).triangle(cornerStyle:)` instead.")
+    @available(*, deprecated, message: "Use `Notch(.triangle, depth: 20).cornerStyle(.rounded(radius: 10))` instead.")
     static func triangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
         Notch(.triangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)
     }
@@ -27,7 +27,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use a .point style.
     /// - Returns: A triangular shaped notch with specified position, length, depth, and corner styles.
-    @available(*, deprecated: 1000000, message: "Use `Notch(depth: 20).triangle(cornerStyles:)` instead.")
+    @available(*, deprecated, message: "Use `Notch(.triangle, depth: 20).cornerStyles([nil, nil, .rounded(radius: 10)])` instead.")
     static func triangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
         Notch(.triangle(cornerStyles: cornerStyles), position: position, length: length, depth: depth)
     }
@@ -39,7 +39,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyle: Corner style used for all corners in the notch. Default is a .point style.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
-    @available(*, deprecated: 1000000, message: "Use `Notch(depth: 20).rectangle(cornerStyle:)` instead.")
+    @available(*, deprecated, message: "Use `Notch(depth: 20).cornerStyle(.rounded(radius: 10))` instead.")
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
         Notch(.rectangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)
     }
@@ -51,7 +51,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use a .point style.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
-    @available(*, deprecated: 1000000, message: "Use `Notch(depth: 20).rectangle(cornerStyles:)` instead.")
+    @available(*, deprecated, message: "Use `Notch(depth: 20).cornerStyles([nil, nil, .rounded(radius: 10), nil])` instead.")
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
         Notch(.rectangle(cornerStyles: cornerStyles), position: position, length: length, depth: depth)
     }
@@ -65,7 +65,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - corners: A closure used to create corners in a rectangle defined by the length and depth of the notch. Start and end points are at the top left and top right of the rectangle and do not need to be included.
     /// - Returns: A custom notch with specified position, length, depth, and corners.
-    @available(*, deprecated, message: "Use `Notch(depth: 20).custom { }` instead. Notch has been redesigned to work with animation and can no longer support a closure property. The new custom notch based on relative corners should handle most cases where corners are positioned relative to the notch length and depth but if not you may need to switch to manually drawing the corners without using a notch.")
+    @available(*, deprecated, message: "Use `Notch(depth: 20) { }` instead. Notch has been redesigned to work with animation and can no longer support a closure property. The new custom notch based on relative corners should handle most cases where corners are positioned relative to the notch length and depth but if not you may need to switch to manually drawing the corners without using a notch.")
     static func custom(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, corners: @Sendable @escaping (CGRect) -> [Corner]) -> Notch {
         Notch(.custom(corners: corners), position: position, length: length, depth: depth)
     }

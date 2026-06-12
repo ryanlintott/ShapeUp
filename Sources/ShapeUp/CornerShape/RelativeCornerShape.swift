@@ -77,9 +77,9 @@ public extension RelativeCornerCustom {
 }
 
 extension RelativeCornerCustom: CornerStylable {
-    public func applyingStyle(_ newStyle: CornerStyle) -> Self {
+    public func cornerStyle(_ newStyle: CornerStyle) -> Self {
         transformRelativeCorners {
-            $0.applyingStyle(newStyle)
+            $0.cornerStyle(newStyle)
         }
     }
     
@@ -107,7 +107,7 @@ extension RelativeCornerCustom: CornerStylable {
         }
         
         RelativeCornerCustom(.topLeft, .topRight, .relative(x: bottomOffset, y: 1.0))
-            .applyingStyle(.rounded(radius: .relative(0.2)))
+            .cornerStyle(.rounded(radius: .relative(0.2)))
         
         RelativeCornerCustom {
             RelativeCorners {

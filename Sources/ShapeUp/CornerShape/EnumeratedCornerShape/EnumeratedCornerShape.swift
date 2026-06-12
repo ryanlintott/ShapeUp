@@ -38,14 +38,19 @@ public extension EnumeratedCornerShape {
     ///   - newStyle: Style to apply to specified shape corners.
     ///   - shapeCorners: Shape corners on which to apply the specified style. Missing values will keep current style.
     /// - Returns: A copy of this shape changing the style of specified corners to the provided style.
-    func applyingStyle(_ newStyle: CornerStyle, shapeCorners: Set<ShapeCorner>) -> Self {
+    func cornerStyle(_ newStyle: CornerStyle, shapeCorners: Set<ShapeCorner>) -> Self {
         var shape = self
         shapeCorners.forEach { shape.styles[$0] = newStyle }
         return shape
     }
     
-    func applyingStyle(_ newStyle: CornerStyle) -> Self {
-        applyingStyle(newStyle, shapeCorners: Set(ShapeCorner.allCases))
+    @available(*, deprecated, renamed: "cornerStyle(_:shapeCorners:)")
+    func applyingStyle(_ newStyle: CornerStyle, shapeCorners: Set<ShapeCorner>) -> Self {
+        cornerStyle(newStyle, shapeCorners: shapeCorners)
+    }
+    
+    func cornerStyle(_ newStyle: CornerStyle) -> Self {
+        cornerStyle(newStyle, shapeCorners: Set(ShapeCorner.allCases))
     }
     
     public func changingRadius(to newRadius: RelatableValue) -> Self {
@@ -60,15 +65,15 @@ public extension EnumeratedCornerShape {
     ///   - style: Style to apply to specified shape corners.
     ///   - shapeCorner: Shape corner on which to apply the specified style.
     /// - Returns: A copy of this shape changing the style of specified corners to the provided style.
-    func applyingStyle(_ style: CornerStyle, to shapeCorner: ShapeCorner) -> Self {
-        applyingStyle(style, shapeCorners: [shapeCorner])
+    func cornerStyle(_ style: CornerStyle, shapeCorner: ShapeCorner) -> Self {
+        cornerStyle(style, shapeCorners: [shapeCorner])
     }
     
     /// Creates a copy of this shape changing the styles of specified corners.
     /// - Parameters:
     ///   - styles: Styles to apply to each specified shape corner. Nil or missing values will keep current style.
     /// - Returns: A copy of this shape changing the styles of specified corners.
-    func applyingStyles(_ styles: [ShapeCorner: CornerStyle?]) -> Self {
+    func cornerStyles(_ styles: [ShapeCorner: CornerStyle?]) -> Self {
         var shape = self
         styles.forEach { (shapeCorner, style) in
             if let style = style {
@@ -76,5 +81,10 @@ public extension EnumeratedCornerShape {
             }
         }
         return shape
+    }
+    
+    @available(*, deprecated, renamed: "cornerStyles(_:)")
+    func applyingStyles(_ styles: [ShapeCorner: CornerStyle?]) -> Self {
+        cornerStyles(styles)
     }
 }

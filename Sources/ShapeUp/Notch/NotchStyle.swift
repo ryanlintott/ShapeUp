@@ -31,11 +31,11 @@ public extension NotchStyle {
             switch self {
             case let .triangle(cornerStyles):
                 [RelativeCorner.topLeft, .bottom, .topRight]
-                    .applyingStyles(cornerStyles)
+                    .cornerStyles(cornerStyles)
                 
             case let .rectangle(cornerStyles):
                 [RelativeCorner.topLeft, .bottomLeft, .bottomRight, .topRight]
-                    .applyingStyles(cornerStyles)
+                    .cornerStyles(cornerStyles)
                 
             case let .custom(relativeCorners):
                 relativeCorners
@@ -64,5 +64,35 @@ public extension NotchStyle {
     /// - Returns: An array of corners positioned within the rectangle.
     func corners(in rect: CGRect) -> [Corner] {
         relativeCorners.corners(in: rect)
+    }
+}
+
+extension NotchStyle: CornerStylable {
+    /// Sets the corner style of all notch corners.
+    /// - Parameter newStyle: A style applied to all notch corners.
+    /// - Returns: A notch where all corners match the new style.
+    public func cornerStyle(_ newStyle: CornerStyle) -> NotchStyle {
+        switch self {
+        case .triangle: .triangle(cornerStyle: newStyle)
+        case .rectangle: .rectangle(cornerStyle: newStyle)
+        case .custom: .custom(relativeCorners: relativeCorners.cornerStyle(newStyle))
+        }
+    }
+    
+    public func changingRadius(to newRadius: RelatableValue) -> NotchStyle {
+        cornerStyles(cornerStyles.map { $0?.changingRadius(to: newRadius) })
+    }
+    
+    /// Updates the corner styles of all notch corners.
+    /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    /// - Returns: A notch style with updated corner styles.
+    public func cornerStyles(_ newStyles: [CornerStyle?]) -> NotchStyle {
+        let newRelativeCorners = relativeCorners.cornerStyles(newStyles)
+        
+        switch self {
+        case .triangle: return .triangle(cornerStyles: newRelativeCorners.cornerStyles)
+        case .rectangle: return .rectangle(cornerStyles: newRelativeCorners.cornerStyles)
+        case .custom: return .custom(relativeCorners: newRelativeCorners)
+        }
     }
 }

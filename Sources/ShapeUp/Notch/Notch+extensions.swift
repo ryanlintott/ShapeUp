@@ -7,6 +7,20 @@
 
 import SwiftUI
 
+extension Notch: CornerStylable {
+    public func cornerStyle(_ newStyle: CornerStyle) -> Notch {
+        notchShape(style.cornerStyle(newStyle))
+    }
+    
+    public func cornerStyles(_ newStyles: [CornerStyle?]) -> Notch {
+        notchShape(style.cornerStyles(newStyles))
+    }
+    
+    public func changingRadius(to newRadius: RelatableValue) -> Notch {
+        notchShape(style.changingRadius(to: newRadius))
+    }
+}
+
 public extension Notch {
     /// Creates an array of corners describing a notch between two points.
     ///

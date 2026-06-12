@@ -86,7 +86,7 @@ struct NestedCornerStyleExample: View {
                     Text("Some corner styles can have nested styles")
                 
                     CornerRectangle()
-                        .applyingStyle(exampleStyle)
+                        .cornerStyle(exampleStyle)
                         .fill(Color.suPink)
                         .frame(width: 200, height: 140)
                         .padding()

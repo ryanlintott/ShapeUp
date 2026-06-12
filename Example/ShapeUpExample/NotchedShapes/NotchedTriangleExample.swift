@@ -13,12 +13,12 @@ struct NotchedTriangleExample: View {
         CornerCustom { rect in
             CornerTriangle()
                 .corners(in: rect)
-                .applyingStyle(.rounded(radius: 20))
+                .cornerStyle(.rounded(radius: 20))
                 .addingNotches([
-                    Notch(depth: .relative(0.2)).triangle,
+                    Notch(.triangle, depth: .relative(0.2)),
                     nil,
                     Notch(length: 50, depth: 30)
-                        .rectangle(cornerStyle: .rounded(radius: .relative(0.4)))
+                        .cornerStyle(.rounded(radius: .relative(0.4)))
                 ])
         }
         .fill(Color.suPurple)

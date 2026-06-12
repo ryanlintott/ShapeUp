@@ -131,9 +131,9 @@ public extension CornerStyle {
             case .point, .rounded, .concave:
                 []
             case .straight:
-                [.topLeft, .bottomRight].applyingStyles(cornerStyles)
+                [.topLeft, .bottomRight].cornerStyles(cornerStyles)
             case .cutout:
-                [.topLeft, .bottomLeft, .bottomRight].applyingStyles(cornerStyles)
+                [.topLeft, .bottomLeft, .bottomRight].cornerStyles(cornerStyles)
             case let .custom(_, relativeCorners):
                 relativeCorners
             }
