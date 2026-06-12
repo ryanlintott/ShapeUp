@@ -209,7 +209,7 @@ public extension Array where Element: Vector2Transformable {
     ///   - source: Initial frame of reference for the position.
     ///   - destination: Resulting frame of reference.
     /// - Returns: The same objects repositioned from one frame of reference to another.
-    func repositioned(from source: CGRect, to destination: CGRect) -> Self {
+    func repositioned(from source: some CGFrameRepresentable, to destination: some CGFrameRepresentable) -> Self {
         map { $0.repositioned(from: source, to: destination) }
     }
 }

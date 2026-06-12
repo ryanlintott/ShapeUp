@@ -44,6 +44,10 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
 }
 
 public extension RelativeCorner {
+    /// Converts this relative corner to a corner.
+    /// - Note: If the `RelativeCorner` has an offset the final position is the one that will be used in the resulting `Corner`. This means trying to convert back into `RelativeCorner` the position will be entirely relative with an offset of zero.
+    /// - Parameter frame: Frame used to interpret the position of the `Corner`
+    /// - Returns: A `Corner` with the same style and in the same position of this `RelativeCorner` in the specified frame.
     func corner(in frame: some CGFrameRepresentable) -> Corner {
         if let rect = frame as? CGRect {
             // This special case ensures the offset isn't zero when the width or height is zero

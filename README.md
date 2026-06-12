@@ -430,11 +430,6 @@ let corners = Corners {
 }
 ```
 
-Get the relative anchor position (`RectAnchor`) of a `CGPoint` within a `CGRect`.
-```swift
-let anchor: RectAnchor = rect[point]
-```
-
 Scale and move `CGRect`
 ```swift
 let transformedRect = rect
@@ -468,8 +463,8 @@ let relativePoints = [
     .relative(x: 0.3, y: 1.0),
     .relative(x: 1.0, y: 0.0)
 ].points(in: frame)
-let anchorPoint: RectAnchor = frame[CGPoint(x: 15, y: 4)]
-let anchorPoints: [RectAnchor] = relativePoints.map { frame[$0] }
+let anchorPoint: RectAnchor = CGPoint(x: 15, y: 4).relative(to: frame)
+let anchorPoints: [RectAnchor] = relativePoints.relative(to: frame)
 ```
 
 ```swift

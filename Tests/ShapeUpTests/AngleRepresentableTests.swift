@@ -121,7 +121,7 @@ class AngleRepresentableTests: XCTestCase {
     
     func testMinPositiveCoterminalDegrees() throws {
         // given
-        let testValues: [(Angle, Angle)] = [
+        let testValues: [(Double, Double)] = [
             (0.0, 0.0),
             (0.0001, 0.0001),
             (20, 20),
@@ -130,34 +130,34 @@ class AngleRepresentableTests: XCTestCase {
             (10.0 + 360, 10),
             (350.0 - 360, 350),
             (45.0 - 360 - 360, 45)
-        ].map { (.degrees($0.0), .degrees($0.1)) }
+        ]
         
-        testValues.forEach { (angle, resultAngle) in
+        for (angle, resultAngle) in testValues {
             // when
-            let testAngle = angle.minPositiveCoterminal
+            let testAngle = Angle.degrees(angle).minPositiveCoterminal
             
             // then
-            XCTAssertEqual(testAngle.radians, resultAngle.radians, accuracy: 0.000001)
+            XCTAssertEqual(testAngle.radians, Angle.degrees(resultAngle).radians, accuracy: 0.000001)
         }
     }
     
     func testMinPositiveCoterminalRadians() throws {
         // given
-        let testValues: [(Angle, Angle)] = [
+        let testValues: [(Double, Double)] = [
             (0.0, 0.0),
             (0.0001, 0.0001),
             (.pi, .pi),
             (.pi * 2, 0),
             (0.2 + (.pi * 2), 0.2),
             (-0.2, (.pi * 2) - 0.2),
-        ].map { (.radians($0.0), .radians($0.1)) }
+        ]
         
-        testValues.forEach { (angle, resultAngle) in
+        for (angle, resultAngle) in testValues {
             // when
-            let testAngle = angle.minPositiveCoterminal
+            let testAngle = Angle.radians(angle).minPositiveCoterminal
             
             // then
-            XCTAssertEqual(testAngle.radians, resultAngle.radians, accuracy: 0.000001)
+            XCTAssertEqual(testAngle.radians, Angle.radians(resultAngle).radians, accuracy: 0.000001)
         }
     }
     
