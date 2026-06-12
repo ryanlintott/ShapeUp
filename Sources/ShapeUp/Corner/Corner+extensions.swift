@@ -8,8 +8,11 @@
 import SwiftUI
 
 extension Corner: RelativeRepresentable {
-    public func repositioned(to anchor: RectAnchor) -> RelativeCorner {
-        anchor.relativeCorner.applyingStyle(style)
+    /// Converts this object to one that is relative to the specified frame.
+    /// - Parameter frame: Frame used for relative position.
+    /// - Returns: A relative version of this object anchored to the specified frame.
+    public func relative(to frame: some CGFrameRepresentable) -> RelativeCorner {
+        point.relative(to: frame).relativeCorner.applyingStyle(style)
     }
 }
 

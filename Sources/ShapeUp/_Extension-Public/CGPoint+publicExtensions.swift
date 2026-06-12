@@ -25,8 +25,17 @@ extension CGPoint: Vector2Transformable {
 }
 
 extension CGPoint: RelativeRepresentable {
-    public func repositioned(to anchor: RectAnchor) -> RectAnchor {
-        anchor
+    public func relative(to frame: some CGFrameRepresentable) -> RectAnchor {
+        /// Vector from origin to the point.
+        let relativeVector = vector - frame.origin.vector
+        
+        let denominator = frame.xAxis.crossProduct(with: frame.yAxis)
+        guard abs(denominator) > 1e-8 else { return .topLeft }
+        
+        let x = relativeVector.crossProduct(with: frame.yAxis) / denominator
+        let y = frame.xAxis.crossProduct(with: relativeVector) / denominator
+        
+        return .relative(x: x, y: y)
     }
 }
 
