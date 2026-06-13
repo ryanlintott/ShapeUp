@@ -64,7 +64,9 @@ public extension RelativeCornerArrayBuilder {
 }
 
 /// An object used to easily create an array of corners using a trailing closure.
-public enum RelativeCorners {
+public struct RelativeCorners {
+    public init() { }
+    
     /// Builds an array of relative corners from a trailing closure.
     /// - Parameter corners: A closure that builds the relative corners.
     /// - Returns: The relative corners produced by the closure.

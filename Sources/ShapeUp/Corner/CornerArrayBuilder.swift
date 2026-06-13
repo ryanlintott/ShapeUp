@@ -56,7 +56,8 @@ public extension CornerArrayBuilder {
 }
 
 /// An object used to easily create an array of ``Corner`` using a trailing closure with ``CornerArrayBuilder``
-public enum Corners {
+public struct Corners {
+    public init() { }
     
     /// Builds an array of corners from a trailing closure.
     /// - Parameter corners: A closure that builds the corners.
