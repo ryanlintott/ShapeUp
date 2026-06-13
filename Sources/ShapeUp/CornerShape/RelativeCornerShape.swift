@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// An animatable corner shape defined by relative corners.
 public struct RelativeCornerCustom: CornerShape {
     public var closed: Bool = true
     public var insetAmount: CGFloat = 0
@@ -49,6 +50,10 @@ public struct RelativeCornerCustom: CornerShape {
         self.relativeCorners = relativeCorners
     }
     
+    /// Creates a closed relative corner shape using a result builder.
+    ///
+    /// - Note: To create an open corner shape add `.closed(false)`.
+    /// - Parameter relativeCorners: A closure that builds the relative corners defining the shape.
     public init(@RelativeCornerArrayBuilder _ relativeCorners: () -> [RelativeCorner]) {
         self.relativeCorners = relativeCorners()
     }

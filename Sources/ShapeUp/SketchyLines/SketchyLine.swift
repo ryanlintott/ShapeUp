@@ -21,6 +21,7 @@ public struct SketchyLine: Shape {
         /// Drawing will start at the bottom or trailing end and draw to the top or leading end.
         case toTopLeading
         
+        /// The default drawing direction `.toBottomTrailing`
         public static let `default`: DrawDirection = .toBottomTrailing
     }
     
@@ -29,11 +30,17 @@ public struct SketchyLine: Shape {
         set { self.drawAmount = newValue }
     }
     
+    /// The edge on which the line is drawn.
     public let edge: SketchyEdge
+    /// The amount the start extends beyond the start point.
     public let startExtension: RelatableValue
+    /// The amount the end extends beyond the end point.
     public let endExtension: RelatableValue
+    /// The perpendicular offset from the edge.
     public let offset: RelatableValue
+    /// The proportion of the line to draw.
     public var drawAmount: CGFloat
+    /// The direction in which the line is drawn.
     public let drawDirection: DrawDirection
     
     /// Creates a sketchy line shape.
@@ -109,6 +116,11 @@ public extension SketchyLine {
         }
     }
     
+    /// Creates the line path using a specified draw amount.
+    /// - Parameters:
+    ///   - rect: The rectangle in which to draw the line.
+    ///   - drawAmount: The proportion of the line to draw.
+    /// - Returns: The resulting line path.
     func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
         var copy = self
         copy.drawAmount = drawAmount

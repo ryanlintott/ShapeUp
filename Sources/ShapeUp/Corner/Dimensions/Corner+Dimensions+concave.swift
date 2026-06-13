@@ -29,6 +29,17 @@ public extension Corner.Dimensions {
         max(0, absoluteRadius + (concaveInset * reflexMultiplier))
     }
     
+    /// Returns the center point of the concave arc.
+    /// - Parameters:
+    ///   - cornerPoint: The original corner point.
+    ///   - previousPoint: The point before the corner.
+    ///   - nextPoint: The point after the corner.
+    ///   - absoluteRadius: The non-relative radius used to size the corner.
+    ///   - concaveInset: The difference between the corner radius and concave radius.
+    ///   - cornerStart: The start point of the corner.
+    ///   - cornerEnd: The end point of the corner.
+    ///   - radiusCenter: The center point of the radius used to cut the corner.
+    /// - Returns: The center point of the concave arc.
     static func concaveRadiusCenter(
         cornerPoint: CGPoint,
         previousPoint: CGPoint,
@@ -55,6 +66,19 @@ public extension Corner.Dimensions {
         }
     }
     
+    /// Returns the point where the concave arc starts.
+    /// - Parameters:
+    ///   - cornerPoint: The original corner point.
+    ///   - previousPoint: The point before the corner.
+    ///   - absoluteRadius: The non-relative radius used to size the corner.
+    ///   - cornerStart: The start point of the corner.
+    ///   - cutLength: The distance from the corner point to the corner start.
+    ///   - nextVector: The vector from the corner point to the next point.
+    ///   - concaveRadius: The radius of the concave arc.
+    ///   - concaveRadiusCenter: The center point of the concave arc.
+    ///   - concaveInset: The difference between the corner radius and concave radius.
+    ///   - reflexMultiplier: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
+    /// - Returns: The point where the concave arc starts, or nil when no arc is needed.
     static func concaveStart(
         cornerPoint: CGPoint,
         previousPoint: CGPoint,

@@ -12,6 +12,9 @@ extension Notch: CornerStylable {
         notchShape(style.cornerStyle(newStyle))
     }
     
+    /// Creates a copy of this notch with new styles applied to its corners.
+    /// - Parameter newStyles: Styles to apply to each corner respectively. Nil values keep the current style.
+    /// - Returns: A notch with the supplied corner styles.
     public func cornerStyles(_ newStyles: [CornerStyle?]) -> Notch {
         notchShape(style.cornerStyles(newStyles))
     }

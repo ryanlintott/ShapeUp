@@ -16,12 +16,14 @@ public struct SketchyLines: Shape {
         set { self.drawAmount = newValue }
     }
     
+    /// The lines included in this shape.
     public var lines: [SketchyLine]
+    /// The proportion of each line to draw.
     public var drawAmount: CGFloat
     
     /// Creates a collection of sketchy lines.
     /// - Parameters:
-    ///   - lines: Lines that will be drawn using hte drawAmount.
+    ///   - lines: Lines that will be drawn using the drawAmount.
     ///   - drawAmount: Amount to draw. Defaults to 1 and overrides all lines.
     public init(lines: [SketchyLine], drawAmount: CGFloat = 1) {
         self.lines = lines

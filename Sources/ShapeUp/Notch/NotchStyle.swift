@@ -11,12 +11,12 @@ import SwiftUI
 public enum NotchStyle: Sendable {
     /// A triangular shaped notch.
     /// - Parameters:
-    ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
+    ///   - cornerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
     case triangle(cornerStyles: [CornerStyle?])
     
     /// A rectangular shaped notch.
     /// - Parameters:
-    ///   - conerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
+    ///   - cornerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
     case rectangle(cornerStyles: [CornerStyle?])
     
     /// A custom shaped notch defined by relative corners.
@@ -84,7 +84,7 @@ extension NotchStyle: CornerStylable {
     }
     
     /// Updates the corner styles of all notch corners.
-    /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    /// - Parameter newStyles: An array of styles that will be applied to each corner respectively. Nil values will keep current style.
     /// - Returns: A notch style with updated corner styles.
     public func cornerStyles(_ newStyles: [CornerStyle?]) -> NotchStyle {
         let newRelativeCorners = relativeCorners.cornerStyles(newStyles)

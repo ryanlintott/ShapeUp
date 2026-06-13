@@ -68,6 +68,9 @@ extension CornerCustom: CornerStylable {
 }
 
 public extension CornerCustom {
+    /// Creates a copy of this shape with the specified closed state.
+    /// - Parameter isClosed: Whether the returned shape should be closed.
+    /// - Returns: A copy of this shape with the specified closed state.
     func closed(_ isClosed: Bool) -> Self {
         var copy = self
         copy.closed = isClosed
@@ -83,7 +86,7 @@ public extension CornerCustom {
     }
     
     /// Creates a copy this shape with new corner styles applied to specified corners.
-    /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    /// - Parameter newStyles: An array of styles that will be applied to each corner respectively. Nil values will keep current style.
     /// - Returns: The same shape with new corner styles applied to specified corners.
     public func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
         transformCorners { rect, corners in

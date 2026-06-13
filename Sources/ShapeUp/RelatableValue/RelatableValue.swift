@@ -52,6 +52,7 @@ public extension RelatableValue {
         .mixed(absolute: components.absolute, relative: components.relative)
     }
     
+    /// The absolute and relative components of this value.
     var components: (absolute: CGFloat, relative: CGFloat) {
         switch self {
         case let .absolute(value):
@@ -70,14 +71,14 @@ extension RelatableValue: ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral
     
     /// Creates an absolute RelatableValue from the provided literal Double
     ///
-    /// Usefull when providing fixed values for RelatableValue properties.
+    /// Useful when providing fixed values for RelatableValue properties.
     public init(floatLiteral value: Double) {
         self = .absolute(value)
     }
     
     /// Creates an absolute RelatableValue from the provided literal Int
     ///
-    /// Usefull when providing fixed values for RelatableValue properties.
+    /// Useful when providing fixed values for RelatableValue properties.
     public init(integerLiteral value: Int) {
         self = .absolute(CGFloat(value))
     }

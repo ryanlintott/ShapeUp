@@ -8,6 +8,7 @@
 import SwiftUI
 
 public extension Corner.Dimensions {
+    /// The coordinate frame used to position nested corners.
     var frame: CGFrame {
         .init(
             origin: cornerStart,

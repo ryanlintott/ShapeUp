@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// A type that can be converted to another type with the same properties and a position relative to a coordinate frame.
 public protocol RelativeRepresentable: Vector2Representable {
     /// A relative version of this type.
     associatedtype RelativeValue

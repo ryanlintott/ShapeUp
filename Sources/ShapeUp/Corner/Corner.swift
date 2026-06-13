@@ -61,7 +61,9 @@ import SwiftUI
 ///     }
 ///
 public struct Corner: Hashable, Codable, Sendable, CornerStyled {
+    /// The x coordinate of the corner.
     public var x: CGFloat
+    /// The y coordinate of the corner.
     public var y: CGFloat
     public var style: CornerStyle
     

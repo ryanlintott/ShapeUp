@@ -13,7 +13,7 @@ public extension Path {
     ///   - corners: Array of corners that define the shape to add.
     ///   - previousPoint: Previous point in the path used to determine the look of the first corner. Default is the last corner point.
     ///   - nextPoint: Next point in the path used to determine the look of the last corner. Default is the first corner point.
-    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner.
+    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner.
     mutating func addOpenCornerShape(
         _ corners: [Corner],
         previousPoint: CGPoint? = nil,
@@ -33,7 +33,7 @@ public extension Path {
     /// - Parameters:
     ///   - previousPoint: Previous point in the path used to determine the look of the first corner. Default is the last corner point.
     ///   - nextPoint: Next point in the path used to determine the look of the last corner. Default is the first corner point.
-    ///   - moveToStart: An optional boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner. If this value is nil it will true if a current point exists on the path and false if not.
+    ///   - moveToStart: An optional boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner. If this value is nil it will be true if a current point exists on the path and false if not.
     ///   - corners: Closure that returns an array of corners that define the shape to add.
     mutating func addOpenCornerShape(
         previousPoint: CGPoint? = nil,
@@ -51,7 +51,7 @@ public extension Path {
             .addOpenCornerShape(to: &self, moveToStart: moveToStart)
     }
     
-    /// Adds a closed shape descrived by an array of corners to a path.
+    /// Adds a closed shape described by an array of corners to a path.
     ///
     /// Moves to the start of the shape and then draws to the end
     /// - Parameters:
@@ -60,7 +60,7 @@ public extension Path {
         addClosedCornerShape { corners }
     }
     
-    /// Adds a closed shape descrived by an array of corners to a path.
+    /// Adds a closed shape described by an array of corners to a path.
     ///
     /// Moves to the start of the shape and then draws to the end
     /// - Parameters:

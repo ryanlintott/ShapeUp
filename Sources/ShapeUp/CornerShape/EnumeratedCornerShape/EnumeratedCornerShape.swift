@@ -21,6 +21,7 @@ public protocol EnumeratedCornerShape: CornerShape, CornerStylable {
     var styles: [ShapeCorner: CornerStyle] { get set }
     
     /// Returns a dictionary with each point used to draw the shape stored with it's shape corner label.
+    /// - Parameter rect: The rectangle in which to position the points.
     /// - Returns: A dictionary with each point used to draw the shape stored with it's shape corner label.
     func points(in rect: CGRect) -> [ShapeCorner: CGPoint]
 }

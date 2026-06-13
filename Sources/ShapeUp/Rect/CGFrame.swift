@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A type that represents a coordinate frame using an origin and two axis vectors.
 public protocol CGFrameRepresentable {
     /// The origin point of the coordinate frame.
     var origin: CGPoint { get }
@@ -66,11 +67,15 @@ public extension CGFrameRepresentable {
     }
     
     /// Creates an array of points in the locations of the supplied anchors.
+    /// - Parameter anchors: Anchors defining point locations in order.
     /// - Returns: An array of points in the location and order of the supplied anchors.
     func points(_ anchors: RectAnchor...) -> [CGPoint] {
         points(anchors)
     }
     
+    /// Creates an array of points in the locations supplied by a result builder.
+    /// - Parameter anchors: A closure that builds the anchors defining the point locations.
+    /// - Returns: An array of points in the location and order of the supplied anchors.
     func points(@RectAnchorArrayBuilder _ anchors: () -> [RectAnchor]) -> [CGPoint] {
         points(anchors())
     }
@@ -94,6 +99,9 @@ public extension CGFrameRepresentable {
         points(.vertices).corners(styles)
     }
     
+    /// Creates corners from relative corners supplied by a result builder.
+    /// - Parameter relativeCorners: A closure that builds the relative corners.
+    /// - Returns: Corners positioned in this coordinate frame.
     func corners(@RelativeCornerArrayBuilder _ relativeCorners: () -> [RelativeCorner]) -> [Corner] {
         relativeCorners().map { $0.corner(in: self) }
     }

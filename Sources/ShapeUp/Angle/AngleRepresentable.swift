@@ -16,6 +16,7 @@ import SwiftUI
 ///     extension Angle: AngleRepresentable { }
 ///
 public protocol AngleRepresentable {
+    /// The angle in radians.
     var radians: Double { get }
 }
 
@@ -27,7 +28,7 @@ extension AngleRepresentable {
 }
 
 public extension AngleRepresentable {
-//    /// Type of an angle based on its magnitude
+    /// The angle type based on its magnitude.
     @available(*, deprecated, message: "Angle type is no longer in use as it added complexity and was prone to error when trying to equate Double values.")
     var type: AngleType {
         AngleType.type(of: angle)
@@ -90,6 +91,11 @@ public extension AngleRepresentable {
         return rotation > .degrees(180) ? -rotation.explementary : rotation
     }
 
+    /// Maximum rotation required to turn from a specified angle position to this one.
+    ///
+    /// The result follows the longer rotation between the two angles.
+    /// - Parameter angle: The angle to rotate from.
+    /// - Returns: The maximum rotation from the specified angle to this angle.
     func maxRotation(from angle: Angle) -> Angle {
         let minRotation = minRotation(from: angle)
         let maxRotationSign: Double = minRotation.radians >= 0 ? -1 : 1

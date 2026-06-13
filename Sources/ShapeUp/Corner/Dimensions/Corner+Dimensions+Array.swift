@@ -8,10 +8,14 @@
 import SwiftUI
 
 public extension Array where Element == Corner.Dimensions {
+    /// The corners represented by these dimensions.
     var corners: [Corner] {
         map { $0.corner }
     }
     
+    /// Creates corners inset by the specified amount.
+    /// - Parameter inset: The amount to inset each corner.
+    /// - Returns: The inset corners.
     func corners(inset: CGFloat) -> [Corner] {
         inset == 0 ? corners : map { $0.corner(inset: inset) }
     }
@@ -19,7 +23,7 @@ public extension Array where Element == Corner.Dimensions {
     /// Adds an open corner shape defined by this array of corners to the provided path.
     /// - Parameters:
     ///   - path: Path where corner shape is added.
-    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner.
+    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner.
     func addOpenCornerShape(to path: inout Path, moveToStart: Bool) {
         self.enumerated().forEach { i, dims in
             // If it's the first corner and moveToStart is active, the first point will be a move.

@@ -81,6 +81,7 @@ public extension Array where Element: CornerStylable {
 
 /// An object that has a single corner style that can be changed
 public protocol CornerStyled: CornerStylable {
+    /// The corner style applied to this object.
     var style: CornerStyle { get set }
 }
 
@@ -122,7 +123,7 @@ public extension Array where Element: CornerStyled {
     }
     
     /// Creates an array of corners with the same positions and specified styles.
-    /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    /// - Parameter newStyles: An array of styles that will be applied to each corner respectively. Nil values will keep current style.
     /// - Returns: An array of corners with the same positions and specified styles.
     func cornerStyles(_ newStyles: [CornerStyle?]) -> [Element] {
         /// If newStyles only contains nil values return self
@@ -144,7 +145,7 @@ public extension Array where Element: CornerStyled {
     }
     
     /// Applies new styles to this array of corners.
-    /// - Parameter newStyles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    /// - Parameter newStyles: An array of styles that will be applied to each corner respectively. Nil values will keep current style.
     mutating func cornerStyles(_ newStyles: [CornerStyle?]) {
         self = self.cornerStyles(newStyles)
     }

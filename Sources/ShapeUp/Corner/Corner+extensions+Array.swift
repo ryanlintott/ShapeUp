@@ -46,7 +46,7 @@ public extension Array where Element == Corner {
     /// Adds an open corner shape defined by this array of corners to the provided path.
     /// - Parameters:
     ///   - path: Path where corner shape is added.
-    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner.
+    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner.
     func addOpenCornerShape(to path: inout Path, moveToStart: Bool) {
         dimensions.addOpenCornerShape(to: &path, moveToStart: moveToStart)
     }

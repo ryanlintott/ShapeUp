@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A corner positioned relative to a rectangle or coordinate frame.
 public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     /// Location of the anchor point of this corner in a given rectangle or frame.
     public var anchor: RectAnchor
@@ -18,7 +19,7 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     /// - Parameters:
     ///   - style: Corner style. Default is .point.
     ///   - anchor: Location of corner based on an anchor point.
-    ///   - offset: Absolute distance from the anchor point using the same x and y diretions of the frame of reference.
+    ///   - offset: Absolute distance from the anchor point using the same x and y directions of the frame of reference.
     internal init(_ style: CornerStyle? = nil, anchor: RectAnchor, offset: some Vector2Representable) {
         self.anchor = anchor
         self.offset = offset.vector

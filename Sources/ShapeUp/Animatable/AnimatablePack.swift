@@ -51,7 +51,8 @@ public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
         self.item = (repeat each item)
     }
     
-    /// Access elements in the same was as a tuple using pack.1, pack.2, etc...
+    /// Access elements in the same way as a tuple using pack.1, pack.2, etc...
+    /// - Parameter keyPath: A writable key path to an item in the pack.
     public subscript<V>(dynamicMember keyPath: WritableKeyPath<(repeat each Item), V>) -> V {
         get { item[keyPath: keyPath] }
         set { item[keyPath: keyPath] = newValue }

@@ -38,6 +38,14 @@ public struct Notch: Sendable {
         self.depth = depth
     }
     
+    /// Creates a custom notch from relative corners.
+    ///
+    /// Notch depth assumes a clockwise order of points. Negative depth creates a tab.
+    /// - Parameters:
+    ///   - position: Center position of the notch measured from the start. Default is the midpoint.
+    ///   - length: Length of the notch. Default is equal to the depth.
+    ///   - depth: Depth of the notch relative to the length of the line.
+    ///   - relativeCorners: A closure that builds the relative corners defining the notch.
     public init(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, @RelativeCornerArrayBuilder relativeCorners: () -> [RelativeCorner]) {
         self.position = position ?? .relative(0.5)
         self.length = length ?? depth

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A vector-representable type whose position can be changed while preserving its other properties.
 public protocol Vector2Transformable: Vector2Representable {
     /// Repositions this object while keeping other properties untouched.
     /// - Parameter point: Object will be repositioned to this point.

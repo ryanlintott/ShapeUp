@@ -22,6 +22,7 @@ public extension Array where Element == RectAnchor {
         map { $0.point(in: frame) }
     }
     
+    /// The four vertex anchors clockwise starting from the top left.
     static let vertices: Self = RectAnchor.vertices
     
     /// An array of relative corners matching the anchors with a default corner style.

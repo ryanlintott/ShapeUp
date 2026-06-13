@@ -8,11 +8,10 @@
 import Foundation
 
 public extension Collection<RelativeCorner> {
-    func corners(in rect: CGRect) -> [Corner] {
-        map { $0.corner(in: rect) }
-    }
-    
-    func corners(in frame: CGFrame) -> [Corner] {
+    /// Converts the relative corners to corners positioned in a coordinate frame.
+    /// - Parameter frame: The coordinate frame used to position the relative corners.
+    /// - Returns: Corners positioned in the specified coordinate frame.
+    func corners(in frame: some CGFrameRepresentable) -> [Corner] {
         map { $0.corner(in: frame) }
     }
 }

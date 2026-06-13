@@ -36,7 +36,11 @@ public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable, Codable {
     case bottom
     case bottomLeft
     case left
+    
     /// Relative to a rectangle with a width and height of 1 and an origin at the top left.
+    /// - Parameters:
+    ///   - x: The horizontal position relative to the rectangle width.
+    ///   - y: The vertical position relative to the rectangle height.
     case relative(x: CGFloat, y: CGFloat)
 }
 
@@ -51,6 +55,9 @@ extension RectAnchor {
         lhs.relativePoint == rhs.relativePoint
     }
     
+    /// Creates a relative anchor from a point.
+    /// - Parameter point: A point containing the relative x and y coordinates.
+    /// - Returns: A relative anchor at the specified coordinates.
     public static func relative(_ point: CGPoint) -> RectAnchor {
         .relative(x: point.x, y: point.y)
     }
