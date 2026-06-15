@@ -36,7 +36,7 @@ final class CGPointRelativeTests: XCTestCase {
             size: CGSize(width: 0, height: 100),
             rotation: .degrees(30)
         )
-        let point = source[x: 0, y: 0.5]
+        let point = source[0, 0.5]
 
         let relativePoint = point.relative(to: source).relativePoint
 
@@ -46,7 +46,7 @@ final class CGPointRelativeTests: XCTestCase {
 
     func testRelativePositionSupportsSmallFrames() {
         let source = CGRect(x: 10, y: 20, width: 1e-6, height: 1e-6)
-        let point = source[x: 0.25, y: 0.75]
+        let point = source[0.25, 0.75]
 
         let relativePoint = point.relative(to: source).relativePoint
 

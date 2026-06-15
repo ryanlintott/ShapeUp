@@ -88,7 +88,7 @@ public extension CornerCustom {
     /// Creates a copy this shape with new corner styles applied to specified corners.
     /// - Parameter newStyles: An array of styles that will be applied to each corner respectively. Nil values will keep current style.
     /// - Returns: The same shape with new corner styles applied to specified corners.
-    public func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
+    func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
         transformCorners { rect, corners in
             corners.cornerStyles(newStyles)
         }
@@ -101,14 +101,14 @@ public extension CornerCustom {
     @Previewable @State var bottomOffset = 0.2
     
     VStack {
-        CornerCustom { rect in
+        CornerCustom { [bottomOffset] rect in
             Corner(x: rect.minX, y: rect.minY)
             Corner(x: rect.maxX, y: rect.minY)
             Corner(x: rect.minX + rect.width * bottomOffset, y: rect.maxY)
         }
         .cornerStyle(.rounded(radius: .relative(0.2)))
         
-        CornerCustom { rect in
+        CornerCustom { [bottomOffset] rect in
             rect[.topLeft]
             rect[.topRight]
             rect[bottomOffset, 1.0]

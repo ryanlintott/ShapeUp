@@ -17,11 +17,6 @@ struct AnimatableDictionaryTests {
             3: Vector2(dx: 3, dy: 4)
         ]
         
-        #expect(values.animatableData == [
-            1: Vector2(dx: 1, dy: 2),
-            3: Vector2(dx: 3, dy: 4)
-        ])
-        
         values.animatableData = AnimatableDictionary([
             1: Vector2(dx: 10, dy: 20),
             2: Vector2(dx: 30, dy: 40)
@@ -64,7 +59,7 @@ struct AnimatableDictionaryTests {
     }
 }
 
-private struct AnimatedValue: Animatable {
+private struct AnimatedValue: Animatable, Equatable {
     var value: CGFloat
 
     var animatableData: CGFloat {

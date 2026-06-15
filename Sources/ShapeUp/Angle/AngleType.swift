@@ -32,6 +32,7 @@ public enum AngleType: Int, Comparable, CaseIterable, Sendable {
     }
 }
 
+@available(*, deprecated, message: "This type is no longer in use as it added complexity and was prone to error when trying to equate Double values.")
 public extension AngleType {
     /// Creates an angle type based on a supplied radians.
     /// - Parameter radians: The magnitude of this value is used to determine the type.

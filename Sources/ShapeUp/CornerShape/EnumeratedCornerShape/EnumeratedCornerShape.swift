@@ -54,7 +54,7 @@ public extension EnumeratedCornerShape {
         cornerStyle(newStyle, shapeCorners: Set(ShapeCorner.allCases))
     }
     
-    public func changingRadius(to newRadius: RelatableValue) -> Self {
+    func changingRadius(to newRadius: RelatableValue) -> Self {
         var shape = self
         // Only change the radius of styles that are set.
         shape.styles = shape.styles.mapValues { $0.changingRadius(to: newRadius) }
