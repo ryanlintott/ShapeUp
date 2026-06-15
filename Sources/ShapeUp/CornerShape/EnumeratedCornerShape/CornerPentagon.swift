@@ -104,7 +104,7 @@ extension CornerPentagon {
                         topTaper,
                         .init(
                             bottomTaper,
-                            styles.animatableData
+                            styles.valueAnimatableData
                         )
                     )
                 )
@@ -115,7 +115,7 @@ extension CornerPentagon {
             pointHeight = newValue.second.first
             topTaper = newValue.second.second.first
             bottomTaper = newValue.second.second.second.first
-            styles.animatableData = newValue.second.second.second.second
+            styles.valueAnimatableData = newValue.second.second.second.second
         }
     }
 }

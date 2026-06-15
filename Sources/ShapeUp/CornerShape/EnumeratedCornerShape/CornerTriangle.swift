@@ -78,14 +78,14 @@ extension CornerTriangle {
                 insetAmount,
                 .init(
                     topPoint,
-                    styles.animatableData
+                    styles.valueAnimatableData
                 )
             )
         }
         set {
             insetAmount = newValue.first
             topPoint = newValue.second.first
-            styles.animatableData = newValue.second.second
+            styles.valueAnimatableData = newValue.second.second
         }
     }
 }

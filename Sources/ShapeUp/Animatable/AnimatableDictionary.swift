@@ -9,42 +9,42 @@ import SwiftUI
 
 /// A wrapper around Dictionary that provides animation capabilities for SwiftUI.
 ///
-/// `AnimatableDictionary` allows dictionaries of types conforming to `VectorArithmetic` or `Animatable` to be smoothly animated by conforming to `VectorArithmetic`.
+/// `AnimatableDictionary` allows dictionaries whose values conform to `VectorArithmetic` or `Animatable` to be smoothly animated by conforming to `VectorArithmetic`.
 /// This enables key-based interpolation between different dictionary states during animations.
 ///
-/// ## Usage Example for types conforming to `VectorArithmetic`
+/// ## Usage Example for values conforming to `VectorArithmetic`
 ///
 /// ```swift
 /// struct AnimatedShape: Shape {
-///     var points: [Int: CGPoint]
+///     var vectors: [Int: Vector2]
 ///
-///     var animatableData: AnimatableDictionary<Int, CGPoint> {
-///         get { points.animatableData }
-///         set { points.animatableData = newValue }
+///     var animatableData: AnimatableDictionary<Int, Vector2> {
+///         get { vectors.animatableData }
+///         set { vectors.animatableData = newValue }
 ///     }
 ///
 ///     func path(in rect: CGRect) -> Path {
-///         // Create path using points
+///         Path()
 ///     }
 /// }
 /// ```
 ///
-/// ## Usage Example for types conforming to `Animatable`
-/// Note that the type used is `Corner.AnimatableData` but the implementation is otherwise unchanged.
+/// ## Usage Example for values conforming to `Animatable`
 ///
 /// ```swift
 /// struct AnimatedCorners: Shape {
 ///     var corners: [Int: Corner]
 ///
 ///     var animatableData: AnimatableDictionary<Int, Corner.AnimatableData> {
-///         get { corners.animatableData }
-///         set { corners.animatableData = newValue }
+///         get { corners.valueAnimatableData }
+///         set { corners.valueAnimatableData = newValue }
 ///     }
 ///
 ///     func path(in rect: CGRect) -> Path {
-///         // Create path using corners
+///         Path()
 ///     }
 /// }
+/// ```
 ///
 @dynamicMemberLookup
 public struct AnimatableDictionary<Key: Hashable, Value> {
@@ -137,8 +137,8 @@ extension Dictionary where Key: Hashable, Value: VectorArithmetic {
     /// This computed property allows dictionaries to be animated directly when their values
     /// conform to VectorArithmetic.
     /// 
-    /// - Note: New keys can be added during animation, and existing keys will be updated.
-    var animatableData: AnimatableDictionary<Key, Value> {
+    /// - Note: Setting this property updates or adds the keys in the new value. Existing keys that are absent from the new value are preserved.
+    public var animatableData: AnimatableDictionary<Key, Value> {
         get {
             AnimatableDictionary(self)
         }
@@ -156,8 +156,8 @@ extension Dictionary where Key: Hashable, Value: Animatable {
     /// This computed property allows dictionaries to be animated by extracting and managing
     /// the animatable data of each value.
     /// 
-    /// - Note: Only existing keys are updated during animation; new keys are not added.
-    var animatableData: AnimatableDictionary<Key, Value.AnimatableData> {
+    /// - Note: Setting this property updates matching existing keys. New keys are ignored, and existing keys that are absent from the new value are preserved.
+    public var valueAnimatableData: AnimatableDictionary<Key, Value.AnimatableData> {
         get {
             .init(mapValues(\.animatableData))
         }

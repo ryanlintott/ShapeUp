@@ -69,12 +69,12 @@ extension CornerRectangle {
         get {
             .init(
                 insetAmount,
-                styles.animatableData
+                styles.valueAnimatableData
             )
         }
         set {
             insetAmount = newValue.first
-            styles.animatableData = newValue.second
+            styles.valueAnimatableData = newValue.second
         }
     }
 }
