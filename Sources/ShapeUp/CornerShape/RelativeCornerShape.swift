@@ -25,12 +25,12 @@ public struct RelativeCornerCustom: CornerShape {
         get {
             .init(
                 insetAmount,
-                relativeCorners.animatableData
+                relativeCorners.elementAnimatableData
             )
         }
         set {
             insetAmount = newValue.first
-            relativeCorners.animatableData = newValue.second
+            relativeCorners.elementAnimatableData = newValue.second
         }
     }
     

@@ -139,7 +139,7 @@ public extension Array where Element: CornerStyled {
             }
     }
     
-    @available(*, deprecated, renamed: "cornerStyle(_:)")
+    @available(*, deprecated, renamed: "cornerStyles(_:)")
     func applyingStyles(_ newStyles: [CornerStyle?]) -> [Element] {
         cornerStyles(newStyles)
     }

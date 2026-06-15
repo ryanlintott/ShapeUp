@@ -36,8 +36,8 @@ import SwiftUI
 ///     var corners: [Corner]
 ///     
 ///     var animatableData: AnimatableArray<Corner.AnimatableData> {
-///         get { corners.animatableData }
-///         set { corners.animatableData = newValue }
+///         get { corners.elementAnimatableData }
+///         set { corners.elementAnimatableData = newValue }
 ///     }
 ///     
 ///     func path(in rect: CGRect) -> Path {
@@ -147,7 +147,7 @@ extension Array where Element: VectorArithmetic {
     /// conform to VectorArithmetic.
     /// 
     /// - Note: Only existing elements are updated during animation; array size changes are not animated.
-    var animatableData: AnimatableArray<Element> {
+    public var animatableData: AnimatableArray<Element> {
         get {
             AnimatableArray(self)
         }
@@ -167,7 +167,7 @@ extension Array where Element: Animatable {
     /// the animatable data of each element.
     /// 
     /// - Note: Only existing elements are updated during animation; array size changes are not animated.
-    var animatableData: AnimatableArray<Element.AnimatableData> {
+    public var elementAnimatableData: AnimatableArray<Element.AnimatableData> {
         get {
             .init(map(\.animatableData))
         }

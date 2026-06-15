@@ -12,10 +12,10 @@ extension NotchStyle: Animatable {
     
     public var animatableData: AnimatableData {
         get {
-            relativeCorners.animatableData
+            relativeCorners.elementAnimatableData
         }
         set {
-            relativeCorners.animatableData = newValue
+            relativeCorners.elementAnimatableData = newValue
         }
     }
 }
