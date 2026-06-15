@@ -95,6 +95,7 @@ public extension CornerCustom {
     }
 }
 
+#if !os(tvOS)
 @available(iOS 17, tvOS 17, macOS 14, watchOS 10, *)
 #Preview {
     @Previewable @State var bottomOffset = 0.2
@@ -118,3 +119,4 @@ public extension CornerCustom {
             .padding()
     }
 }
+#endif

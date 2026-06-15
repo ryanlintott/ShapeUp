@@ -95,6 +95,7 @@ extension RelativeCornerCustom: CornerStylable {
     }
 }
 
+#if !os(tvOS)
 @available(iOS 17, tvOS 17, macOS 14, watchOS 10, *)
 #Preview {
     @Previewable @State var bottomOffset = 0.2
@@ -133,3 +134,4 @@ extension RelativeCornerCustom: CornerStylable {
             .padding()
     }
 }
+#endif

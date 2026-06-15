@@ -8,7 +8,7 @@
 import ShapeUp
 import SwiftUI
 
-#if swift(>=6.2)
+#if swift(>=6.2) && !os(visionOS)
 @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
 extension Shape {
     func glass(_ style: Glass = .regular) -> some View {
@@ -58,7 +58,7 @@ struct CornerExampleShapeView: View {
         }
     }
     
-    #if swift(>=6.2)
+    #if swift(>=6.2) && !os(visionOS)
     @available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *)
     var glass: Glass {
         switch shapeStyle {
@@ -88,7 +88,7 @@ struct CornerExampleShapeView: View {
     
     var body: some View {
         ZStack {
-            #if swift(>=6.2)
+            #if swift(>=6.2) && !os(visionOS)
             if #available(iOS 26, macOS 26, tvOS 26, watchOS 26, visionOS 26, *),
                shapeStyle != .regular {
                 ZStack {

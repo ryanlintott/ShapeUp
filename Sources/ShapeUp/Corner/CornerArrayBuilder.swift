@@ -97,6 +97,7 @@ struct CornerArrayBuilderShapeExample: CornerShape {
     }
 }
 
+#if !os(tvOS)
 @available(iOS 17, watchOS 10, macOS 14, tvOS 17, *)
 #Preview {
     @Previewable @State var radius = 20.0
@@ -110,3 +111,4 @@ struct CornerArrayBuilderShapeExample: CornerShape {
         Slider(value: $radius, in: 0...50)
     }
 }
+#endif
