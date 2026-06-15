@@ -80,7 +80,7 @@ public extension Vector2Algebraic {
     ///
     /// X and Y components of both vectors are added.
     ///
-    /// Both vectors are placed head-to-tail. The result is a vector form the free tail to the free head.
+    /// Both vectors are placed head-to-tail. The result is a vector from the free tail to the free head.
     /// - Parameters:
     ///   - lhs: First vector.
     ///   - rhs: Second vector.

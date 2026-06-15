@@ -42,7 +42,7 @@ public extension Array where Element == Corner.Dimensions {
         }
     }
     
-    /// An flattened array of corners based on these corner dimensions.
+    /// A flattened array of corners based on these corner dimensions.
     ///
     /// All corners will have their radius changed to absolute values and corners with nested styles will change to an array of corners with those styles. This process is recursive leaving no corners with nested corner styles or relative radius values.
     internal var flattened: [Corner] {

@@ -34,7 +34,7 @@ public struct RelativeCornerCustom: CornerShape {
         }
     }
     
-    /// Creates a closed relative corner shape from variadic relative corners.
+    /// Creates a closed relative corner shape from an array of relative corners.
     ///
     /// - Note: To create an open corner shape add `.closed(false)`
     /// - Parameter relativeCorners: An array of relative corners that define the shape.

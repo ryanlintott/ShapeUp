@@ -60,7 +60,7 @@ import SwiftUI
 ///             height: circle.radius * 2
 ///         ))
 ///         
-///         if let nested = circle.nestedCircle {
+///         for nested in circle.nestedCircles {
 ///             drawCircle(nested, at: center, in: &path)
 ///         }
 ///     }

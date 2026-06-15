@@ -8,7 +8,7 @@
 import Foundation
 
 extension Corner.Dimensions {
-    /// An flattened array of corners based on these dimensions.
+    /// A flattened array of corners based on these dimensions.
     ///
     /// Corner radius will change to an absolute value. Nested corner styles will change to an array of corners with those styles. This process is recursive leaving no corners with nested corner styles or relative radius values.
     internal var flattened: [Corner] {

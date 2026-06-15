@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// A type can can have a ``CornerStyle`` or a radius applied to it.
+/// A type that can have a ``CornerStyle`` or radius applied to it.
 public protocol CornerStylable {
     /// Creates a copy with a new corner style applied to any ``CornerStyle`` parameters.
     /// - Parameter newStyle: Corner style to apply.
@@ -28,9 +28,9 @@ public extension CornerStylable {
 }
 
 extension Array: CornerStylable where Element: CornerStylable {
-    /// Creates an array of corners with the same positions and a new specified style.
+    /// Creates an array of elements with a new specified corner style.
     /// - Parameter newStyle: A style that will be applied to every corner.
-    /// - Returns: An array of corners with the same positions and a new specified style.
+    /// - Returns: An array of elements with the new corner style.
     public func cornerStyle(_ newStyle: CornerStyle) -> [Element] {
         map { $0.cornerStyle(newStyle) }
     }
@@ -41,11 +41,11 @@ extension Array: CornerStylable where Element: CornerStylable {
 }
 
 public extension Array where Element: CornerStylable {
-    /// Creates an array of corners with the same positions and a new specified style applied to specified corners.
+    /// Creates an array of elements with a new corner style applied at specified indices.
     /// - Parameters:
     ///   - newStyle: A style that will be applied to specified corners.
     ///   - indices: Indices of the corners with which to apply the new style.
-    /// - Returns: An array of corners with the same positions and a new specified style applied to specified corners.
+    /// - Returns: An array with the new corner style applied at the specified indices.
     func cornerStyle(_ newStyle: CornerStyle, corners indices: [Int]) -> [Element] {
         enumerated()
             .map { index, corner in
@@ -58,11 +58,11 @@ public extension Array where Element: CornerStylable {
         cornerStyle(newStyle, corners: indices)
     }
     
-    /// Creates an array of corners with the same positions and a new specified style applied to a specified corner.
+    /// Creates an array of elements with a new corner style applied at a specified index.
     /// - Parameters:
     ///   - newStyle: A style that will be applied to a specified corner.
     ///   - index: Index of the corner with which to apply the new style.
-    /// - Returns: An array of corners with the same positions and a new specified style applied to a specified corner.
+    /// - Returns: An array with the new corner style applied at the specified index.
     func cornerStyle(_ newStyle: CornerStyle, corner index: Int) -> [Element] {
         cornerStyle(newStyle, corners: [index])
     }
@@ -72,8 +72,8 @@ public extension Array where Element: CornerStylable {
         cornerStyle(newStyle, corner: index)
     }
     
-    /// Applies a new style to all corners in the array.
-    /// - Parameter newStyle: A style that will be applied to every corner.
+    /// Applies a new corner style to all elements in the array.
+    /// - Parameter newStyle: A corner style that will be applied to every element.
     mutating func cornerStyle(_ newStyle: CornerStyle) {
         self = self.cornerStyle(newStyle)
     }

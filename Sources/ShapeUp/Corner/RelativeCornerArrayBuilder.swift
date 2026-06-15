@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Builds an array of ``RelativeCorner`` from  ``RelativeCorner``,  `RectAnchor` and `(CGFloat, CGFloat)` types
+/// Builds an array of ``RelativeCorner`` from ``RelativeCorner``, `RectAnchor`, and `(CGFloat, CGFloat)` values.
 @resultBuilder
 public enum RelativeCornerArrayBuilder { }
 

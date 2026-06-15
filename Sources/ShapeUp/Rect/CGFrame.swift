@@ -47,14 +47,14 @@ public extension CGFrameRepresentable {
         self[.relative(x: x, y: y)]
     }
     
-    /// Creates a point at the relative coordinates inside this rectangle.
+    /// Creates a corner at the specified relative coordinates in the frame.
     ///
-    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
+    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the frame.
     /// - Parameters:
     ///   - x: Relative x coordinate.
     ///   - y: Relative y coordinate.
     ///   - style: The corner style to apply. (default is .point)
-    /// - Returns: A corner at the relative location inside this CGRect with the applied style.
+    /// - Returns: A corner at the relative coordinates with the applied style.
     subscript (x: CGFloat, y: CGFloat, _ style: CornerStyle = .point) -> Corner {
         self[.relative(x: x, y: y)].corner(style)
     }
@@ -80,19 +80,19 @@ public extension CGFrameRepresentable {
         points(anchors())
     }
     
-    /// Creates an array of corners from the 4 corners of the rectangle starting with the top left and going clockwise with the `.point` style applied.
+    /// Creates an array of corners from the four vertices of the frame, starting with the top left and going clockwise with the `.point` style applied.
     var corners: [Corner] {
         corners()
     }
     
-    /// Creates an array of corners from the rectangle.
+    /// Creates an array of corners from the frame vertices.
     /// - Parameter style: Corner style used for all corners.
     /// - Returns: An array of 4 corners, with the provided style, starting with the top left and going clockwise.
     func corners(_ style: CornerStyle = .point) -> [Corner] {
         points(.vertices).corners(style)
     }
     
-    /// Creates an array of corners from the rectangle.
+    /// Creates an array of corners from the frame vertices.
     /// - Parameter styles: Array of corner styles starting with the top left and going clockwise. Nil values will use `.point`
     /// - Returns: An array of 4 corners, with the provided styles, starting with the top left and going clockwise.
     func corners(_ styles: [CornerStyle?]) -> [Corner] {
@@ -108,7 +108,7 @@ public extension CGFrameRepresentable {
 }
 
 
-/// A coordinate space or rhombus defined only by an origin and a vector for each axis.
+/// A coordinate frame defined by an origin and a vector for each axis.
 public struct CGFrame {
     /// The origin point of the coordinate frame.
     public var origin: CGPoint
@@ -129,7 +129,7 @@ extension CGFrame: CGFrameRepresentable {
 public extension CGFrame {
     // MARK: - Inits
     
-    /// Creates a coordinate frame with the specified origin, size, anchor, and rotation.
+    /// Creates a coordinate frame with the specified origin, size, and rotation.
     /// - Parameters:
     ///   - origin: The origin point of the frame.
     ///   - size: The size of the frame.
@@ -144,7 +144,7 @@ public extension CGFrame {
         self.yAxis = Vector2(magnitude: size.height, direction: rotation + Angle.degrees(90))
     }
     
-    /// Creates a coordinate frame equivalent for a CGRect.
+    /// Creates a coordinate frame equivalent to a CGRect.
     /// - Parameter rect: The rectangle to convert to a coordinate frame.
     init(_ rect: CGRect) {
         self.init(origin: rect.origin, size: rect.size)

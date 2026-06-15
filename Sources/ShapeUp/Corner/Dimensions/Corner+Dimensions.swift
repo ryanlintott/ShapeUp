@@ -246,7 +246,7 @@ public extension Corner.Dimensions {
         nextPoint.vector - cornerPoint.vector
     }
     
-    /// Returns the maximum length that a corner can cut off. (The lenght of the shorter of the two lines from the corner point)
+    /// Returns the maximum length that a corner can cut off. (The length of the shorter of the two lines from the corner point)
     /// - Parameters:
     ///   - previousVector: Vector from corner to previous point.
     ///   - nextVector: Vector from corner to next point.
@@ -297,7 +297,7 @@ public extension Corner.Dimensions {
     /// - Parameters:
     ///   - cornerPoint: Corner point.
     ///   - nextVector: Vector from corner to next point.
-    ///   - cutLength: Cut length from cotner point to corner end.
+    ///   - cutLength: Cut length from corner point to corner end.
     /// - Returns: The point where the corner shape ends.
     static func cornerEnd(cornerPoint: CGPoint, nextVector: Vector2, cutLength: CGFloat) -> CGPoint {
         cornerPoint
@@ -342,4 +342,3 @@ public extension Corner.Dimensions {
         }
     }
 }
-

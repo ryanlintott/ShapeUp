@@ -144,7 +144,7 @@ public extension RelativeCorner {
         scaledPosition(.init(width: x, height: y), anchor: anchor)
     }
     
-    /// Scales the position of this objectwithout modifying other properties.
+    /// Scales the position of this object without modifying other properties.
     /// - Parameters:
     ///   - scale: Used to scale the position.
     ///   - anchor: Anchor point for the rotation. Default is `.topLeft`

@@ -12,10 +12,10 @@
 A Swift Package that makes SwiftUI shapes easier to build. (The logo above was created in 100 lines + SwiftUI Text)
 
 Features:
-- [`RectAnchor`](#rectanchor), an enum for all major anchor points on a rectangle. Used for transform functions.
+- [`RectAnchor`](#rectanchor), an enum for major anchor points in a rectangle or coordinate frame. Used for transform functions.
 - Extensions to [`CGPoint`](#cgpoint), [`CGRect`](#cgrect), and [`CGSize`](#cgsize)
 - [`Corner`](#corner), a `CGPoint` with `style`.
-- [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
+- [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, `.concave`, and `.custom`
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
 - [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners.
 - [`CornerCustom`](#cornercustom), for building corner shapes inline without making a new type.
@@ -108,7 +108,7 @@ func path(in rect: CGRect) -> Path {
         rect[.right],
         rect[0.7, 1.0]     
     ]
-    .applyingStyle(.rounded(radius: 20))
+    .corners(.rounded(radius: 20))
     .path()
 }
 ```
@@ -193,7 +193,7 @@ Internally, the final value is determined by running the `value(using total:)` f
 ## CornerShape
 An alternative to SwiftUI `Shape` where shapes are built from an array of `Corner`s. The resulting shape automatically conforms to `InsettableShape` with no additional work.
 
-`CornerShape` onlys draws straight lines between corners of different styles so if you want bezier curves you will need to use `Shape` and `addOpenCornerShape` to the path instead.
+`CornerShape` only draws straight lines between its styled corners, so if you want Bezier curves between corners you will need to use `Shape` and `addOpenCornerShape` instead.
 
 ### How to build a CornerShape
 - Set `insetAmount` to zero (this property is used to automatically inset the CornerShape).
@@ -338,12 +338,12 @@ Rectangular is the default style but triangular notches are just as easy to make
 
 ```swift
 /// Specify styles for each corner
-Notch(depth: 20)
-    .triangle(cornerStyles: [.rounded(radius: 10), .point, .straight(radius: 5)])
+Notch(.triangle, depth: 20)
+    .cornerStyles([.rounded(radius: 10), .point, .straight(radius: 5)])
 
 /// Or specify one style for all
 Notch(length: .relative(0.2), depth: 50)
-    .rectangle(cornerStyle: .rounded(radius: .relative(0.2)))
+    .cornerStyle(.rounded(radius: .relative(0.2)))
 ```
 
 ### Custom NotchStyle
@@ -449,7 +449,7 @@ let rect = size.rect(at: point, anchor: .center)
 ```
 
 ## CGFrame
-For more complex transformations, a coordinate space or rhombus defined only by an origin and a vector for each axis can be helpful. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems. Specifically, this is used to draw custom corner styles.
+For more complex transformations, a coordinate frame defined by an origin and a vector for each axis can be helpful. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems. Specifically, this is used to draw custom corner styles.
 
 Similar to `CGRect`, you can easily create points and convert between points and relative anchors.
 
@@ -468,7 +468,7 @@ let anchorPoints: [RectAnchor] = relativePoints.relative(to: frame)
 ```
 
 ```swift
-CGFrame(origin: .zero, size: CGSize(width: 10, height: 20), anchor: .center, rotation: .degrees(45))
+CGFrame(origin: .zero, size: CGSize(width: 10, height: 20), rotation: .degrees(45))
 ```
 
 ## SketchyLine

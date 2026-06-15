@@ -14,7 +14,7 @@ public protocol RelativeRepresentable: Vector2Representable {
     
     /// Converts this object to one that is relative to the specified frame.
     /// - Parameter frame: Frame used for relative position.
-    /// - Returns: A relative version of this object anchored to the specified frame.
+    /// - Returns: Relative versions of the array elements anchored to the specified frame.
     func relative(to frame: some CGFrameRepresentable) -> RelativeValue
 }
 
