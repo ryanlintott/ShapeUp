@@ -17,12 +17,17 @@ public protocol EnumeratedCornerShape: CornerShape, CornerStylable {
     /// An enumeration containing each named corner in the order they will be drawn.
     associatedtype ShapeCorner: EnumeratedCorner
     
-    /// A dictionary storing the style of each corner by it's shape corner label.
+    /// A dictionary storing the style of each corner by its shape corner label.
+    ///
+    /// A corner with no matching entry uses ``CornerStyle/point``.
     var styles: [ShapeCorner: CornerStyle] { get set }
     
-    /// Returns a dictionary with each point used to draw the shape stored with it's shape corner label.
+    /// Returns a dictionary with each point used to draw the shape stored with its shape corner label.
+    ///
+    /// ``corners(in:)`` emits points in `ShapeCorner.allCases` order. A case with no matching
+    /// point in the returned dictionary is omitted.
     /// - Parameter rect: The rectangle in which to position the points.
-    /// - Returns: A dictionary with each point used to draw the shape stored with it's shape corner label.
+    /// - Returns: A dictionary with each point used to draw the shape stored with its shape corner label.
     func points(in rect: CGRect) -> [ShapeCorner: CGPoint]
 }
 

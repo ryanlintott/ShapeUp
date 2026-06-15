@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
+/// An animatable line shape with ends that can extend and a position that can offset perpendicular to its direction.
 public struct SketchyLine: Shape {
     /// Edges where the line can be drawn
     public enum SketchyEdge: Hashable, Codable, Sendable {
@@ -45,10 +45,10 @@ public struct SketchyLine: Shape {
     
     /// Creates a sketchy line shape.
     /// - Parameters:
-    ///   - edge: Edge to draw the line on. Text edges require an instance of the UIFont
+    ///   - edge: Edge on which to draw the line.
     ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
     ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
-    ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
+    ///   - offset: Perpendicular displacement from the selected edge. Relative values use the frame width for leading and trailing edges, and the frame height for top and bottom edges. Default is zero.
     ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
     ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {

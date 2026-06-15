@@ -41,14 +41,18 @@ public struct CornerTriangle: EnumeratedCornerShape {
         case bottomLeft
     }
     
+    /// The horizontal offset of the top vertex from the frame's minimum x-coordinate.
+    ///
+    /// Relative values use the full frame width, so `0` aligns with the left edge, `0.5`
+    /// aligns with the center, and `1` aligns with the right edge. Values are not clamped.
     public var topPoint: RelatableValue
     
     public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d triangular shape with specified top point and styles for each corner.
     /// - Parameters:
-    ///   - topPoint: Position of the top point from the top left corner of the frame. Relative values are relative to width.
-    ///   - styles: A dictionary describing the style of each shape corner.
+    ///   - topPoint: Horizontal offset of the top vertex from the frame's minimum x-coordinate. Relative values use the full frame width and are not clamped.
+    ///   - styles: A dictionary describing the style of each shape corner. Missing entries use ``CornerStyle/point``.
     public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
         self.topPoint = topPoint
         self.styles = styles
