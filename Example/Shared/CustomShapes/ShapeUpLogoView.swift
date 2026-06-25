@@ -76,7 +76,7 @@ struct ShapeUpLogo: View {
                     
                     // Yellow Squiggle
                     CornerCustom(closed: false) { rect in
-                        RelativeCorners {
+                        rect.points {
                             (0.0, 1.0)
                             (1.1, 0)
                             (2.1, 0.9)
@@ -84,7 +84,6 @@ struct ShapeUpLogo: View {
                             (3.8, 1)
                             (5, 0)
                         }
-                        .corners(in: rect)
                         .scaledPositions(x: 0.0365, y: 0.1)
                         .rotated(.degrees(-15), anchor: .bottomLeft)
                         .moved(rect[0.28, 0.23])

@@ -55,15 +55,14 @@ public extension CornerArrayBuilder {
     }
 }
 
-/// An object used to create an array of ``Corner`` using a trailing closure with ``CornerArrayBuilder``.
-public struct Corners {
-    public init() { }
-    
+/// An array of ``Corner`` values.
+public typealias Corners = [Corner]
+
+extension Corners {
     /// Builds an array of corners from a trailing closure.
     /// - Parameter corners: A closure that builds the corners.
-    /// - Returns: The corners produced by the closure.
-    public func callAsFunction(@CornerArrayBuilder _ corners: () -> [Corner]) -> [Corner] {
-        corners()
+    public init(@CornerArrayBuilder _ corners: () -> [Corner]) {
+        self = corners()
     }
 }
 

@@ -9,7 +9,7 @@ extension Notch {
     /// Applies a style to this notch.
     /// - Parameter newStyle: Style used for notch.
     /// - Returns: A notch with a new style applied.
-    func notchShape(_ newStyle: NotchStyle) -> Notch {
+    func notchStyle(_ newStyle: NotchStyle) -> Notch {
         .init(newStyle, position: position, length: length, depth: depth)
     }
     

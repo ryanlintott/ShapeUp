@@ -22,11 +22,7 @@ public enum AnchorType: Sendable {
 }
 
 /// An enumeration to indicate an anchor location on a rectangle.
-///
-/// Cases start with Center and are in clockwise order from top left.
-public enum RectAnchor: CaseIterable, Sendable, Equatable, Hashable, Codable {
-    public static let allCases: [RectAnchor] = [.center, .topLeft, .top, .topRight, .right, .bottomRight, .bottom, .bottomLeft, .left]
-    
+public enum RectAnchor: Sendable, Equatable, Hashable, Codable {
     case center
     case topLeft
     case top

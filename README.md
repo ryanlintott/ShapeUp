@@ -159,7 +159,7 @@ A simple point corner with no properties.
 <img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue)`
 A rounded corner with a radius.
 
-<img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, concaveInset: CGFloat)`
+<img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, concaveInset: CGFloat = 0)`
 A concave corner is like an inverted rounded corner where the radius determines the start and end points of the cut. The concave inset value is the inset of the concave radius and is automatically adjusted when insetting this corner.
 
 <img width="50" alt="Pink triangle with a straight cut corner" src="https://user-images.githubusercontent.com/2143656/157762299-437bcec4-2fc8-475b-bbbb-ed810d86ca7f.svg"> `.straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
@@ -169,6 +169,14 @@ A straight chamfer corner where the radius determines the start and end points o
 A cutout corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
 
 Lastly, a custom corner uses the radius to determine the top left and bottom right corners of a rhombus in which you can add any number of relative corners to draw your shape.
+
+```swift
+.custom(radius: 20, relativeCorners: [
+    .topLeft,
+    .bottom.rounded(radius: .relative(0.4)),
+    .topRight
+])
+```
 
 
 ## RelatableValue
@@ -253,7 +261,7 @@ func path(in rect: CGRect) -> Path {
 ## CornerCustom
 Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s.
 
-The closure must be `Sendable` so you cannot pass in @State values.
+The closure is `@Sendable`, so captured view state will not drive animation the way it can with `RelativeCornerCustom`.
 
 ```swift
 CornerCustom { rect in

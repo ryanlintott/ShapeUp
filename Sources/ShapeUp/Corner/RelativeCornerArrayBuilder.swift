@@ -63,14 +63,13 @@ public extension RelativeCornerArrayBuilder {
     }
 }
 
-/// An object used to easily create an array of corners using a trailing closure.
-public struct RelativeCorners {
-    public init() { }
-    
+/// An array of ``RelativeCorner`` values.
+public typealias RelativeCorners = [RelativeCorner]
+
+extension RelativeCorners {
     /// Builds an array of relative corners from a trailing closure.
     /// - Parameter corners: A closure that builds the relative corners.
-    /// - Returns: The relative corners produced by the closure.
-    public func callAsFunction(@RelativeCornerArrayBuilder _ corners: () -> [RelativeCorner]) -> [RelativeCorner] {
-        corners()
+    public init(@RelativeCornerArrayBuilder _ corners: () -> [RelativeCorner]) {
+        self = corners()
     }
 }

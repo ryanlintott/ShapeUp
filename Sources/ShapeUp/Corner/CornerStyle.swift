@@ -73,6 +73,15 @@ public extension CornerStyle {
         .cutout(radius: radius, cornerStyles: [cornerStyle, cornerStyle, cornerStyle])
     }
     
+    /// A custom corner style with a specified radius and relative corners supplied by a result builder.
+    ///  - Parameters:
+    ///   - radius: Radius of circle used to determine the start and end points of the custom shape. Relative values relate to the shortest of the two lines from this corner.
+    ///   - relativeCorners: Relative corners that define the corner shape.
+    /// - Returns: A custom corner style using the supplied relative corners.
+    static func custom(radius: RelatableValue, @RelativeCornerArrayBuilder relativeCorners: () -> [RelativeCorner]) -> Self {
+        .custom(radius: radius, relativeCorners: relativeCorners())
+    }
+    
     /// Radius of the corner.
     ///
     /// A circle with this radius determines the start and end points of any corner shape except concave that may be effected by radius offset.

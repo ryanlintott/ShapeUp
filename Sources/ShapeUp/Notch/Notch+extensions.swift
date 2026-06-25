@@ -9,18 +9,18 @@ import SwiftUI
 
 extension Notch: CornerStylable {
     public func cornerStyle(_ newStyle: CornerStyle) -> Notch {
-        notchShape(style.cornerStyle(newStyle))
+        notchStyle(style.cornerStyle(newStyle))
     }
     
     /// Creates a copy of this notch with new styles applied to its corners.
     /// - Parameter newStyles: Styles to apply to each corner respectively. Nil values keep the current style.
     /// - Returns: A notch with the supplied corner styles.
     public func cornerStyles(_ newStyles: [CornerStyle?]) -> Notch {
-        notchShape(style.cornerStyles(newStyles))
+        notchStyle(style.cornerStyles(newStyles))
     }
     
     public func changingRadius(to newRadius: RelatableValue) -> Notch {
-        notchShape(style.changingRadius(to: newRadius))
+        notchStyle(style.changingRadius(to: newRadius))
     }
 }
 

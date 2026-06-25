@@ -28,7 +28,7 @@ struct CustomCornerShapeExample: CornerShape {
     }
     
     func corners(in rect: CGRect) -> [Corner] {
-        RelativeCorners {
+        rect.corners {
             (0, 0.2)
             (0.5, 0)
             (1, 0.2)
@@ -37,7 +37,6 @@ struct CustomCornerShapeExample: CornerShape {
             (0.5, 0.8)
             (0, 1)
         }
-        .corners(in: rect)
         .cornerStyle(style)
     }
 }
