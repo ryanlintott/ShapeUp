@@ -95,17 +95,16 @@ extension Corner.Dimensions {
             insetCornerStyle = .cutout(radius: insetRadius, cornerStyles: nestedCornerStyles)
             
         case .custom:
+            let frame = CGFrame(
+                origin: insetPoint.moved(-startVector),
+                xAxis: startVector,
+                yAxis: endVector
+            )
             let insetSubcorners = subCorners
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                 .corners(inset: inset)
-            /// The Rhombus is the same size, just moved to the new inset location.
-                .relative(
-                    to: CGFrame(
-                        origin: insetPoint.moved(-startVector),
-                        xAxis: startVector,
-                        yAxis: endVector
-                    )
-                )
+            /// The frame is the same size, just moved to the new inset location.
+                .map { $0.relative(to: frame) }
             
             insetCornerStyle = .custom(radius: insetRadius, relativeCorners: insetSubcorners)
         }

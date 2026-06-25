@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// # MARK: Internal extensions to switch RectAnchor into Vector2 to use Vector2Transformable
+// # MARK: Internal extensions to switch RectAnchor into Vector2 and vice versa to use Vector2Transformable
 
 internal extension RectAnchor {
     var vector: Vector2 {

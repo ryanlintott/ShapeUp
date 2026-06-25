@@ -22,8 +22,6 @@ extension CGRect: CGFrameRepresentable {
 }
 
 public extension CGRect {
-    // MARK: - Points from anchors and relative coordinates
-    
     /// Creates an array of points from the 4 corners of the rectangle starting with the top left and going clockwise.
     var points: [CGPoint] {
         points(.vertices)
@@ -49,8 +47,6 @@ public extension CGRect {
         points(relativeLocations: relativeLocations)
     }
     
-    // MARK: - Deprecated
-    
     /// Creates a point in the location of an anchor.
     /// - Parameter anchor: Anchor where the point is located
     /// - Returns: A point where the anchor is located.
@@ -70,21 +66,14 @@ public extension CGRect {
         self[relativeLocation.0, relativeLocation.1]
     }
     
-    // MARK: - Transformations
-
-    /// Repositions the origin.
-    /// - Parameter point: A vector representing the new origin.
-    /// - Returns: A rectangle of the same size, repositioned to the new origin.
-    func repositioned(to point: some Vector2Representable) -> Self {
-        .init(origin: point.point, size: size)
-    }
-    
     /// Moves the origin.
     /// - Parameter distance: A vector representing the movement.
     /// - Returns: A rectangle of the same size, moved by the provided distance.
     func moved(_ distance: some Vector2Representable) -> Self {
-        let vector = origin.vector + distance.vector
-        return repositioned(to: vector)
+        .init(
+            origin: origin.moved(distance),
+            size: size
+        )
     }
     
     /// Moves the origin.
@@ -120,7 +109,10 @@ public extension CGRect {
     ///   - anchor: Anchor point for scale. Default is .topLeft
     /// - Returns: A rectangle scaled by a specified size using a specified anchor point.
     func scaled(_ scale: CGSize, anchor: RectAnchor = .topLeft) -> Self {
-        self[anchor].rect(size: size.scaled(scale), anchor: anchor)
+        .init(
+            origin: origin.scaledPosition(scale, anchor: self[anchor]),
+            size: size.scaled(scale)
+        )
     }
     
     /// Scales the rectangle by a specified x and y amount using a specified anchor point.

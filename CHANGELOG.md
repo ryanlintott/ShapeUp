@@ -22,7 +22,8 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added a new `Notch` init with a trailing closure that builds a custom notch with relative corners.
 - Added `CornerArrayBuilder`, `RelativeCornerArrayBuilder`, and `RectAnchorArrayBuilder` for building `Corner`, `RelativeCorner`, and `RectAnchor` arrays using result builders.
 - Added `Corners` and `RelativeCorners` as typealiases for `[Corner]` and `[RelativeCorner]` with result builder inits to easily create arrays without comma-separated array literals.
-- Added `Path.addOpenCornerShape` and `Path.addClosedCornerShape` overloads that accept `CornerArrayBuilder` closures.
+- Added `Path.addClosedCornerShape` that takes an array of corners or a `CornerArrayBuilder` closure and draws it as a closed shape.
+- Added a `Path.addOpenCornerShape` overload with a `CornerArrayBuilder` closure.
 - Added the `CornerStylable` protocol so corner styles can be applied consistently to corners, relative corners, arrays of corners or relative corners, notches, enumerated shapes, and custom shapes.
 - Added the `CornerStyled` protocol to centralize corner style properties and methods across `Corner` and `RelativeCorner`
 - Added animatable support for `CornerStyle`, `Corner`, `RelativeCorner`, `RectAnchor`, `NotchStyle`, `Notch`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `RelativeCornerCustom`.

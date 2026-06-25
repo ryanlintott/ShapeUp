@@ -8,24 +8,27 @@
 import Foundation
 
 extension CGPoint {
-    /// Creates a rectangle using this point as an anchor.
-    /// - Parameters:
-    ///   - size: Size of the rectangle.
-    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
-    /// - Returns: A rectangle with the specified size and this point as the anchor.
-    func rect(size: CGSize, anchor: RectAnchor = .topLeft) -> CGRect {
-        let anchorVector = size.rect()[anchor].vector
-        return CGRect(origin: point.moved(-anchorVector), size: size)
-    }
-    
-    
-    /// Creates a rectangle using this point as an anchor.
-    /// - Parameters:
-    ///   - width: Width of the rectangle.
-    ///   - height: Height of the rectangle.
-    ///   - anchor: Location of the anchor point in the rectangle. Relative sizes relate to the rectangle size.
-    /// - Returns: A rectangle with the specified size and this point as the anchor.
-    func rect(width: CGFloat, height: CGFloat, anchor: RectAnchor = .topLeft) -> CGRect {
-        rect(size: .init(width: width, height: height), anchor: anchor)
+    func relative(to frame: some CGFrameRepresentable) -> RectAnchor {
+        /// Vector from origin to the point.
+        let relativeVector = vector - frame.origin.vector
+        
+        let denominator = frame.xAxis.crossProduct(with: frame.yAxis)
+        let axisMagnitudeSquared = frame.xAxis.magnitudeSquared + frame.yAxis.magnitudeSquared
+        guard axisMagnitudeSquared > 0 else { return .topLeft }
+
+        let rankTolerance = axisMagnitudeSquared * .ulpOfOne * 16
+        let x: CGFloat
+        let y: CGFloat
+
+        if abs(denominator) > rankTolerance {
+            x = relativeVector.crossProduct(with: frame.yAxis) / denominator
+            y = frame.xAxis.crossProduct(with: relativeVector) / denominator
+        } else {
+            // Use the minimum-norm solution when the axes describe a line.
+            x = frame.xAxis.dotProduct(with: relativeVector) / axisMagnitudeSquared
+            y = frame.yAxis.dotProduct(with: relativeVector) / axisMagnitudeSquared
+        }
+        
+        return .relative(x: x, y: y)
     }
 }

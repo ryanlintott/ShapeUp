@@ -127,8 +127,6 @@ extension CGFrame: CGFrameRepresentable {
 }
 
 public extension CGFrame {
-    // MARK: - Inits
-    
     /// Creates a coordinate frame with the specified origin, size, and rotation.
     /// - Parameters:
     ///   - origin: The origin point of the frame.

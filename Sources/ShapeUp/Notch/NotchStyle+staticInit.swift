@@ -44,7 +44,7 @@ public extension NotchStyle {
     @available(*, deprecated, renamed: "custom(_:)", message: "NotchStyle has been redesigned to work with animation and can no longer support a closure property. The new custom notch based on relative corners should handle most cases where corners are positioned relative to the notch length and depth but if not you may need to switch to manually drawing the corners without using a notch.")
     static func custom(corners: @Sendable @escaping (_ in: CGRect) -> [Corner]) -> Self {
         // Convert the closure-based corners to relative corners using a reference frame
-        let relativeCorners = corners(.one).relative(to: CGRect.one)
+        let relativeCorners = corners(.one).map { $0.relative(to: CGRect.one) }
         return .custom(relativeCorners: relativeCorners)
     }
 }

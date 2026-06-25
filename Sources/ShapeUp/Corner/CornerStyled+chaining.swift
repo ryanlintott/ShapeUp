@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Applying styles
-
 public extension CornerStyled {
     /// Applies a rounded corner style to this corner.
     /// - Parameter radius: Radius of the rounded corner.

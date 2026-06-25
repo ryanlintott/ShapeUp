@@ -7,15 +7,6 @@
 
 import SwiftUI
 
-extension Corner: RelativeRepresentable {
-    /// Converts this object to one that is relative to the specified frame.
-    /// - Parameter frame: Frame used for relative position.
-    /// - Returns: A relative version of this object anchored to the specified frame.
-    public func relative(to frame: some CGFrameRepresentable) -> RelativeCorner {
-        point.relative(to: frame).relativeCorner.cornerStyle(style)
-    }
-}
-
 extension Corner: Vector2Transformable {
     public var vector: Vector2 {
         Vector2(dx: x, dy: y)
@@ -33,6 +24,13 @@ extension Corner: Vector2Transformable {
 }
 
 extension Corner {
+    /// Converts this object to one that is relative to the specified frame.
+    /// - Parameter frame: Frame used for relative position.
+    /// - Returns: A relative version of this object anchored to the specified frame.
+    func relative(to frame: some CGFrameRepresentable) -> RelativeCorner {
+        point.relative(to: frame).relativeCorner.cornerStyle(style)
+    }
+    
     /// Creates a set of saved dimensions based on the corner style and provided previous and next points.
     ///
     /// Used for creating paths, insetting, flattening, etc.

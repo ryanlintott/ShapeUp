@@ -8,8 +8,6 @@
 import Foundation
 
 extension RelativeCorner {
-    // MARK: - Static properties for RectAnchor cases (default .point style)
-    
     /// A relative corner at the center position with default .point style.
     public static let center = RelativeCorner(anchor: .center)
     
@@ -36,8 +34,6 @@ extension RelativeCorner {
     
     /// A relative corner at the left position with default .point style.
     public static let left = RelativeCorner(anchor: .left)
-    
-    // MARK: - Static methods for RectAnchor cases
     
     /// Creates a relative corner at a custom position with default .point style.
     /// - Parameters:
