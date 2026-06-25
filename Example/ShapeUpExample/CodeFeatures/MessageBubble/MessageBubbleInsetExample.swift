@@ -1,5 +1,5 @@
 //
-//  MessageBubble5Example.swift
+//  MessageBubbleInsetExample.swift
 //  ShapeUpExample
 //
 //  Created by Ryan Lintott on 2022-03-24.

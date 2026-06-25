@@ -457,9 +457,7 @@ let rect = size.rect(at: point, anchor: .center)
 ```
 
 ## CGFrame
-For more complex transformations, a coordinate frame defined by an origin and a vector for each axis can be helpful. This allows for flexible relative positioning and transformations of points to non-rectilinear coordinate systems. Specifically, this is used to draw custom corner styles.
-
-Similar to `CGRect`, you can easily create points and convert between points and relative anchors.
+A coordinate frame defined by an origin and a vector for each axis. Similar to `CGRect` you can use it to convert `RectAnchor` positions within the frame to absolute points and is used internally to draw custom corner styles.
 
 ```swift
 let frame = CGFrame(origin: .zero, xAxis: Vector2(dx: 10, dy: 0), yAxis: Vector2(dx: 10, dy: 8))
@@ -471,8 +469,6 @@ let relativePoints = [
     .relative(x: 0.3, y: 1.0),
     .relative(x: 1.0, y: 0.0)
 ].points(in: frame)
-let anchorPoint: RectAnchor = CGPoint(x: 15, y: 4).relative(to: frame)
-let anchorPoints: [RectAnchor] = relativePoints.relative(to: frame)
 ```
 
 ```swift

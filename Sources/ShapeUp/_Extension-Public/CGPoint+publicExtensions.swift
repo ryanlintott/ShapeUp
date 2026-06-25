@@ -25,7 +25,7 @@ extension CGPoint: Vector2Transformable {
 }
 
 extension CGPoint: RelativeRepresentable {
-    public func relative(to frame: some CGFrameRepresentable) -> RectAnchor {
+    func relative(to frame: some CGFrameRepresentable) -> RectAnchor {
         /// Vector from origin to the point.
         let relativeVector = vector - frame.origin.vector
         
@@ -47,16 +47,5 @@ extension CGPoint: RelativeRepresentable {
         }
         
         return .relative(x: x, y: y)
-    }
-}
-
-extension Array where Element == CGPoint {
-    /// Creates a path defined by this array of points. Closed by default.
-    /// - Parameters:
-    ///   - closed: Boolean determining if the path is closed. Default is true.
-    /// - Returns: A path defined by this array of points. Closed by default.
-    public func path(closed: Bool = true) -> Path {
-        // Creates corners which have a default .point type and returns their path
-        corners.path(closed: closed)
     }
 }

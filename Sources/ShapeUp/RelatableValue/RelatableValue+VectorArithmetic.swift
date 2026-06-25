@@ -1,5 +1,5 @@
 //
-//  RelatableValue+Animatable.swift
+//  RelatableValue+VectorArithmetic.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2023-05-19.

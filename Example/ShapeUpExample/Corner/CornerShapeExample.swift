@@ -1,5 +1,5 @@
 //
-//  CornerShapeView.swift
+//  CornerShapeExample.swift
 //  ShapeUpExample
 //
 //  Created by Ryan Lintott on 2021-08-13.
