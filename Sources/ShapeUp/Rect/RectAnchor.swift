@@ -7,20 +7,6 @@
 
 import SwiftUI
 
-/// An enumeration to indicate the type of anchor
-public enum AnchorType: Sendable {
-    /// Anchor positioned on a vertex
-    case vertex
-    /// Anchor positioned on an edge
-    case edge
-    /// Anchor positioned in the center
-    case center
-    /// Anchor is inside the shape
-    case interior
-    /// Anchor is outside the shape
-    case exterior
-}
-
 /// An enumeration to indicate an anchor location on a rectangle.
 public enum RectAnchor: Sendable, Equatable, Hashable, Codable {
     case center
@@ -95,17 +81,6 @@ extension RectAnchor {
     
     var relativePoint: CGPoint {
         self.point(in: .one)
-    }
-    
-    /// The type of the anchor.
-    public var type: AnchorType {
-        switch (relativePoint.x, relativePoint.y) {
-        case (0.5, 0.5): .center
-        case (0, 0), (1, 0), (1, 1), (0, 1): .vertex
-        case (0...1, 0), (1, 0...1), (0...1, 1), (0, 0...1): .edge
-        case (0...1, 0...1): .interior
-        default: .exterior
-        }
     }
     
     /// A relative corner at the same position with the default style and no offset.

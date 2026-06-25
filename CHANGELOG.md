@@ -4,13 +4,14 @@
 
 Changes since the previous versioned release, `0.5.3`.
 
-This has a few tiny breaks but a large number of deprecations that will likely be removed in the next big update. It introduces the concept of relative anchors and corners that allow for custom corner styles, better custom notches, and animation support for almost every corner shape. There is also finally a fix for some smaller annoying insetting issues that mostly effected concave corners.
+This has a few tiny breaks but a large number of deprecations that will likely be removed in the next big update. It introduces the concept of relative anchors and corners that allow for custom corner styles, better custom notches, and animation support for almost every corner shape. There is also finally a fix for some smaller annoying insetting issues that mostly affected concave corners.
 
 ### Breaking Changes
 
 - Changed `CornerStyle.concave(radius:radiusOffset:)` to `CornerStyle.concave(radius:concaveInset:)` to correct drawing errors and allow animation.
 - `CornerRectangle`, `CornerTriangle`, and `CornerPentagon` now use non-optional styles for each corner to support animation.
 - `RectAnchor` no longer conforms to `CaseIterable`.
+- `AnchorType` removed.
 
 ### New Features
 
@@ -19,11 +20,11 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added `RelativeCornerCustom`, a version of `CornerCustom` that uses relative corners and can take animated State variables within its closure creating an animatable shape.
 - Added `CornerStyle.custom(radius:relativeCorners:)` for custom corner styles based on array of relative corners.
 - Added a new `Notch` init with a trailing closure that builds a custom notch with relative corners.
-- Added `CornerArrayBuilder`, `RelativeCornerArrayBuilder`, and `RectAnchorArrayBuilder` for building `Corner`, `RelativeCorner`, and `RectAnchor` arrays using result buiders.
-- Added `Corners` and `RelativeCorners` as typealiases for `[Corner]` and `[RelativeCorners]` with result builder inits to easily create arrays without comma-separated array literals.
+- Added `CornerArrayBuilder`, `RelativeCornerArrayBuilder`, and `RectAnchorArrayBuilder` for building `Corner`, `RelativeCorner`, and `RectAnchor` arrays using result builders.
+- Added `Corners` and `RelativeCorners` as typealiases for `[Corner]` and `[RelativeCorner]` with result builder inits to easily create arrays without comma-separated array literals.
 - Added `Path.addOpenCornerShape` and `Path.addClosedCornerShape` overloads that accept `CornerArrayBuilder` closures.
 - Added the `CornerStylable` protocol so corner styles can be applied consistently to corners, relative corners, arrays of corners or relative corners, notches, enumerated shapes, and custom shapes.
-- Added the 'CornerStyled` protocol to centralize corner style properties and methods across `Corner` and `RelativeCorner`
+- Added the `CornerStyled` protocol to centralize corner style properties and methods across `Corner` and `RelativeCorner`
 - Added animatable support for `CornerStyle`, `Corner`, `RelativeCorner`, `RectAnchor`, `NotchStyle`, `Notch`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `RelativeCornerCustom`.
 - Added `AnimatableArray`, `AnimatableDictionary`, and `NestedAnimatable` helpers for animating arrays, dictionaries, and nested animatable values.
 - Added `CGFrame` for describing coordinate frames with an origin, an x-axis vector, and a y-axis vector. This is used internally to draw custom corners at any angle, not just 90 degrees.
@@ -31,7 +32,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added `CGSize.rect`, `CGSize.rect(at:anchor:)`, and `CGSize.scaled` helpers.
 - Added `CGRect` move and scale helpers that use `RectAnchor` values as anchors.
 - Added `Array<CGPoint>.path(closed:)` for building paths from point arrays.
-- Added `Vector2Algebraic.scalarProjection`, `parallelComponent`, and `perpendicularComponent`.
+- Added `Vector2Algebraic.crossProduct(with:)`, `dotProduct(with:)`, `scalarProjection`, `parallelComponent`, and `perpendicularComponent`.
 - Added `Corner.Dimensions.isApproximatelyStraight(tolerance:)` for straight-angle checks that avoid floating-point equality.
 
 ### Changes
@@ -39,7 +40,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Changed `NotchStyle.custom` from a stored closure into an array of relative corners so notches can participate in animation.
 - Changed `Notch` properties from constants to variables to allow animation and gave `Notch.init` a default `.rectangle` style.
 - Changed `CornerStyle.radius`, `concaveInset`, and related nested corner data to support animation updates.
-- `RectAnchor` now confroms to `Equatable`, `Hashable`, and `Codable`.
+- `RectAnchor` now conforms to `Equatable`, `Hashable`, and `Codable`.
 - `RectAnchor` and added `vertices` to replace deprecated `vertexAnchors`
 - Changed `CGRect` point method `rect.point(.topLeft)` to a subscript `rect[.topLeft]`.
 - Changed `CGRect` point method `points(relativeLocation: (x, y))` to a subscript `rect[x, y]`.
