@@ -75,6 +75,5 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 ### Tests
 
 - Added tests for `CGPoint.relative(to:)`.
-- Added tests for `AnimatableDictionary`.
 - Expanded tests for `RectAnchor`, `Vector2Algebraic`, `Vector2Representable`, and angle helpers.
 - Removed `AngleTypeTests` after deprecating `AngleType`.

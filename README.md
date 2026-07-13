@@ -5,8 +5,8 @@
 ![License - MIT](https://img.shields.io/github/license/ryanlintott/ShapeUp)
 ![Version](https://img.shields.io/github/v/tag/ryanlintott/ShapeUp?label=version)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ryanlintott/ShapeUp)
-[![Mastodon](https://img.shields.io/badge/mastodon-@ryanlintott-5c4ee4.svg?style=flat)](http://mastodon.social/@ryanlintott)
-[![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
+[![Mastodon](https://img.shields.io/badge/mastodon-@ryanlintott-5c4ee4.svg?style=flat)](https://mastodon.social/@ryanlintott)
+[![Bluesky](https://img.shields.io/badge/bluesky-@ryanlintott-0285FF.svg?style=flat)](https://bsky.app/profile/ryanlintott.bsky.social)
 
 # Overview
 A Swift Package that makes SwiftUI shapes easier to build. (The logo above was created in 100 lines + SwiftUI Text)
@@ -22,7 +22,7 @@ Features:
 - [`RelativeCornerCustom`](#relativecornercustom), for building animatable corner shapes from relative positions.
 - Add a [`Notch`](#notch) of any `NotchStyle` between two corners.
 - [`.addOpenCornerShape()`](#add-cornershape) or [`.addClosedCornerShape()`](#add-cornershape) for adding a few corners to a SwiftUI `Path`
-- [`Vector2`](#vector2), a new type similar to `CGPoint` but used to do vector math.
+- [`Vector2`](#vector2), a type similar to `CGPoint` but used to do vector math.
 - [`Vector2Representable`](#vector2representable) protocol that adds a `.vector` property needed to conform to other Vector2-related protocols.
 - [`Vector2Algebraic`](#vector2algebraic) protocol used to add vector algebra capabilities to `Vector2`
 - [`Vector2Transformable`](#vector2transformable) protocol with methods for transforming arrays of points.
@@ -31,6 +31,8 @@ Features:
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
 - [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
 - [`AnimatablePack`](#animatablepack) as an alternative to `AnimatablePair` that takes any number of properties.
+- [`AnimatableArray`](#animatablearray) for animating arrays element by element.
+- [`AnimatableDictionary`](#animatabledictionary) for animating dictionary values by key.
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
@@ -66,7 +68,7 @@ Inside the `path(in:)` method of a SwiftUI `Shape`, points often use positions r
 func path(in rect: CGRect) -> Path {
     // Current method
     let point1 = CGPoint(x: rect.minX, y: rect.minY)
-    let point2 = CGPoint(x: rect.minX + (rect.width * 0.4), y: rect.minY + (rect.width * 0.7))
+    let point2 = CGPoint(x: rect.minX + (rect.width * 0.4), y: rect.minY + (rect.height * 0.7))
     
     // ShapeUp method
     let point1 = rect[.topLeft]
@@ -79,8 +81,18 @@ func path(in rect: CGRect) -> Path {
 }
 ```
 
+When you need several points, `points(_:)` accepts a `RectAnchorArrayBuilder` closure containing anchors or relative coordinate tuples.
+
+```swift
+let points = rect.points {
+    .topLeft
+    (0.4, 0.7)
+    .bottomRight
+}
+```
+
 ## CGPoint
-`CGPoint` conforms to a new [`Vector2Transformable`](#vector2transformable) protocol so single points or arrays can be moved, rotated, flipped, scaled, or inset. At the end you can create a `Path` from the array that will draw lines between all the points.
+`CGPoint` conforms to [`Vector2Transformable`](#vector2transformable), so single points or arrays can be moved, rotated, flipped, scaled, or inset. Convert the transformed points to corners to create a `Path` that draws lines between them.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -94,7 +106,8 @@ func path(in rect: CGRect) -> Path {
     .flipped(mirrorLineStart: .topLeft, mirrorLineEnd: .bottomLeft)
     .scaledPositions(2.5, anchor: .bottomRight)
     .insetPoints(5)
-    .path(closed: true)
+    .corners
+    .path()
 }
 ```
 
@@ -171,11 +184,11 @@ A cutout corner where the radius determines the start and end points of the cut.
 Lastly, a custom corner uses the radius to determine the top left and bottom right corners of a rhombus in which you can add any number of relative corners to draw your shape.
 
 ```swift
-.custom(radius: 20, relativeCorners: [
-    .topLeft,
-    .bottom.rounded(radius: .relative(0.4)),
-    .topRight
-])
+.custom(radius: 20) {
+    RelativeCorner.topLeft
+    RelativeCorner.bottom.rounded(radius: .relative(0.4))
+    RelativeCorner.topRight
+}
 ```
 
 
@@ -451,11 +464,6 @@ Scale
 let scaledSize: CGSize = size.scaled(3)
 ```
 
-Create a CGRect from a CGSize
-```swift
-let rect = size.rect(at: point, anchor: .center)
-```
-
 ## CGFrame
 A coordinate frame defined by an origin and a vector for each axis. Similar to `CGRect` you can use it to convert `RectAnchor` positions within the frame to absolute points and is used internally to draw custom corner styles.
 
@@ -529,3 +537,35 @@ Here is an example of animatableData using AnimatablePair:
      }
  }
  ```
+
+## AnimatableArray
+Animate an array element by element using `AnimatableArray`. Arrays of `VectorArithmetic` values expose `animatableData`, while arrays of `Animatable` values expose `elementAnimatableData`.
+
+> **Note:** Only changes to existing elements can be animated. Adding or removing elements will not animate.
+
+```swift
+struct MyShape: Animatable {
+    var corners: [Corner]
+
+    var animatableData: AnimatableArray<Corner.AnimatableData> {
+        get { corners.elementAnimatableData }
+        set { corners.elementAnimatableData = newValue }
+    }
+}
+```
+
+## AnimatableDictionary
+Animate dictionary values by key using `AnimatableDictionary`. Dictionaries of `VectorArithmetic` values expose `animatableData`, while dictionaries of `Animatable` values expose `valueAnimatableData`.
+
+> **Note:** `animatableData` updates existing values, adds incoming keys, and preserves keys omitted from the new data. `valueAnimatableData` only updates matching existing keys, so it does not add or remove keys.
+
+```swift
+struct MyShape: Animatable {
+    var styles: [CornerRectangle.ShapeCorner: CornerStyle]
+
+    var animatableData: AnimatableDictionary<CornerRectangle.ShapeCorner, CornerStyle.AnimatableData> {
+        get { styles.valueAnimatableData }
+        set { styles.valueAnimatableData = newValue }
+    }
+}
+```
