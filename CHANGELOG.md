@@ -30,11 +30,10 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added `AnimatableArray`, `AnimatableDictionary`, and `NestedAnimatable` helpers for animating arrays, dictionaries, and nested animatable values.
 - Added `CGFrame` for describing coordinate frames with an origin, an x-axis vector, and a y-axis vector. This is used internally to draw custom corners at any angle, not just 90 degrees.
 - Added methods to easily convert `CGPoint` to `RectAnchor` and `Corner` to `RelativeCorner` given a `CGRect` or `CGFrame`.
-- Added `CGSize.rect`, `CGSize.rect(at:anchor:)`, and `CGSize.scaled` helpers.
+- Added `CGSize.scaled(_:)` and `CGSize.scaled(x:y:)` helpers.
 - Added `CGRect` move and scale helpers that use `RectAnchor` values as anchors.
-- Added `Array<CGPoint>.path(closed:)` for building paths from point arrays.
 - Added `Vector2Algebraic.crossProduct(with:)`, `dotProduct(with:)`, `scalarProjection`, `parallelComponent`, and `perpendicularComponent`.
-- Added `AngleRepresentable.isApproximatelyZero(tolerance:)` and `isApproximatelyStraight(tolerance:)` for angle checks that avoid floating-point equality.
+- Added `AngleRepresentable.halfAngleSine`, `isApproximatelyZero(tolerance:)`, and `isApproximatelyStraight(tolerance:)` for half-angle geometry and angle checks that avoid floating-point equality.
 
 ### Changes
 
@@ -70,6 +69,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 ### Bug Fixes
 
 - Fixed concave corner insetting, including reflex-angle cases and inset radius behavior.
+- Fixed corner path drawing and insetting at zero and 180 degree angles for all corner styles.
 - Fixed an issue where the last point in an inset point array could be inset incorrectly.
 - Fixed visionOS example compilation where the glass effect API was unavailable.
 
