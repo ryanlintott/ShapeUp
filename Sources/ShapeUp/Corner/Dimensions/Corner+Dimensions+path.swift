@@ -8,13 +8,6 @@
 import SwiftUI
 
 extension Corner.Dimensions {
-    /// Returns whether the corner angle is approximately straight.
-    /// - Parameter tolerance: The maximum difference from 180 degrees in degrees.
-    /// - Returns: `true` when the corner angle is within the tolerance of a straight angle.
-    public func isApproximatelyStraight(tolerance: Double = 1e-12) -> Bool {
-        180 - angle.nonReflexCoterminal.positive.degrees < tolerance
-    }
-    
     /// Either moves or adds a line to a provided point.
     /// - Parameters:
     ///   - path: Path that will be modified.
@@ -29,12 +22,15 @@ extension Corner.Dimensions {
     ///   - path: Path where corner shape is added.
     ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner.
     public func addCornerShape(to path: inout Path, moveToStart: Bool) {
-        if absoluteRadius <= 0 || isApproximatelyStraight() {
-            // If the radius is negative or the angle is straight, the corner style doesn't matter.
+        if cutLength <= 0 {
+            // A non-positive effective radius has no styled geometry.
             startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)
             return
         }
-        
+
+        let isZero = angle.isApproximatelyZero()
+        let isStraight = angle.isApproximatelyStraight()
+
         // Draw the corner based on the style.
         switch corner.style {
             // Custom corners with no subcorners should draw as points.
@@ -45,15 +41,44 @@ extension Corner.Dimensions {
         case .rounded:
             // Start drawing this corner shape
             startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
-            // Draw a rounded arc from the cornerStart to cornerEnd
-            path.addArc(
-                tangent1End: corner.point,
-                tangent2End: cornerEnd,
-                radius: absoluteRadius
-            )
+
+            if isStraight {
+                // The infinite-radius limit of the arc is a straight line.
+                path.addLine(to: cornerEnd)
+            } else if isZero == false {
+                if angle.isApproximatelyStraight(tolerance: 0.01) {
+                    // SwiftUI's tangent arc becomes numerically unstable when
+                    // the radius grows toward infinity. This cubic has the same
+                    // endpoints and tangents and converges to the limit line.
+                    path.addCurve(
+                        to: cornerEnd,
+                        control1: cornerStart.moved(startVector.normalized * cubicArcControlLength),
+                        control2: cornerEnd.moved(-endVector.normalized * cubicArcControlLength)
+                    )
+                } else {
+                    // Draw a rounded arc from the cornerStart to cornerEnd.
+                    path.addArc(
+                        tangent1End: corner.point,
+                        tangent2End: cornerEnd,
+                        radius: absoluteRadius
+                    )
+                }
+            }
             
         case .concave:
-            
+            if isZero {
+                // The radius and chord both shrink to this tangent point.
+                startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
+                return
+            }
+
+            if isStraight {
+                // The infinite-radius limit of the arc is a straight line.
+                startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
+                path.addLine(to: cornerEnd)
+                return
+            }
+
             guard absoluteRadius > 1e-12 else {
                 startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
                 return
@@ -87,7 +112,18 @@ extension Corner.Dimensions {
                 
                 startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
                 path.addLine(to: concaveStart)
-                path.addArc(tangent1End: cutoutPoint, tangent2End: concaveEnd, radius: concaveRadius)
+                if abs(concaveInset) <= 1e-12,
+                   angle.isApproximatelyStraight(tolerance: 0.01) {
+                    // Match the cubic used by near-straight rounded corners,
+                    // with the tangents reversed to form the concave arc.
+                    path.addCurve(
+                        to: concaveEnd,
+                        control1: cornerStart.moved(endVector.normalized * cubicArcControlLength),
+                        control2: cornerEnd.moved(previousVector.normalized * cubicArcControlLength)
+                    )
+                } else {
+                    path.addArc(tangent1End: cutoutPoint, tangent2End: concaveEnd, radius: concaveRadius)
+                }
                 path.addLine(to: concaveEnd)
                 path.addLine(to: cornerEnd)
             }
@@ -126,5 +162,16 @@ extension Corner.Dimensions {
                 .dimensions(previousPoint: previousPoint, nextPoint: nextPoint)
                 .addOpenCornerShape(to: &path, moveToStart: moveToStart)
         }
+    }
+
+    /// Returns the distance from each circular arc endpoint to its cubic Bézier
+    /// control point.
+    ///
+    /// The calculation uses cut length instead of radius so that it remains
+    /// finite as the corner approaches 180 degrees and its circular radius
+    /// approaches infinity.
+    private var cubicArcControlLength: CGFloat {
+        let quarterArcTangent = tan(halvedRadiusAngle.halved.radians)
+        return (2 * cutLength / 3) * (1 - (quarterArcTangent * quarterArcTangent))
     }
 }

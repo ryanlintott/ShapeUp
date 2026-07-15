@@ -56,6 +56,18 @@ internal extension Angle {
     var halved: Angle {
         _angle.halved
     }
+
+    var halfAngleSine: Double {
+        _angle.halfAngleSine
+    }
+
+    func isApproximatelyZero(tolerance: Double = 1e-12) -> Bool {
+        _angle.isApproximatelyZero(tolerance: tolerance)
+    }
+
+    func isApproximatelyStraight(tolerance: Double = 1e-12) -> Bool {
+        _angle.isApproximatelyStraight(tolerance: tolerance)
+    }
     
     static func threePoint(_ initialPoint: some Vector2Representable, _ anchor: some Vector2Representable, _ terminalPoint: some Vector2Representable) -> Angle {
         _Angle.threePoint(initialPoint, anchor, terminalPoint)

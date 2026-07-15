@@ -42,4 +42,3 @@ struct MessageBubble2Example_Previews: PreviewProvider {
         MessageBubble2Example()
     }
 }
-

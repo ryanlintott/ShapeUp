@@ -118,4 +118,3 @@ struct CornerShapeView_Previews: PreviewProvider {
         }
     }
 }
-

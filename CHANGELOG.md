@@ -34,7 +34,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added `CGRect` move and scale helpers that use `RectAnchor` values as anchors.
 - Added `Array<CGPoint>.path(closed:)` for building paths from point arrays.
 - Added `Vector2Algebraic.crossProduct(with:)`, `dotProduct(with:)`, `scalarProjection`, `parallelComponent`, and `perpendicularComponent`.
-- Added `Corner.Dimensions.isApproximatelyStraight(tolerance:)` for straight-angle checks that avoid floating-point equality.
+- Added `AngleRepresentable.isApproximatelyZero(tolerance:)` and `isApproximatelyStraight(tolerance:)` for angle checks that avoid floating-point equality.
 
 ### Changes
 
@@ -55,6 +55,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 
 ### Deprecations
 
+- Deprecated `Corner.Dimensions`. This cached geometry type will become internal in a future release; use `[Corner].path(closed:)`, `[Corner].inset(by:previousPoint:nextPoint:)`, `Path.addOpenCornerShape`, or `Path.addClosedCornerShape` instead.
 - Deprecated `CGRect` properties `edgeAnchors` and `vertexAnchors`.
 - Deprecated `CGRect` methods `point(_: RectAnchor)`, `points(relativeLocation:)`, and `point(relativeLocations:)`. Use subscript and builder-based APIs, such as `rect[anchor]`, `rect[x, y]`, and `rect.points { ... }`.
 - Deprecated `NotchStyle.custom(corners:)`. Use relative-corner-based `NotchStyle.custom { ... }` instead.

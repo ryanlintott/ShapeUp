@@ -11,6 +11,15 @@ extension Corner {
     /// A collection of calculated dimensions relating to corner with known previous and next points.
     ///
     /// Used for creating paths, insetting, flattening, etc.
+    ///
+    /// - Warning: This type is deprecated and will become internal in a future
+    ///   release. Use `Array<Corner>.path(closed:)`, `Array<Corner>.inset(by:)`,
+    ///   or the `Path` corner-shape methods instead.
+    @available(
+        *,
+        deprecated,
+        message: "Corner.Dimensions will become internal in a future release. Use Array<Corner>.path(closed:), Array<Corner>.inset(by:), or Path corner-shape methods instead."
+    )
     public struct Dimensions: Sendable {
         /// The corner used to create these dimensions.
         public let corner: Corner
@@ -45,7 +54,7 @@ extension Corner {
         /// The maximum radius that can be applied to this corner using the max cut length.
         public let maxRadius: CGFloat
         
-        /// The radius as a non-relative value.
+        /// The effective radius as a non-relative value, fitted to the adjacent segments.
         public let absoluteRadius: CGFloat
         
         /// The length from the corner point to the corner start or end.
@@ -123,14 +132,16 @@ extension Corner {
                 halvedRadiusAngle: halvedRadiusAngle
             )
             
-            absoluteRadius = Self.absoluteRadius(
-                radius: corner.radius,
-                maxRadius: maxRadius
-            )
-            
             cutLength = Self.cutLength(
-                absoluteRadius: absoluteRadius,
-                halvedNonReflexAngle: halvedNonReflexAngle
+                radius: corner.radius,
+                maxRadius: maxRadius,
+                maxCutLength: maxCutLength
+            )
+
+            absoluteRadius = Self.absoluteRadius(
+                cutLength: cutLength,
+                maxRadius: maxRadius,
+                maxCutLength: maxCutLength
             )
             
             cornerStart = Self.cornerStart(
@@ -153,12 +164,17 @@ extension Corner {
                 cutLength: cutLength,
             )
             
-            radiusCenter = Self.radiusCenter(
-                cornerStart: cornerStart,
-                absoluteRadius: absoluteRadius,
-                previousVector: previousVector,
-                reflexMultiplier: reflexMultiplier
-            )
+            let hasDegenerateAngle = angle.isApproximatelyZero()
+                || angle.isApproximatelyStraight()
+
+            radiusCenter = hasDegenerateAngle
+                ? corner.point
+                : Self.radiusCenter(
+                    cornerStart: cornerStart,
+                    absoluteRadius: absoluteRadius,
+                    previousVector: previousVector,
+                    reflexMultiplier: reflexMultiplier
+                )
             
             /// Only used for concave corners
             concaveInset = Self.concaveInset(style: corner.style)
@@ -169,35 +185,43 @@ extension Corner {
                 reflexMultiplier: reflexMultiplier
             )
             
-            concaveRadiusCenter = Self.concaveRadiusCenter(
-                cornerPoint: corner.point,
-                previousPoint: previousPoint.point,
-                nextPoint: nextPoint.point,
-                absoluteRadius: absoluteRadius,
-                concaveInset: concaveInset,
-                cornerStart: cornerStart,
-                cornerEnd: cornerEnd,
-                radiusCenter: radiusCenter
-            )
-            
-            concaveStart = Self.concaveStart(
-                cornerPoint: corner.point,
-                previousPoint: previousPoint.point,
-                absoluteRadius: absoluteRadius,
-                cornerStart: cornerStart,
-                cutLength: cutLength,
-                nextVector: nextVector,
-                concaveRadius: concaveRadius,
-                concaveRadiusCenter: concaveRadiusCenter,
-                concaveInset: concaveInset,
-                reflexMultiplier: reflexMultiplier
-            )
-            
-            concaveEnd = Self.concaveEnd(
-                concaveStart: concaveStart,
-                cornerPoint: corner.point,
-                radiusCenter: radiusCenter
-            )
+            if hasDegenerateAngle {
+                // Degenerate corner limits are drawn without an arc. Avoid the
+                // circle and inset calculations, which are singular at 0 and 180 degrees.
+                concaveRadiusCenter = corner.point
+                concaveStart = nil
+                concaveEnd = nil
+            } else {
+                concaveRadiusCenter = Self.concaveRadiusCenter(
+                    cornerPoint: corner.point,
+                    previousPoint: previousPoint.point,
+                    nextPoint: nextPoint.point,
+                    absoluteRadius: absoluteRadius,
+                    concaveInset: concaveInset,
+                    cornerStart: cornerStart,
+                    cornerEnd: cornerEnd,
+                    radiusCenter: radiusCenter
+                )
+
+                concaveStart = Self.concaveStart(
+                    cornerPoint: corner.point,
+                    previousPoint: previousPoint.point,
+                    absoluteRadius: absoluteRadius,
+                    cornerStart: cornerStart,
+                    cutLength: cutLength,
+                    nextVector: nextVector,
+                    concaveRadius: concaveRadius,
+                    concaveRadiusCenter: concaveRadiusCenter,
+                    concaveInset: concaveInset,
+                    reflexMultiplier: reflexMultiplier
+                )
+
+                concaveEnd = Self.concaveEnd(
+                    concaveStart: concaveStart,
+                    cornerPoint: corner.point,
+                    radiusCenter: radiusCenter
+                )
+            }
         }
     }
 }
@@ -261,7 +285,7 @@ public extension Corner.Dimensions {
     ///   - halvedRadiusAngle: Half of the angle from corner start to corner end with the anchor at radius center.
     /// - Returns: The maximum radius that can be applied to this corner using the max cut length.
     static func maxRadius(maxCutLength: CGFloat, halvedRadiusAngle: Angle) -> CGFloat {
-        abs(maxCutLength / tan(halvedRadiusAngle.radians))
+        maxCutLength * abs(tan(halvedRadiusAngle.complementary.radians))
     }
     
     /// Returns the radius as a non-relative value.
@@ -340,5 +364,47 @@ public extension Corner.Dimensions {
             // mirrored point
             return cornerStart.moved(nextVector.normalized * cutLength)
         }
+    }
+}
+
+private extension Corner.Dimensions {
+    /// Resolves a finite cut length before deriving the drawable radius.
+    ///
+    /// Working in cut lengths avoids dividing a relative radius by zero at a
+    /// zero-degree corner. Clamping also gives absolute radii a finite fitted
+    /// limit when their requested cut would extend beyond an adjacent segment.
+    static func cutLength(
+        radius: RelatableValue,
+        maxRadius: CGFloat,
+        maxCutLength: CGFloat
+    ) -> CGFloat {
+        guard maxCutLength > 0 else { return 0 }
+
+        let components = radius.components
+
+        // At zero degrees maxRadius is zero, so the relative component cannot
+        // be recovered by multiplying it by maxRadius. Handle that analytic
+        // limit directly and let a positive absolute component fit the segment.
+        guard maxRadius > 0 else {
+            if components.absolute > 0 { return maxCutLength }
+            if components.absolute < 0 { return 0 }
+            return min(max(components.relative, 0), 1) * maxCutLength
+        }
+
+        let requestedRadius = components.absolute + (components.relative * maxRadius)
+        guard requestedRadius > 0 else { return 0 }
+        guard requestedRadius < maxRadius else { return maxCutLength }
+
+        return (requestedRadius / maxRadius) * maxCutLength
+    }
+
+    /// Derives the fitted radius from cut length without a tangent division.
+    static func absoluteRadius(
+        cutLength: CGFloat,
+        maxRadius: CGFloat,
+        maxCutLength: CGFloat
+    ) -> CGFloat {
+        guard cutLength > 0, maxCutLength > 0 else { return 0 }
+        return (cutLength / maxCutLength) * maxRadius
     }
 }

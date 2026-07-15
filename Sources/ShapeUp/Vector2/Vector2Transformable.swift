@@ -76,7 +76,11 @@ public extension Vector2Transformable {
     ///   - previousPoint: Point before this one used to determine the corner angle.
     ///   - nextPoint: Point after this one used to determine the corner angle.
     /// - Returns: Position of this point after being inset.
-    func insetPoint(_ amount: CGFloat, previousPoint: CGPoint? = nil, nextPoint: CGPoint? = nil) -> CGPoint {
+    func insetPoint(
+        _ amount: CGFloat,
+        previousPoint: CGPoint? = nil,
+        nextPoint: CGPoint? = nil
+    ) -> CGPoint {
         let insetVector: Vector2
         
         switch (previousPoint, nextPoint) {
@@ -92,13 +96,16 @@ public extension Vector2Transformable {
         case let (.some(previousPoint), .some(nextPoint)):
             // Positive clockwise angle of this corner.
             let angle = Angle.threePoint(nextPoint, self, previousPoint)
-            // Half of the magnitude of the min rotation corner angle
-            let halvedRadiusAngle = angle.nonReflexCoterminal.positive.halved
             // Vector from the corner to the previous corner
             let nextVector = nextPoint.vector - self.vector
-            
+            let halfAngleSine = angle.nonReflexCoterminal.positive.halfAngleSine
+
+            // A zero-degree corner has no finite miter intersection, so keep
+            // the original point instead of dividing by zero.
+            guard abs(halfAngleSine) > 1e-12 else { return point }
+
             // Length from corner to inset corner
-            let insetLength = amount / sin(halvedRadiusAngle.radians)
+            let insetLength = amount / halfAngleSine
             
             // Vector from corner to inset corner
             insetVector = nextVector.normalized.rotated(angle.halved) * insetLength

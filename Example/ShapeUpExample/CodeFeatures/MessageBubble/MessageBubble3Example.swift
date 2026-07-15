@@ -49,4 +49,3 @@ struct MessageBubble3Example_Previews: PreviewProvider {
         MessageBubble3Example()
     }
 }
-

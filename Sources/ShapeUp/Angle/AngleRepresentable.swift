@@ -46,6 +46,40 @@ public extension AngleRepresentable {
         angle / 2
     }
 
+    /// The sine of half this angle.
+    ///
+    /// This is equivalent to `sin(radians / 2)` and preserves the sign of the
+    /// angle. It is commonly used when calculating miters and other geometry
+    /// based on two segments meeting at an angle.
+    var halfAngleSine: Double {
+        sin(radians / 2)
+    }
+
+    /// Returns whether this angle is approximately zero.
+    ///
+    /// Coterminal rotations are ignored, so values near any whole rotation are
+    /// treated as being near zero.
+    ///
+    /// - Parameter tolerance: The maximum difference from zero, in degrees.
+    /// - Returns: `true` when the non-reflex angle is within the tolerance of
+    ///   zero degrees.
+    func isApproximatelyZero(tolerance: Double = 1e-12) -> Bool {
+        nonReflexCoterminal.positive.degrees < tolerance
+    }
+
+    /// Returns whether this angle is approximately straight.
+    ///
+    /// Coterminal rotations are ignored, so positive, negative, and reflex
+    /// representations of a straight angle are treated equivalently.
+    ///
+    /// - Parameter tolerance: The maximum difference from 180 degrees, in
+    ///   degrees.
+    /// - Returns: `true` when the non-reflex angle is within the tolerance of
+    ///   180 degrees.
+    func isApproximatelyStraight(tolerance: Double = 1e-12) -> Bool {
+        180 - nonReflexCoterminal.positive.degrees < tolerance
+    }
+
     /// An angle equal to 90 degrees minus the angle.
     ///
     /// Complementary angles are a pair of angles that add up to 90 degrees. For angles greater than 90 degrees, complementary angles will be negative. For angles less than zero, complementary angles will be greater than 90 degrees.

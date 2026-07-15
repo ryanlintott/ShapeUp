@@ -39,6 +39,10 @@ struct ContentView: View {
             NavigationLink(destination: AddOpenCornerShapeExample()) {
                 Label("AddOpenCornerShape", systemImage: "scribble")
             }
+
+            NavigationLink(destination: CornerInsetContinuityExample()) {
+                Label("Inset Continuity", systemImage: "angle")
+            }
             
             
         } header: {

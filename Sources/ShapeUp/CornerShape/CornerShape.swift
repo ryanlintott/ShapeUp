@@ -9,7 +9,9 @@ import SwiftUI
 
 /// A 2D insettable shape that you can use when drawing a view or as an array of corners to use as a starting point for a more complex shape.
 ///
-/// You can define an insetAmount of zero as this property is mainly used if the shape is later inset. Use the closed property to define if your shape should be closed or left open. Write a function that returns an array of corners.
+/// Define an `insetAmount` of zero because it is adjusted when the shape is inset.
+/// Use `closed` to determine whether the shape is closed or left open, then write
+/// a function that returns its corners.
 ///
 ///     public struct MyShape: CornerShape {
 ///         public var insetAmount: CGFloat = .zero
