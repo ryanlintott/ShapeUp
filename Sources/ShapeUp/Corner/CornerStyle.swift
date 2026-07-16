@@ -9,7 +9,10 @@ import SwiftUI
 
 /// An enum describing a corner style including subproperties.
 public enum CornerStyle: Hashable, Codable, Sendable {
-    /// A simple point corner with no additional styling. This is the default style if none has been provided.
+    /// An automatic style that resolves to ``point`` when no default is supplied.
+    case automatic
+
+    /// An explicit point corner with no additional styling.
     case point
     
     /// A rounded corner style with a specified radius.
@@ -48,6 +51,7 @@ public extension CornerStyle {
     /// A string with the name of this corner style.
     var name: String {
         switch self {
+        case .automatic: "automatic"
         case .point: "point"
         case .rounded: "rounded"
         case .concave: "concave"
@@ -88,7 +92,7 @@ public extension CornerStyle {
     var radius: RelatableValue {
         get {
             switch self {
-            case .point: .zero
+            case .automatic, .point: .zero
             case let .rounded(radius): radius
             case let .concave(radius, _): radius
             case let .straight(radius, _): radius
@@ -105,7 +109,7 @@ public extension CornerStyle {
     internal(set) var concaveInset: CGFloat {
         get {
             switch self {
-            case .point, .rounded, .straight, .cutout, .custom:
+            case .automatic, .point, .rounded, .straight, .cutout, .custom:
                 .zero
             case let .concave(_, concaveInset):
                 concaveInset
@@ -113,7 +117,7 @@ public extension CornerStyle {
         }
         set {
             switch self {
-            case .point, .rounded, .straight, .cutout, .custom:
+            case .automatic, .point, .rounded, .straight, .cutout, .custom:
                 break
             case .concave:
                 self = .concave(radius: radius, concaveInset: newValue)
@@ -126,7 +130,7 @@ public extension CornerStyle {
     /// Some corners styles have no nested corners, others may have several and this nesting can continue to multiple levels.
     var cornerStyles: [CornerStyle] {
         switch self {
-        case .point, .rounded, .concave: []
+        case .automatic, .point, .rounded, .concave: []
         case let .straight(_, cornerStyles): cornerStyles
         case let .cutout(_, cornerStyles): cornerStyles
         case .custom: relativeCorners.map(\.style)
@@ -137,7 +141,7 @@ public extension CornerStyle {
     internal var relativeCorners: [RelativeCorner] {
         get {
             switch self {
-            case .point, .rounded, .concave:
+            case .automatic, .point, .rounded, .concave:
                 []
             case .straight:
                 [.topLeft, .bottomRight].cornerStyles(cornerStyles)
@@ -149,7 +153,7 @@ public extension CornerStyle {
         }
         set {
             switch self {
-            case .point, .rounded, .concave:
+            case .automatic, .point, .rounded, .concave:
                 break
             case .straight:
                 self = .straight(radius: radius, cornerStyles: newValue.cornerStyles)
@@ -166,7 +170,7 @@ public extension CornerStyle {
     /// If a corner uses relative radius values or allows nested corner styles, this value will be false.
     var isFlat: Bool {
         switch self {
-        case .point:
+        case .automatic, .point:
             return true
         case .rounded, .concave:
             if case .absolute = radius {
@@ -183,7 +187,7 @@ public extension CornerStyle {
     /// - Returns: A corner style matching this style but with a new radius.
     func changingRadius(to radius: RelatableValue) -> CornerStyle {
         switch self {
-        case .point:
+        case .automatic, .point:
             self
         case .rounded:
             .rounded(radius: radius)

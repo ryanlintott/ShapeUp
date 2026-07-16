@@ -25,7 +25,7 @@ public extension Notch {
     ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
     ///   - length: Length of the notch relative to the length of the line. Default is equal to the depth.
     ///   - depth: Depth of the notch relative to the length of the line.
-    ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use a .point style.
+    ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use an automatic style that renders as a point when no default style is supplied.
     /// - Returns: A triangular shaped notch with specified position, length, depth, and corner styles.
     @available(*, deprecated, message: "Use `Notch(.triangle, depth: 20).cornerStyles([nil, nil, .rounded(radius: 10)])` instead.")
     static func triangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
@@ -49,7 +49,7 @@ public extension Notch {
     ///   - position: Center position of the notch relative to the length of the line and measured from the start. Default is the midpoint of the line.
     ///   - length: Length of the notch relative to the length of the line. Default is equal to the depth.
     ///   - depth: Depth of the notch relative to the length of the line.
-    ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use a .point style.
+    ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use an automatic style that renders as a point when no default style is supplied.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
     @available(*, deprecated, message: "Use `Notch(depth: 20).cornerStyles([nil, nil, .rounded(radius: 10), nil])` instead.")
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {

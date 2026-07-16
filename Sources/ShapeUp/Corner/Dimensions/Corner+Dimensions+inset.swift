@@ -13,7 +13,7 @@ extension Corner.Dimensions {
     /// - Returns: The radius for the inset corner style.
     internal func insetRadius(for insetAmount: CGFloat) -> CGFloat {
         switch corner.style {
-        case .point, .cutout, .custom:
+        case .automatic, .point, .cutout, .custom:
             // Inset radius is unchanged
             return absoluteRadius
         case .rounded:
@@ -79,6 +79,9 @@ extension Corner.Dimensions {
         let insetCornerStyle: CornerStyle
         
         switch corner.style {
+        case .automatic:
+            insetCornerStyle = .automatic
+
         case .point:
             insetCornerStyle = .point
             

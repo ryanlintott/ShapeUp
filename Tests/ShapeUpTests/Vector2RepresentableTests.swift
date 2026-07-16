@@ -56,7 +56,7 @@ class Vector2RepresentableTests: XCTestCase {
     func testCGPointCornerMatchesCornerDefaultStyle() throws {
         Self.testVectors.points.forEach { point in
             // given
-            let corner = Corner(.point, x: point.x, y: point.y)
+            let corner = Corner(.automatic, x: point.x, y: point.y)
             
             // then
             XCTAssertEqual(point.corner(), corner)

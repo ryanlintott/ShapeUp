@@ -44,7 +44,7 @@ public struct CornerRectangle: EnumeratedCornerShape {
     
     /// Creates a 2d rectangular shape with specified styles for each corner.
     /// - Parameters:
-    ///   - styles: A dictionary describing the style of each shape corner. Missing entries use ``CornerStyle/point``.
+    ///   - styles: A dictionary describing the style of each shape corner. Missing entries use ``CornerStyle/automatic``.
     public init(_ styles: [ShapeCorner: CornerStyle] = [:]) {
         self.styles = styles
     }

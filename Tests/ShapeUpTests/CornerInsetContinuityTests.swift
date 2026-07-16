@@ -198,7 +198,7 @@ struct CornerInsetContinuityTests {
 private extension CornerStyle {
     var finiteScalars: [CGFloat] {
         switch self {
-        case .point:
+        case .automatic, .point:
             []
         case let .rounded(radius), let .straight(radius, _), let .cutout(radius, _):
             [radius.value(using: 100)] + cornerStyles.flatMap(\.finiteScalars)

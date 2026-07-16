@@ -10,6 +10,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 
 - Changed `CornerStyle.concave(radius:radiusOffset:)` to `CornerStyle.concave(radius:concaveInset:)` to correct drawing errors and allow animation.
 - `CornerRectangle`, `CornerTriangle`, and `CornerPentagon` now use non-optional styles for each corner to support animation.
+- `NotchStyle.cornerStyles` now returns resolved, non-optional styles; stored nil values are represented by `.automatic`.
 - `RectAnchor` no longer conforms to `CaseIterable`.
 - `AnchorType` removed.
 
@@ -24,8 +25,9 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added `Corners` and `RelativeCorners` as typealiases for `[Corner]` and `[RelativeCorner]` with result builder inits to easily create arrays without comma-separated array literals.
 - Added `Path.addClosedCornerShape` that takes an array of corners or a `CornerArrayBuilder` closure and draws it as a closed shape.
 - Added a `Path.addOpenCornerShape` overload with a `CornerArrayBuilder` closure.
-- Added the `CornerStylable` protocol so corner styles can be applied consistently to corners, relative corners, arrays of corners or relative corners, notches, enumerated shapes, and custom shapes.
+- Added the `CornerStylable` protocol so corner styles can be applied consistently to corners, relative corners, arrays of corners or relative corners, notches, enumerated shapes, and custom shapes. Conforming types implement `transformCornerStyles(_:)`, which provides `cornerStyle(_:)`, `defaultCornerStyle(_:)`, and `changingRadius(to:)` automatically.
 - Added the `CornerStyled` protocol to centralize corner style properties and methods across `Corner` and `RelativeCorner`
+- Added `CornerStyle.automatic` and `defaultCornerStyle(_:)` for applying a fallback style without replacing explicitly styled corners.
 - Added animatable support for `CornerStyle`, `Corner`, `RelativeCorner`, `RectAnchor`, `NotchStyle`, `Notch`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `RelativeCornerCustom`.
 - Added `AnimatableArray`, `AnimatableDictionary`, and `NestedAnimatable` helpers for animating arrays, dictionaries, and nested animatable values.
 - Added `CGFrame` for describing coordinate frames with an origin, an x-axis vector, and a y-axis vector. This is used internally to draw custom corners at any angle, not just 90 degrees.

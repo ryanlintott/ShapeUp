@@ -15,7 +15,7 @@ Features:
 - [`RectAnchor`](#rectanchor), an enum for major anchor points in a rectangle or coordinate frame. Used for transform functions.
 - Extensions to [`CGPoint`](#cgpoint), [`CGRect`](#cgrect), and [`CGSize`](#cgsize)
 - [`Corner`](#corner), a `CGPoint` with `style`.
-- [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, `.concave`, and `.custom`
+- [`CornerStyle`](#cornerstyle) options: `.automatic`, `.point`, `.rounded`, `.straight`, `.cutout`, `.concave`, and `.custom`
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
 - [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners.
 - [`CornerCustom`](#cornercustom), for building corner shapes inline without making a new type.
@@ -176,8 +176,11 @@ let corners = Corners {
 ## CornerStyle
 Many different styles can be used on a `Corner` to define its shape.
 
+`.automatic`
+The initial style for corners created without an explicit style. It renders as a point unless resolved by `defaultCornerStyle(_:)`.
+
 <img width="50" alt="Pink triangle with a point corner" src="https://user-images.githubusercontent.com/2143656/157761591-2341d07c-5f0e-4434-ad19-22873f7357d9.svg"> `.point`
-A simple point corner with no properties.
+An explicit point corner with no properties. Unlike `.automatic`, it is preserved when applying a default style.
 
 <img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue)`
 A rounded corner with a radius.
@@ -200,6 +203,16 @@ Lastly, a custom corner uses the radius to determine the top left and bottom rig
     RelativeCorner.topRight
 }
 ```
+
+Use `cornerStyle(_:)` to replace styles, or `defaultCornerStyle(_:)` to style only automatic corners while preserving explicit styles.
+
+```swift
+CornerRectangle()
+    .cornerStyle(.point, shapeCorner: .topRight)
+    .defaultCornerStyle(.rounded(radius: 20))
+```
+
+Types conforming to `CornerStylable` implement `transformCornerStyles(_:)` once. ShapeUp derives `cornerStyle(_:)`, `defaultCornerStyle(_:)`, and `changingRadius(to:)` from that transformation. Transformations apply to each direct style contained by the value without separately visiting nested styles.
 
 
 ## RelatableValue

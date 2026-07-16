@@ -11,6 +11,7 @@ import Testing
 
 struct CornerDimensionsPathTests {
     enum StyleKind: String, CaseIterable, CustomTestStringConvertible, Sendable {
+        case automatic
         case point
         case rounded
         case concave
@@ -22,6 +23,8 @@ struct CornerDimensionsPathTests {
 
         func style(radius: RelatableValue) -> CornerStyle {
             switch self {
+            case .automatic:
+                .automatic
             case .point:
                 .point
             case .rounded:
@@ -209,7 +212,7 @@ struct CornerDimensionsPathTests {
 
         var expected = Path()
         switch styleKind {
-        case .point:
+        case .automatic, .point:
             expected.move(to: .zero)
         case .rounded:
             expected.move(to: CGPoint(x: 50, y: 0))
@@ -242,7 +245,7 @@ struct CornerDimensionsPathTests {
 
         var expected = Path()
         switch styleKind {
-        case .point:
+        case .automatic, .point:
             expected.move(to: .zero)
         case .rounded, .concave, .straight:
             expected.move(to: CGPoint(x: -50, y: 0))
@@ -289,6 +292,8 @@ extension CornerDimensionsPathTests.StyleKind {
     var simpleStyle: CornerStyle {
         let radius = RelatableValue.relative(0.5)
         return switch self {
+        case .automatic:
+            .automatic
         case .point:
             .point
         case .rounded:

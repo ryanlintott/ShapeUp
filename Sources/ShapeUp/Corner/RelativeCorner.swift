@@ -17,26 +17,26 @@ public struct RelativeCorner: Hashable, Codable, Sendable, CornerStyled {
     
     /// Create a corner with a specified style and anchor point.
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
+    ///   - style: Corner style. Default is .automatic, which renders as .point when no default style is supplied.
     ///   - anchor: Location of corner based on an anchor point.
     ///   - offset: Absolute distance from the anchor point using the same x and y directions of the frame of reference.
     internal init(_ style: CornerStyle? = nil, anchor: RectAnchor, offset: some Vector2Representable) {
         self.anchor = anchor
         self.offset = offset.vector
-        self.style = style ?? .point
+        self.style = style ?? .automatic
     }
     
     /// Create a corner with a specified style and anchor point.
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
+    ///   - style: Corner style. Default is .automatic, which renders as .point when no default style is supplied.
     ///   - anchor: Location of corner based on an anchor point.
     public init(_ style: CornerStyle? = nil, anchor: RectAnchor) {
         self = .init(style, anchor: anchor, offset: Vector2.zero)
     }
     
-    /// Create a corner with a `.point` style at the specified relative location.
+    /// Create a corner with an `.automatic` style at the specified relative location.
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
+    ///   - style: Corner style. Default is .automatic, which renders as .point when no default style is supplied.
     ///   - x: Relative x location of corner based on top left anchor point.
     ///   - y: Relative y location of corner based on top left anchor point.
     public init(_ style: CornerStyle? = nil, x: CGFloat, y: CGFloat) {

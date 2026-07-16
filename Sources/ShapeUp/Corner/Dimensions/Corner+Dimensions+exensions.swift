@@ -30,7 +30,7 @@ public extension Corner.Dimensions {
     /// An array of corners created from nested corner styles. Point, rounded and concave corners will return empty arrays. Straight will return an array of 2 points (corner start and corner end), and cutout will return an array of 3 points (corner start, cutout, corner end)
     var subCorners: [Corner] {
         switch corner.style {
-        case .point, .rounded, .concave:
+        case .automatic, .point, .rounded, .concave:
             []
         case let .straight(_, cornerStyles):
             [cornerStart, cornerEnd].corners(cornerStyles)

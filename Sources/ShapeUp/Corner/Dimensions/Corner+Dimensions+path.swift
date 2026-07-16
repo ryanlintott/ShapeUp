@@ -34,7 +34,7 @@ extension Corner.Dimensions {
         // Draw the corner based on the style.
         switch corner.style {
             // Custom corners with no subcorners should draw as points.
-        case .point:
+        case .automatic, .point:
             // Start drawing this corner shape
             startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)
             
@@ -128,7 +128,7 @@ extension Corner.Dimensions {
                 path.addLine(to: cornerEnd)
             }
         case let .straight(_, cornerStyles):
-            if cornerStyles == [] || cornerStyles.allSatisfy({ $0 == .point }) {
+            if cornerStyles == [] || cornerStyles.allSatisfy({ $0 == .automatic || $0 == .point }) {
                 // If all corner styles are simple points:
                 // Start drawing this corner shape
                 startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
@@ -142,7 +142,7 @@ extension Corner.Dimensions {
             }
             
         case let .cutout(_, cornerStyles):
-            if cornerStyles == [] || cornerStyles.allSatisfy({ $0 == .point }) {
+            if cornerStyles == [] || cornerStyles.allSatisfy({ $0 == .automatic || $0 == .point }) {
                 // If all corner styles are simple points:
                 // Start drawing this corner shape
                 startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)

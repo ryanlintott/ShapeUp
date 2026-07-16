@@ -11,12 +11,12 @@ import SwiftUI
 public enum NotchStyle: Sendable {
     /// A triangular shaped notch.
     /// - Parameters:
-    ///   - cornerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
+    ///   - cornerStyles: Corner styles for each corner in the notch. Nil values use an automatic style that renders as a point when no default style is supplied.
     case triangle(cornerStyles: [CornerStyle?])
     
     /// A rectangular shaped notch.
     /// - Parameters:
-    ///   - cornerStyles: Corner styles for each corner in the notch. Nil values will use a .point style.
+    ///   - cornerStyles: Corner styles for each corner in the notch. Nil values use an automatic style that renders as a point when no default style is supplied.
     case rectangle(cornerStyles: [CornerStyle?])
     
     /// A custom shaped notch defined by relative corners.
@@ -54,8 +54,10 @@ public extension NotchStyle {
         }
     }
     
-    /// Corner styles for all corners of the notch.
-    var cornerStyles: [CornerStyle?] {
+    /// Resolved corner styles for all corners of the notch.
+    ///
+    /// Nil values stored by triangle and rectangle styles are returned as ``CornerStyle/automatic``.
+    var cornerStyles: [CornerStyle] {
         relativeCorners.cornerStyles
     }
     
@@ -68,19 +70,8 @@ public extension NotchStyle {
 }
 
 extension NotchStyle: CornerStylable {
-    /// Sets the corner style of all notch corners.
-    /// - Parameter newStyle: A style applied to all notch corners.
-    /// - Returns: A notch where all corners match the new style.
-    public func cornerStyle(_ newStyle: CornerStyle) -> NotchStyle {
-        switch self {
-        case .triangle: .triangle(cornerStyle: newStyle)
-        case .rectangle: .rectangle(cornerStyle: newStyle)
-        case .custom: .custom(relativeCorners: relativeCorners.cornerStyle(newStyle))
-        }
-    }
-    
-    public func changingRadius(to newRadius: RelatableValue) -> NotchStyle {
-        cornerStyles(cornerStyles.map { $0?.changingRadius(to: newRadius) })
+    public func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> NotchStyle {
+        cornerStyles(cornerStyles.map { transform($0) })
     }
     
     /// Updates the corner styles of all notch corners.

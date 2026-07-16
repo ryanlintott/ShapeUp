@@ -73,25 +73,13 @@ public extension RelativeCornerCustom {
         copy.closed = isClosed
         return copy
     }
-    
-    internal func transformRelativeCorners(_ transform: ([RelativeCorner]) -> [RelativeCorner]) -> Self {
-        var copy = self
-        copy.relativeCorners = transform(relativeCorners)
-        return copy
-    }
 }
 
 extension RelativeCornerCustom: CornerStylable {
-    public func cornerStyle(_ newStyle: CornerStyle) -> Self {
-        transformRelativeCorners {
-            $0.cornerStyle(newStyle)
-        }
-    }
-    
-    public func changingRadius(to newRadius: RelatableValue) -> Self {
-        transformRelativeCorners {
-            $0.changingRadius(to: newRadius)
-        }
+    public func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self {
+        var copy = self
+        copy.relativeCorners = relativeCorners.transformCornerStyles(transform)
+        return copy
     }
 }
 

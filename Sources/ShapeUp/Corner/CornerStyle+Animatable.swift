@@ -11,7 +11,7 @@ extension Optional<CornerStyle>: @retroactive Animatable {
     public var animatableData: CornerStyle.AnimatableData {
         get {
             switch self {
-            case .none: CornerStyle.point.animatableData
+            case .none: CornerStyle.automatic.animatableData
             case let .some(value): value.animatableData
             }
         }

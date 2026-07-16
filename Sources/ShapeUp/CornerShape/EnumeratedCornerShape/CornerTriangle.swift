@@ -52,7 +52,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
     /// Creates a 2d triangular shape with specified top point and styles for each corner.
     /// - Parameters:
     ///   - topPoint: Horizontal offset of the top vertex from the frame's minimum x-coordinate. Relative values use the full frame width and are not clamped.
-    ///   - styles: A dictionary describing the style of each shape corner. Missing entries use ``CornerStyle/point``.
+    ///   - styles: A dictionary describing the style of each shape corner. Missing entries use ``CornerStyle/automatic``.
     public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
         self.topPoint = topPoint
         self.styles = styles

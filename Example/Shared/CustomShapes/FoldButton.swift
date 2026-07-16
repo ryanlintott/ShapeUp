@@ -12,8 +12,8 @@ struct FoldButton: View {
     var body: some View {
         ZStack(alignment: .trailing) {
             CornerRectangle()
-                .cornerStyle(.rounded(radius: .relative(0.5)))
                 .cornerStyle(.point, shapeCorner: .topRight)
+                .defaultCornerStyle(.rounded(radius: .relative(0.5)))
                 .fill(.purple)
                 .frame(width: 300)
             

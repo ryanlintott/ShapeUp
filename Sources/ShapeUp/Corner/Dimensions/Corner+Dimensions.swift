@@ -356,7 +356,7 @@ public extension Corner.Dimensions {
     ) -> CGPoint {
         let halfStraightVector = (cornerEnd.vector - cornerStart.vector) / 2
         switch corner.style {
-        case .point, .rounded, .custom:
+        case .automatic, .point, .rounded, .custom:
             return corner.point
         case .straight:
             return cornerStart.moved(halfStraightVector)

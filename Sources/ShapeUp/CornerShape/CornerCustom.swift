@@ -54,15 +54,9 @@ public struct CornerCustom: CornerShape {
 }
 
 extension CornerCustom: CornerStylable {
-    public func cornerStyle(_ newStyle: CornerStyle) -> Self {
-        transformCorners { rect, corners in
-            corners.cornerStyle(newStyle)
-        }
-    }
-    
-    public func changingRadius(to newRadius: RelatableValue) -> Self {
-        transformCorners { rect, corners in
-            corners.changingRadius(to: newRadius)
+    public func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self {
+        transformCorners { _, corners in
+            corners.transformCornerStyles(transform)
         }
     }
 }

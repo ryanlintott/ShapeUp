@@ -70,23 +70,23 @@ public struct Corner: Hashable, Codable, Sendable, CornerStyled {
     /// Create a corner with a specified style and two-dimensional point.
     /// - Note: As an alternative you can use method chaining to add a style `Corner(x: 0, y: 0).rounded(20)`
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
+    ///   - style: Corner style. Default is .automatic, which renders as .point when no default style is supplied.
     ///   - x: x coordinate of corner.
     ///   - y: y coordinate of corner.
     public init(_ style: CornerStyle? = nil, x: CGFloat, y: CGFloat) {
         self.x = x
         self.y = y
-        self.style = style ?? .point
+        self.style = style ?? .automatic
     }
     
     /// Create a corner with a specified style and two-dimensional point.
     /// - Note: As an alternative you can use method chaining to add a style `point.corner.rounded(20)`
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
+    ///   - style: Corner style. Default is .automatic, which renders as .point when no default style is supplied.
     ///   - point: Location of corner.
     public init(_ style: CornerStyle? = nil, point: some Vector2Representable) {
         x = point.vector.dx
         y = point.vector.dy
-        self.style = style ?? .point
+        self.style = style ?? .automatic
     }
 }

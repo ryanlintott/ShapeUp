@@ -24,28 +24,24 @@ public extension CornerStyled {
         }
     }
     
-    func cornerStyle(_ newStyle: CornerStyle) -> Self {
+    func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self {
         var copy = self
-        copy.style = newStyle
-        return copy
-    }
-    
-    func changingRadius(to newRadius: RelatableValue) -> Self {
-        var copy = self
-        copy.radius = newRadius
+        copy.style = transform(style)
         return copy
     }
 }
 
 public extension Array where Element: CornerStyled {
     /// Array of corner styles used on each corner respectively.
+    ///
+    /// When setting this property, corners without a matching style use ``CornerStyle/automatic``.
     var cornerStyles: [CornerStyle] {
         get {
             map(\.style)
         }
         set {
             self = self
-                .cornerStyle(.point)
+                .cornerStyle(.automatic)
                 .cornerStyles(newValue)
         }
     }

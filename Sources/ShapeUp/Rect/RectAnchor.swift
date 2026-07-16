@@ -83,7 +83,7 @@ extension RectAnchor {
         self.point(in: .one)
     }
     
-    /// A relative corner at the same position with the default style and no offset.
+    /// A relative corner at the same position with an automatic style and no offset.
     var relativeCorner: RelativeCorner {
         RelativeCorner(anchor: self)
     }

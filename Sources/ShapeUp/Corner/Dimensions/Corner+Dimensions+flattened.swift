@@ -13,7 +13,7 @@ extension Corner.Dimensions {
     /// Corner radius will change to an absolute value. Nested corner styles will change to an array of corners with those styles. This process is recursive leaving no corners with nested corner styles or relative radius values.
     internal var flattened: [Corner] {
         switch corner.style {
-        case .point, .rounded, .concave:
+        case .automatic, .point, .rounded, .concave:
             if case .relative = corner.radius {
                 return [corner.changingRadius(to: .absolute(absoluteRadius))]
             }
@@ -32,7 +32,7 @@ extension Corner.Dimensions {
         guard levels > 0 else { return [corner] }
         
         switch corner.style {
-        case .point, .rounded, .concave:
+        case .automatic, .point, .rounded, .concave:
             if case .relative = corner.radius {
                 return [corner.changingRadius(to: .absolute(absoluteRadius))]
             }

@@ -54,6 +54,7 @@ struct CornerExample: View {
     let shapes = ExampleShape.allCases
     
     let styles: [CornerStyle] = [
+        .automatic,
         .point,
         .rounded(radius: .zero),
         .concave(radius: .zero),
@@ -155,7 +156,7 @@ struct CornerExample: View {
                 }
                 #endif
             }
-            .disabled(style == .point)
+            .disabled(style == .automatic || style == .point)
             
             CrossPlatformStepper(
                 label: "Inset: ",

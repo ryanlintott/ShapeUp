@@ -7,20 +7,48 @@
 
 import Foundation
 
-/// A type that can have a ``CornerStyle`` or radius applied to it.
+/// A type containing one or more corner styles that can be transformed.
 public protocol CornerStylable {
-    /// Creates a copy with a new corner style applied to any ``CornerStyle`` parameters.
-    /// - Parameter newStyle: Corner style to apply.
-    /// - Returns: The same object with a changed corner style.
-    func cornerStyle(_ newStyle: CornerStyle) -> Self
-    
-    /// Creates a copy with a new radius applied to any ``CornerStyle`` parameters.
-    /// - Parameter newRadius: Radius to apply.
-    /// - Returns: The same object with a changed radius.
-    func changingRadius(to newRadius: RelatableValue) -> Self
+    /// Creates a copy transforming each corner style contained by this value.
+    ///
+    /// Nested styles inside a ``CornerStyle`` are not transformed.
+    /// - Parameter transform: A transformation applied to each corner style.
+    /// - Returns: A copy containing the transformed corner styles.
+    func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self
 }
 
 public extension CornerStylable {
+    /// Creates a copy updating each corner style to the new style.
+    ///
+    /// Nested styles inside a ``CornerStyle`` are not changed.
+    /// - Parameter newStyle: Corner style to apply.
+    /// - Returns: A copy with replaced corner styles.
+    func cornerStyle(_ newStyle: CornerStyle) -> Self {
+        transformCornerStyles { _ in newStyle }
+    }
+
+    /// Creates a copy updating any automatic corner styles to the supplied default style.
+    ///
+    /// Nested styles inside a ``CornerStyle`` are not changed.
+    /// - Parameter defaultStyle: Corner style used to replace automatic corner styles.
+    /// - Returns: A copy with automatic corner styles replaced with the supplied default style.
+    func defaultCornerStyle(_ defaultStyle: CornerStyle) -> Self {
+        transformCornerStyles { style in
+            style == .automatic ? defaultStyle : style
+        }
+    }
+
+    /// Creates a copy updating the radius of each corner style.
+    ///
+    /// Nested styles inside a ``CornerStyle`` are not changed.
+    /// - Parameter newRadius: Radius to apply.
+    /// - Returns: A copy with changed corner radii.
+    func changingRadius(to newRadius: RelatableValue) -> Self {
+        transformCornerStyles {
+            $0.changingRadius(to: newRadius)
+        }
+    }
+
     @available(*, deprecated, renamed: "cornerStyle(_:)")
     func applyingStyle(_ newStyle: CornerStyle) -> Self {
         cornerStyle(newStyle)
@@ -28,15 +56,8 @@ public extension CornerStylable {
 }
 
 extension Array: CornerStylable where Element: CornerStylable {
-    /// Creates an array of elements with a new specified corner style.
-    /// - Parameter newStyle: A style that will be applied to every corner.
-    /// - Returns: An array of elements with the new corner style.
-    public func cornerStyle(_ newStyle: CornerStyle) -> [Element] {
-        map { $0.cornerStyle(newStyle) }
-    }
-    
-    public func changingRadius(to newRadius: RelatableValue) -> [Element] {
-        map { $0.changingRadius(to: newRadius) }
+    public func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> [Element] {
+        map { $0.transformCornerStyles(transform) }
     }
 }
 
@@ -76,5 +97,11 @@ public extension Array where Element: CornerStylable {
     /// - Parameter newStyle: A corner style that will be applied to every element.
     mutating func cornerStyle(_ newStyle: CornerStyle) {
         self = self.cornerStyle(newStyle)
+    }
+
+    /// Applies a default corner style to all automatic elements in the array.
+    /// - Parameter defaultStyle: Style used to replace automatic corner styles.
+    mutating func defaultCornerStyle(_ defaultStyle: CornerStyle) {
+        self = self.defaultCornerStyle(defaultStyle)
     }
 }

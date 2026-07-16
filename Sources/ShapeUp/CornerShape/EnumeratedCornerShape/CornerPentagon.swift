@@ -69,7 +69,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
     ///   - pointHeight: Downward distance from the top vertex to the two shoulder vertices. Relative values use the full frame height and are not clamped.
     ///   - topTaper: Horizontal inset of each shoulder vertex from its adjacent side. Relative values use half the frame width and are not clamped.
     ///   - bottomTaper: Horizontal inset of each bottom vertex from its adjacent side. Relative values use half the frame width and are not clamped.
-    ///   - styles: A dictionary of corner styles keyed to ``ShapeCorner``. Missing entries use ``CornerStyle/point``.
+    ///   - styles: A dictionary of corner styles keyed to ``ShapeCorner``. Missing entries use ``CornerStyle/automatic``.
     public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero, styles: [ShapeCorner: CornerStyle] = [:]) {
         self.pointHeight = pointHeight
         self.topTaper = topTaper

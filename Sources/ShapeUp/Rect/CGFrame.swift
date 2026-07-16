@@ -30,9 +30,9 @@ public extension CGFrameRepresentable {
     ///
     /// - Parameters:
     ///   - anchor: Anchor where the point is located.
-    ///   - style: The corner style to apply. (default is .point)
+    ///   - style: The corner style to apply. (default is .automatic)
     /// - Returns: A corner based on the relative corner.
-    subscript (_ anchor: RectAnchor, _ style: CornerStyle = .point) -> Corner {
+    subscript (_ anchor: RectAnchor, _ style: CornerStyle = .automatic) -> Corner {
         self[anchor].corner(style)
     }
     
@@ -53,9 +53,9 @@ public extension CGFrameRepresentable {
     /// - Parameters:
     ///   - x: Relative x coordinate.
     ///   - y: Relative y coordinate.
-    ///   - style: The corner style to apply. (default is .point)
+    ///   - style: The corner style to apply. (default is .automatic)
     /// - Returns: A corner at the relative coordinates with the applied style.
-    subscript (x: CGFloat, y: CGFloat, _ style: CornerStyle = .point) -> Corner {
+    subscript (x: CGFloat, y: CGFloat, _ style: CornerStyle = .automatic) -> Corner {
         self[.relative(x: x, y: y)].corner(style)
     }
     
@@ -80,7 +80,7 @@ public extension CGFrameRepresentable {
         points(anchors())
     }
     
-    /// Creates an array of corners from the four vertices of the frame, starting with the top left and going clockwise with the `.point` style applied.
+    /// Creates an array of automatic corners from the four vertices of the frame, starting with the top left and going clockwise.
     var corners: [Corner] {
         corners()
     }
@@ -88,12 +88,12 @@ public extension CGFrameRepresentable {
     /// Creates an array of corners from the frame vertices.
     /// - Parameter style: Corner style used for all corners.
     /// - Returns: An array of 4 corners, with the provided style, starting with the top left and going clockwise.
-    func corners(_ style: CornerStyle = .point) -> [Corner] {
+    func corners(_ style: CornerStyle = .automatic) -> [Corner] {
         points(.vertices).corners(style)
     }
     
     /// Creates an array of corners from the frame vertices.
-    /// - Parameter styles: Array of corner styles starting with the top left and going clockwise. Nil values will use `.point`
+    /// - Parameter styles: Array of corner styles starting with the top left and going clockwise. Nil values will use `.automatic`.
     /// - Returns: An array of 4 corners, with the provided styles, starting with the top left and going clockwise.
     func corners(_ styles: [CornerStyle?]) -> [Corner] {
         points(.vertices).corners(styles)

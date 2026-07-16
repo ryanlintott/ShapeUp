@@ -15,7 +15,7 @@ extension Corner: Vector2Transformable {
     public init(vector: Vector2) {
         x = vector.dx
         y = vector.dy
-        style = .point
+        style = .automatic
     }
     
     public func repositioned(to point: some Vector2Representable) -> Corner {

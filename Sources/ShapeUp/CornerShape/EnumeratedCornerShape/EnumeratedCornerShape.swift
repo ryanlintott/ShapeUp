@@ -19,7 +19,7 @@ public protocol EnumeratedCornerShape: CornerShape, CornerStylable {
     
     /// A dictionary storing the style of each corner by its shape corner label.
     ///
-    /// A corner with no matching entry uses ``CornerStyle/point``.
+    /// A corner with no matching entry uses ``CornerStyle/automatic``.
     var styles: [ShapeCorner: CornerStyle] { get set }
     
     /// Returns a dictionary with each point used to draw the shape stored with its shape corner label.
@@ -55,14 +55,11 @@ public extension EnumeratedCornerShape {
         cornerStyle(newStyle, shapeCorners: shapeCorners)
     }
     
-    func cornerStyle(_ newStyle: CornerStyle) -> Self {
-        cornerStyle(newStyle, shapeCorners: Set(ShapeCorner.allCases))
-    }
-    
-    func changingRadius(to newRadius: RelatableValue) -> Self {
+    func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self {
         var shape = self
-        // Only change the radius of styles that are set.
-        shape.styles = shape.styles.mapValues { $0.changingRadius(to: newRadius) }
+        ShapeCorner.allCases.forEach { shapeCorner in
+            shape.styles[shapeCorner] = transform(shape.styles[shapeCorner] ?? .automatic)
+        }
         return shape
     }
     

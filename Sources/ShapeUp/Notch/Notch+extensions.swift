@@ -8,8 +8,8 @@
 import SwiftUI
 
 extension Notch: CornerStylable {
-    public func cornerStyle(_ newStyle: CornerStyle) -> Notch {
-        notchStyle(style.cornerStyle(newStyle))
+    public func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Notch {
+        notchStyle(style.transformCornerStyles(transform))
     }
     
     /// Creates a copy of this notch with new styles applied to its corners.
@@ -17,10 +17,6 @@ extension Notch: CornerStylable {
     /// - Returns: A notch with the supplied corner styles.
     public func cornerStyles(_ newStyles: [CornerStyle?]) -> Notch {
         notchStyle(style.cornerStyles(newStyles))
-    }
-    
-    public func changingRadius(to newRadius: RelatableValue) -> Notch {
-        notchStyle(style.changingRadius(to: newRadius))
     }
 }
 
