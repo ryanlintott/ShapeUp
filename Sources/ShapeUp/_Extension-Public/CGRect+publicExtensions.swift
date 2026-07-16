@@ -50,7 +50,7 @@ public extension CGRect {
     /// Creates a point in the location of an anchor.
     /// - Parameter anchor: Anchor where the point is located
     /// - Returns: A point where the anchor is located.
-    @available(*, deprecated, renamed: "subscript(_:)", message: "Use `rect[anchor]` instead.")
+    @available(*, deprecated, message: "Use `rect[anchor]` instead.")
     func point(_ anchor: RectAnchor) -> CGPoint {
         self[anchor]
     }
@@ -61,7 +61,7 @@ public extension CGRect {
     /// Relative y values are multiplied by the height and positioned that distance from minY.
     /// - Parameter relativeLocation: A tuple with relative x and y coordinates respectively.
     /// - Returns: A point at the relative location inside this CGRect.
-    @available(*, deprecated, renamed: "subscript(_:_:)", message: "Use `rect[x, y]` instead.")
+    @available(*, deprecated, message: "Use `rect[x, y]` instead.")
     func point(relativeLocation: (CGFloat, CGFloat)) -> CGPoint {
         self[relativeLocation.0, relativeLocation.1]
     }
