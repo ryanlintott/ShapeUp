@@ -20,7 +20,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added `RelativeCornerCustom`, a version of `CornerCustom` that uses relative corners and can take animated State variables within its closure creating an animatable shape.
 - Added `CornerStyle.custom(radius:relativeCorners:)` for custom corner styles based on array of relative corners.
 - Added a new `Notch` init with a trailing closure that builds a custom notch with relative corners.
-- Added `CornerArrayBuilder`, `RelativeCornerArrayBuilder`, and `RectAnchorArrayBuilder` for building `Corner`, `RelativeCorner`, and `RectAnchor` arrays using result builders.
+- Added `CornerArrayBuilder`, `RelativeCornerArrayBuilder`, and `RectAnchorArrayBuilder` for building `Corner`, `RelativeCorner`, and `RectAnchor` arrays using result builders. `CornerArrayBuilder` also accepts `Notch` values and expands them between their nearest surrounding corners.
 - Added `Corners` and `RelativeCorners` as typealiases for `[Corner]` and `[RelativeCorner]` with result builder inits to easily create arrays without comma-separated array literals.
 - Added `Path.addClosedCornerShape` that takes an array of corners or a `CornerArrayBuilder` closure and draws it as a closed shape.
 - Added a `Path.addOpenCornerShape` overload with a `CornerArrayBuilder` closure.

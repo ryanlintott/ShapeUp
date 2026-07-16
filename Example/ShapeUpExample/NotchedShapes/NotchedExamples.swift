@@ -22,6 +22,10 @@ struct NotchedExamples: View {
             NavigationLink(destination: NotchedPentagonExample()) {
                 Label("NotchedPentagon", systemImage: "pentagon")
             }
+
+            NavigationLink(destination: NotchedKeyExample()) {
+                Label("Notched Key", systemImage: "key.fill")
+            }
         } header: {
             Text("Notched")
         }

@@ -144,7 +144,7 @@ func path(in rect: CGRect) -> Path {
 }
 ```
 
-Arrays of corners with styles can be awkward to format. `Corners` can build an array of corners using `CornerArrayBuilder` (similar to `ViewBuilder`) so you can omit all those commas.
+Arrays of corners with styles can be awkward to format. `Corners` can build an array of corners using `CornerArrayBuilder` (similar to `ViewBuilder`) so you can omit all those commas. You can also include a `Notch`, which is added between the nearest corners before and after it. Corner lookup is cyclic, so a leading or trailing notch is added between the last and first corners.
 
 ```swift
 func path(in rect: CGRect) -> Path {
@@ -159,6 +159,16 @@ func path(in rect: CGRect) -> Path {
             .cutout(radius: .relative(0.4))
     }
     .path()
+}
+```
+
+```swift
+let corners = Corners {
+    rect[.topLeft]
+    rect[.topRight]
+    Notch(.triangle, length: 30, depth: 15)
+    rect[.bottomRight]
+    rect[.bottomLeft]
 }
 ```
 

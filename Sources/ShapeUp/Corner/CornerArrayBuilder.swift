@@ -8,49 +8,121 @@
 import SwiftUI
 import Foundation
 
-/// Builds an array of corners from both ``Corner`` and `CGPoint` values.
+/// Builds an array of corners from ``Corner``, `CGPoint`, and ``Notch`` values.
+///
+/// A notch is expanded between the nearest corners before and after it. Corner lookup is
+/// cyclic, so a notch before the first corner or after the last corner is added between
+/// the last and first corners. Consecutive notches share the same surrounding corners.
 @resultBuilder
 public enum CornerArrayBuilder { }
 
 public extension CornerArrayBuilder {
-    static func buildEither(first component: [Corner]) -> [Corner] {
+    /// An opaque intermediate value used while building an array of corners.
+    struct Component: Sendable {
+        fileprivate enum Element: Sendable {
+            case corner(Corner)
+            case notch(Notch)
+        }
+
+        fileprivate var elements: [Element]
+
+        fileprivate init(_ elements: [Element]) {
+            self.elements = elements
+        }
+
+        fileprivate var corners: [Corner] {
+            let explicitCorners = elements.compactMap { element in
+                if case let .corner(corner) = element {
+                    corner
+                } else {
+                    nil
+                }
+            }
+
+            guard
+                explicitCorners.count >= 2,
+                let firstCorner = explicitCorners.first,
+                let lastCorner = explicitCorners.last
+            else {
+                return explicitCorners
+            }
+
+            var previousCorners = Array(repeating: lastCorner, count: elements.count)
+            var previousCorner = lastCorner
+            for index in elements.indices {
+                previousCorners[index] = previousCorner
+                if case let .corner(corner) = elements[index] {
+                    previousCorner = corner
+                }
+            }
+
+            var nextCorners = Array(repeating: firstCorner, count: elements.count)
+            var nextCorner = firstCorner
+            for index in elements.indices.reversed() {
+                nextCorners[index] = nextCorner
+                if case let .corner(corner) = elements[index] {
+                    nextCorner = corner
+                }
+            }
+
+            return elements.indices.flatMap { index in
+                switch elements[index] {
+                case let .corner(corner):
+                    [corner]
+                case let .notch(notch):
+                    notch.between(start: previousCorners[index], end: nextCorners[index])
+                }
+            }
+        }
+    }
+
+    static func buildEither(first component: Component) -> Component {
         component
     }
-    
-    static func buildEither(second component: [Corner]) -> [Corner] {
+
+    static func buildEither(second component: Component) -> Component {
         component
     }
-    static func buildOptional(_ component: [Corner]?) -> [Corner] {
-        component ?? []
+
+    static func buildOptional(_ component: Component?) -> Component {
+        component ?? Component([])
     }
-    
-    static func buildExpression(_ expression: CGPoint) -> [Corner] {
-        [expression.corner]
+
+    static func buildExpression(_ expression: CGPoint) -> Component {
+        Component([.corner(expression.corner)])
     }
-    
-    static func buildExpression(_ expression: Corner) -> [Corner] {
-        [expression]
+
+    static func buildExpression(_ expression: Corner) -> Component {
+        Component([.corner(expression)])
     }
-    
-    static func buildExpression(_ expression: [Corner]) -> [Corner] {
-        expression
+
+    static func buildExpression(_ expression: [Corner]) -> Component {
+        Component(expression.map { .corner($0) })
     }
-    
-    static func buildExpression(_ expression: [CGPoint]) -> [Corner] {
-        expression.corners
+
+    static func buildExpression(_ expression: [CGPoint]) -> Component {
+        Component(expression.map { .corner($0.corner) })
     }
-    
-    static func buildBlock(_ components: [Corner]...) -> [Corner] {
-        components.flatMap { $0 }
+
+    static func buildExpression(_ expression: Notch) -> Component {
+        Component([.notch(expression)])
     }
-    
-    @available(*, unavailable, message: "RelativeCorner is not compatible with CornerArrayBuilder. Use Corner or CGPoint")
-    static func buildExpression(_ expression: RelativeCorner) -> [Corner] {
+
+    static func buildBlock(_ components: Component...) -> Component {
+        Component(components.flatMap(\.elements))
+    }
+
+    static func buildFinalResult(_ component: Component) -> [Corner] {
+        component.corners
+    }
+
+    @available(*, unavailable, message: "RelativeCorner is not compatible with CornerArrayBuilder.")
+    static func buildExpression(_ expression: RelativeCorner) -> Component {
         fatalError()
     }
     
-    @available(*, unavailable, message: "RelativeCorner is not compatible with CornerArrayBuilder. Use Corner or CGPoint")
-    static func buildExpression(_ expression: [RelativeCorner]) -> [Corner] {
+    @available(*, unavailable, message: "RelativeCorner is not compatible with CornerArrayBuilder.")
+    static func buildExpression(_ expression: [RelativeCorner]) -> Component {
         fatalError()
     }
 }
