@@ -32,7 +32,7 @@ public extension CGRect {
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    @available(*, deprecated, renamed: "points(_:)", message: "Use `points { }` instead.")
+    @available(*, deprecated, message: "Use `points { }` instead.")
     func points(relativeLocations: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
         relativeLocations.map { self[$0.x, $0.y] }
     }
@@ -42,7 +42,7 @@ public extension CGRect {
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
     /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
     /// - Returns: The points at the relative coordinates.
-    @available(*, deprecated, renamed: "points(_:)", message: "Use `points { }` instead.")
+    @available(*, deprecated, message: "Use `points { }` instead.")
     func points(relativeLocations: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
         points(relativeLocations: relativeLocations)
     }

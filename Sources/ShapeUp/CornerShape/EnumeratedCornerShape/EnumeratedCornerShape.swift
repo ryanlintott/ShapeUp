@@ -81,6 +81,11 @@ public extension EnumeratedCornerShape {
         return shape
     }
 
+    @available(*, deprecated, message: "Use `defaultCornerStyle(_:)` to replace only automatic styles, or `transformCornerStyles { _ in style }` to replace every style.")
+    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        transformCornerStyles { _ in newStyle }
+    }
+
     @available(*, deprecated, renamed: "cornerStyle(_:shapeCorners:)")
     func applyingStyle(_ newStyle: CornerStyle, shapeCorners: Set<ShapeCorner>) -> Self {
         cornerStyle(newStyle, shapeCorners: shapeCorners)

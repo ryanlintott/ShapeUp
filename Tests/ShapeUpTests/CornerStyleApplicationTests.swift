@@ -161,6 +161,19 @@ struct CornerStyleApplicationTests {
         #expect(styledCorners.cornerStyles == [defaultStyle, defaultStyle])
     }
 
+    @Test("Deprecated enumerated shape style replacement still overwrites every style")
+    func deprecatedEnumeratedShapeStyleReplacementOverwritesEveryStyle() {
+        let shape = CornerRectangle([.topRight: .point])
+            .applyingStyle(defaultStyle)
+
+        #expect(shape.styles == [
+            .topLeft: defaultStyle,
+            .topRight: defaultStyle,
+            .bottomRight: defaultStyle,
+            .bottomLeft: defaultStyle
+        ])
+    }
+
     @Test("Deprecated mutating array style updates retain their behavior")
     func deprecatedMutatingArrayStyleUpdatesRetainBehavior() {
         var corners = [

@@ -19,6 +19,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added a new case `RectAnchor.relative(x:y:)` for storing relative positions.
 - Added `RelativeCorner`, a type similar to `Corner` but with a `RectAnchor` position and an absolute offset along frame axes. It has convenience initializers similar to `RectAnchor` such as `.topLeft`, `.top`, `.right`, `.bottom`, `.center`, and `.relative(x:y:)`. Also, similar to `Corner` there are methods for moving, rotating, flipping, scaling, and changing corner styles for either single instances or arrays.
 - Added `RelativeCornerCustom`, a version of `CornerCustom` that uses relative corners and can take animated State variables within its closure creating an animatable shape.
+- Added `CornerStyle.automatic` which is the new default for all unstyled corners and will draw as a point by default. The new `defaultCornerStyle(_:)` method will update only corners with this automatic style.
 - Added `CornerStyle.custom(radius:relativeCorners:)` for custom corner styles based on array of relative corners.
 - Added a new `Notch` init with a trailing closure that builds a custom notch with relative corners.
 - Added `CornerArrayBuilder`, `RelativeCornerArrayBuilder`, and `RectAnchorArrayBuilder` for building `Corner`, `RelativeCorner`, and `RectAnchor` arrays using result builders. `CornerArrayBuilder` also accepts `Notch` values and expands them between their nearest surrounding corners.
@@ -43,7 +44,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Changed `Notch` properties from constants to variables to allow animation and gave `Notch.init` a default `.rectangle` style.
 - Changed `CornerStyle.radius`, `concaveInset`, and related nested corner data to support animation updates.
 - `RectAnchor` now conforms to `Equatable`, `Hashable`, and `Codable`.
-- `RectAnchor` and added `vertices` to replace deprecated `vertexAnchors`
+- `RectAnchor` added `vertices` to replace deprecated `vertexAnchors`
 - Changed `CGRect` point method `rect.point(.topLeft)` to a subscript `rect[.topLeft]`.
 - Changed `CGRect` point method `points(relativeLocation: (x, y))` to a subscript `rect[x, y]`.
 - Changed `CGRect` point method `point(relativeLocations:)` and similar to `points {  }` that uses `RectAnchorArrayBuilder` that will take `.topLeft`, `.relative(x, y)` or even `(x, y)`.
