@@ -204,7 +204,7 @@ Lastly, a custom corner uses the radius to determine the top left and bottom rig
 }
 ```
 
-Use `cornerStyle(_:)` to replace styles, or `defaultCornerStyle(_:)` to style only automatic corners while preserving explicit styles.
+Use `cornerStyle(_:)` to replace the style on an individual corner or selected shape corners. Use `defaultCornerStyle(_:)` on a value containing multiple corners to style automatic corners while preserving explicit styles.
 
 ```swift
 CornerRectangle()
@@ -212,7 +212,7 @@ CornerRectangle()
     .defaultCornerStyle(.rounded(radius: 20))
 ```
 
-Types conforming to `CornerStylable` implement `transformCornerStyles(_:)` once. ShapeUp derives `cornerStyle(_:)`, `defaultCornerStyle(_:)`, and `changingRadius(to:)` from that transformation. Transformations apply to each direct style contained by the value without separately visiting nested styles.
+Types conforming to `CornerStylable` implement `transformCornerStyles(_:)` once, which supplies `defaultCornerStyle(_:)`. The narrower `CornerStyled` protocol supplies `cornerStyle(_:)` and `changingRadius(to:)` to `Corner` and `RelativeCorner` that contain a single style. Arrays of these values provide indexed style replacement, `cornerStyles(_:)`, and the `cornerStyles` property. Transformations apply to each direct style contained by the value without separately visiting nested styles.
 
 
 ## RelatableValue
@@ -387,7 +387,7 @@ Notch(.triangle, depth: 20)
 
 /// Or specify one style for all
 Notch(length: .relative(0.2), depth: 50)
-    .cornerStyle(.rounded(radius: .relative(0.2)))
+    .defaultCornerStyle(.rounded(radius: .relative(0.2)))
 ```
 
 ### Custom NotchStyle

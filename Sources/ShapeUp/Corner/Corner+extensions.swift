@@ -42,3 +42,10 @@ extension Corner {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
     }
 }
+
+public extension Corner {
+    @available(*, deprecated, renamed: "cornerStyle(_:)")
+    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        cornerStyle(newStyle)
+    }
+}

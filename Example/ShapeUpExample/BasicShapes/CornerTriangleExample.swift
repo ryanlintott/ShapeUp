@@ -20,7 +20,7 @@ struct CornerTriangleExample: View {
                 .frame(width: 200, height: 100)
             
             CornerTriangle(topPoint: .zero)
-                .cornerStyle(.concave(radius: 10))
+                .defaultCornerStyle(.concave(radius: 10))
                 .strokeBorder(Color.suPink, lineWidth: 8)
                 .frame(width: 200, height: 100)
             
@@ -40,4 +40,3 @@ struct CornerTriangleExample_Previews: PreviewProvider {
         }
     }
 }
-

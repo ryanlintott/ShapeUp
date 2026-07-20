@@ -71,7 +71,7 @@ struct BasicCompareExample: View {
             Text("ShapeUp CornerShape - 12 lines of code\n(Insettable with Animation)")
             
             RelativeCornerCustom(.bottomLeft, .top, .bottomRight, .relative(x: 0.5, y: 0.8))
-                .cornerStyle(.rounded(radius: .absolute(radius)))
+                .defaultCornerStyle(.rounded(radius: .absolute(radius)))
                 .fill(Color.suCyan)
             
             Text("ShapeUp RelativeCornerShape - 2 lines of code\n(Insettable & Fully Animatable)")

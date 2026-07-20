@@ -24,7 +24,7 @@ struct CornerPentagonExample: View {
                 .frame(width: 200, height: 100)
             
             CornerPentagon(pointHeight: 10)
-                .cornerStyle(.concave(radius: 10))
+                .defaultCornerStyle(.concave(radius: 10))
                 .strokeBorder(Color.suPink, lineWidth: 8)
                 .frame(width: 200, height: 100)
             

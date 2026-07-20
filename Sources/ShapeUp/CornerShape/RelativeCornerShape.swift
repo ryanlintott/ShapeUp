@@ -101,7 +101,7 @@ extension RelativeCornerCustom: CornerStylable {
         }
         
         RelativeCornerCustom(.topLeft, .topRight, .relative(x: bottomOffset, y: 1.0))
-            .cornerStyle(.rounded(radius: .relative(0.2)))
+            .defaultCornerStyle(.rounded(radius: .relative(0.2)))
         
         RelativeCornerCustom {
             RelativeCorners {

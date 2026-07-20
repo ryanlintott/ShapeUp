@@ -29,7 +29,7 @@ struct NotchedKeyExample: View {
                             
                             RelativeCorner.topRight
                         }
-                        .cornerStyle(.straight(radius: .absolute(16)))
+                        .defaultCornerStyle(.straight(radius: .absolute(16)))
                         
                         rect[0.03, 0]
                         rect[0.3, 0]
@@ -37,7 +37,7 @@ struct NotchedKeyExample: View {
                         rect[1, 0.3]
                         rect[1, 0.65]
                     }
-                    .cornerStyle(.rounded(radius: .absolute(16)))
+                    .defaultCornerStyle(.rounded(radius: .absolute(16)))
 //                    .changingRadius(to: .relative(0.3))
 
                     Notch(
@@ -46,14 +46,14 @@ struct NotchedKeyExample: View {
                         length: .relative(0.12),
                         depth: .relative(0.05)
                     )
-                    .cornerStyle(.rounded(radius: 2))
+                    .defaultCornerStyle(.rounded(radius: 2))
 
                     Notch(
                         position: .relative(0.68),
                         length: .relative(0.1),
                         depth: .relative(0.05)
                     )
-                    .cornerStyle(.rounded(radius: 3))
+                    .defaultCornerStyle(.rounded(radius: 3))
                 }
                 .fill(Color.suYellow)
             }

@@ -12,24 +12,14 @@ import Testing
 struct CornerStyleApplicationTests {
     private let defaultStyle = CornerStyle.rounded(radius: 10)
 
-    @Test("CornerStylable derives standard modifiers from its transformation requirement")
-    func cornerStylableDerivesStandardModifiers() {
+    @Test("CornerStylable derives default styling from its transformation requirement")
+    func cornerStylableDerivesDefaultStyling() {
         let stylable = TestCornerStylable(styles: [.automatic, .point, .rounded(radius: 5)])
 
-        #expect(stylable.cornerStyle(.concave(radius: 8)).styles == [
-            .concave(radius: 8),
-            .concave(radius: 8),
-            .concave(radius: 8)
-        ])
         #expect(stylable.defaultCornerStyle(defaultStyle).styles == [
             defaultStyle,
             .point,
             .rounded(radius: 5)
-        ])
-        #expect(stylable.changingRadius(to: 12).styles == [
-            .automatic,
-            .point,
-            .rounded(radius: 12)
         ])
     }
 
@@ -118,7 +108,7 @@ struct CornerStyleApplicationTests {
     @Test("Notch transformations resolve missing styles and normalize corner counts")
     func notchTransformationsResolveMissingStyles() {
         let style = NotchStyle.triangle(cornerStyles: [nil, .rounded(radius: 5), nil, .point])
-            .changingRadius(to: 12)
+            .transformCornerStyles { $0.changingRadius(to: 12) }
 
         if case let .triangle(cornerStyles) = style {
             #expect(cornerStyles == [.automatic, .rounded(radius: 12), .automatic])
@@ -127,21 +117,63 @@ struct CornerStyleApplicationTests {
         }
     }
 
-    @Test("Setting corner styles resets unspecified corners to automatic")
-    func settingCornerStylesResetsUnspecifiedCorners() {
-        var corners = [
+    @Test("Corner styles are reported in element order")
+    func cornerStylesAreReportedInElementOrder() {
+        let corners = [
             Corner(.rounded(radius: 2), x: 0, y: 0),
             Corner(.concave(radius: 3), x: 1, y: 0),
             Corner(.point, x: 1, y: 1)
         ]
 
-        corners.cornerStyles = [.rounded(radius: 10)]
-
-        #expect(corners.map(\.style) == [
-            .rounded(radius: 10),
-            .automatic,
-            .automatic
+        #expect(corners.cornerStyles == [
+            .rounded(radius: 2),
+            .concave(radius: 3),
+            .point
         ])
+    }
+
+    @Test("Corner styles preserve nil and missing entries")
+    func cornerStylesPreserveNilAndMissingEntries() {
+        let corners = [
+            Corner(.rounded(radius: 2), x: 0, y: 0),
+            Corner(.concave(radius: 3), x: 1, y: 0),
+            Corner(.point, x: 1, y: 1)
+        ]
+
+        let styledCorners = corners.cornerStyles([.rounded(radius: 10), nil])
+
+        #expect(styledCorners.cornerStyles == [
+            .rounded(radius: 10),
+            .concave(radius: 3),
+            .point
+        ])
+    }
+
+    @Test("Deprecated array style replacement still overwrites every style")
+    func deprecatedArrayStyleReplacementOverwritesEveryStyle() {
+        let corners = [
+            Corner(.point, x: 0, y: 0),
+            Corner(.concave(radius: 3), x: 1, y: 0)
+        ]
+
+        let styledCorners = corners.applyingStyle(defaultStyle)
+
+        #expect(styledCorners.cornerStyles == [defaultStyle, defaultStyle])
+    }
+
+    @Test("Deprecated mutating array style updates retain their behavior")
+    func deprecatedMutatingArrayStyleUpdatesRetainBehavior() {
+        var corners = [
+            Corner(.point, x: 0, y: 0),
+            Corner(.concave(radius: 3), x: 1, y: 0),
+            Corner(.straight(radius: 4), x: 1, y: 1)
+        ]
+
+        corners.applyStyles([defaultStyle, nil])
+        #expect(corners.cornerStyles == [defaultStyle, .concave(radius: 3), .straight(radius: 4)])
+
+        corners.applyStyle(.point)
+        #expect(corners.cornerStyles == [.point, .point, .point])
     }
 
     @Test("Custom shapes apply stored corner style transformations")

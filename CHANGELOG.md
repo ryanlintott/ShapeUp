@@ -25,8 +25,8 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added `Corners` and `RelativeCorners` as typealiases for `[Corner]` and `[RelativeCorner]` with result builder inits to easily create arrays without comma-separated array literals.
 - Added `Path.addClosedCornerShape` that takes an array of corners or a `CornerArrayBuilder` closure and draws it as a closed shape.
 - Added a `Path.addOpenCornerShape` overload with a `CornerArrayBuilder` closure.
-- Added the `CornerStylable` protocol so corner styles can be applied consistently to corners, relative corners, arrays of corners or relative corners, notches, enumerated shapes, and custom shapes. Conforming types implement `transformCornerStyles(_:)`, which provides `cornerStyle(_:)`, `defaultCornerStyle(_:)`, and `changingRadius(to:)` automatically.
-- Added the `CornerStyled` protocol to centralize corner style properties and methods across `Corner` and `RelativeCorner`
+- Added the `CornerStylable` protocol so default corner styles can be applied consistently to corners, relative corners, arrays of corners or relative corners, notches, enumerated shapes, and custom shapes. Conforming types implement `transformCornerStyles(_:)`, which provides `defaultCornerStyle(_:)` automatically.
+- Added the `CornerStyled` protocol to centralize the style property, `cornerStyle(_:)`, and `changingRadius(to:)` across `Corner` and `RelativeCorner`.
 - Added `CornerStyle.automatic` and `defaultCornerStyle(_:)` for applying a fallback style without replacing explicitly styled corners.
 - Added animatable support for `CornerStyle`, `Corner`, `RelativeCorner`, `RectAnchor`, `NotchStyle`, `Notch`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `RelativeCornerCustom`.
 - Added `AnimatableArray`, `AnimatableDictionary`, and `NestedAnimatable` helpers for animating arrays, dictionaries, and nested animatable values.
@@ -61,7 +61,8 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Deprecated `CGRect` methods `point(_: RectAnchor)`, `points(relativeLocation:)`, and `point(relativeLocations:)`. Use subscript and builder-based APIs, such as `rect[anchor]`, `rect[x, y]`, and `rect.points { ... }`.
 - Deprecated `NotchStyle.custom(corners:)`. Use relative-corner-based `NotchStyle.custom { ... }` instead.
 - Deprecated notch factory methods like `Notch.rectangle(...)`, `Notch.triangle(...)` and `Notch.custom(...)`. Instead use `Notch(...)`, `Notch(.triangle, ...)` and `Notch(...) { }`
-- Deprecated `applyingStyle` and `applyingStyles` in favor of `cornerStyle` and `cornerStyles` throughout.
+- Deprecated `applyingStyle` and `applyingStyles` in favor of `cornerStyle`, `defaultCornerStyle`, `transformCornerStyles`, and `cornerStyles` as appropriate. Array-wide style replacement remains available through deprecated compatibility methods but has no new `cornerStyle(_:)` equivalent.
+- Deprecated the mutating `[Corner].addNotch` and `addNotches` methods in favor of assigning the result of `addingNotch` and `addingNotches` back to the array.
 - `RectAnchor.edgeAnchors` and `RectAnchor.vertexAnchors` are deprecated in favor of `RectAnchor.vertices` and explicit anchor builders.
 - Deprecated `Array<Vector2Representable>` method `anchorPoint(_:)` and property `center`. Instead use `bounds.subscript (_:)` and `bounds[.center]`
 - `Array<Vector2>` method `scaledPositions(scale:)` and `scaledPositions(width:height:)` were renamed to `scaledPositions(_:)` and `scaledPositions(x:y:)`

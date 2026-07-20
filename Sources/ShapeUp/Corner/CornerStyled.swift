@@ -14,6 +14,21 @@ public protocol CornerStyled: CornerStylable {
 }
 
 public extension CornerStyled {
+    func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self {
+        var copy = self
+        copy.style = transform(style)
+        return copy
+    }
+
+    /// Creates a copy updating each corner style to the new style.
+    ///
+    /// Nested styles inside a ``CornerStyle`` are not changed.
+    /// - Parameter newStyle: Corner style to apply.
+    /// - Returns: A copy with replaced corner styles.
+    func cornerStyle(_ newStyle: CornerStyle) -> Self {
+        transformCornerStyles { _ in newStyle }
+    }
+
     /// Radius of corner based on the style.
     var radius: RelatableValue {
         get {
@@ -24,26 +39,43 @@ public extension CornerStyled {
         }
     }
     
-    func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self {
-        var copy = self
-        copy.style = transform(style)
-        return copy
+    /// Creates a copy updating the radius of each corner style.
+    ///
+    /// Nested styles inside a ``CornerStyle`` are not changed.
+    /// - Parameter newRadius: Radius to apply.
+    /// - Returns: A copy with changed corner radii.
+    func changingRadius(to newRadius: RelatableValue) -> Self {
+        transformCornerStyles {
+            $0.changingRadius(to: newRadius)
+        }
     }
 }
 
 public extension Array where Element: CornerStyled {
     /// Array of corner styles used on each corner respectively.
-    ///
-    /// When setting this property, corners without a matching style use ``CornerStyle/automatic``.
     var cornerStyles: [CornerStyle] {
-        get {
-            map(\.style)
-        }
-        set {
-            self = self
-                .cornerStyle(.automatic)
-                .cornerStyles(newValue)
-        }
+        map(\.style)
+    }
+
+    /// Creates an array of elements with a new corner style applied at specified indices.
+    /// - Parameters:
+    ///   - newStyle: A style that will be applied to specified corners.
+    ///   - indices: Indices of the corners with which to apply the new style.
+    /// - Returns: An array with the new corner style applied at the specified indices.
+    func cornerStyle(_ newStyle: CornerStyle, corners indices: [Int]) -> [Element] {
+        enumerated()
+            .map { index, corner in
+                indices.contains(index) ? corner.cornerStyle(newStyle) : corner
+            }
+    }
+
+    /// Creates an array of elements with a new corner style applied at a specified index.
+    /// - Parameters:
+    ///   - newStyle: A style that will be applied to a specified corner.
+    ///   - index: Index of the corner with which to apply the new style.
+    /// - Returns: An array with the new corner style applied at the specified index.
+    func cornerStyle(_ newStyle: CornerStyle, corner index: Int) -> [Element] {
+        cornerStyle(newStyle, corners: [index])
     }
     
     /// Creates an array of corners with the same positions and specified styles.
@@ -61,16 +93,5 @@ public extension Array where Element: CornerStyled {
                 // Apply a style if one is provided, otherwise use the current style.
                 corner.cornerStyle(newStyle ?? corner.style)
             }
-    }
-    
-    @available(*, deprecated, renamed: "cornerStyles(_:)")
-    func applyingStyles(_ newStyles: [CornerStyle?]) -> [Element] {
-        cornerStyles(newStyles)
-    }
-    
-    /// Applies new styles to this array of corners.
-    /// - Parameter newStyles: An array of styles that will be applied to each corner respectively. Nil values will keep current style.
-    mutating func cornerStyles(_ newStyles: [CornerStyle?]) {
-        self = self.cornerStyles(newStyles)
     }
 }

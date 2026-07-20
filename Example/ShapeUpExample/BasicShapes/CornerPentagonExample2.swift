@@ -22,7 +22,7 @@ struct CornerPentagonExample2: View {
                     topTaper: .relative(topTaper),
                     bottomTaper: .relative(bottomTaper)
                 )
-                .cornerStyle(.rounded(radius: .relative(0.2)))
+                .defaultCornerStyle(.rounded(radius: .relative(0.2)))
                 .inset(by: inset)
                 .fill(Color.suCyan)
                 .animation(.default, value: pointHeight)

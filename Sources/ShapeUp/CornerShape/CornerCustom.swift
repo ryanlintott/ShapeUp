@@ -108,14 +108,14 @@ public extension CornerCustom {
             Corner(x: rect.maxX, y: rect.minY)
             Corner(x: rect.minX + rect.width * bottomOffset, y: rect.maxY)
         }
-        .cornerStyle(.rounded(radius: .relative(0.2)))
+        .defaultCornerStyle(.rounded(radius: .relative(0.2)))
         
         CornerCustom { [bottomOffset] rect in
             rect[.topLeft]
             rect[.topRight]
             rect[bottomOffset, 1.0]
         }
-        .cornerStyle(.rounded(radius: .relative(0.2)))
+        .defaultCornerStyle(.rounded(radius: .relative(0.2)))
         
         Slider(value: $bottomOffset, in: 0...1)
             .padding()

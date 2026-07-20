@@ -102,6 +102,7 @@ public extension Array where Element == Corner {
     ///
     /// The first notch will create corners between the first and second corner, the next will create corners between the second and third corners, etc. Nil values will create no additional corners.
     /// - Parameter notches: Notches that define additional corners to add in the gaps between each corner. Nil values will skip a gap and add no corners.
+    @available(*, deprecated, message: "Assign the result of `addingNotches(_:)` back to the array instead.")
     mutating func addNotches(_ notches: [Notch?]) {
         self = self.addingNotches(notches)
     }
@@ -133,6 +134,7 @@ public extension Array where Element == Corner {
     /// - Parameters:
     ///   - notch: Notch that define additional corners to add after the specified index.
     ///   - cornerIndex: Index after which the corners will be added.
+    @available(*, deprecated, message: "Assign the result of `addingNotch(_:afterCornerIndex:)` back to the array instead.")
     mutating func addNotch(_ notch: Notch, afterCornerIndex cornerIndex: Int) {
         self = self.addingNotch(notch, afterCornerIndex: cornerIndex)
     }
@@ -158,5 +160,39 @@ public extension Array where Element == Corner {
         }
         
         return self + (notch?.between(start: lastCorner, end: corner) ?? []) + [corner]
+    }
+
+    @available(*, deprecated, renamed: "cornerStyle(_:corners:)")
+    func applyingStyle(_ newStyle: CornerStyle, corners indices: [Int]) -> Self {
+        cornerStyle(newStyle, corners: indices)
+    }
+
+    @available(*, deprecated, renamed: "cornerStyle(_:corner:)")
+    func applyingStyle(_ newStyle: CornerStyle, corner index: Int) -> Self {
+        cornerStyle(newStyle, corner: index)
+    }
+
+    @available(*, deprecated, renamed: "cornerStyles(_:)")
+    func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
+        cornerStyles(newStyles)
+    }
+
+    @available(*, deprecated, message: "Use `defaultCornerStyle(_:)` to replace only automatic styles, or `transformCornerStyles { _ in style }` to replace every style.")
+    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        transformCornerStyles { _ in newStyle }
+    }
+
+    /// Applies new styles to this array of corners.
+    /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    @available(*, deprecated, message: "Assign the result of `cornerStyles(_:)` back to the array instead.")
+    mutating func applyStyles(_ styles: [CornerStyle?]) {
+        self = cornerStyles(styles)
+    }
+
+    /// Applies a new style to all corners in the array.
+    /// - Parameter style: A style that will be applied to every corner.
+    @available(*, deprecated, message: "Use `defaultCornerStyle(_:)` to replace only automatic styles, or assign the result of `transformCornerStyles { _ in style }` to replace every style.")
+    mutating func applyStyle(_ style: CornerStyle) {
+        self = transformCornerStyles { _ in style }
     }
 }

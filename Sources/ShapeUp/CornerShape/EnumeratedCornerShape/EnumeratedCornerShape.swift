@@ -50,11 +50,6 @@ public extension EnumeratedCornerShape {
         return shape
     }
     
-    @available(*, deprecated, renamed: "cornerStyle(_:shapeCorners:)")
-    func applyingStyle(_ newStyle: CornerStyle, shapeCorners: Set<ShapeCorner>) -> Self {
-        cornerStyle(newStyle, shapeCorners: shapeCorners)
-    }
-    
     func transformCornerStyles(_ transform: @escaping @Sendable (CornerStyle) -> CornerStyle) -> Self {
         var shape = self
         ShapeCorner.allCases.forEach { shapeCorner in
@@ -84,6 +79,11 @@ public extension EnumeratedCornerShape {
             }
         }
         return shape
+    }
+
+    @available(*, deprecated, renamed: "cornerStyle(_:shapeCorners:)")
+    func applyingStyle(_ newStyle: CornerStyle, shapeCorners: Set<ShapeCorner>) -> Self {
+        cornerStyle(newStyle, shapeCorners: shapeCorners)
     }
     
     @available(*, deprecated, renamed: "cornerStyles(_:)")
