@@ -14,9 +14,6 @@
 		CF03C8A427D956AA008B415E /* NotchedExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF03C8A327D956AA008B415E /* NotchedExamples.swift */; };
 		CF03C8A627D95748008B415E /* NotchedTriangleExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF03C8A527D95748008B415E /* NotchedTriangleExample.swift */; };
 		CF03C8A827D957EB008B415E /* NestedCornerStyleExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF03C8A727D957EB008B415E /* NestedCornerStyleExample.swift */; };
-		D4A140012F14A00100000001 /* CornerInsetContinuityShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140022F14A00100000001 /* CornerInsetContinuityShape.swift */; };
-		D4A140032F14A00100000001 /* CornerInsetContinuityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140042F14A00100000001 /* CornerInsetContinuityExample.swift */; };
-		D4A140052F14A00100000001 /* NotchedKeyExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140062F14A00100000001 /* NotchedKeyExample.swift */; };
 		CF09373D2DE4EB8700F904D8 /* RectangleExample3.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF09373C2DE4EB8700F904D8 /* RectangleExample3.swift */; };
 		CF1A935F2E31774700653C2B /* CornerShapeExample2.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1A935E2E31774700653C2B /* CornerShapeExample2.swift */; };
 		CF1AB2A92CB5B7FE0049E553 /* ShapeUp in Frameworks */ = {isa = PBXBuildFile; productRef = CF1AB2A82CB5B7FE0049E553 /* ShapeUp */; };
@@ -70,6 +67,9 @@
 		CFD47CCF27DA879900428F9B /* BasicCompareExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD47CCE27DA879900428F9B /* BasicCompareExample.swift */; };
 		CFD6965F26F431D4008D58AD /* EmbossExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD6965E26F431D4008D58AD /* EmbossExample.swift */; };
 		CFFEAF1127F269790086ECC5 /* HexagonExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFEAF1027F269790086ECC5 /* HexagonExample.swift */; };
+		D4A140012F14A00100000001 /* CornerInsetContinuityShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140022F14A00100000001 /* CornerInsetContinuityShape.swift */; };
+		D4A140032F14A00100000001 /* CornerInsetContinuityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140042F14A00100000001 /* CornerInsetContinuityExample.swift */; };
+		D4A140052F14A00100000001 /* NotchedKeyExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140062F14A00100000001 /* NotchedKeyExample.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,9 +104,6 @@
 		CF03C8A327D956AA008B415E /* NotchedExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedExamples.swift; sourceTree = "<group>"; };
 		CF03C8A527D95748008B415E /* NotchedTriangleExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedTriangleExample.swift; sourceTree = "<group>"; };
 		CF03C8A727D957EB008B415E /* NestedCornerStyleExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedCornerStyleExample.swift; sourceTree = "<group>"; };
-		D4A140022F14A00100000001 /* CornerInsetContinuityShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerInsetContinuityShape.swift; sourceTree = "<group>"; };
-		D4A140042F14A00100000001 /* CornerInsetContinuityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerInsetContinuityExample.swift; sourceTree = "<group>"; };
-		D4A140062F14A00100000001 /* NotchedKeyExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedKeyExample.swift; sourceTree = "<group>"; };
 		CF09373C2DE4EB8700F904D8 /* RectangleExample3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleExample3.swift; sourceTree = "<group>"; };
 		CF1A935E2E31774700653C2B /* CornerShapeExample2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerShapeExample2.swift; sourceTree = "<group>"; };
 		CF2FE2ED26C7061A0040A985 /* ShapeUpExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapeUpExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,6 +150,9 @@
 		CFD6965E26F431D4008D58AD /* EmbossExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbossExample.swift; sourceTree = "<group>"; };
 		CFF37C2A2AA90A0600052FE2 /* AnimatablePackExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatablePackExample.swift; sourceTree = "<group>"; };
 		CFFEAF1027F269790086ECC5 /* HexagonExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonExample.swift; sourceTree = "<group>"; };
+		D4A140022F14A00100000001 /* CornerInsetContinuityShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerInsetContinuityShape.swift; sourceTree = "<group>"; };
+		D4A140042F14A00100000001 /* CornerInsetContinuityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerInsetContinuityExample.swift; sourceTree = "<group>"; };
+		D4A140062F14A00100000001 /* NotchedKeyExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedKeyExample.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -410,7 +410,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					CF2FE2EC26C7061A0040A985 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -582,6 +582,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 97423JQ8B9;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -606,6 +607,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -648,6 +650,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 97423JQ8B9;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -665,6 +668,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -681,7 +685,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShapeUpExample/Preview Content\"";
-				DEVELOPMENT_TEAM = 97423JQ8B9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ShapeUpExample/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShapeUp;
@@ -715,7 +718,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShapeUpExample/Preview Content\"";
-				DEVELOPMENT_TEAM = 97423JQ8B9;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = ShapeUpExample/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShapeUp;
@@ -750,7 +752,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WatchShapeUpExample/Preview Content\"";
-				DEVELOPMENT_TEAM = 97423JQ8B9;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -784,7 +785,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WatchShapeUpExample/Preview Content\"";
-				DEVELOPMENT_TEAM = 97423JQ8B9;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
