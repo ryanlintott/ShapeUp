@@ -7,7 +7,6 @@
 
 /// AnimatablePack uses parameter pack iteration that is only available when using the Swift 6.0 compiler (Xcode 16+)
 /// https://forums.swift.org/t/pitch-enable-pack-iteration/66168
-#if compiler(>=6.0)
 import ShapeUp
 import SwiftUI
 
@@ -95,4 +94,3 @@ struct AnimatablePackExample_Previews: PreviewProvider {
         }
     }
 }
-#endif

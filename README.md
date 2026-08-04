@@ -38,7 +38,7 @@ Features:
 The `Example` folder has an app that demonstrates the features of this package.
 
 # Installation and Usage
-This package is compatible with iOS 14+, macOS 11+, watchOS 7+, tvOS 14+, and visionOS 1+.
+This package is compatible with iOS 15+, macOS 12+, watchOS 8+, tvOS 15+, and visionOS 1+.
 
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/ShapeUp` and select by version.

@@ -80,13 +80,11 @@ struct ContentView: View {
             
             /// AnimatablePack uses parameter pack iteration that is only available in swift 6.0
             /// https://forums.swift.org/t/pitch-enable-pack-iteration/66168
-            #if compiler(>=6.0)
             if #available(iOS 17, macOS 14, watchOS 10, tvOS 17, *) {
                 NavigationLink(destination: AnimatablePackExample()) {
                     Label("AnimatablePack", systemImage: "slider.horizontal.3")
                 }
             }
-            #endif
         } header: {
             Text("Other Tools")
         }
