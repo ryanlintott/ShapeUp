@@ -93,42 +93,12 @@ public struct CornerPentagon: EnumeratedCornerShape {
 }
 
 /// Animatable Extension
-extension CornerPentagon {
-    public var animatableData: AnimatablePair<
-        CGFloat,
-        AnimatablePair<
-            RelatableValue,
-            AnimatablePair<
-                RelatableValue,
-                AnimatablePair<
-                    RelatableValue,
-                    AnimatableDictionary<ShapeCorner, CornerStyle.AnimatableData>
-                >
-            >
-        >
-    >
-    {
-        get {
-            .init(
-                insetAmount,
-                .init(
-                    pointHeight,
-                    .init(
-                        topTaper,
-                        .init(
-                            bottomTaper,
-                            styles.valueAnimatableData
-                        )
-                    )
-                )
-            )
-        }
-        set {
-            insetAmount = newValue.first
-            pointHeight = newValue.second.first
-            topTaper = newValue.second.second.first
-            bottomTaper = newValue.second.second.second.first
-            styles.valueAnimatableData = newValue.second.second.second.second
-        }
+extension CornerPentagon: AnimatableByProperty {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.pointHeight
+        \.topTaper
+        \.bottomTaper
+        \.styles
     }
 }

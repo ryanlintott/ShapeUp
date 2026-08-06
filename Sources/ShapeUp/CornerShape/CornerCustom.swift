@@ -32,11 +32,6 @@ public struct CornerCustom: CornerShape {
     public var closed: Bool
     public var insetAmount: CGFloat = 0
     
-    public var animatableData: CGFloat {
-        get { insetAmount }
-        set { insetAmount = newValue }
-    }
-    
     internal var corners: @Sendable (CGRect) -> [Corner]
     
     /// Creates a custom insettable shape out of corners.
@@ -94,6 +89,12 @@ public extension CornerCustom {
     @available(*, deprecated, renamed: "cornerStyles(_:)")
     func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
         cornerStyles(newStyles)
+    }
+}
+
+extension CornerCustom: AnimatableByProperty {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
     }
 }
 

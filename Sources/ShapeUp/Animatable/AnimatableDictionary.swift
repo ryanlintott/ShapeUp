@@ -19,8 +19,8 @@ import SwiftUI
 ///     var vectors: [Int: Vector2]
 ///
 ///     var animatableData: AnimatableDictionary<Int, Vector2> {
-///         get { vectors.animatableData }
-///         set { vectors.animatableData = newValue }
+///         get { vectors.animatableDictionary }
+///         set { vectors.animatableDictionary = newValue }
 ///     }
 ///
 ///     func path(in rect: CGRect) -> Path {
@@ -36,8 +36,8 @@ import SwiftUI
 ///     var corners: [Int: Corner]
 ///
 ///     var animatableData: AnimatableDictionary<Int, Corner.AnimatableData> {
-///         get { corners.valueAnimatableData }
-///         set { corners.valueAnimatableData = newValue }
+///         get { corners.animatableValueDictionary }
+///         set { corners.animatableValueDictionary = newValue }
 ///     }
 ///
 ///     func path(in rect: CGRect) -> Path {
@@ -138,9 +138,9 @@ extension Dictionary where Key: Hashable, Value: VectorArithmetic {
     /// conform to VectorArithmetic.
     /// 
     /// - Note: Setting this property updates or adds the keys in the new value. Existing keys that are absent from the new value are preserved.
-    public var animatableData: AnimatableDictionary<Key, Value> {
+    var animatableDictionary: AnimatableDictionary<Key, Value> {
         get {
-            AnimatableDictionary(self)
+            .init(self)
         }
         set {
             newValue.wrappedValue.forEach { (key, animatableData) in
@@ -157,7 +157,7 @@ extension Dictionary where Key: Hashable, Value: Animatable {
     /// the animatable data of each value.
     /// 
     /// - Note: Setting this property updates matching existing keys. New keys are ignored, and existing keys that are absent from the new value are preserved.
-    public var valueAnimatableData: AnimatableDictionary<Key, Value.AnimatableData> {
+    var animatableValueDictionary: AnimatableDictionary<Key, Value.AnimatableData> {
         get {
             .init(mapValues(\.animatableData))
         }
@@ -167,4 +167,29 @@ extension Dictionary where Key: Hashable, Value: Animatable {
             }
         }
     }
+}
+
+extension Dictionary where Key: Hashable, Value: AnimatableByProperty {
+    var animatablePropertiesDictionary: AnimatableDictionary<Key, Value.AnimatableProperties.AnimatableData> {
+        get {
+            .init(mapValues(\.animatablePropertiesData))
+        }
+        set {
+            newValue.wrappedValue.forEach { (key, animatablePropertiesData) in
+                self[key]?.animatablePropertiesData = animatablePropertiesData
+            }
+        }
+    }
+    
+    var recursiveAnimatablePropertiesDictionary: AnimatableDictionary<Key, Value.RecursiveAnimatableProperties.AnimatableData> {
+        get {
+            .init(mapValues(\.recursiveAnimatablePropertiesData))
+        }
+        set {
+            newValue.wrappedValue.forEach { (key, recursiveAnimatablePropertiesData) in
+                self[key]?.recursiveAnimatablePropertiesData = recursiveAnimatablePropertiesData
+            }
+        }
+    }
+    
 }

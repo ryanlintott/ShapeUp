@@ -17,7 +17,7 @@ struct AnimatableDictionaryTests {
             3: Vector2(dx: 3, dy: 4)
         ]
         
-        values.animatableData = AnimatableDictionary([
+        values.animatableDictionary = AnimatableDictionary([
             1: Vector2(dx: 10, dy: 20),
             2: Vector2(dx: 30, dy: 40)
         ])
@@ -36,7 +36,7 @@ struct AnimatableDictionaryTests {
             3: AnimatedValue(value: 3)
         ]
 
-        values.valueAnimatableData = AnimatableDictionary([
+        values.animatableValueDictionary = AnimatableDictionary([
             1: 10,
             2: 20
         ])
@@ -45,17 +45,6 @@ struct AnimatableDictionaryTests {
             1: AnimatedValue(value: 10),
             3: AnimatedValue(value: 3)
         ])
-    }
-
-    @Test
-    func valuesConformingToBothProtocolsHaveUnambiguousProperties() {
-        let values = [1: DualConformingValue(value: 4)]
-
-        let vectorData: AnimatableDictionary<Int, DualConformingValue> = values.animatableData
-        let valueData: AnimatableDictionary<Int, DualConformingValue> = values.valueAnimatableData
-
-        #expect(vectorData.wrappedValue == values)
-        #expect(valueData.wrappedValue == values)
     }
 }
 

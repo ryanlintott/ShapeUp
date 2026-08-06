@@ -60,21 +60,9 @@ public struct CornerRectangle: EnumeratedCornerShape {
 }
 
 /// Animatable Extension
-extension CornerRectangle {
-    public var animatableData: AnimatablePair<
-        CGFloat,
-        AnimatableDictionary<ShapeCorner, CornerStyle.AnimatableData>
-    >
-    {
-        get {
-            .init(
-                insetAmount,
-                styles.valueAnimatableData
-            )
-        }
-        set {
-            insetAmount = newValue.first
-            styles.valueAnimatableData = newValue.second
-        }
+extension CornerRectangle: AnimatableByProperty {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.styles
     }
 }

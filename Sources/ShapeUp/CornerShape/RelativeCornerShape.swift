@@ -15,25 +15,6 @@ public struct RelativeCornerCustom: CornerShape {
     /// The array of relative corners that define this shape.
     public var relativeCorners: [RelativeCorner]
     
-    public typealias AnimatableData =
-    AnimatablePair<
-        CGFloat,
-        AnimatableArray<RelativeCorner.AnimatableData>
-    >
-    
-    public var animatableData: AnimatableData {
-        get {
-            .init(
-                insetAmount,
-                relativeCorners.elementAnimatableData
-            )
-        }
-        set {
-            insetAmount = newValue.first
-            relativeCorners.elementAnimatableData = newValue.second
-        }
-    }
-    
     /// Creates a closed relative corner shape from an array of relative corners.
     ///
     /// - Note: To create an open corner shape add `.closed(false)`
@@ -80,6 +61,13 @@ extension RelativeCornerCustom: CornerStylable {
         var copy = self
         copy.relativeCorners = relativeCorners.transformCornerStyles(transform)
         return copy
+    }
+}
+
+extension RelativeCornerCustom: AnimatableByProperty {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.relativeCorners
     }
 }
 

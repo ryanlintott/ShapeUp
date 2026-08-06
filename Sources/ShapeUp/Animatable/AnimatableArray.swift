@@ -19,8 +19,8 @@ import SwiftUI
 ///     var points: [CGPoint]
 ///     
 ///     var animatableData: AnimatableArray<CGPoint> {
-///         get { points.animatableData }
-///         set { points.animatableData = newValue }
+///         get { points.animatableArray }
+///         set { points.animatableArray = newValue }
 ///     }
 ///     
 ///     func path(in rect: CGRect) -> Path {
@@ -36,8 +36,8 @@ import SwiftUI
 ///     var corners: [Corner]
 ///     
 ///     var animatableData: AnimatableArray<Corner.AnimatableData> {
-///         get { corners.elementAnimatableData }
-///         set { corners.elementAnimatableData = newValue }
+///         get { corners.animatableValueArray }
+///         set { corners.animatableValueArray = newValue }
 ///     }
 ///     
 ///     func path(in rect: CGRect) -> Path {
@@ -147,9 +147,9 @@ extension Array where Element: VectorArithmetic {
     /// conform to VectorArithmetic.
     /// 
     /// - Note: Only existing elements are updated during animation; array size changes are not animated.
-    public var animatableData: AnimatableArray<Element> {
+    var animatableArray: AnimatableArray<Element> {
         get {
-            AnimatableArray(self)
+            .init(self)
         }
         set {
             let count = Swift.min(count, newValue.wrappedValue.count)
@@ -167,7 +167,7 @@ extension Array where Element: Animatable {
     /// the animatable data of each element.
     /// 
     /// - Note: Only existing elements are updated during animation; array size changes are not animated.
-    public var elementAnimatableData: AnimatableArray<Element.AnimatableData> {
+    var animatableValueArray: AnimatableArray<Element.AnimatableData> {
         get {
             .init(map(\.animatableData))
         }
@@ -175,6 +175,32 @@ extension Array where Element: Animatable {
             let count = Swift.min(count, newValue.wrappedValue.count)
             for i in 0..<count {
                 self[i].animatableData = newValue.wrappedValue[i]
+            }
+        }
+    }
+}
+
+extension Array where Element: AnimatableByProperty {
+    var animatablePropertiesArray: AnimatableArray<Element.AnimatableProperties.AnimatableData> {
+        get {
+            .init(map(\.animatablePropertiesData))
+        }
+        set {
+            let count = Swift.min(count, newValue.wrappedValue.count)
+            for i in 0..<count {
+                self[i].animatablePropertiesData = newValue.wrappedValue[i]
+            }
+        }
+    }
+    
+    var recursiveAnimatablePropertiesArray: AnimatableArray<Element.RecursiveAnimatableProperties.AnimatableData> {
+        get {
+            .init(map(\.recursiveAnimatablePropertiesData))
+        }
+        set {
+            let count = Swift.min(count, newValue.wrappedValue.count)
+            for i in 0..<count {
+                self[i].recursiveAnimatablePropertiesData = newValue.wrappedValue[i]
             }
         }
     }

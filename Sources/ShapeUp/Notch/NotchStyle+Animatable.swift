@@ -7,15 +7,8 @@
 
 import SwiftUI
 
-extension NotchStyle: Animatable {
-    public typealias AnimatableData = AnimatableArray<RelativeCorner.AnimatableData>
-    
-    public var animatableData: AnimatableData {
-        get {
-            relativeCorners.elementAnimatableData
-        }
-        set {
-            relativeCorners.elementAnimatableData = newValue
-        }
+extension NotchStyle: AnimatableByProperty {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.relativeCorners
     }
 }

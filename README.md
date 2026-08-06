@@ -562,7 +562,7 @@ Here is an example of animatableData using AnimatablePair:
  ```
 
 ## AnimatableArray
-Animate an array element by element using `AnimatableArray`. Arrays of `VectorArithmetic` values expose `animatableData`, while arrays of `Animatable` values expose `elementAnimatableData`.
+Animate an array element by element using `AnimatableArray`. Arrays of `VectorArithmetic` values expose `animatableArray`, while arrays of `Animatable` values expose `animatableValueArray`.
 
 > **Note:** Only changes to existing elements can be animated. Adding or removing elements will not animate.
 
@@ -571,24 +571,24 @@ struct MyShape: Animatable {
     var corners: [Corner]
 
     var animatableData: AnimatableArray<Corner.AnimatableData> {
-        get { corners.elementAnimatableData }
-        set { corners.elementAnimatableData = newValue }
+        get { corners.animatableValueArray }
+        set { corners.animatableValueArray = newValue }
     }
 }
 ```
 
 ## AnimatableDictionary
-Animate dictionary values by key using `AnimatableDictionary`. Dictionaries of `VectorArithmetic` values expose `animatableData`, while dictionaries of `Animatable` values expose `valueAnimatableData`.
+Animate dictionary values by key using `AnimatableDictionary`. Dictionaries of `VectorArithmetic` values expose `animatableDictionary`, while dictionaries of `Animatable` values expose `animatableValueDictionary`.
 
-> **Note:** `animatableData` updates existing values, adds incoming keys, and preserves keys omitted from the new data. `valueAnimatableData` only updates matching existing keys, so it does not add or remove keys.
+> **Note:** `animatableDictionary` updates existing values, adds incoming keys, and preserves keys omitted from the new data. `animatableValueDictionary` only updates matching existing keys, so it does not add or remove keys.
 
 ```swift
 struct MyShape: Animatable {
     var styles: [CornerRectangle.ShapeCorner: CornerStyle]
 
     var animatableData: AnimatableDictionary<CornerRectangle.ShapeCorner, CornerStyle.AnimatableData> {
-        get { styles.valueAnimatableData }
-        set { styles.valueAnimatableData = newValue }
+        get { styles.animatableValueDictionary }
+        set { styles.animatableValueDictionary = newValue }
     }
 }
 ```

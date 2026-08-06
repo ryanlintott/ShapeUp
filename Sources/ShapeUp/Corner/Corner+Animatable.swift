@@ -7,24 +7,10 @@
 
 import SwiftUI
 
-extension Corner: Animatable {
-    public typealias AnimatableData =
-    AnimatablePair<
-        Vector2,
-        CornerStyle.AnimatableData
-    >
-    
-    public var animatableData: AnimatableData {
-        get {
-            .init(
-                Vector2(dx: x, dy: y),
-                style.animatableData
-            )
-        }
-        set {
-            x = newValue.first.dx
-            y = newValue.first.dy
-            style.animatableData = newValue.second
-        }
+extension Corner: AnimatableByProperty {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.x
+        \.y
+        \.style
     }
 }

@@ -53,8 +53,14 @@ public extension CornerStyled {
 
 public extension Array where Element: CornerStyled {
     /// Array of corner styles used on each corner respectively.
-    var cornerStyles: [CornerStyle] {
-        map(\.style)
+    internal(set) var cornerStyles: [CornerStyle] {
+        get {
+            map(\.style)
+        }
+        set {
+            self = self
+                .cornerStyles(newValue)
+        }
     }
 
     /// Creates an array of elements with a new corner style applied at specified indices.
