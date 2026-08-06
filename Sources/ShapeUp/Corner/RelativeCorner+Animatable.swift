@@ -26,23 +26,19 @@ extension Array where Element == RelativeCorner {
             map(\.anchor)
         }
         set {
-            self = self.update(with: newValue) { element, newValue in
-                var updatedElement = element
-                updatedElement.anchor = newValue
-                return updatedElement
+            update(with: newValue) { corner, anchor in
+                corner.anchor = anchor
             }
         }
     }
-    
+
     var offsets: [Vector2] {
         get {
             map(\.offset)
         }
         set {
-            self = self.update(with: newValue) { element, newValue in
-                var updatedElement = element
-                updatedElement.offset = newValue
-                return updatedElement
+            update(with: newValue) { corner, offset in
+                corner.offset = offset
             }
         }
     }

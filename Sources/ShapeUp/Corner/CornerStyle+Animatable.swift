@@ -24,23 +24,19 @@ extension Array where Element == CornerStyle {
             map(\.radius)
         }
         set {
-            self = self.update(with: newValue) { element, newValue in
-                var updatedElement = element
-                updatedElement.radius = newValue
-                return updatedElement
+            update(with: newValue) { style, radius in
+                style.radius = radius
             }
         }
     }
-    
+
     var concaveInsets: [CGFloat] {
         get {
             map(\.concaveInset)
         }
         set {
-            self = self.update(with: newValue) { element, newValue in
-                var updatedElement = element
-                updatedElement.concaveInset = newValue
-                return updatedElement
+            update(with: newValue) { style, concaveInset in
+                style.concaveInset = concaveInset
             }
         }
     }
