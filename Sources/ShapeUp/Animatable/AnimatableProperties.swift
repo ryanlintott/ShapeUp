@@ -67,7 +67,7 @@ public extension AnimatablePropertyBuilder {
     struct Empty: AnimatableProperty {
         public typealias AnimatableData = EmptyAnimatableData
 
-        public init() { }
+        init() { }
 
         public func animatableData(for root: Root) -> EmptyAnimatableData {
             .zero
@@ -82,9 +82,9 @@ public extension AnimatablePropertyBuilder {
     struct AnimatableValue<Value: VectorArithmetic>: AnimatableProperty {
         public typealias AnimatableData = Value
         
-        public let keyPath: WritableKeyPath<Root, Value>
+        let keyPath: WritableKeyPath<Root, Value>
         
-        public init(_ keyPath: WritableKeyPath<Root, Value>) {
+        init(_ keyPath: WritableKeyPath<Root, Value>) {
             self.keyPath = keyPath
         }
         
@@ -109,7 +109,7 @@ public extension AnimatablePropertyBuilder {
         private let first: First
         private let second: Second
 
-        public init(_ first: First, _ second: Second) {
+        init(_ first: First, _ second: Second) {
             self.first = first
             self.second = second
         }
