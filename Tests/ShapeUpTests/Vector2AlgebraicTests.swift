@@ -175,4 +175,20 @@ class Vector2AlgebraicTests: XCTestCase {
             XCTAssertEqual(magnitude, 1.0, accuracy: 0.0000001)
         }
     }
+
+    func testProjectionOntoZeroVector() throws {
+        // given
+        let vector = V2ATest(vector: Vector2(dx: 3, dy: 4))
+        let zeroVector = Vector2.zero
+
+        // when
+        let scalarProjection = vector.scalarProjection(onto: zeroVector)
+        let parallelComponent = vector.parallelComponent(to: zeroVector)
+        let perpendicularComponent = vector.perpendicularComponent(to: zeroVector)
+
+        // then
+        XCTAssertEqual(scalarProjection, 0)
+        XCTAssertEqual(parallelComponent, .zero)
+        XCTAssertEqual(perpendicularComponent, vector)
+    }
 }

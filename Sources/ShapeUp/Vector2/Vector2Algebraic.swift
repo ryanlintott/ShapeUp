@@ -197,10 +197,12 @@ public extension Vector2Algebraic {
     ///
     /// The scalar projection represents the length of the shadow cast by this vector onto the other vector.
     /// It can be positive (same general direction) or negative (opposite general direction).
-    /// - Parameter b: The vector to project onto.
+    /// - Parameter b: The vector to project onto. If this vector has zero magnitude, the scalar projection is zero.
     /// - Returns: The scalar projection value.
     func scalarProjection(onto b: some Vector2Representable) -> CGFloat {
-        dotProduct(with: b) / b.vector.magnitude
+        let magnitude = b.vector.magnitude
+        guard magnitude != 0 else { return 0 }
+        return dotProduct(with: b) / magnitude
     }
     
     /// Calculates the parallel component of this vector relative to another vector.
