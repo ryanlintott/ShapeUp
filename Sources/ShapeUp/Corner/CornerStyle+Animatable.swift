@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension CornerStyle: AnimatableByProperty {
+extension CornerStyle: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.radius
         \.concaveInset

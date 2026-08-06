@@ -30,7 +30,7 @@ Features:
 - [`CGFrame`](#cgframe), a coordinate space or rhombus defined by an origin and vectors for each axis
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
 - [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
-- [`AnimatableByProperty`](#animatablebyproperty) for synthesizing animation data from writable key paths.
+- [`AnimatableProperties`](#animatableproperties) for synthesizing animation data from writable key paths.
 - [`AnimatablePack`](#animatablepack) as an alternative to `AnimatablePair` that takes any number of properties.
 - [`AnimatableArray`](#animatablearray) for animating arrays element by element.
 - [`AnimatableDictionary`](#animatabledictionary) for animating dictionary values by key.
@@ -533,11 +533,11 @@ Extensions for `InsettableShape` and `View` that create an embossed or debossed 
 
 <img width="205" alt="image" src="https://user-images.githubusercontent.com/2143656/157765787-a8bcdee3-fec3-40f8-8414-1c66ca073db6.png">
 
-## AnimatableByProperty
-Use `AnimatableByProperty` to synthesize a type's `animatableData` from writable key paths.
+## AnimatableProperties
+Use `AnimatableProperties` to synthesize a type's `animatableData` from writable key paths.
 
 ```swift
-struct StyledRectangle: Shape, AnimatableByProperty {
+struct StyledRectangle: Shape, AnimatableProperties {
     var insetAmount: CGFloat
     var cornerStyle: CornerStyle
 

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension RelativeCorner: AnimatableByProperty {
+extension RelativeCorner: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.anchor
         \.offset

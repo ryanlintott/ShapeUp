@@ -68,7 +68,7 @@ public struct CornerTriangle: EnumeratedCornerShape {
 }
 
 /// Animatable Extension
-extension CornerTriangle: AnimatableByProperty {
+extension CornerTriangle: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.insetAmount
         \.topPoint

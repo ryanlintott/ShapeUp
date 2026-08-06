@@ -168,7 +168,7 @@ struct AnimatablePropertiesTests {
     }
 }
 
-private struct NestedLeaf: AnimatableByProperty {
+private struct NestedLeaf: AnimatableProperties {
     var value: CGFloat
 
     static var animatableProperties: some AnimatableProperty<Self> {
@@ -176,7 +176,7 @@ private struct NestedLeaf: AnimatableByProperty {
     }
 }
 
-private struct NestedBranch: AnimatableByProperty {
+private struct NestedBranch: AnimatableProperties {
     var value: CGFloat
     var leaf: NestedLeaf
 
@@ -186,7 +186,7 @@ private struct NestedBranch: AnimatableByProperty {
     }
 }
 
-private struct NestedRoot: AnimatableByProperty {
+private struct NestedRoot: AnimatableProperties {
     var value: CGFloat
     var branch: NestedBranch
 
@@ -196,7 +196,7 @@ private struct NestedRoot: AnimatableByProperty {
     }
 }
 
-private struct NestedPropertiesFixture: AnimatableByProperty {
+private struct NestedPropertiesFixture: AnimatableProperties {
     var value: CGFloat
     var child: NestedLeaf
     var optionalChild: NestedLeaf?
@@ -221,7 +221,7 @@ private struct AnimatableValue: Animatable {
     }
 }
 
-private struct AnimatableValueFixture: AnimatableByProperty {
+private struct AnimatableValueFixture: AnimatableProperties {
     var value: AnimatableValue
 
     static var animatableProperties: some AnimatableProperty<Self> {
@@ -266,7 +266,7 @@ private struct DualConformanceValue: VectorArithmetic, Animatable {
     }
 }
 
-private struct DualConformanceFixture: AnimatableByProperty {
+private struct DualConformanceFixture: AnimatableProperties {
     var value: DualConformanceValue
 
     static var animatableProperties: some AnimatableProperty<Self> {

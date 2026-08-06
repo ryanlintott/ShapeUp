@@ -92,7 +92,7 @@ public extension CornerCustom {
     }
 }
 
-extension CornerCustom: AnimatableByProperty {
+extension CornerCustom: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.insetAmount
     }

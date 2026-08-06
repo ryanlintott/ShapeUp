@@ -64,7 +64,7 @@ extension RelativeCornerCustom: CornerStylable {
     }
 }
 
-extension RelativeCornerCustom: AnimatableByProperty {
+extension RelativeCornerCustom: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.insetAmount
         \.relativeCorners

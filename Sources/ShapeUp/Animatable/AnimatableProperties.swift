@@ -1,5 +1,5 @@
 //
-//  AnimatablePropertiesBuilder.swift
+//  AnimatableProperties.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2026-08-04.
@@ -7,11 +7,63 @@
 
 import SwiftUI
 
-/// Builds direct animatable fields from writable key paths.
-@resultBuilder
-public enum AnimatablePropertiesBuilder<Root> { }
+/// A type whose animation data is synthesized from writable key paths.
+///
+/// Every writable key path supplied by ``animatableProperties`` contributes to the synthesized
+/// animation data.
+///
+/// ```swift
+/// struct StyledRectangle: Shape, AnimatableProperties {
+///     var insetAmount: CGFloat
+///     var cornerStyle: CornerStyle
+///
+///     static var animatableProperties: some AnimatableProperty<Self> {
+///         \.insetAmount
+///         \.cornerStyle
+///     }
+///
+///     func path(in rect: CGRect) -> Path {
+///         rect
+///             .insetBy(dx: insetAmount, dy: insetAmount)
+///             .corners(cornerStyle)
+///             .path()
+///     }
+/// }
+/// ```
+public protocol AnimatableProperties: Animatable {
+    /// The descriptor containing this type's animatable properties.
+    associatedtype PropertyDescriptor: AnimatableProperty<Self>
 
-public extension AnimatablePropertiesBuilder {
+    /// The properties included in this type's animation data.
+    @AnimatablePropertyBuilder<Self>
+    static var animatableProperties: PropertyDescriptor { get }
+}
+
+extension AnimatableProperties {
+    public var animatableData: PropertyDescriptor.AnimatableData {
+        get {
+            Self.animatableProperties.animatableData(for: self)
+        }
+        set {
+            Self.animatableProperties.applyAnimatableData(newValue, to: &self)
+        }
+    }
+}
+
+/// A composable description of one or more animatable properties belonging to a root value.
+public protocol AnimatableProperty<Root> {
+    associatedtype Root
+    associatedtype AnimatableData: VectorArithmetic
+
+    func animatableData(for root: Root) -> AnimatableData
+    func applyAnimatableData(_ animatableData: AnimatableData, to root: inout Root)
+}
+
+/// Builds an animatable property descriptor from writable key paths.
+@resultBuilder
+public enum AnimatablePropertyBuilder<Root> { }
+
+public extension AnimatablePropertyBuilder {
     struct Empty: AnimatableProperty {
         public typealias AnimatableData = EmptyAnimatableData
 

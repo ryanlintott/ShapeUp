@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension NotchStyle: AnimatableByProperty {
+extension NotchStyle: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.relativeCorners
     }

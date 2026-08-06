@@ -93,7 +93,7 @@ public struct CornerPentagon: EnumeratedCornerShape {
 }
 
 /// Animatable Extension
-extension CornerPentagon: AnimatableByProperty {
+extension CornerPentagon: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.insetAmount
         \.pointHeight

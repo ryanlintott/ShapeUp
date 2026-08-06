@@ -60,7 +60,7 @@ public struct CornerRectangle: EnumeratedCornerShape {
 }
 
 /// Animatable Extension
-extension CornerRectangle: AnimatableByProperty {
+extension CornerRectangle: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.insetAmount
         \.styles

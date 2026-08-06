@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Corner: AnimatableByProperty {
+extension Corner: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.x
         \.y

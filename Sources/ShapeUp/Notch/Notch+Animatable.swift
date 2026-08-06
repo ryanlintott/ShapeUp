@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension Notch: AnimatableByProperty {
+extension Notch: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.style
         \.position
