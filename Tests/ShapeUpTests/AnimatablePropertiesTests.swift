@@ -11,9 +11,16 @@ import Testing
 
 struct AnimatablePropertiesTests {
     @Test
-    func cornerStyleAnimatableDataUsesItsDeclaredFields() {
+    func cornerStyleAnimatableDataUsesFiniteRelativeCornerProjections() throws {
         var style = CornerStyle.custom(radius: 10) {
-            RelativeCorner(.rounded(radius: 5), x: 0.25, y: 0.75)
+            RelativeCorner(
+                .custom(radius: 5) {
+                    RelativeCorner(.rounded(radius: 2), x: 0.1, y: 0.2)
+                },
+                x: 0.25,
+                y: 0.75
+            )
+            .moved(dx: 3, dy: 4)
         }
 
         var data = style.animatableData
@@ -21,37 +28,71 @@ struct AnimatablePropertiesTests {
         style.animatableData = data
 
         #expect(style.radius == 20)
-        #expect(style.cornerStyles == [.rounded(radius: 10)])
+
+        guard case let .custom(_, relativeCorners) = style else {
+            Issue.record("Expected a custom corner style.")
+            return
+        }
+
+        let relativeCorner = try #require(relativeCorners.first)
+        let anchorPoint = relativeCorner.anchor.point(in: CGRect(x: 0, y: 0, width: 1, height: 1))
+        #expect(abs(anchorPoint.x - 0.5) < 1e-12)
+        #expect(abs(anchorPoint.y - 1.5) < 1e-12)
+        #expect(relativeCorner.offset == Vector2(dx: 6, dy: 8))
+        #expect(relativeCorner.style.radius == 10)
+        #expect(relativeCorner.style.cornerStyles == [.rounded(radius: 2)])
     }
 
     @Test
-    func relativeCornerAnimatableDataUsesItsDeclaredFields() {
+    func relativeCornerAnimatableDataUsesFiniteCornerStyleProjections() throws {
         var corner = RelativeCorner(
             .custom(radius: 10) {
-                RelativeCorner(.rounded(radius: 5), x: 0.25, y: 0.75)
+                RelativeCorner(
+                    .custom(radius: 5) {
+                        RelativeCorner(.rounded(radius: 2), x: 0.1, y: 0.2)
+                    },
+                    x: 0.25,
+                    y: 0.75
+                )
+                .moved(dx: 3, dy: 4)
             },
             x: 0.5,
             y: 0.5
         )
+        .moved(dx: 6, dy: 8)
 
         var data = corner.animatableData
         data.scale(by: 2)
         corner.animatableData = data
 
+        let cornerAnchorPoint = corner.anchor.point(in: CGRect(x: 0, y: 0, width: 1, height: 1))
+        #expect(abs(cornerAnchorPoint.x - 1) < 1e-12)
+        #expect(abs(cornerAnchorPoint.y - 1) < 1e-12)
+        #expect(corner.offset == Vector2(dx: 12, dy: 16))
         #expect(corner.style.radius == 20)
-        #expect(corner.style.cornerStyles == [.rounded(radius: 10)])
+
+        guard case let .custom(_, relativeCorners) = corner.style else {
+            Issue.record("Expected a custom corner style.")
+            return
+        }
+
+        let relativeCorner = try #require(relativeCorners.first)
+        let relativeCornerAnchorPoint = relativeCorner.anchor.point(in: CGRect(x: 0, y: 0, width: 1, height: 1))
+        #expect(abs(relativeCornerAnchorPoint.x - 0.5) < 1e-12)
+        #expect(abs(relativeCornerAnchorPoint.y - 1.5) < 1e-12)
+        #expect(relativeCorner.offset == Vector2(dx: 6, dy: 8))
+        #expect(relativeCorner.style.radius == 10)
+        #expect(relativeCorner.style.cornerStyles == [.rounded(radius: 2)])
     }
 
     @Test
-    func recursiveFieldsAnimateOneAdditionalLevelOnly() {
-        var value = RecursiveNode(
+    func nestedAnimatablePropertiesTraverseEveryDeclaredLevel() {
+        var value = NestedRoot(
             value: 1,
-            children: [
-                .init(
-                    value: 2,
-                    children: [.init(value: 3)]
-                )
-            ]
+            branch: .init(
+                value: 2,
+                leaf: .init(value: 3)
+            )
         )
 
         var data = value.animatableData
@@ -59,13 +100,13 @@ struct AnimatablePropertiesTests {
         value.animatableData = data
 
         #expect(value.value == 10)
-        #expect(value.children.first?.value == 20)
-        #expect(value.children.first?.children.first?.value == 3)
+        #expect(value.branch.value == 20)
+        #expect(value.branch.leaf.value == 30)
     }
 
     @Test
-    func heterogeneousRecursiveFieldsReadAndWriteDirectData() {
-        var value = RecursiveFixture(
+    func heterogeneousNestedPropertiesReadAndWriteAnimatableData() {
+        var value = NestedPropertiesFixture(
             value: 1,
             child: .init(value: 2),
             optionalChild: .init(value: 2.5),
@@ -85,8 +126,8 @@ struct AnimatablePropertiesTests {
     }
 
     @Test
-    func absentOptionalRecursiveFieldRemainsAbsent() {
-        var value = RecursiveFixture(
+    func absentOptionalNestedPropertyRemainsAbsent() {
+        var value = NestedPropertiesFixture(
             value: 1,
             child: .init(value: 2),
             optionalChild: nil,
@@ -127,31 +168,43 @@ struct AnimatablePropertiesTests {
     }
 }
 
-private struct RecursiveNode: AnimatableByProperty, Equatable {
+private struct NestedLeaf: AnimatableByProperty {
     var value: CGFloat
-    var children: [Self] = []
 
     static var animatableProperties: some AnimatableProperty<Self> {
         \.value
-    }
-
-    static var recursiveAnimatableProperties: some AnimatableProperty<Self> {
-        \.children
     }
 }
 
-private struct RecursiveFixture: AnimatableByProperty {
+private struct NestedBranch: AnimatableByProperty {
     var value: CGFloat
-    var child: RecursiveNode
-    var optionalChild: RecursiveNode?
-    var children: [RecursiveNode]
-    var keyedChildren: [Int: RecursiveNode]
+    var leaf: NestedLeaf
 
     static var animatableProperties: some AnimatableProperty<Self> {
         \.value
+        \.leaf
     }
+}
 
-    static var recursiveAnimatableProperties: some AnimatableProperty<Self> {
+private struct NestedRoot: AnimatableByProperty {
+    var value: CGFloat
+    var branch: NestedBranch
+
+    static var animatableProperties: some AnimatableProperty<Self> {
+        \.value
+        \.branch
+    }
+}
+
+private struct NestedPropertiesFixture: AnimatableByProperty {
+    var value: CGFloat
+    var child: NestedLeaf
+    var optionalChild: NestedLeaf?
+    var children: [NestedLeaf]
+    var keyedChildren: [Int: NestedLeaf]
+
+    static var animatableProperties: some AnimatableProperty<Self> {
+        \.value
         \.child
         \.optionalChild
         \.children
@@ -174,8 +227,6 @@ private struct AnimatableValueFixture: AnimatableByProperty {
     static var animatableProperties: some AnimatableProperty<Self> {
         \.value
     }
-
-    static var recursiveAnimatableProperties: some AnimatableProperty<Self> { }
 }
 
 private struct DualConformanceValue: VectorArithmetic, Animatable {
@@ -221,6 +272,4 @@ private struct DualConformanceFixture: AnimatableByProperty {
     static var animatableProperties: some AnimatableProperty<Self> {
         \.value
     }
-
-    static var recursiveAnimatableProperties: some AnimatableProperty<Self> { }
 }

@@ -103,13 +103,6 @@ public extension AnimatablePropertiesBuilder {
         .init(expression.appending(path: \.animatableData))
     }
     
-    static func buildExpression<Value: AnimatableByProperty>(
-        _ expression: WritableKeyPath<Root, Value>
-    ) -> AnimatableValue<Value.AnimatableProperties.AnimatableData> {
-        /// Only the non-recursive fields are updated
-        .init(expression.appending(path: \.animatablePropertiesData))
-    }
-    
     /// Optional builders
     static func buildExpression<Value: VectorArithmetic>(
         _ expression: WritableKeyPath<Root, Value?>
@@ -127,13 +120,6 @@ public extension AnimatablePropertiesBuilder {
         _ expression: WritableKeyPath<Root, Value?>
     ) -> AnimatableValue<Value.AnimatableData> {
         .init(expression.appending(path: \.unwrappedAnimatableValueData))
-    }
-    
-    static func buildExpression<Value: AnimatableByProperty>(
-        _ expression: WritableKeyPath<Root, Value?>
-    ) -> AnimatableValue<Value.AnimatableProperties.AnimatableData> {
-        /// Only the non-recursive fields are updated
-        .init(expression.appending(path: \.unwrappedAnimatablePropertiesData))
     }
     
     /// Array builders
@@ -155,13 +141,6 @@ public extension AnimatablePropertiesBuilder {
         .init(expression.appending(path: \.animatableValueArray))
     }
     
-    static func buildExpression<Value: AnimatableByProperty>(
-        _ expression: WritableKeyPath<Root, Array<Value>>
-    ) -> AnimatableValue<AnimatableArray<Value.AnimatableProperties.AnimatableData>> {
-        /// Only the non-recursive fields are updated
-        .init(expression.appending(path: \.animatablePropertiesArray))
-    }
-    
     /// Dictionary builders
     static func buildExpression<Key, Value: VectorArithmetic>(
         _ expression: WritableKeyPath<Root, Dictionary<Key, Value>>
@@ -179,13 +158,6 @@ public extension AnimatablePropertiesBuilder {
         _ expression: WritableKeyPath<Root, Dictionary<Key, Value>>
     ) -> AnimatableValue<AnimatableDictionary<Key, Value.AnimatableData>> {
         .init(expression.appending(path: \.animatableValueDictionary))
-    }
-    
-    static func buildExpression<Key, Value: AnimatableByProperty>(
-        _ expression: WritableKeyPath<Root, Dictionary<Key, Value>>
-    ) -> AnimatableValue<AnimatableDictionary<Key, Value.AnimatableProperties.AnimatableData>> {
-        /// Only the non-recursive fields are updated
-        .init(expression.appending(path: \.animatablePropertiesDictionary))
     }
 
     static func buildPartialBlock<First: AnimatableProperty<Root>>(
@@ -221,44 +193,6 @@ fileprivate extension Optional where Wrapped: VectorArithmetic {
 
 fileprivate extension Optional where Wrapped: Animatable {
     var unwrappedAnimatableValueData: Wrapped.AnimatableData {
-        get {
-            switch self {
-            case .none: .zero
-            case let .some(value): value.animatableData
-            }
-        }
-        set {
-            self?.animatableData = newValue
-        }
-    }
-}
-
-fileprivate extension Optional where Wrapped: AnimatableByProperty {
-    var unwrappedAnimatablePropertiesData: Wrapped.AnimatableProperties.AnimatableData {
-        get {
-            switch self {
-            case .none: .zero
-            case let .some(value): value.animatablePropertiesData
-            }
-        }
-        set {
-            self?.animatablePropertiesData = newValue
-        }
-    }
-    
-    var unwrappedRecursiveAnimatablePropertiesData: Wrapped.RecursiveAnimatableProperties.AnimatableData {
-        get {
-            switch self {
-            case .none: .zero
-            case let .some(value): value.recursiveAnimatablePropertiesData
-            }
-        }
-        set {
-            self?.recursiveAnimatablePropertiesData = newValue
-        }
-    }
-    
-    var unwrappedAnimatableData: Wrapped.AnimatableData {
         get {
             switch self {
             case .none: .zero

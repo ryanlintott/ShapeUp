@@ -30,7 +30,7 @@ This has a few tiny breaks but a large number of deprecations that will likely b
 - Added the `CornerStyled` protocol to centralize the style property, `cornerStyle(_:)`, and `changingRadius(to:)` across `Corner` and `RelativeCorner`.
 - Added `CornerStyle.automatic` and `defaultCornerStyle(_:)` for applying a fallback style without replacing explicitly styled corners.
 - Added animatable support for `CornerStyle`, `Corner`, `RelativeCorner`, `RectAnchor`, `NotchStyle`, `Notch`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `RelativeCornerCustom`.
-- Added `AnimatableArray`, `AnimatableDictionary`, and `AnimatableByProperty` helpers for animating arrays, dictionaries, and recursive animatable values. `AnimatableByProperty` uses writable key paths to synthesize direct animation data and one additional level of direct, optional, array, or dictionary fields.
+- Added `AnimatableArray`, `AnimatableDictionary`, and `AnimatableByProperty` helpers for animating arrays, dictionaries, and nested animatable values. `AnimatableByProperty` synthesizes animation data from supplied writable key paths and uses the complete animation data of nested `Animatable` properties.
 - Added `CGFrame` for describing coordinate frames with an origin, an x-axis vector, and a y-axis vector. This is used internally to draw custom corners at any angle, not just 90 degrees.
 - Added methods to easily convert `CGPoint` to `RectAnchor` and `Corner` to `RelativeCorner` given a `CGRect` or `CGFrame`.
 - Added `CGSize.scaled(_:)` and `CGSize.scaled(x:y:)` helpers.

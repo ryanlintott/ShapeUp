@@ -11,10 +11,37 @@ extension CornerStyle: AnimatableByProperty {
     public static var animatableProperties: some AnimatableProperty<Self> {
         \.radius
         \.concaveInset
+        \.relativeCorners.anchors
+        \.relativeCorners.offsets
+        \.relativeCorners.cornerStyles.radii
+        \.relativeCorners.cornerStyles.concaveInsets
     }
+}
 
-    public static var recursiveAnimatableProperties: some AnimatableProperty<Self> {
-        \.relativeCorners
-        \.relativeCorners.cornerStyles
+extension Array where Element == CornerStyle {
+    var radii: [RelatableValue] {
+        get {
+            map(\.radius)
+        }
+        set {
+            self = self.update(with: newValue) { element, newValue in
+                var updatedElement = element
+                updatedElement.radius = newValue
+                return updatedElement
+            }
+        }
+    }
+    
+    var concaveInsets: [CGFloat] {
+        get {
+            map(\.concaveInset)
+        }
+        set {
+            self = self.update(with: newValue) { element, newValue in
+                var updatedElement = element
+                updatedElement.concaveInset = newValue
+                return updatedElement
+            }
+        }
     }
 }

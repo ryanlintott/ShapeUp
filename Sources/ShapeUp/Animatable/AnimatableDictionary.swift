@@ -138,7 +138,7 @@ extension Dictionary where Key: Hashable, Value: VectorArithmetic {
     /// conform to VectorArithmetic.
     /// 
     /// - Note: Setting this property updates or adds the keys in the new value. Existing keys that are absent from the new value are preserved.
-    var animatableDictionary: AnimatableDictionary<Key, Value> {
+    public var animatableDictionary: AnimatableDictionary<Key, Value> {
         get {
             .init(self)
         }
@@ -157,7 +157,7 @@ extension Dictionary where Key: Hashable, Value: Animatable {
     /// the animatable data of each value.
     /// 
     /// - Note: Setting this property updates matching existing keys. New keys are ignored, and existing keys that are absent from the new value are preserved.
-    var animatableValueDictionary: AnimatableDictionary<Key, Value.AnimatableData> {
+    public var animatableValueDictionary: AnimatableDictionary<Key, Value.AnimatableData> {
         get {
             .init(mapValues(\.animatableData))
         }
@@ -167,29 +167,4 @@ extension Dictionary where Key: Hashable, Value: Animatable {
             }
         }
     }
-}
-
-extension Dictionary where Key: Hashable, Value: AnimatableByProperty {
-    var animatablePropertiesDictionary: AnimatableDictionary<Key, Value.AnimatableProperties.AnimatableData> {
-        get {
-            .init(mapValues(\.animatablePropertiesData))
-        }
-        set {
-            newValue.wrappedValue.forEach { (key, animatablePropertiesData) in
-                self[key]?.animatablePropertiesData = animatablePropertiesData
-            }
-        }
-    }
-    
-    var recursiveAnimatablePropertiesDictionary: AnimatableDictionary<Key, Value.RecursiveAnimatableProperties.AnimatableData> {
-        get {
-            .init(mapValues(\.recursiveAnimatablePropertiesData))
-        }
-        set {
-            newValue.wrappedValue.forEach { (key, recursiveAnimatablePropertiesData) in
-                self[key]?.recursiveAnimatablePropertiesData = recursiveAnimatablePropertiesData
-            }
-        }
-    }
-    
 }

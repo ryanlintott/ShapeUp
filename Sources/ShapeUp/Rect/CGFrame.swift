@@ -116,6 +116,12 @@ public struct CGFrame {
     public var xAxis: Vector2
     /// The vector defining the y-axis direction and magnitude.
     public var yAxis: Vector2
+    
+    public init(origin: CGPoint, xAxis: Vector2, yAxis: Vector2) {
+        self.origin = origin
+        self.xAxis = xAxis
+        self.yAxis = yAxis
+    }
 }
 
 extension CGFrame: CGFrameRepresentable {

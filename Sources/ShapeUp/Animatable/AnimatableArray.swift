@@ -179,29 +179,3 @@ extension Array where Element: Animatable {
         }
     }
 }
-
-extension Array where Element: AnimatableByProperty {
-    var animatablePropertiesArray: AnimatableArray<Element.AnimatableProperties.AnimatableData> {
-        get {
-            .init(map(\.animatablePropertiesData))
-        }
-        set {
-            let count = Swift.min(count, newValue.wrappedValue.count)
-            for i in 0..<count {
-                self[i].animatablePropertiesData = newValue.wrappedValue[i]
-            }
-        }
-    }
-    
-    var recursiveAnimatablePropertiesArray: AnimatableArray<Element.RecursiveAnimatableProperties.AnimatableData> {
-        get {
-            .init(map(\.recursiveAnimatablePropertiesData))
-        }
-        set {
-            let count = Swift.min(count, newValue.wrappedValue.count)
-            for i in 0..<count {
-                self[i].recursiveAnimatablePropertiesData = newValue.wrappedValue[i]
-            }
-        }
-    }
-}
