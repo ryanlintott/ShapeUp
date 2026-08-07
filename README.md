@@ -98,7 +98,7 @@ func path(in rect: CGRect) -> Path {
     [
         rect[.topLeft].moved(dx: 10),
         rect[.right],
-        rect[0.7, 1.0]    
+        rect[0.7, 1.0]
     ]
     .moved(dx: 100, dy: 50)
     .rotated(.degrees(45), anchor: .center)
@@ -118,7 +118,7 @@ func path(in rect: CGRect) -> Path {
     [
         rect[.topLeft].moved(dx: 10),
         rect[.right],
-        rect[0.7, 1.0]     
+        rect[0.7, 1.0]
     ]
     .corners(.rounded(radius: 20))
     .path()
@@ -154,7 +154,7 @@ func path(in rect: CGRect) -> Path {
             
         rect[.right]
         
-        rect[0.7, 1.0] 
+        rect[0.7, 1.0]
             .cutout(radius: .relative(0.4))
     }
     .path()
@@ -255,7 +255,7 @@ struct MyCornerShape: CornerShape {
             
         rect[.right]
         
-        rect[0.7, 1.0] 
+        rect[0.7, 1.0]
             .cutout(radius: .relative(0.4))
     }
 }
@@ -306,7 +306,7 @@ CornerCustom { rect in
         
     rect[.right]
     
-    rect[0.7, 1.0] 
+    rect[0.7, 1.0]
         .cutout(radius: .relative(0.4))
 }
 .fill()

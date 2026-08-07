@@ -75,5 +75,3 @@ struct EmbossViewModifier: ViewModifier {
             .mask(content)
     }
 }
-
-

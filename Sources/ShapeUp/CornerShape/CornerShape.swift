@@ -72,4 +72,3 @@ public extension CornerShape {
             .path(closed: closed)
     }
 }
-

@@ -28,7 +28,7 @@ struct FoldButton: View {
                 ]
             }
             .fill(.blue)
-            .frame(width: 100)            
+            .frame(width: 100)
         }
         .frame(height: 50)
     }

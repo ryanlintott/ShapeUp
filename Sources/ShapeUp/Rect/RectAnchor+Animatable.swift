@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension RectAnchor: VectorArithmetic {    
+extension RectAnchor: VectorArithmetic {
     /// The zero value.
     public static let zero: Self = .relative(x: 0, y: 0)
     
