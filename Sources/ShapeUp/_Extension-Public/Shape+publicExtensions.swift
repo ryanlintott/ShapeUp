@@ -17,6 +17,10 @@ public extension Shape {
         let frameRatio = frame.width / frame.height
         
         return self
-            .scale(x: aspectRatio > frameRatio ? 1 : frameRatio * aspectRatio, y: aspectRatio > frameRatio ? frameRatio / aspectRatio : 1, anchor: .center)
+            .scale(
+                x: aspectRatio > frameRatio ? 1 : aspectRatio / frameRatio,
+                y: aspectRatio > frameRatio ? frameRatio / aspectRatio : 1,
+                anchor: .center
+            )
     }
 }

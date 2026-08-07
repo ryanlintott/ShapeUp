@@ -9,8 +9,6 @@ import SwiftUI
 
 /// A wrapper around Array that provides animation capabilities for SwiftUI.
 ///
-/// - Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
-///
 /// `AnimatableArray` allows arrays of types conforming to `VectorArithmetic` or `Animatable` to be smoothly animated by conforming to `VectorArithmetic`.
 /// This enables element-wise interpolation between different array states during animations.
 /// 
@@ -48,7 +46,7 @@ import SwiftUI
 /// }
 ///
 /// - Note: Only existing elements are updated during animation; array size changes are not animated.
-/// - Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
+/// - Note: Use ``AnimatableProperties`` or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
 @dynamicMemberLookup
 public struct AnimatableArray<Element> {
     /// The underlying array being wrapped.
@@ -151,8 +149,8 @@ extension Array where Element: VectorArithmetic {
     /// conform to VectorArithmetic.
     /// 
     /// - Note: Only existing elements are updated during animation; array size changes are not animated.
-    /// - Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
-    var animatableArray: AnimatableArray<Element> {
+    /// - Note: Use ``AnimatableProperties`` or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
+    public var animatableArray: AnimatableArray<Element> {
         get {
             .init(self)
         }
@@ -172,8 +170,8 @@ extension Array where Element: Animatable {
     /// the animatable data of each element.
     /// 
     /// - Note: Only existing elements are updated during animation; array size changes are not animated.
-    /// - Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
-    var animatableValueArray: AnimatableArray<Element.AnimatableData> {
+    /// - Note: Use ``AnimatableProperties`` or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
+    public var animatableValueArray: AnimatableArray<Element.AnimatableData> {
         get {
             .init(map(\.animatableData))
         }

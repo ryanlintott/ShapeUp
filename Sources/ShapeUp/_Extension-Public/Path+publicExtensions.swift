@@ -33,7 +33,7 @@ public extension Path {
     /// - Parameters:
     ///   - previousPoint: Previous point in the path used to determine the look of the first corner. Default is the last corner point.
     ///   - nextPoint: Next point in the path used to determine the look of the last corner. Default is the first corner point.
-    ///   - moveToStart: An optional boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner. If this value is nil it will be true if a current point exists on the path and false if not.
+    ///   - moveToStart: An optional boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner. If this value is nil it will be true if no current point exists on the path and false if one does.
     ///   - corners: Closure that returns an array of corners that define the shape to add.
     mutating func addOpenCornerShape(
         previousPoint: CGPoint? = nil,
