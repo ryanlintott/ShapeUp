@@ -161,7 +161,7 @@ extension Corner {
                 cornerStart: cornerStart,
                 cornerEnd: cornerEnd,
                 nextVector: nextVector,
-                cutLength: cutLength,
+                cutLength: cutLength
             )
             
             let hasDegenerateAngle = angle.isApproximatelyZero()
