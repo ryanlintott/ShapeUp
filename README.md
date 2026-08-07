@@ -31,9 +31,7 @@ Features:
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
 - [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
 - [`AnimatableProperties`](#animatableproperties) for synthesizing animation data from writable key paths.
-- [`AnimatablePack`](#animatablepack) as an alternative to `AnimatablePair` that takes any number of properties.
-- [`AnimatableArray`](#animatablearray) for animating arrays element by element.
-- [`AnimatableDictionary`](#animatabledictionary) for animating dictionary values by key.
+- [`AnimatableArray`](#animatablearray), [`AnimatableDictionary`](#animatabledictionary), and [`AnimatablePack`](#animatablepack) to more easily construct complex `animatableData` properties.
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
@@ -534,57 +532,46 @@ Extensions for `InsettableShape` and `View` that create an embossed or debossed 
 <img width="205" alt="image" src="https://user-images.githubusercontent.com/2143656/157765787-a8bcdee3-fec3-40f8-8414-1c66ca073db6.png">
 
 ## AnimatableProperties
-Use `AnimatableProperties` to synthesize a type's `animatableData` from writable key paths.
+Synthesize a type's `animatableData` using writable key paths.
+
+Conforming to the `Animatable` protocol can be simple with the `@Animatable` macro but only properties conforming to `VectorArithmetic` will be animatable. Types that are not animatable will only warn you at runtime.
 
 ```swift
-struct StyledRectangle: Shape, AnimatableProperties {
-    var insetAmount: CGFloat
-    var cornerStyle: CornerStyle
+@Animatable
+struct NotchedPolygon: Shape {
+    // Animated by @Animatable
+    var cornerRadius: CGFloat
 
-    static var animatableProperties: some AnimatableProperty<Self> {
-        \.insetAmount
-        \.cornerStyle
-    }
+    // Not animated by @Animatable. SwiftUI logs a runtime warning for these properties.
+    var notch: Notch?
+    var corners: [RelativeCorner]
 
-    func path(in rect: CGRect) -> Path {
-        rect
-            .insetBy(dx: insetAmount, dy: insetAmount)
-            .corners(cornerStyle)
-            .path()
-    }
+    // ...
 }
 ```
 
-## AnimatablePack
-*\*Xcode 16+, iOS 17+, macOS 14+, watchOS 10+, tvOS 17+*
+With `AnimatableProperties` you can conform to `Animatable` and animate types that conform to `VectorArithmetic` or `Animatable` (including other `AnimatableProperties` types) and any `Optional` wrappers or `Array`/`Dictionary` collections of those types.
 
-Animate lots of properties in a `Shape` using `AnimatablePack` instead of nesting `AnimatablePair` types
+```swift
+struct NotchedPolygon: Shape, AnimatableProperties {
+    var cornerRadius: CGFloat
+    var notch: Notch?
+    var corners: [RelativeCorner]
 
-Here is an example of animatableData using AnimatablePair:
- ```swift
- struct MyShape: Animatable {
-     var animatableData: AnimatablePair<CGFloat, AnimatablePair<RelatableValue, Double>> {
-         get { AnimatablePair(insetAmount, AnimatablePair(cornerRadius, rotation)) }
-         set {
-             insetAmount = newValue.first
-             cornerRadius = newValue.second.first
-             rotation = newValue.second.second
-         }
-     }
- }
- ```
- You can see how it would get quite large once you start adding more than a few properties.
- Here's how to use AnimatablePack instead:
- ```swift
- struct MyShape: Animatable {
-     var animatableData: AnimatablePack<CGFloat, RelatableValue, Double> {
-         get { AnimatablePack(insetAmount, cornerRadius, rotation) }
-         set { (insetAmount, cornerRadius, rotation) = newValue() }
-     }
- }
- ```
+    static var animatableProperties: some AnimatableProperty<Self> {
+        // All properties listed here will be animated. Unsupported properties will show compiler errors.
+        \.cornerRadius
+        \.notch
+        \.corners
+    }
 
-## AnimatableArray
+    // ...
+}
+```
+
+If your animation values need custom logic you can build your own `animatableData` and use some of the tools below:
+
+### AnimatableArray
 Animate an array element by element using `AnimatableArray`. Arrays of `VectorArithmetic` values expose `animatableArray`, while arrays of `Animatable` values expose `animatableValueArray`.
 
 > **Note:** Only changes to existing elements can be animated. Adding or removing elements will not animate.
@@ -600,10 +587,10 @@ struct MyShape: Animatable {
 }
 ```
 
-## AnimatableDictionary
+### AnimatableDictionary
 Animate dictionary values by key using `AnimatableDictionary`. Dictionaries of `VectorArithmetic` values expose `animatableDictionary`, while dictionaries of `Animatable` values expose `animatableValueDictionary`.
 
-> **Note:** `animatableDictionary` updates existing values, adds incoming keys, and preserves keys omitted from the new data. `animatableValueDictionary` only updates matching existing keys, so it does not add or remove keys.
+> **Note:** `animatableDictionary` and `animatableValueDictionary` update values for matching existing keys. They do not add or remove keys, so changes to the dictionary's keys are not animated.
 
 ```swift
 struct MyShape: Animatable {
@@ -615,3 +602,17 @@ struct MyShape: Animatable {
     }
 }
 ```
+
+### AnimatablePack
+*\*Xcode 16+, iOS 17+, macOS 14+, watchOS 10+, tvOS 17+*
+
+`AnimatablePack` is a back-deployable alternative to `SwiftUI.AnimatableValues` for animating any number of properties without nesting `AnimatablePair` types.
+
+ ```swift
+ struct MyShape: Animatable {
+     var animatableData: AnimatablePack<CGFloat, RelatableValue, Double> {
+         get { AnimatablePack(insetAmount, cornerRadius, rotation) }
+         set { (insetAmount, cornerRadius, rotation) = newValue() }
+     }
+ }
+ ```

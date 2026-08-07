@@ -25,19 +25,14 @@ public struct SketchyLine: Shape {
         public static let `default`: DrawDirection = .toBottomTrailing
     }
     
-    public var animatableData: CGFloat {
-        get { drawAmount }
-        set { self.drawAmount = newValue }
-    }
-    
     /// The edge on which the line is drawn.
     public let edge: SketchyEdge
     /// The amount the start extends beyond the start point.
-    public let startExtension: RelatableValue
+    public var startExtension: RelatableValue
     /// The amount the end extends beyond the end point.
-    public let endExtension: RelatableValue
+    public var endExtension: RelatableValue
     /// The perpendicular offset from the edge.
-    public let offset: RelatableValue
+    public var offset: RelatableValue
     /// The proportion of the line to draw.
     public var drawAmount: CGFloat
     /// The direction in which the line is drawn.
@@ -46,10 +41,10 @@ public struct SketchyLine: Shape {
     /// Creates a sketchy line shape.
     /// - Parameters:
     ///   - edge: Edge on which to draw the line.
-    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
-    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
-    ///   - offset: Perpendicular displacement from the selected edge. Relative values use the frame width for leading and trailing edges, and the frame height for top and bottom edges. Default is zero.
-    ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
+    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero. Animatable.
+    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero. Animatable.
+    ///   - offset: Perpendicular displacement from the selected edge. Relative values use the frame width for leading and trailing edges, and the frame height for top and bottom edges. Default is zero. Animatable.
+    ///   - drawAmount: Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line. Animatable.
     ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {
         self.edge = edge
@@ -125,5 +120,14 @@ public extension SketchyLine {
         var copy = self
         copy.drawAmount = drawAmount
         return copy.path(in: rect)
+    }
+}
+
+extension SketchyLine: AnimatableProperties {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.startExtension
+        \.endExtension
+        \.offset
+        \.drawAmount
     }
 }

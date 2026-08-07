@@ -9,25 +9,22 @@ import SwiftUI
 
 /// A type whose animation data is synthesized from writable key paths.
 ///
-/// Every writable key path supplied by ``animatableProperties`` contributes to the synthesized
-/// animation data.
+/// Every writable key path supplied by ``animatableProperties`` contributes to the synthesized animation data. Properties can conform to `VectorArithmetic` or `Animatable` (including other `AnimatableProperties` types) or any `Optional` wrappers or `Array`/`Dictionary` collections of those types.
 ///
 /// ```swift
-/// struct StyledRectangle: Shape, AnimatableProperties {
-///     var insetAmount: CGFloat
-///     var cornerStyle: CornerStyle
+/// struct NotchedPolygon: Shape, AnimatableProperties {
+///     var cornerRadius: CGFloat
+///     var notch: Notch?
+///     var corners: [RelativeCorner]
 ///
 ///     static var animatableProperties: some AnimatableProperty<Self> {
-///         \.insetAmount
-///         \.cornerStyle
+///         // All properties listed here will be animated. Unsupported properties will show compiler errors.
+///         \.cornerRadius
+///         \.notch
+///         \.corners
 ///     }
 ///
-///     func path(in rect: CGRect) -> Path {
-///         rect
-///             .insetBy(dx: insetAmount, dy: insetAmount)
-///             .corners(cornerStyle)
-///             .path()
-///     }
+///     // ...
 /// }
 /// ```
 public protocol AnimatableProperties: Animatable {

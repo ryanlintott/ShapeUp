@@ -10,7 +10,7 @@
 import SwiftUI
 
 /**
- A parameter pack implementation of `AnimatablePair`
+ A parameter pack implementation of `AnimatablePair` or a back-deployed version of `AnimatableValues`.
  
  ## Conforming to Animatable with AnimatablePair
 
@@ -37,6 +37,8 @@ import SwiftUI
      }
  }
  ```
+ 
+ > Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
  */
 @available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
 @dynamicMemberLookup

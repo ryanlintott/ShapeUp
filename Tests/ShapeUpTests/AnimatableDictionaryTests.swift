@@ -11,7 +11,7 @@ import Testing
 
 struct AnimatableDictionaryTests {
     @Test
-    func vectorArithmeticValuesExposePublicAnimatableData() {
+    func vectorArithmeticValuesUpdateOnlyMatchingExistingKeys() {
         var values = [
             1: Vector2(dx: 1, dy: 2),
             3: Vector2(dx: 3, dy: 4)
@@ -24,13 +24,12 @@ struct AnimatableDictionaryTests {
 
         #expect(values == [
             1: Vector2(dx: 10, dy: 20),
-            2: Vector2(dx: 30, dy: 40),
             3: Vector2(dx: 3, dy: 4)
         ])
     }
 
     @Test
-    func animatableValuesExposePublicValueAnimatableData() {
+    func animatableValuesUpdateOnlyMatchingExistingKeys() {
         var values = [
             1: AnimatedValue(value: 1),
             3: AnimatedValue(value: 3)

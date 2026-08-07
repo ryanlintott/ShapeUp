@@ -10,7 +10,7 @@ import SwiftUI
 /// A wrapper around Dictionary that provides animation capabilities for SwiftUI.
 ///
 /// `AnimatableDictionary` allows dictionaries whose values conform to `VectorArithmetic` or `Animatable` to be smoothly animated by conforming to `VectorArithmetic`.
-/// This enables key-based interpolation between different dictionary states during animations.
+/// This enables key-based interpolation between values with matching keys during animations.
 ///
 /// ## Usage Example for values conforming to `VectorArithmetic`
 ///
@@ -45,7 +45,8 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-///
+/// - Note: Setting this property updates matching existing keys. It does not add or remove keys.
+/// - Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
 @dynamicMemberLookup
 public struct AnimatableDictionary<Key: Hashable, Value> {
     /// The underlying dictionary being wrapped.
@@ -137,14 +138,17 @@ extension Dictionary where Key: Hashable, Value: VectorArithmetic {
     /// This computed property allows dictionaries to be animated directly when their values
     /// conform to VectorArithmetic.
     /// 
-    /// - Note: Setting this property updates or adds the keys in the new value. Existing keys that are absent from the new value are preserved.
+    /// - Note: Setting this property updates matching existing keys. It does not add or remove keys.
+    /// - Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
     public var animatableDictionary: AnimatableDictionary<Key, Value> {
         get {
             .init(self)
         }
         set {
             newValue.wrappedValue.forEach { (key, animatableData) in
-                self[key] = animatableData
+                if index(forKey: key) != nil {
+                    self[key] = animatableData
+                }
             }
         }
     }
@@ -156,7 +160,8 @@ extension Dictionary where Key: Hashable, Value: Animatable {
     /// This computed property allows dictionaries to be animated by extracting and managing
     /// the animatable data of each value.
     /// 
-    /// - Note: Setting this property updates matching existing keys. New keys are ignored, and existing keys that are absent from the new value are preserved.
+    /// - Note: Setting this property updates matching existing keys. It does not add or remove keys.
+    /// - Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
     public var animatableValueDictionary: AnimatableDictionary<Key, Value.AnimatableData> {
         get {
             .init(mapValues(\.animatableData))

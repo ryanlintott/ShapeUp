@@ -8,7 +8,7 @@
 import ShapeUp
 import SwiftUI
 
-struct CustomCornerShapeExample: CornerShape {
+struct CustomCornerShapeExample: CornerShape, AnimatableProperties {
     let closed: Bool = true
     var insetAmount: CGFloat = 0
     var style: CornerStyle
@@ -17,14 +17,9 @@ struct CustomCornerShapeExample: CornerShape {
         self.style = style
     }
     
-    var animatableData: AnimatablePair<CGFloat, CornerStyle.AnimatableData> {
-        get {
-            .init(insetAmount, style.animatableData)
-        }
-        set {
-            insetAmount = newValue.first
-            style.animatableData = newValue.second
-        }
+    static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.style
     }
     
     func corners(in rect: CGRect) -> [Corner] {

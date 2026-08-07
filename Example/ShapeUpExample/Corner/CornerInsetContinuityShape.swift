@@ -8,19 +8,16 @@
 import ShapeUp
 import SwiftUI
 
-struct CornerInsetContinuityShape: CornerShape {
+struct CornerInsetContinuityShape: CornerShape, AnimatableProperties {
     var insetAmount: CGFloat = 0
     let closed = true
     
     var angleDegrees: CGFloat
     var style: CornerStyle
-
-    var animatableData: AnimatablePair<CGFloat, CGFloat> {
-        get { .init(angleDegrees, insetAmount) }
-        set {
-            angleDegrees = newValue.first
-            insetAmount = newValue.second
-        }
+    
+    static var animatableProperties: some AnimatableProperty<Self> {
+        \.angleDegrees
+        \.style
     }
 
     func corners(in rect: CGRect) -> [Corner] {
