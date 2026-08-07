@@ -68,8 +68,11 @@ public extension CornerCustom {
     
     internal func transformCorners(_ transform: @Sendable @escaping (CGRect, [Corner]) -> [Corner]) -> Self {
         var copy = self
-        copy.corners = { rect in
-            transform(rect, corners(rect))
+        let originalCorners = corners
+        // Swift 6.0 cannot infer this closure as sendable when it implicitly captures
+        // the shape, so capture the stored function separately and spell @Sendable.
+        copy.corners = { @Sendable rect in
+            transform(rect, originalCorners(rect))
         }
         return copy
     }
