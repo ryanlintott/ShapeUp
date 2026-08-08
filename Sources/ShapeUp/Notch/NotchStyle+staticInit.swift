@@ -14,8 +14,9 @@ public extension NotchStyle {
     /// Creates a triangular shaped notch with a specified corner style for all 3 corners.
     /// - Parameter cornerStyle: Corner style to apply to all 3 corners.
     /// - Returns: A triangular notch with styled corners.
-    static func triangle(cornerStyle: CornerStyle? = nil) -> Self {
-        .triangle(cornerStyles: Array<CornerStyle?>(repeating: cornerStyle, count: 3))
+    @available(*, deprecated, message: "Use Notch(.triangle, depth: 20).defaultCornerStyle() or NotchStyle.triangle.defaultcornerStyle() instead.")
+    static func triangle(cornerStyle: CornerStyle?) -> Self {
+        .triangle().defaultCornerStyle(cornerStyle ?? .automatic)
     }
     
     /// A rectangular shaped notch with default corner styles.
@@ -24,8 +25,9 @@ public extension NotchStyle {
     /// Creates a rectangular shaped notch with a specified corner style for all 4 corners.
     /// - Parameter cornerStyle: Corner style to apply to all 4 corners.
     /// - Returns: A rectangular notch with styled corners.
-    static func rectangle(cornerStyle: CornerStyle? = nil) -> Self {
-        .rectangle(cornerStyles: Array<CornerStyle?>(repeating: cornerStyle, count: 4))
+    @available(*, deprecated, message: "Recatangle is the default notch style. Use Notch(depth: 20).defaultCornerStyle() or NotchStyle.rectangle.defaultcornerStyle() instead.")
+    static func rectangle(cornerStyle: CornerStyle?) -> Self {
+        .rectangle.defaultCornerStyle(cornerStyle ?? .automatic)
     }
     
     /// A custom shaped notch defined by relative corners.

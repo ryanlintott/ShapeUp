@@ -39,7 +39,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyle: Corner style used for all corners in the notch. Default is a .point style.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
-    @available(*, deprecated, message: "Use `Notch(depth: 20).defaultCornerStyle(.rounded(radius: 10))` instead.")
+    @available(*, deprecated, message: "Notch uses a rectangle shape as the default. Use `Notch(depth: 20).defaultCornerStyle(.rounded(radius: 10))` instead.")
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyle: CornerStyle? = nil) -> Notch {
         Notch(.rectangle(cornerStyle: cornerStyle), position: position, length: length, depth: depth)
     }
@@ -51,7 +51,7 @@ public extension Notch {
     ///   - depth: Depth of the notch relative to the length of the line.
     ///   - cornerStyles: Corner styles used for each corner in the notch. Nil values use an automatic style that renders as a point when no default style is supplied.
     /// - Returns: A rectangular shaped notch with specified position, length, depth, and corner styles.
-    @available(*, deprecated, message: "Use `Notch(depth: 20).cornerStyles([nil, nil, .rounded(radius: 10), nil])` instead.")
+    @available(*, deprecated, message: "Notch uses a rectangle shape as the default. Use `Notch(depth: 20).cornerStyles([nil, nil, .rounded(radius: 10), nil])` instead.")
     static func rectangle(position: RelatableValue? = nil, length: RelatableValue? = nil, depth: RelatableValue, cornerStyles: [CornerStyle?]) -> Notch {
         Notch(.rectangle(cornerStyles: cornerStyles), position: position, length: length, depth: depth)
     }

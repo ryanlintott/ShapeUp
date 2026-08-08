@@ -12,12 +12,12 @@ public enum NotchStyle: Sendable {
     /// A triangular shaped notch.
     /// - Parameters:
     ///   - cornerStyles: Corner styles for each corner in the notch. Nil values use an automatic style that renders as a point when no default style is supplied.
-    case triangle(cornerStyles: [CornerStyle?])
+    case triangle(cornerStyles: [CornerStyle?] = [])
     
     /// A rectangular shaped notch.
     /// - Parameters:
     ///   - cornerStyles: Corner styles for each corner in the notch. Nil values use an automatic style that renders as a point when no default style is supplied.
-    case rectangle(cornerStyles: [CornerStyle?])
+    case rectangle(cornerStyles: [CornerStyle?] = [])
     
     /// A custom shaped notch defined by relative corners.
     /// - Parameter relativeCorners: Relative corners that define the notch shape.

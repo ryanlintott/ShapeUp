@@ -75,7 +75,7 @@ public extension RelativeCorner {
     ///   - anchor: Anchor point will be repositioned here.
     ///   - offset: Offset amount will change to this value.
     /// - Returns: The same object, moved to a new position.
-    func repositioned(anchor: RectAnchor? = nil, offset: (some Vector2Representable)? = nil as Vector2?) -> Self {
+    internal func repositioned(anchor: RectAnchor? = nil, offset: (some Vector2Representable)? = nil as Vector2?) -> Self {
         var copy = self
         if let anchor {
             copy.anchor = anchor

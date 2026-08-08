@@ -23,7 +23,7 @@ extension Corner: Vector2Transformable {
     }
 }
 
-extension Corner {
+public extension Corner {
     /// Converts this object to one that is relative to the specified frame.
     /// - Parameter frame: Frame used for relative position.
     /// - Returns: A relative version of this object anchored to the specified frame.
@@ -38,12 +38,15 @@ extension Corner {
     ///   - previousPoint: Point before the corner.
     ///   - nextPoint: Point after the corner.
     /// - Returns: A set of saved dimensions based on the corner style and provided previous and next points.
-    public func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
+    @available(
+        *,
+        deprecated,
+        message: "Corner.Dimensions will become internal in a future release. Use Array<Corner>.path(closed:), Array<Corner>.inset(by:), or Path corner-shape methods instead."
+    )
+    func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
     }
-}
-
-public extension Corner {
+    
     @available(*, deprecated, renamed: "cornerStyle(_:)")
     func applyingStyle(_ newStyle: CornerStyle) -> Self {
         cornerStyle(newStyle)

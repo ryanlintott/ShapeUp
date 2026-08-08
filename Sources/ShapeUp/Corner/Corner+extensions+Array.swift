@@ -9,6 +9,11 @@ import SwiftUI
 
 public extension Array where Element == Corner {
     /// An array of corner dimensions used for drawing, insetting, and modifying points of a closed shape.
+    @available(
+        *,
+        deprecated,
+        message: "Corner.Dimensions will become internal in a future release. Use Array<Corner>.path(closed:), Array<Corner>.inset(by:), or Path corner-shape methods instead."
+    )
     var dimensions: [Corner.Dimensions] {
         dimensions()
     }
@@ -18,6 +23,11 @@ public extension Array where Element == Corner {
     ///   - previousPoint: Previous corner point. Default is the last point.
     ///   - nextPoint: Next corner point. Default is the first point.
     /// - Returns: An array of corner dimensions used for drawing, insetting, and modifying points.
+    @available(
+        *,
+        deprecated,
+        message: "Corner.Dimensions will become internal in a future release. Use Array<Corner>.path(closed:), Array<Corner>.inset(by:), or Path corner-shape methods instead."
+    )
     func dimensions(previousPoint: CGPoint? = nil, nextPoint: CGPoint? = nil) -> [Corner.Dimensions] {
         guard
             let beforeFirst = previousPoint ?? last?.point,

@@ -106,7 +106,7 @@ public extension CornerStyle {
     }
     
     /// Radius offset of the corner
-    internal(set) var concaveInset: CGFloat {
+    internal var concaveInset: CGFloat {
         get {
             switch self {
             case .automatic, .point, .rounded, .straight, .cutout, .custom:
