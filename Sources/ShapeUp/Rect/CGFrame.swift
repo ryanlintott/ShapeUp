@@ -49,6 +49,8 @@ public extension CGFrameRepresentable {
     
     /// Creates a corner at the specified relative coordinates in the frame.
     ///
+    /// - Note: The additional style parameter makes this subscript act as a disfavoured overload to the subscript that outputs a `CGPoint`.
+    ///
     /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the frame.
     /// - Parameters:
     ///   - x: Relative x coordinate.

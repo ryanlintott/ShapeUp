@@ -40,7 +40,7 @@ extension RectAnchor {
     /// Creates a relative anchor from a point.
     /// - Parameter point: A point containing the relative x and y coordinates.
     /// - Returns: A relative anchor at the specified coordinates.
-    public static func relative(_ point: CGPoint) -> RectAnchor {
+    static func relative(_ point: CGPoint) -> RectAnchor {
         .relative(x: point.x, y: point.y)
     }
     
