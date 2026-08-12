@@ -55,6 +55,7 @@ This release includes several source-breaking changes and a large number of depr
 - Changed the `CornerShape.corners(in:)` method to use `CornerArrayBuilder`.
 - Changed `CornerCustom` init to use `CornerArrayBuilder` and added a helper for `closed(_:)`.
 - Changed enumerated corner shape `styles` dictionaries to store non-optional `CornerStyle` values.
+- Updated `SketchyLines` to animate its lines and optional shared draw amount. The shared draw amount now defaults to `nil`, preserving each `SketchyLine` draw amount unless an override is supplied.
 - Added a shared `ShapeUp.xcworkspace` and shared `ShapeUp Development` scheme for working with the package tests and example app from one workspace.
 - Updated the example app with new interactive shape examples that also show the code.
 
@@ -72,6 +73,8 @@ This release includes several source-breaking changes and a large number of depr
 - `Array<Vector2>` methods `scaledPositions(scale:)` and `scaledPositions(width:height:)` were renamed to `scaledPositions(_:)` and `scaledPositions(x:y:)`.
 - `AngleType` is deprecated because equating angle classifications through floating-point values was error-prone.
 - `Rectangle.applyingStyle` convenience methods are deprecated in favor of using `CornerRectangle` instead.
+- Deprecated `SketchyLine.path(in:drawAmount:)`; set `drawAmount` on the line and call `path(in:)` instead.
+- Deprecated `Shape.scaleToFit(_:aspectRatio:)`. This was a very old method I haven't used in a long time. If you need this functionality use SwiftUI Shape's scale modifier and check the code for this method. This will be removed in the next major version.
 
 ### Bug Fixes
 

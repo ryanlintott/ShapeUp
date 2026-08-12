@@ -8,17 +8,10 @@
 import SwiftUI
 
 public extension Array where Element == RectAnchor {
-    /// Creates an array of points corresponding to the locations of the anchors.
-    /// - Parameter rect: Rectangle where anchors are positioned.
-    /// - Returns: An array of points where the anchors are located.
-    func points(in rect: CGRect) -> [CGPoint] {
-        map { $0.point(in: rect) }
-    }
-    
     /// Creates an array of points corresponding to the locations of the anchors within a coordinate frame.
     /// - Parameter frame: Coordinate frame where anchors are positioned.
     /// - Returns: An array of points where the anchors are located.
-    func points(in frame: CGFrame) -> [CGPoint] {
+    func points(in frame: some CGFrameRepresentable) -> [CGPoint] {
         map { $0.point(in: frame) }
     }
     

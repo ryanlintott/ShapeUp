@@ -61,15 +61,15 @@ public extension SketchyLine {
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line starts in the given rectangle.
     func startPoint(in rect: CGRect) -> CGPoint {
-        switch edge {
+        return switch edge {
         case .top:
-            return CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.minY)
+            CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.minY)
         case .bottom:
-            return CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.maxY)
+            CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.maxY)
         case .leading:
-            return CGPoint(x: rect.minX, y: rect.minY - startExtension.value(using: rect.height))
+            CGPoint(x: rect.minX, y: rect.minY - startExtension.value(using: rect.height))
         case .trailing:
-            return CGPoint(x: rect.maxX, y: rect.minY - startExtension.value(using: rect.height))
+            CGPoint(x: rect.maxX, y: rect.minY - startExtension.value(using: rect.height))
         }
     }
     
@@ -77,15 +77,15 @@ public extension SketchyLine {
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line ends in the given rectangle.
     func endPoint(in rect: CGRect) -> CGPoint {
-        switch edge {
+        return switch edge {
         case .top:
-            return CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.minY)
+            CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.minY)
         case .bottom:
-            return CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.maxY)
+            CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.maxY)
         case .leading:
-            return CGPoint(x: rect.minX, y: rect.maxY + endExtension.value(using: rect.height))
+            CGPoint(x: rect.minX, y: rect.maxY + endExtension.value(using: rect.height))
         default:
-            return CGPoint(x: rect.maxX, y: rect.maxY + endExtension.value(using: rect.height))
+            CGPoint(x: rect.maxX, y: rect.maxY + endExtension.value(using: rect.height))
         }
     }
     
@@ -103,11 +103,11 @@ public extension SketchyLine {
         var path = Path()
         path.addLines(points)
         
-        switch edge {
+        return switch edge {
         case .leading, .trailing:
-            return path.offsetBy(dx: offset.value(using: rect.width), dy: 0)
+            path.offsetBy(dx: offset.value(using: rect.width), dy: 0)
         default:
-            return path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
+            path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
         }
     }
     
@@ -116,6 +116,7 @@ public extension SketchyLine {
     ///   - rect: The rectangle in which to draw the line.
     ///   - drawAmount: The proportion of the line to draw.
     /// - Returns: The resulting line path.
+    @available(*, deprecated, message: "Adjust the draw amount manually and then use path(in:) instead.")
     func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
         var copy = self
         copy.drawAmount = drawAmount

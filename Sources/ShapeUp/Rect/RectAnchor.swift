@@ -45,42 +45,42 @@ extension RectAnchor {
     }
     
     /// Creates a point in the location of an anchor.
-    /// - Parameter rect: Rectangle where anchor is positioned.
+    /// - Parameter frame: Frame where anchor is positioned.
     /// - Returns: The point where the anchor is located.
-    public func point(in rect: CGRect) -> CGPoint {
-        switch self {
-        case .topLeft:
-            CGPoint(x: rect.minX, y: rect.minY)
-        case .top:
-            CGPoint(x: rect.midX, y: rect.minY)
-        case .topRight:
-            CGPoint(x: rect.maxX, y: rect.minY)
-        case .left:
-            CGPoint(x: rect.minX, y: rect.midY)
-        case .center:
-            CGPoint(x: rect.midX, y: rect.midY)
-        case .right:
-            CGPoint(x: rect.maxX, y: rect.midY)
-        case .bottomLeft:
-            CGPoint(x: rect.minX, y: rect.maxY)
-        case .bottom:
-            CGPoint(x: rect.midX, y: rect.maxY)
-        case .bottomRight:
-            CGPoint(x: rect.maxX, y: rect.maxY)
-        case let .relative(x, y):
-            CGPoint(x: rect.minX + (x * rect.width), y: rect.minY + (y * rect.height))
+    public func point(in frame: some CGFrameRepresentable) -> CGPoint {
+        if let rect = frame as? CGRect {
+            /// More exact calculation for rectangle anchor point locations.
+            return switch self {
+            case .topLeft:
+                CGPoint(x: rect.minX, y: rect.minY)
+            case .top:
+                CGPoint(x: rect.midX, y: rect.minY)
+            case .topRight:
+                CGPoint(x: rect.maxX, y: rect.minY)
+            case .left:
+                CGPoint(x: rect.minX, y: rect.midY)
+            case .center:
+                CGPoint(x: rect.midX, y: rect.midY)
+            case .right:
+                CGPoint(x: rect.maxX, y: rect.midY)
+            case .bottomLeft:
+                CGPoint(x: rect.minX, y: rect.maxY)
+            case .bottom:
+                CGPoint(x: rect.midX, y: rect.maxY)
+            case .bottomRight:
+                CGPoint(x: rect.maxX, y: rect.maxY)
+            case let .relative(x, y):
+                CGPoint(x: rect.minX + (x * rect.width), y: rect.minY + (y * rect.height))
+            }
+        } else {
+            return frame.origin
+                .moved(frame.xAxis * relativePoint.x)
+                .moved(frame.yAxis * relativePoint.y)
         }
     }
     
-    /// Creates a point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
-    /// - Parameter frame: Frame in the shape of a rhombus with U and V coordinates on which the relative x and y coordinates of this anchor will be mapped.
-    /// - Returns: A point in the location of an anchor inside the UV coordinates of the specified corner dimensions.
-    public func point(in frame: CGFrame) -> CGPoint {
-        frame[self]
-    }
-    
     var relativePoint: CGPoint {
-        self.point(in: .one)
+        self.point(in: CGRect.one)
     }
     
     /// A relative corner at the same position with an automatic style and no offset.

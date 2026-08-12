@@ -15,15 +15,17 @@ public protocol CGFrameRepresentable {
     var xAxis: Vector2 { get }
     /// The vector defining the y-axis direction and magnitude.
     var yAxis: Vector2 { get }
-    
+}
+
+public extension CGFrameRepresentable {
     /// Creates a point in the location of an anchor.
     /// - Parameters:
     ///   - anchor: Anchor where the point is located.
     /// - Returns: A point where the anchor is located.
-    subscript (_ anchor: RectAnchor) -> CGPoint { get }
-}
-
-public extension CGFrameRepresentable {
+    subscript (_ anchor: RectAnchor) -> CGPoint {
+        anchor.point(in: self)
+    }
+    
     /// Transforms a relative corner into a corner.
     ///
     /// - Note: The additional style parameter makes this subscript act as a disfavoured overload to the subscript that outputs a `CGPoint`.
@@ -111,7 +113,7 @@ public extension CGFrameRepresentable {
 
 
 /// A coordinate frame defined by an origin and a vector for each axis.
-public struct CGFrame {
+public struct CGFrame: CGFrameRepresentable {
     /// The origin point of the coordinate frame.
     public var origin: CGPoint
     /// The vector defining the x-axis direction and magnitude.
@@ -123,14 +125,6 @@ public struct CGFrame {
         self.origin = origin
         self.xAxis = xAxis
         self.yAxis = yAxis
-    }
-}
-
-extension CGFrame: CGFrameRepresentable {
-    public subscript (_ anchor: RectAnchor) -> CGPoint {
-        origin
-            .moved(xAxis * anchor.relativePoint.x)
-            .moved(yAxis * anchor.relativePoint.y)
     }
 }
 

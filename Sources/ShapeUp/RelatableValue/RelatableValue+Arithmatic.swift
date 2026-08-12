@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-public extension RelatableValue {
-    static func + (lhs: Self, rhs: Self) -> Self {
+extension RelatableValue: AdditiveArithmetic {
+    public static func + (lhs: Self, rhs: Self) -> Self {
         switch (lhs, rhs) {
         case let (.absolute(lhsValue), .absolute(rhsValue)):
             return .absolute(lhsValue + rhsValue)
@@ -24,7 +24,7 @@ public extension RelatableValue {
         }
     }
     
-    static prefix func - (x: Self) -> Self {
+    public static prefix func - (x: Self) -> Self {
         switch x {
         case let .absolute(value):
             return .absolute(-value)
@@ -35,20 +35,13 @@ public extension RelatableValue {
         }
     }
     
-    static func - (lhs: Self, rhs: Self) -> Self {
+    public static func - (lhs: Self, rhs: Self) -> Self {
         lhs + -rhs
     }
-    
-    /// RelatableValue addition assignment
-    static func += (lhs: inout Self, rhs: Self) {
-        lhs = lhs + rhs
-    }
-    
-    /// RelatableValue subtraction assignment
-    static func -= (lhs: inout Self, rhs: Self) {
-        lhs = lhs - rhs
-    }
-    
+
+}
+
+public extension RelatableValue {
     static func * (lhs: RelatableValue, rhs: CGFloat) -> RelatableValue {
         switch lhs {
         case let .absolute(lhsValue):

@@ -11,7 +11,7 @@ import SwiftUI
 
 internal extension RectAnchor {
     var vector: Vector2 {
-        point(in: .one).vector
+        point(in: CGRect.one).vector
     }
 }
 

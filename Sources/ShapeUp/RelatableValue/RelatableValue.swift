@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enumeration that represents either a relative or absolute value.
-public enum RelatableValue: Hashable, AdditiveArithmetic, Codable, Sendable {
+public enum RelatableValue: Hashable, Codable, Sendable {
     case absolute(_ value: CGFloat)
     case relative(_ value: CGFloat)
     case mixed(absolute: CGFloat, relative: CGFloat)

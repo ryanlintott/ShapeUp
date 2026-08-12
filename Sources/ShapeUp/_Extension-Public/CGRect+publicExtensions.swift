@@ -15,10 +15,6 @@ extension CGRect: CGFrameRepresentable {
     public var yAxis: Vector2 {
         CGFrame(self).yAxis
     }
-    
-    public subscript (_ anchor: RectAnchor) -> CGPoint {
-        anchor.point(in: self)
-    }
 }
 
 public extension CGRect {
