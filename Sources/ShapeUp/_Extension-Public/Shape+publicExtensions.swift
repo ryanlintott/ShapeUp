@@ -13,8 +13,6 @@ public extension Shape {
     ///   - frame: Frame to fit.
     ///   - aspectRatio: Aspect ratio of the shape.
     /// - Returns: A shape scaled to fit a specified aspect ratio inside a specified frame.
-    /// - Deprecated: Use SwiftUI's `aspectRatio(_:contentMode:)` modifier with
-    ///   `.fit` instead. This method will be removed in ShapeUp 1.0.0.
     @available(
         *,
         deprecated,
