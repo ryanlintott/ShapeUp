@@ -126,9 +126,13 @@ public extension SketchyLine {
 
 extension SketchyLine: AnimatableProperties {
     public static var animatableProperties: some AnimatableProperty<Self> {
-        \.startExtension
-        \.endExtension
-        \.offset
-        \.drawAmount
+        AnimatablePropertyGroup(id: \.edge) {
+            AnimatablePropertyGroup(id: \.drawDirection) {
+                \.startExtension
+                \.endExtension
+                \.offset
+                \.drawAmount
+            }
+        }
     }
 }

@@ -59,6 +59,36 @@ struct SketchyLinesTests {
         #expect(line.drawAmount == 0.3)
     }
 
+    @Test
+    func changingDrawDirectionImmediatelyUsesTargetProperties() {
+        let source = SketchyLine(
+            edge: .top,
+            startExtension: 2,
+            endExtension: 4,
+            offset: 6,
+            drawAmount: 0.25,
+            drawDirection: .toBottomTrailing
+        )
+        let target = SketchyLine(
+            edge: .top,
+            startExtension: 10,
+            endExtension: 12,
+            offset: 14,
+            drawAmount: 0.75,
+            drawDirection: .toTopLeading
+        )
+
+        var data = source.animatableData
+        data.interpolate(towards: target.animatableData, amount: 0.5)
+        var result = target
+        result.animatableData = data
+
+        #expect(result.startExtension == target.startExtension)
+        #expect(result.endExtension == target.endExtension)
+        #expect(result.offset == target.offset)
+        #expect(result.drawAmount == target.drawAmount)
+    }
+
     private func horizontalLine(drawAmount: CGFloat) -> SketchyLine {
         SketchyLine(edge: .top, drawAmount: drawAmount)
     }

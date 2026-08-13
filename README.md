@@ -30,7 +30,7 @@ Features:
 - [`CGFrame`](#cgframe), a coordinate space or rhombus defined by an origin and vectors for each axis
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
 - [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
-- [`AnimatableProperties`](#animatableproperties) for synthesizing animation data from writable key paths.
+- [`AnimatableProperties`](#animatableproperties) for synthesizing animation data from writable key paths and [`AnimatablePropertyGroup`](#animatablepropertygroup) for preventing interpolation between unrelated variants.
 - [`AnimatableArray`](#animatablearray), [`AnimatableDictionary`](#animatabledictionary), and [`AnimatablePack`](#animatablepack) to more easily construct complex `animatableData` properties.
 
 # Demo App
@@ -568,6 +568,31 @@ struct NotchedPolygon: Shape, AnimatableProperties {
     // ...
 }
 ```
+
+### AnimatablePropertyGroup
+Use `AnimatablePropertyGroup` when a set of properties should animate only while an identifier remains unchanged. When the identifier changes, the grouped properties keep their current values instead of receiving interpolated data. This is useful for enum-like types whose cases store different values.
+
+```swift
+enum StyleKind: Hashable {
+    case rounded
+    case concave
+}
+
+struct AnimatedStyle: AnimatableProperties {
+    var kind: StyleKind
+    var radius: CGFloat
+    var inset: CGFloat
+
+    static var animatableProperties: some AnimatableProperty<Self> {
+        AnimatablePropertyGroup(id: \.kind) {
+            \.radius
+            \.inset
+        }
+    }
+}
+```
+
+The identifier is included in the animation data and must conform to `Hashable`. In this example, `radius` and `inset` interpolate while `kind` remains the same. Changing `kind` applies its new values immediately. ShapeUp uses this behavior for corner styles so properties within the same style continue to animate without interpolating unrelated data when the style changes.
 
 If your animation values need custom logic you can build your own `animatableData` and use some of the tools below:
 

@@ -1,10 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 - Unreleased
 
 Changes since the previous versioned release, `0.5.3`.
 
-This release includes several source-breaking changes and a large number of deprecations that will likely be removed in the next major update. It introduces relative anchors and corners that allow for custom corner styles, better custom notches, and animation support for almost every corner shape. It also fixes several insetting issues that mostly affected concave corners.
+This release includes several source-breaking changes and a large number of deprecations. All deprecated APIs are scheduled for removal in `1.0.0`. Upgrade to `0.6.0` and resolve all deprecation warnings before moving to `1.0.0`.
+
+This release introduces a new way to construct corner arrays and shapes using result builders, new relative anchors and corners that allow for custom corner styles, better custom notches, and animation support for almost every corner shape. It also fixes several insetting issues that mostly affected concave corners.
 
 ### Breaking Changes
 
@@ -34,6 +36,7 @@ This release includes several source-breaking changes and a large number of depr
 - Added the `CornerStyled` protocol to centralize the style property, `cornerStyle(_:)`, and `changingRadius(to:)` across `Corner` and `RelativeCorner`.
 - Added animatable support for `CornerStyle`, `Corner`, `RelativeCorner`, `RectAnchor`, `NotchStyle`, `Notch`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `RelativeCornerCustom`.
 - Added `AnimatableProperties` that synthesizes `animatableData` from supplied writable key paths. It supports types that conform to `VectorArithmetic` or `Animatable` (including other `AnimatableProperties` types) and any `Optional` wrappers or `Array`/`Dictionary` collections of those types.
+- Added public `AnimatablePropertyGroup` for grouping properties that should animate only while a `Hashable` identifier remains unchanged. When the identifier changes, the grouped properties keep their current values instead of receiving interpolated data.
 - Added `AnimatableArray` and `AnimatableDictionary` helpers for animating arrays and dictionaries. Arrays expose public `animatableArray` and `animatableValueArray` properties, while dictionaries expose `animatableDictionary` and `animatableValueDictionary`.
 - Added `CGFrame` for describing coordinate frames with an origin, an x-axis vector, and a y-axis vector. This is used internally to draw custom corners at any angle, not just 90 degrees.
 - Added methods to easily convert `CGPoint` to `RectAnchor` and `Corner` to `RelativeCorner` given a `CGRect` or `CGFrame`.
@@ -83,6 +86,7 @@ This release includes several source-breaking changes and a large number of depr
 - Fixed an issue where the last point in an inset point array could be inset incorrectly.
 - Fixed `Shape.scaleToFit(_:aspectRatio:)` producing an incorrect horizontal scale when fitting a narrower aspect ratio into a wider frame.
 - Fixed visionOS example compilation where the glass effect API was unavailable.
+- Fixed transitions between different `CornerStyle` cases interpolating unrelated animation data, which could make custom subcorners slide in from the corner's start point. Different styles now switch immediately, while properties within the same style continue to animate.
 
 ### Tests
 

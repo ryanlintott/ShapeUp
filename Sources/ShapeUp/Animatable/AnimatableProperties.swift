@@ -56,6 +56,67 @@ public protocol AnimatableProperty<Root> {
     func applyAnimatableData(_ animatableData: AnimatableData, to root: inout Root)
 }
 
+/// Applies a group of animatable properties only while its animation data
+/// represents the current value's ID.
+public struct AnimatablePropertyGroup<
+    Root,
+    ID: Hashable,
+    Properties: AnimatableProperty<Root>
+>: AnimatableProperty {
+    public typealias AnimatableData = AnimatablePair<
+        AnimatablePair<AnimatableDictionary<ID, CGFloat>, CGFloat>,
+        Properties.AnimatableData
+    >
+
+    private let idKeyPath: KeyPath<Root, ID>
+    private let properties: Properties
+
+    /// Creates a group of root properties that animate only while the root ID
+    /// remains unchanged.
+    ///
+    /// The ID is encoded into the group's animation data so it can be compared
+    /// with the current root value. When animation data contains a different
+    /// ID, the property data is ignored and the current properties remain
+    /// unchanged.
+    ///
+    /// - Parameters:
+    ///   - id: A key path to the root's hashable identifier.
+    ///   - properties: The properties to animate when the animation data and
+    ///     current IDs match.
+    public init(
+        id: KeyPath<Root, ID>,
+        @AnimatablePropertyBuilder<Root> properties: () -> Properties
+    ) {
+        self.idKeyPath = id
+        self.properties = properties()
+    }
+
+    public func animatableData(for root: Root) -> AnimatableData {
+        .init(
+            .init(.init([root[keyPath: idKeyPath]: 1]), 1),
+            properties.animatableData(for: root)
+        )
+    }
+
+    public func applyAnimatableData(_ animatableData: AnimatableData, to root: inout Root) {
+        let groupIdentityData = animatableData.first
+        let identifierWeights = groupIdentityData.first.wrappedValue
+        let groupWeight = groupIdentityData.second
+        let currentIdentifier = root[keyPath: idKeyPath]
+
+        guard groupWeight != 0,
+              identifierWeights[currentIdentifier] == groupWeight,
+              identifierWeights.allSatisfy({ identifier, weight in
+                  let expectedWeight = identifier == currentIdentifier ? groupWeight : 0
+                  return weight == expectedWeight
+              }) else {
+            return
+        }
+
+        properties.applyAnimatableData(animatableData.second, to: &root)
+    }
+}
+
 /// Builds an animatable property descriptor from writable key paths.
 @resultBuilder
 public enum AnimatablePropertyBuilder<Root> { }
@@ -131,6 +192,13 @@ public extension AnimatablePropertyBuilder {
     
     static func buildBlock() -> Empty {
         .init()
+    }
+
+    /// Adds an existing animatable property descriptor to this builder.
+    static func buildExpression<Property: AnimatableProperty<Root>>(
+        _ expression: Property
+    ) -> Property {
+        expression
     }
     
     /// Non-Optional builders
