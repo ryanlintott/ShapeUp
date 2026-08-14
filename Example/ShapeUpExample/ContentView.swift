@@ -47,6 +47,12 @@ struct ContentView: View {
             NavigationLink(destination: ContinuousCornerExample()) {
                 Label("Continuous Corners", systemImage: "square.on.square")
             }
+
+            if #available(iOS 16, macOS 13, tvOS 16, watchOS 9, *) {
+                NavigationLink(destination: RoundedRectangleRenderingProbe()) {
+                    Label("Rounded Rectangle Rendering", systemImage: "square.dashed.inset.filled")
+                }
+            }
             
             
         } header: {

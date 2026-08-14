@@ -375,17 +375,10 @@ public extension Corner.Dimensions {
 
 private extension Corner.Dimensions {
     /// Returns the additional edge length used by a continuous rounded corner.
-    ///
-    /// SwiftUI's 90-degree continuous profile extends 1.5286649465560913
-    /// times farther along each edge than a circular corner with the same
-    /// nominal radius. That calibration fades towards the superformula curve so
-    /// its footprint reaches that curve's scale at degenerate angles.
     static func cutLengthMultiplier(for style: CornerStyle, angle: Angle) -> CGFloat {
         switch style {
         case .rounded(_, .continuous):
-            1 + (
-                0.5286649465560913 * swiftUIContinuousProfileBlendAmount(for: angle)
-            )
+            continuousCutLengthMultiplier(for: angle)
         case .automatic, .point, .rounded, .concave, .straight, .cutout, .custom:
             1
         }

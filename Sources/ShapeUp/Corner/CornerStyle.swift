@@ -16,9 +16,12 @@ public enum CornerStyle: Hashable, Codable, Sendable {
 
         /// A continuous corner curve with zero-curvature edge joins.
         ///
-        /// At 90 degrees, the curve matches SwiftUI's continuous rounded
-        /// rectangle profile. Other angles blend that profile with a symmetric
-        /// superformula curve generalized to the supplied angle.
+        /// At 90 degrees, its unconstrained profile is fitted to SwiftUI's
+        /// rendered continuous rounded rectangle. At other angles, its
+        /// curvature distribution is generalized to preserve the
+        /// same nominal radius.
+        ///
+        /// - Note: Edge joins of a continuous curve corner are farther away from the corner point than a circular corner. This may cause artifacts if they go beyond the edge joins of a neighbouring corner.
         case continuous
     }
 

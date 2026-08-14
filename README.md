@@ -182,7 +182,7 @@ The initial style for corners created without an explicit style. It renders as a
 An explicit point corner with no properties. Unlike `.automatic`, it is preserved when applying a default style.
 
 <img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue, style: CornerStyle.RoundingStyle = .circular)`
-A rounded corner with a radius with `.circular` and `.continuous` rounding styles that match SwiftUI profiles at 90 degrees but continue to work at any angle.
+A rounded corner with a radius and `.circular` or `.continuous` rounding. The continuous profile is fitted to SwiftUI's continuous rounded corner at 90 degrees and generalized to work at any angle.
 
 <img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, concaveInset: CGFloat = 0)`
 A concave corner is like an inverted rounded corner where the radius determines the start and end points of the cut. The concave inset value is the inset of the concave radius and is automatically adjusted when insetting this corner.

@@ -96,6 +96,54 @@ struct CornerInsetContinuityTests {
             }
     }
 
+    struct SwiftUIContinuousRectangleCase: CustomTestStringConvertible, Sendable {
+        let name: String
+        let size: CGSize
+        let radius: CGFloat
+        let inset: CGFloat
+
+        var testDescription: String { name }
+
+        static let all: [Self] = [
+            .init(
+                name: "square",
+                size: CGSize(width: 100, height: 100),
+                radius: 20,
+                inset: 0
+            ),
+            .init(
+                name: "inset square",
+                size: CGSize(width: 100, height: 100),
+                radius: 20,
+                inset: 5
+            ),
+            .init(
+                name: "example rectangle",
+                size: CGSize(width: 358, height: 358 / 1.5),
+                radius: 50,
+                inset: 10
+            ),
+            .init(
+                name: "outset rectangle",
+                size: CGSize(width: 358, height: 358 / 1.5),
+                radius: 50,
+                inset: -20
+            ),
+            .init(
+                name: "large unconstrained radius",
+                size: CGSize(width: 358, height: 358 / 1.5),
+                radius: 80,
+                inset: 10
+            ),
+            .init(
+                name: "large unconstrained square",
+                size: CGSize(width: 329, height: 329),
+                radius: 91,
+                inset: 2
+            )
+        ]
+    }
+
     @Test(
         "Insets stay finite for every style around 0 and 180 degrees",
         arguments: StyleKind.allCases,
@@ -273,32 +321,53 @@ struct CornerInsetContinuityTests {
         #expect(continuousInset.cutLength <= continuousInset.maxCutLength)
     }
 
-    @Test("An inset continuous rectangle matches SwiftUI's path")
-    func insetContinuousRectangleMatchesSwiftUIPath() {
-        let rect = CGRect(x: 0, y: 0, width: 100, height: 100)
-        let shapeUpPath = rect
-            .corners(.rounded(radius: 20, style: .continuous))
-            .inset(by: 5)
-            .path()
-        let swiftUIPath = RoundedRectangle(
-            cornerRadius: 20,
-            style: SwiftUI.RoundedCornerStyle.continuous
-        )
-        .inset(by: 5)
-        .path(in: rect)
-
-        let shapeUpSegments = shapeUpPath.sortedCubicSegments
-        let swiftUISegments = swiftUIPath.sortedCubicSegments
-
-        #expect(shapeUpSegments.count == swiftUISegments.count)
-        for (shapeUpSegment, swiftUISegment) in zip(shapeUpSegments, swiftUISegments) {
-            // User-created Path elements are stored at lower precision than
-            // SwiftUI's internal rounded-rectangle path representation.
-            #expect(shapeUpSegment.end.isApproximatelyEqual(to: swiftUISegment.end, tolerance: 5e-6))
-            #expect(shapeUpSegment.control1.isApproximatelyEqual(to: swiftUISegment.control1, tolerance: 5e-6))
-            #expect(shapeUpSegment.control2.isApproximatelyEqual(to: swiftUISegment.control2, tolerance: 5e-6))
+    #if os(macOS)
+    @Test(
+        "Unconstrained continuous rectangles approximate SwiftUI's rendering",
+        arguments: SwiftUIContinuousRectangleCase.all
+    )
+    @available(macOS 13, *)
+    @MainActor
+    func continuousRectangleApproximatesSwiftUIRendering(
+        sample: SwiftUIContinuousRectangleCase
+    ) throws {
+        let scale: CGFloat = 4
+        let directMask = try RenderedShapeTestSupport.mask(scale: scale) {
+            RoundedRectangle(
+                cornerRadius: sample.radius,
+                style: SwiftUI.RoundedCornerStyle.continuous
+            )
+            .inset(by: sample.inset)
+            .fill(.white)
+            .frame(width: sample.size.width, height: sample.size.height)
+            .background(.black)
         }
+        let shapeUpMask = try RenderedShapeTestSupport.mask(scale: scale) {
+            CornerRectangle()
+                .defaultCornerStyle(
+                    .rounded(
+                        radius: .absolute(sample.radius),
+                        style: .continuous
+                    )
+                )
+                .inset(by: sample.inset)
+                .fill(.white)
+                .frame(width: sample.size.width, height: sample.size.height)
+                .background(.black)
+        }
+        let difference = RenderedShapeTestSupport.difference(
+            between: directMask,
+            and: shapeUpMask
+        )
+        let materialPixelLimit = Int(Double(directMask.count) * 0.006)
+
+        #expect(
+            difference.materiallyChangedPixels <= materialPixelLimit,
+            "Changed: \(difference.changedPixels), material: \(difference.materiallyChangedPixels), max: \(difference.maximumDifference)"
+        )
+        #expect(difference.maximumDifference <= 160)
     }
+    #endif
 
     @Test(
         "Inset continuous corners retain zero-curvature joins at arbitrary angles",
@@ -417,12 +486,6 @@ private extension Corner.Dimensions {
 }
 
 private extension Path {
-    var sortedCubicSegments: [CubicPathTestSupport.CubicBezierSegment] {
-        CubicPathTestSupport.segments(in: self).sorted {
-            ($0.end.x, $0.end.y) < ($1.end.x, $1.end.y)
-        }
-    }
-
     var insetPoints: [CGPoint] {
         var points: [CGPoint] = []
         forEach { element in

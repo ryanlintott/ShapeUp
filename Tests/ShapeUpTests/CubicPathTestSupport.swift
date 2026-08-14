@@ -28,6 +28,40 @@ enum CubicPathTestSupport {
                     + (pow(parameter, 3) * end.y)
             )
         }
+
+        func derivative(at parameter: CGFloat) -> Vector2 {
+            let inverse = 1 - parameter
+            return (
+                ((control1.vector - start.vector) * pow(inverse, 2))
+                    + ((control2.vector - control1.vector) * (2 * inverse * parameter))
+                    + ((end.vector - control2.vector) * pow(parameter, 2))
+            ) * 3
+        }
+
+        func secondDerivative(at parameter: CGFloat) -> Vector2 {
+            let inverse = 1 - parameter
+            return ((
+                (
+                    control2.vector
+                        - (control1.vector * 2)
+                        + start.vector
+                ) * inverse
+            ) + (
+                end.vector
+                    - (control2.vector * 2)
+                    + control1.vector
+            ) * parameter) * 6
+        }
+
+        func curvatureRadius(at parameter: CGFloat) -> CGFloat {
+            let derivative = derivative(at: parameter)
+            let secondDerivative = secondDerivative(at: parameter)
+            let crossProduct = abs(
+                derivative.crossProduct(with: secondDerivative)
+            )
+            guard crossProduct > 1e-12 else { return .infinity }
+            return pow(derivative.magnitude, 3) / crossProduct
+        }
     }
 
     static func segments(in path: Path) -> [CubicBezierSegment] {

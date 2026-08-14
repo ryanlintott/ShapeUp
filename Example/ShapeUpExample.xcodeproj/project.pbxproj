@@ -71,6 +71,8 @@
 		D4A140032F14A00100000001 /* CornerInsetContinuityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140042F14A00100000001 /* CornerInsetContinuityExample.swift */; };
 		D4A140052F14A00100000001 /* NotchedKeyExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140062F14A00100000001 /* NotchedKeyExample.swift */; };
 		D4A140072F14A00100000001 /* ContinuousCornerExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A140082F14A00100000001 /* ContinuousCornerExample.swift */; };
+		D4A140092F14A00100000001 /* RoundedRectangleRenderingProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A1400A2F14A00100000001 /* RoundedRectangleRenderingProbe.swift */; };
+		D4A1400B2F14A00100000001 /* RoundedRectangleRenderingStageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A1400C2F14A00100000001 /* RoundedRectangleRenderingStageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,6 +157,8 @@
 		D4A140042F14A00100000001 /* CornerInsetContinuityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerInsetContinuityExample.swift; sourceTree = "<group>"; };
 		D4A140062F14A00100000001 /* NotchedKeyExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchedKeyExample.swift; sourceTree = "<group>"; };
 		D4A140082F14A00100000001 /* ContinuousCornerExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinuousCornerExample.swift; sourceTree = "<group>"; };
+		D4A1400A2F14A00100000001 /* RoundedRectangleRenderingProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectangleRenderingProbe.swift; sourceTree = "<group>"; };
+		D4A1400C2F14A00100000001 /* RoundedRectangleRenderingStageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectangleRenderingStageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +195,8 @@
 				CF9E0D122DFB4F040053725B /* CornerExampleShapeView.swift */,
 				D4A140042F14A00100000001 /* CornerInsetContinuityExample.swift */,
 				D4A140082F14A00100000001 /* ContinuousCornerExample.swift */,
+				D4A1400A2F14A00100000001 /* RoundedRectangleRenderingProbe.swift */,
+				D4A1400C2F14A00100000001 /* RoundedRectangleRenderingStageView.swift */,
 				D4A140022F14A00100000001 /* CornerInsetContinuityShape.swift */,
 				CF2FE30726C708D20040A985 /* CornerShapeExample.swift */,
 				CFC7F8A62E7DDC67009881FE /* RelativeCornerCustomExample.swift */,
@@ -477,6 +483,8 @@
 				D4A140052F14A00100000001 /* NotchedKeyExample.swift in Sources */,
 				D4A140032F14A00100000001 /* CornerInsetContinuityExample.swift in Sources */,
 				D4A140072F14A00100000001 /* ContinuousCornerExample.swift in Sources */,
+				D4A140092F14A00100000001 /* RoundedRectangleRenderingProbe.swift in Sources */,
+				D4A1400B2F14A00100000001 /* RoundedRectangleRenderingStageView.swift in Sources */,
 				D4A140012F14A00100000001 /* CornerInsetContinuityShape.swift in Sources */,
 				CF2FE30C26C7124B0040A985 /* BasicShapes.swift in Sources */,
 				CFB65EB92AB78673006167EA /* AnimatablePackExample.swift in Sources */,
