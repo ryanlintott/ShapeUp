@@ -12,6 +12,7 @@ struct CornerInsetContinuityExample: View {
     private static let styles: [CornerStyle] = [
         .point,
         .rounded(radius: .relative(0.4)),
+        .rounded(radius: .relative(0.4), style: .continuous),
         .concave(radius: .relative(0.4)),
         .straight(
             radius: .relative(0.4),
@@ -67,7 +68,7 @@ struct CornerInsetContinuityExample: View {
 
                 Picker("Corner Style", selection: $style) {
                     ForEach(Self.styles, id: \.self) { style in
-                        Text(style.name)
+                        Text(style.insetPickerLabel)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -145,6 +146,16 @@ struct CornerInsetContinuityExample: View {
         let destination = angleDegrees <= angle ? angle + 5 : angle - 5
         withAnimation(.linear(duration: 2)) {
             angleDegrees = destination
+        }
+    }
+}
+
+private extension CornerStyle {
+    var insetPickerLabel: String {
+        if case let .rounded(_, style) = self {
+            "rounded \(style.rawValue)"
+        } else {
+            name
         }
     }
 }

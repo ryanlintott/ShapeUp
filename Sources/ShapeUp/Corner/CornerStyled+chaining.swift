@@ -9,10 +9,12 @@ import SwiftUI
 
 public extension CornerStyled {
     /// Applies a rounded corner style to this corner.
-    /// - Parameter radius: Radius of the rounded corner.
+    /// - Parameters:
+    ///   - radius: Radius of the rounded corner.
+    ///   - style: Shape of the rounded corner. Defaults to `.circular`.
     /// - Returns: A corner with a rounded style applied.
-    func rounded(radius: RelatableValue) -> Self {
-        self.cornerStyle(.rounded(radius: radius))
+    func rounded(radius: RelatableValue, style: CornerStyle.RoundingStyle = .circular) -> Self {
+        self.cornerStyle(.rounded(radius: radius, style: style))
     }
     
     /// Applies a concave corner style to this corner.

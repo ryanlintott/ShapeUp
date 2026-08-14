@@ -38,7 +38,7 @@ extension Corner.Dimensions {
             // Start drawing this corner shape
             startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)
             
-        case .rounded:
+        case let .rounded(_, style):
             // Start drawing this corner shape
             startCornerShape(on: &path, at: cornerStart, moveToStart: moveToStart)
 
@@ -46,22 +46,27 @@ extension Corner.Dimensions {
                 // The infinite-radius limit of the arc is a straight line.
                 path.addLine(to: cornerEnd)
             } else if isZero == false {
-                if angle.isApproximatelyStraight(tolerance: 0.01) {
-                    // SwiftUI's tangent arc becomes numerically unstable when
-                    // the radius grows toward infinity. This cubic has the same
-                    // endpoints and tangents and converges to the limit line.
-                    path.addCurve(
-                        to: cornerEnd,
-                        control1: cornerStart.moved(startVector.normalized * cubicArcControlLength),
-                        control2: cornerEnd.moved(-endVector.normalized * cubicArcControlLength)
-                    )
-                } else {
-                    // Draw a rounded arc from the cornerStart to cornerEnd.
-                    path.addArc(
-                        tangent1End: corner.point,
-                        tangent2End: cornerEnd,
-                        radius: absoluteRadius
-                    )
+                switch style {
+                case .continuous:
+                    addContinuousCorner(to: &path)
+                case .circular:
+                    if angle.isApproximatelyStraight(tolerance: 0.01) {
+                        // SwiftUI's tangent arc becomes numerically unstable when
+                        // the radius grows toward infinity. This cubic has the same
+                        // endpoints and tangents and converges to the limit line.
+                        path.addCurve(
+                            to: cornerEnd,
+                            control1: cornerStart.moved(startVector.normalized * cubicArcControlLength),
+                            control2: cornerEnd.moved(-endVector.normalized * cubicArcControlLength)
+                        )
+                    } else {
+                        // Draw a rounded arc from the cornerStart to cornerEnd.
+                        path.addArc(
+                            tangent1End: corner.point,
+                            tangent2End: cornerEnd,
+                            radius: absoluteRadius
+                        )
+                    }
                 }
             }
             
@@ -174,4 +179,5 @@ extension Corner.Dimensions {
         let quarterArcTangent = tan(halvedRadiusAngle.halved.radians)
         return (2 * cutLength / 3) * (1 - (quarterArcTangent * quarterArcTangent))
     }
+
 }

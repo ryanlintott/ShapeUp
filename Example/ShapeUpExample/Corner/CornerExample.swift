@@ -52,6 +52,7 @@ struct CornerExample: View {
         .automatic,
         .point,
         .rounded(radius: .zero),
+        .rounded(radius: .zero, style: .continuous),
         .concave(radius: .zero),
         .straight(radius: .zero),
         .cutout(radius: .zero),
@@ -97,7 +98,7 @@ struct CornerExample: View {
             
             Picker("CornerStyle", selection: $style) {
                 ForEach(styles, id: \.self) { style in
-                    Text(style.name)
+                    Text(style.exampleName)
                 }
             }
             .pickerStyle(.segmented)
@@ -182,6 +183,16 @@ struct CornerExample: View {
         .animation(.default, value: absolute)
         .padding()
         .navigationTitle("Corner")
+    }
+}
+
+private extension CornerStyle {
+    var exampleName: String {
+        if case let .rounded(_, style) = self {
+            "rounded \(style.rawValue)"
+        } else {
+            name
+        }
     }
 }
 

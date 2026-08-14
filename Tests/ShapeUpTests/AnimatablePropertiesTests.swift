@@ -37,6 +37,7 @@ struct AnimatablePropertiesTests {
             .automatic,
             .point,
             .rounded(radius: 10),
+            .rounded(radius: 10, style: .continuous),
             .concave(radius: 11, concaveInset: 2),
             .straight(radius: 12, cornerStyles: [.rounded(radius: 3)]),
             .cutout(radius: 13, cornerStyles: [.concave(radius: 4, concaveInset: 1)]),
@@ -71,6 +72,16 @@ struct AnimatablePropertiesTests {
                 .rounded(radius: 10),
                 .rounded(radius: 20),
                 .rounded(radius: 15)
+            ),
+            (
+                .rounded(radius: 10, style: .continuous),
+                .rounded(radius: 20, style: .continuous),
+                .rounded(radius: 15, style: .continuous)
+            ),
+            (
+                .rounded(radius: 10, style: .circular),
+                .rounded(radius: 20, style: .continuous),
+                .rounded(radius: 15, style: .continuous)
             ),
             (
                 .concave(radius: 10, concaveInset: 2),

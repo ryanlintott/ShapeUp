@@ -127,15 +127,21 @@ extension Corner {
                 nextVector: nextVector
             )
             
+            let cutLengthMultiplier = Self.cutLengthMultiplier(
+                for: corner.style,
+                angle: angle
+            )
+
             maxRadius = Self.maxRadius(
                 maxCutLength: maxCutLength,
                 halvedRadiusAngle: halvedRadiusAngle
-            )
+            ) / cutLengthMultiplier
             
             cutLength = Self.cutLength(
                 radius: corner.radius,
                 maxRadius: maxRadius,
-                maxCutLength: maxCutLength
+                maxCutLength: maxCutLength,
+                cutLengthMultiplier: cutLengthMultiplier
             )
 
             absoluteRadius = Self.absoluteRadius(
@@ -368,6 +374,23 @@ public extension Corner.Dimensions {
 }
 
 private extension Corner.Dimensions {
+    /// Returns the additional edge length used by a continuous rounded corner.
+    ///
+    /// SwiftUI's 90-degree continuous profile extends 1.5286649465560913
+    /// times farther along each edge than a circular corner with the same
+    /// nominal radius. That calibration fades towards the superformula curve so
+    /// its footprint reaches that curve's scale at degenerate angles.
+    static func cutLengthMultiplier(for style: CornerStyle, angle: Angle) -> CGFloat {
+        switch style {
+        case .rounded(_, .continuous):
+            1 + (
+                0.5286649465560913 * swiftUIContinuousProfileBlendAmount(for: angle)
+            )
+        case .automatic, .point, .rounded, .concave, .straight, .cutout, .custom:
+            1
+        }
+    }
+
     /// Resolves a finite cut length before deriving the drawable radius.
     ///
     /// Working in cut lengths avoids dividing a relative radius by zero at a
@@ -376,22 +399,30 @@ private extension Corner.Dimensions {
     static func cutLength(
         radius: RelatableValue,
         maxRadius: CGFloat,
-        maxCutLength: CGFloat
+        maxCutLength: CGFloat,
+        cutLengthMultiplier: CGFloat
     ) -> CGFloat {
         guard maxCutLength > 0 else { return 0 }
-
-        let components = radius.components
 
         // At zero degrees maxRadius is zero, so the relative component cannot
         // be recovered by multiplying it by maxRadius. Handle that analytic
         // limit directly and let a positive absolute component fit the segment.
         guard maxRadius > 0 else {
+            let components = radius.components
             if components.absolute > 0 { return maxCutLength }
             if components.absolute < 0 { return 0 }
-            return min(max(components.relative, 0), 1) * maxCutLength
+            return min(
+                max(components.relative * cutLengthMultiplier, 0),
+                1
+            ) * maxCutLength
         }
 
-        let requestedRadius = components.absolute + (components.relative * maxRadius)
+        // Continuous corners need more edge length than circular corners with
+        // the same nominal radius. Keep relative values referenced to the
+        // unscaled radius so changing rounding style does not change the radius.
+        let requestedRadius = radius.value(
+            using: maxRadius * cutLengthMultiplier
+        )
         guard requestedRadius > 0 else { return 0 }
         guard requestedRadius < maxRadius else { return maxCutLength }
 

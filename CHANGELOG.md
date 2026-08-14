@@ -10,6 +10,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 
 ### Breaking Changes
 
+- `CornerStyle.rounded` now includes a `style` associated value. Existing construction continues to default to `.circular`, but pattern matching this case must account for the new value.
 - Updated the package to Swift tools version 6.0 and raised the minimum supported versions to iOS 15, macOS 12, watchOS 8, and tvOS 15. The visionOS minimum remains version 1.
 - Changed `CornerStyle.concave(radius:radiusOffset:)` to `CornerStyle.concave(radius:concaveInset:)` to correct drawing errors and allow animation.
 - `CornerRectangle`, `CornerTriangle`, and `CornerPentagon` now use non-optional styles for each corner to support animation.
@@ -22,6 +23,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 
 ### New Features
 
+- Added `CornerStyle.RoundingStyle` with `.circular` and `.continuous` options. `CornerStyle.rounded(radius:style:)` defaults to `.circular`. Continuous corners have zero-curvature edge joins at any supplied angle and match SwiftUI's continuous profile at 90 degrees.
 - Added a new case `RectAnchor.relative(x:y:)` for storing relative positions.
 - Added `RelativeCorner`, a type similar to `Corner` but with a `RectAnchor` position and an absolute offset along frame axes. It has convenience initializers similar to `RectAnchor` such as `.topLeft`, `.top`, `.right`, `.bottom`, `.center`, and `.relative(x:y:)`. Also, similar to `Corner` there are methods for moving, rotating, flipping, scaling, and changing corner styles for either single instances or arrays.
 - Added `RelativeCornerCustom`, a version of `CornerCustom` that uses relative corners and can take animated State variables within its closure creating an animatable shape.

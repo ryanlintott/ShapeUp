@@ -5,7 +5,7 @@
 //  Created by Ryan Lintott on 2026-07-13.
 //
 
-import ShapeUp
+@testable import ShapeUp
 import SwiftUI
 import Testing
 
@@ -14,6 +14,7 @@ struct CornerDimensionsPathTests {
         case automatic
         case point
         case rounded
+        case roundedContinuous
         case concave
         case straight
         case cutout
@@ -29,6 +30,8 @@ struct CornerDimensionsPathTests {
                 .point
             case .rounded:
                 .rounded(radius: radius)
+            case .roundedContinuous:
+                .rounded(radius: radius, style: .continuous)
             case .concave:
                 .concave(radius: radius)
             case .straight:
@@ -111,6 +114,33 @@ struct CornerDimensionsPathTests {
         ]
     }
 
+    struct ContinuousCornerAngleCase: CustomTestStringConvertible, Sendable {
+        let degrees: CGFloat
+        let reflex: Bool
+
+        var testDescription: String {
+            "\(degrees) degrees \(reflex ? "reflex" : "non-reflex")"
+        }
+
+        static let all: [Self] = [CGFloat(1), 15, 30, 60, 89, 91, 120, 150, 179]
+            .flatMap { degrees in
+                [
+                    .init(degrees: degrees, reflex: false),
+                    .init(degrees: degrees, reflex: true)
+                ]
+            }
+
+        var previous: CGPoint { CGPoint(x: 100, y: 0) }
+
+        var next: CGPoint {
+            let angle = Angle.degrees(degrees * (reflex ? -1 : 1))
+            return CGPoint(
+                x: 100 * cos(angle.radians),
+                y: 100 * sin(angle.radians)
+            )
+        }
+    }
+
     @Test(
         "Animated corner paths stay finite around 0 and 180 degrees",
         arguments: StyleKind.allCases,
@@ -141,9 +171,19 @@ struct CornerDimensionsPathTests {
         #expect(paths[5].boundingRect.isApproximatelyEqual(to: paths[4].boundingRect, tolerance: 0.001))
     }
 
-    @Test("Effective cut length is continuous through zero degrees", arguments: RadiusCase.all)
-    func cutLengthIsContinuousThroughZeroDegrees(radius: RadiusCase) {
-        let corner = Corner(.rounded(radius: radius.value), point: CGPoint.zero)
+    @Test(
+        "Effective cut length is continuous through zero degrees",
+        arguments: RadiusCase.all,
+        [CornerStyle.RoundingStyle.circular, .continuous]
+    )
+    func cutLengthIsContinuousThroughZeroDegrees(
+        radius: RadiusCase,
+        roundingStyle: CornerStyle.RoundingStyle
+    ) {
+        let corner = Corner(
+            .rounded(radius: radius.value, style: roundingStyle),
+            point: CGPoint.zero
+        )
         let before = corner.dimensions(
             previousPoint: CGPoint(x: 100, y: -0.0001),
             nextPoint: CGPoint(x: 100, y: 0.0001)
@@ -171,9 +211,19 @@ struct CornerDimensionsPathTests {
         #expect(after.cornerEnd.isApproximatelyEqual(to: exact.cornerEnd, tolerance: 0.0002))
     }
 
-    @Test("Effective cut length is continuous through 180 degrees", arguments: RadiusCase.all)
-    func cutLengthIsContinuousThroughStraightAngle(radius: RadiusCase) {
-        let corner = Corner(.rounded(radius: radius.value), point: CGPoint.zero)
+    @Test(
+        "Effective cut length is continuous through 180 degrees",
+        arguments: RadiusCase.all,
+        [CornerStyle.RoundingStyle.circular, .continuous]
+    )
+    func cutLengthIsContinuousThroughStraightAngle(
+        radius: RadiusCase,
+        roundingStyle: CornerStyle.RoundingStyle
+    ) {
+        let corner = Corner(
+            .rounded(radius: radius.value, style: roundingStyle),
+            point: CGPoint.zero
+        )
         let before = corner.dimensions(
             previousPoint: CGPoint(x: -100, y: -0.0001),
             nextPoint: CGPoint(x: 100, y: -0.0001)
@@ -214,7 +264,7 @@ struct CornerDimensionsPathTests {
         switch styleKind {
         case .automatic, .point:
             expected.move(to: .zero)
-        case .rounded:
+        case .rounded, .roundedContinuous:
             expected.move(to: CGPoint(x: 50, y: 0))
         case .concave:
             expected.move(to: CGPoint(x: 50, y: 0))
@@ -247,7 +297,7 @@ struct CornerDimensionsPathTests {
         switch styleKind {
         case .automatic, .point:
             expected.move(to: .zero)
-        case .rounded, .concave, .straight:
+        case .rounded, .roundedContinuous, .concave, .straight:
             expected.move(to: CGPoint(x: -50, y: 0))
             expected.addLine(to: CGPoint(x: 50, y: 0))
         case .cutout:
@@ -281,6 +331,187 @@ struct CornerDimensionsPathTests {
         #expect(path.boundingRect.isApproximatelyEqual(to: arc.expectedBounds, tolerance: 1e-10))
     }
 
+    @Test("A 90-degree continuous corner matches SwiftUI's continuous profile")
+    func rightAngleContinuousCornerMatchesSwiftUIContinuousProfile() {
+        let corner = Corner(
+            .rounded(radius: 20, style: .continuous),
+            point: CGPoint(x: 100, y: 100)
+        )
+        let dimensions = corner.dimensions(
+            previousPoint: CGPoint(x: 100, y: 0),
+            nextPoint: CGPoint(x: 0, y: 100)
+        )
+
+        var expected = Path()
+        expected.move(to: CGPoint(x: 100, y: 69.42670106887817))
+        expected.addCurve(
+            to: CGPoint(x: 98.50177198648453, y: 87.37012028694153),
+            control1: CGPoint(x: 100, y: 78.23019981384277),
+            control2: CGPoint(x: 100, y: 82.63185977935791)
+        )
+        expected.addCurve(
+            to: CGPoint(x: 87.37012028694153, y: 98.50177198648453),
+            control1: CGPoint(x: 96.61879986524582, y: 92.5435197353363),
+            control2: CGPoint(x: 92.5435197353363, y: 96.61879986524582)
+        )
+        expected.addCurve(
+            to: CGPoint(x: 69.42670106887817, y: 100),
+            control1: CGPoint(x: 82.63185977935791, y: 100),
+            control2: CGPoint(x: 78.23019981384277, y: 100)
+        )
+
+        #expect(path(for: dimensions) == expected)
+    }
+
+    @Test(
+        "Rounding styles resolve the same nominal radius",
+        arguments: RadiusCase.all
+    )
+    func roundingStylesResolveTheSameNominalRadius(radius: RadiusCase) {
+        let circular = Corner(
+            .rounded(radius: radius.value),
+            point: CGPoint.zero
+        ).dimensions(
+            previousPoint: CGPoint(x: 0, y: 100),
+            nextPoint: CGPoint(x: 100, y: 0)
+        )
+        let continuous = Corner(
+            .rounded(radius: radius.value, style: .continuous),
+            point: CGPoint.zero
+        ).dimensions(
+            previousPoint: CGPoint(x: 0, y: 100),
+            nextPoint: CGPoint(x: 100, y: 0)
+        )
+
+        #expect(continuous.absoluteRadius.isApproximatelyEqual(
+            to: circular.absoluteRadius,
+            tolerance: 1e-10
+        ))
+        let multiplier = 1 + (
+            0.5286649465560913 * pow(sin(continuous.angle.radians), 2)
+        )
+        #expect(continuous.cutLength.isApproximatelyEqual(
+            to: circular.cutLength * multiplier,
+            tolerance: 1e-10
+        ))
+    }
+
+    @Test(
+        "A relative continuous radius retains its nominal scale at arbitrary angles",
+        arguments: ContinuousCornerAngleCase.all
+    )
+    func relativeContinuousRadiusRetainsNominalScale(angle: ContinuousCornerAngleCase) {
+        let radius = RelatableValue.relative(0.25)
+        let circular = Corner(
+            .rounded(radius: radius),
+            point: CGPoint.zero
+        ).dimensions(previousPoint: angle.previous, nextPoint: angle.next)
+        let continuous = Corner(
+            .rounded(radius: radius, style: .continuous),
+            point: CGPoint.zero
+        ).dimensions(previousPoint: angle.previous, nextPoint: angle.next)
+
+        #expect(continuous.absoluteRadius.isApproximatelyEqual(
+            to: circular.absoluteRadius,
+            tolerance: 1e-8
+        ))
+        let multiplier = 1 + (
+            0.5286649465560913 * pow(sin(continuous.angle.radians), 2)
+        )
+        #expect(continuous.cutLength.isApproximatelyEqual(
+            to: circular.cutLength * multiplier,
+            tolerance: 1e-8
+        ))
+    }
+
+    @Test(
+        "Continuous-corner approximation stays within tolerance",
+        arguments: [CGFloat(15), 45, 135, 165]
+    )
+    func continuousCornerApproximationStaysWithinTolerance(degrees: CGFloat) throws {
+        let angle = Angle.degrees(degrees)
+        let dimensions = Corner(
+            .rounded(radius: 20, style: .continuous),
+            point: CGPoint.zero
+        ).dimensions(
+            previousPoint: CGPoint(x: 100, y: 0),
+            nextPoint: CGPoint(
+                x: 100 * cos(angle.radians),
+                y: 100 * sin(angle.radians)
+            )
+        )
+        var path = Path()
+        dimensions.addCornerShape(to: &path, moveToStart: true)
+        let segments = CubicPathTestSupport.segments(in: path)
+        try #require(segments.count == 8)
+        // Keep the cubic path within 0.2% of the corner footprint, with a
+        // 0.01-point floor for very small corners and Path storage precision.
+        let tolerance = max(dimensions.cutLength * 2e-3, 0.01)
+
+        let errors = (0...64).map { step in
+            let parameter = CGFloat(step) / 64
+            let scaledParameter = parameter * CGFloat(segments.count)
+            let index = min(Int(scaledParameter), segments.count - 1)
+            let localParameter = scaledParameter - CGFloat(index)
+            let actual = segments[index].point(at: localParameter)
+            let expected = dimensions.continuousCornerPoint(at: parameter)
+            return CubicPathTestSupport.distance(
+                from: actual,
+                to: expected
+            )
+        }
+        let maxError = try #require(errors.max())
+        #expect(maxError <= tolerance)
+    }
+
+    @Test(
+        "Continuous corners have zero-curvature edge joins at arbitrary angles",
+        arguments: ContinuousCornerAngleCase.all
+    )
+    func continuousCornersHaveZeroCurvatureEdgeJoins(angle: ContinuousCornerAngleCase) throws {
+        let corner = Corner(
+            .rounded(radius: 20, style: .continuous),
+            point: CGPoint.zero
+        )
+        let dimensions = corner.dimensions(
+            previousPoint: angle.previous,
+            nextPoint: angle.next
+        )
+        let segments = CubicPathTestSupport.segments(
+            in: path(for: dimensions)
+        )
+        let first = try #require(segments.first)
+        let last = try #require(segments.last)
+        let tolerance = max(dimensions.cutLength * 1e-6, 1e-6)
+
+        #expect(CubicPathTestSupport.distance(
+            from: first.control1,
+            toLineFrom: first.start,
+            through: corner.point
+        ) <= tolerance)
+        #expect(CubicPathTestSupport.distance(
+            from: first.control2,
+            toLineFrom: first.start,
+            through: corner.point
+        ) <= tolerance)
+        #expect(CubicPathTestSupport.distance(
+            from: last.control1,
+            toLineFrom: corner.point,
+            through: last.end
+        ) <= tolerance)
+        #expect(CubicPathTestSupport.distance(
+            from: last.control2,
+            toLineFrom: corner.point,
+            through: last.end
+        ) <= tolerance)
+
+        for (firstSegment, secondSegment) in zip(segments, segments.dropFirst()) {
+            let incoming = firstSegment.end.vector - firstSegment.control2.vector
+            let outgoing = secondSegment.control1.vector - secondSegment.start.vector
+            #expect(incoming.normalized.crossProduct(with: outgoing.normalized).magnitude <= 5e-5)
+        }
+    }
+
     private func path(for dimensions: Corner.Dimensions) -> Path {
         var path = Path()
         dimensions.addCornerShape(to: &path, moveToStart: true)
@@ -298,6 +529,8 @@ extension CornerDimensionsPathTests.StyleKind {
             .point
         case .rounded:
             .rounded(radius: radius)
+        case .roundedContinuous:
+            .rounded(radius: radius, style: .continuous)
         case .concave:
             .concave(radius: radius)
         case .straight:

@@ -12,6 +12,17 @@ import Testing
 struct CornerStyleApplicationTests {
     private let defaultStyle = CornerStyle.rounded(radius: 10)
 
+    @Test("Rounded corners are circular by default and preserve their style")
+    func roundingStyleDefaultsAndRadiusChanges() {
+        let defaultRounded = CornerStyle.rounded(radius: 10)
+        let continuous = CornerStyle.rounded(radius: 10, style: .continuous)
+
+        #expect(defaultRounded == .rounded(radius: 10, style: .circular))
+        #expect(defaultRounded.changingRadius(to: 20) == .rounded(radius: 20, style: .circular))
+        #expect(continuous.changingRadius(to: 20) == .rounded(radius: 20, style: .continuous))
+        #expect(Corner(x: 0, y: 0).rounded(radius: 10, style: .continuous).style == continuous)
+    }
+
     @Test("CornerStylable derives default styling from its transformation requirement")
     func cornerStylableDerivesDefaultStyling() {
         let stylable = TestCornerStylable(styles: [.automatic, .point, .rounded(radius: 5)])

@@ -85,8 +85,8 @@ extension Corner.Dimensions {
         case .point:
             insetCornerStyle = .point
             
-        case .rounded:
-            insetCornerStyle = .rounded(radius: insetRadius)
+        case let .rounded(_, style):
+            insetCornerStyle = .rounded(radius: insetRadius, style: style)
             
         case .concave:
             insetCornerStyle = .concave(

@@ -9,16 +9,30 @@ import SwiftUI
 
 /// An enum describing a corner style including subproperties.
 public enum CornerStyle: Hashable, Codable, Sendable {
+    /// The curve used to draw a rounded corner.
+    public enum RoundingStyle: String, Hashable, Codable, Sendable {
+        /// A circular arc.
+        case circular
+
+        /// A continuous corner curve with zero-curvature edge joins.
+        ///
+        /// At 90 degrees, the curve matches SwiftUI's continuous rounded
+        /// rectangle profile. Other angles blend that profile with a symmetric
+        /// superformula curve generalized to the supplied angle.
+        case continuous
+    }
+
     /// An automatic style that resolves to ``point`` when no default is supplied.
     case automatic
 
     /// An explicit point corner with no additional styling.
     case point
     
-    /// A rounded corner style with a specified radius.
+    /// A rounded corner style with a specified radius and rounding style.
     ///  - Parameters:
     ///   - radius: Radius of a circle used to round this corner. Relative values relate to the shortest of the two lines from this corner.
-    case rounded(radius: RelatableValue)
+    ///   - style: Shape of the rounded corner. Defaults to ``RoundingStyle/circular``.
+    case rounded(radius: RelatableValue, style: RoundingStyle = .circular)
     
     /// A concave corner style with a specified radius.
     ///
@@ -93,7 +107,7 @@ public extension CornerStyle {
         get {
             switch self {
             case .automatic, .point: .zero
-            case let .rounded(radius): radius
+            case let .rounded(radius, _): radius
             case let .concave(radius, _): radius
             case let .straight(radius, _): radius
             case let .cutout(radius, _): radius
@@ -189,8 +203,8 @@ public extension CornerStyle {
         switch self {
         case .automatic, .point:
             self
-        case .rounded:
-            .rounded(radius: radius)
+        case let .rounded(_, style):
+            .rounded(radius: radius, style: style)
         case let .concave(_, concaveInset):
             .concave(radius: radius, concaveInset: concaveInset)
         case let .straight(_, cornerStyles):

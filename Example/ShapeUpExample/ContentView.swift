@@ -43,6 +43,10 @@ struct ContentView: View {
             NavigationLink(destination: CornerInsetContinuityExample()) {
                 Label("Inset Continuity", systemImage: "angle")
             }
+
+            NavigationLink(destination: ContinuousCornerExample()) {
+                Label("Continuous Corners", systemImage: "square.on.square")
+            }
             
             
         } header: {

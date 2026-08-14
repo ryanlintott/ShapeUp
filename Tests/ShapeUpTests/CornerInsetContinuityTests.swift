@@ -66,6 +66,36 @@ struct CornerInsetContinuityTests {
         ]
     }
 
+    struct ContinuousCornerInsetCase: CustomTestStringConvertible, Sendable {
+        let degrees: CGFloat
+        let inset: CGFloat
+
+        var testDescription: String { "\(degrees) degrees inset \(inset)" }
+
+        static let all: [Self] = [CGFloat(15), 30, 60, 120, 150].flatMap { degrees in
+            [
+                .init(degrees: degrees, inset: 5),
+                .init(degrees: degrees, inset: -5)
+            ]
+        }
+    }
+
+    struct LowAngleInsetCase: CustomTestStringConvertible, Sendable {
+        let degrees: CGFloat
+        let inset: CGFloat
+
+        var testDescription: String { "\(degrees) degrees inset \(inset)" }
+
+        static let all: [Self] = [CGFloat(1), 5, 10, 15, 20, 25]
+            .flatMap { degrees in
+                [
+                    .init(degrees: degrees, inset: 0.1),
+                    .init(degrees: degrees, inset: 5),
+                    .init(degrees: degrees, inset: -5)
+                ]
+            }
+    }
+
     @Test(
         "Insets stay finite for every style around 0 and 180 degrees",
         arguments: StyleKind.allCases,
@@ -165,11 +195,170 @@ struct CornerInsetContinuityTests {
         let concave = Corner(.concave(radius: 20), point: CGPoint.zero)
             .dimensions(previousPoint: previous, nextPoint: next)
             .corner(inset: inset)
+        let continuous = Corner(
+            .rounded(radius: 20, style: .continuous),
+            point: CGPoint.zero
+        )
+        .dimensions(previousPoint: previous, nextPoint: next)
+        .corner(inset: inset)
 
         #expect(rounded.point.isApproximatelyEqual(to: CGPoint(x: 10, y: 10), tolerance: 1e-10))
         #expect(rounded.style == .rounded(radius: 10))
         #expect(concave.point.isApproximatelyEqual(to: CGPoint(x: 10, y: 10), tolerance: 1e-10))
         #expect(concave.style == .concave(radius: 20, concaveInset: 10))
+        #expect(continuous.point.isApproximatelyEqual(to: CGPoint(x: 10, y: 10), tolerance: 1e-10))
+        #expect(continuous.style == .rounded(radius: 10, style: .continuous))
+    }
+
+    @Test(
+        "Inset relative rounded radii retain the same nominal scale",
+        arguments: [CGFloat(5), -5]
+    )
+    func insetRelativeRoundedRadiiRetainNominalScale(inset: CGFloat) {
+        let previous = CGPoint(x: 0, y: 100)
+        let next = CGPoint(x: 100, y: 0)
+        let radius = RelatableValue.relative(0.25)
+        let circularDimensions = Corner(
+            .rounded(radius: radius),
+            point: CGPoint.zero
+        ).dimensions(previousPoint: previous, nextPoint: next)
+        let continuousDimensions = Corner(
+            .rounded(radius: radius, style: .continuous),
+            point: CGPoint.zero
+        ).dimensions(previousPoint: previous, nextPoint: next)
+        let circular = circularDimensions.corner(inset: inset)
+        let continuous = continuousDimensions.corner(inset: inset)
+        let expectedRadius = circularDimensions.absoluteRadius - inset
+
+        #expect(circular.style == .rounded(radius: .absolute(expectedRadius)))
+        #expect(continuous.style == .rounded(
+            radius: .absolute(expectedRadius),
+            style: .continuous
+        ))
+    }
+
+    @Test(
+        "Low-angle inset rounding styles retain the same nominal radius",
+        arguments: LowAngleInsetCase.all
+    )
+    func lowAngleInsetRoundingStylesRetainNominalRadius(
+        sample: LowAngleInsetCase
+    ) {
+        let halfAngle = Angle.degrees(sample.degrees / 2)
+        let points = [
+            CGPoint.zero.moved(Vector2(magnitude: 100, direction: halfAngle)),
+            CGPoint.zero,
+            CGPoint.zero.moved(Vector2(magnitude: 100, direction: -halfAngle))
+        ]
+        let circularDimensions = Corner(
+            .rounded(radius: .relative(0.25)),
+            point: points[1]
+        ).dimensions(previousPoint: points[0], nextPoint: points[2])
+        let continuousDimensions = Corner(
+            .rounded(radius: .relative(0.25), style: .continuous),
+            point: points[1]
+        ).dimensions(previousPoint: points[0], nextPoint: points[2])
+        let insetPoints = points.insetPoints(sample.inset)
+        let circularInset = circularDimensions
+            .corner(inset: sample.inset)
+            .dimensions(previousPoint: insetPoints[0], nextPoint: insetPoints[2])
+        let continuousInset = continuousDimensions
+            .corner(inset: sample.inset)
+            .dimensions(previousPoint: insetPoints[0], nextPoint: insetPoints[2])
+
+        #expect(
+            abs(continuousInset.absoluteRadius - circularInset.absoluteRadius)
+                <= 1e-8
+        )
+        #expect(continuousInset.cutLength <= continuousInset.maxCutLength)
+    }
+
+    @Test("An inset continuous rectangle matches SwiftUI's path")
+    func insetContinuousRectangleMatchesSwiftUIPath() {
+        let rect = CGRect(x: 0, y: 0, width: 100, height: 100)
+        let shapeUpPath = rect
+            .corners(.rounded(radius: 20, style: .continuous))
+            .inset(by: 5)
+            .path()
+        let swiftUIPath = RoundedRectangle(
+            cornerRadius: 20,
+            style: SwiftUI.RoundedCornerStyle.continuous
+        )
+        .inset(by: 5)
+        .path(in: rect)
+
+        let shapeUpSegments = shapeUpPath.sortedCubicSegments
+        let swiftUISegments = swiftUIPath.sortedCubicSegments
+
+        #expect(shapeUpSegments.count == swiftUISegments.count)
+        for (shapeUpSegment, swiftUISegment) in zip(shapeUpSegments, swiftUISegments) {
+            // User-created Path elements are stored at lower precision than
+            // SwiftUI's internal rounded-rectangle path representation.
+            #expect(shapeUpSegment.end.isApproximatelyEqual(to: swiftUISegment.end, tolerance: 5e-6))
+            #expect(shapeUpSegment.control1.isApproximatelyEqual(to: swiftUISegment.control1, tolerance: 5e-6))
+            #expect(shapeUpSegment.control2.isApproximatelyEqual(to: swiftUISegment.control2, tolerance: 5e-6))
+        }
+    }
+
+    @Test(
+        "Inset continuous corners retain zero-curvature joins at arbitrary angles",
+        arguments: ContinuousCornerInsetCase.all
+    )
+    func insetContinuousCornersRetainZeroCurvatureJoins(sample: ContinuousCornerInsetCase) throws {
+        let angle = Angle.degrees(sample.degrees)
+        let points = [
+            CGPoint(x: 100, y: 0),
+            CGPoint.zero,
+            CGPoint(x: 100 * cos(angle.radians), y: 100 * sin(angle.radians))
+        ]
+        let corner = Corner(
+            .rounded(radius: 20, style: .continuous),
+            point: points[1]
+        )
+        let dimensions = corner.dimensions(
+            previousPoint: points[0],
+            nextPoint: points[2]
+        )
+        let insetPoints = points.insetPoints(sample.inset)
+        let insetCorner = dimensions.corner(inset: sample.inset)
+        let insetDimensions = insetCorner.dimensions(
+            previousPoint: insetPoints[0],
+            nextPoint: insetPoints[2]
+        )
+        let segments = CubicPathTestSupport.segments(
+            in: path(for: insetDimensions)
+        )
+        let first = try #require(segments.first)
+        let last = try #require(segments.last)
+        let tolerance = max(insetDimensions.cutLength * 1e-6, 1e-6)
+
+        #expect(insetCorner.point.isApproximatelyEqual(to: insetPoints[1], tolerance: 1e-10))
+        #expect(insetCorner.style == .rounded(
+            radius: .absolute(
+                dimensions.absoluteRadius - (sample.inset * dimensions.reflexMultiplier)
+            ),
+            style: .continuous
+        ))
+        #expect(CubicPathTestSupport.distance(
+            from: first.control1,
+            toLineFrom: first.start,
+            through: insetCorner.point
+        ) <= tolerance)
+        #expect(CubicPathTestSupport.distance(
+            from: first.control2,
+            toLineFrom: first.start,
+            through: insetCorner.point
+        ) <= tolerance)
+        #expect(CubicPathTestSupport.distance(
+            from: last.control1,
+            toLineFrom: insetCorner.point,
+            through: last.end
+        ) <= tolerance)
+        #expect(CubicPathTestSupport.distance(
+            from: last.control2,
+            toLineFrom: insetCorner.point,
+            through: last.end
+        ) <= tolerance)
     }
 
     private func path(for dimensions: Corner.Dimensions) -> Path {
@@ -200,7 +389,7 @@ private extension CornerStyle {
         switch self {
         case .automatic, .point:
             []
-        case let .rounded(radius), let .straight(radius, _), let .cutout(radius, _):
+        case let .rounded(radius, _), let .straight(radius, _), let .cutout(radius, _):
             [radius.value(using: 100)] + cornerStyles.flatMap(\.finiteScalars)
         case let .concave(radius, concaveInset):
             [radius.value(using: 100), concaveInset]
@@ -228,6 +417,12 @@ private extension Corner.Dimensions {
 }
 
 private extension Path {
+    var sortedCubicSegments: [CubicPathTestSupport.CubicBezierSegment] {
+        CubicPathTestSupport.segments(in: self).sorted {
+            ($0.end.x, $0.end.y) < ($1.end.x, $1.end.y)
+        }
+    }
+
     var insetPoints: [CGPoint] {
         var points: [CGPoint] = []
         forEach { element in

@@ -10,10 +10,11 @@ import SwiftUI
 
 struct TestClosedShape: CornerShape {
     let closed: Bool
+    let roundingStyle: CornerStyle.RoundingStyle
     var insetAmount: CGFloat = 0
     
     func corners(in rect: CGRect) -> [Corner] {
-        rect[.topLeft].rounded(radius: .relative(0.3))
+        rect[.topLeft].rounded(radius: .relative(0.3), style: roundingStyle)
         rect[.center].straight(radius: .relative(0.1))
         rect[.topRight].cutout(radius: 20)
         rect[.bottomRight].concave(radius: .relative(0.3))
@@ -33,11 +34,15 @@ struct TestClosedShape: CornerShape {
 """
 struct TestClosedShape: CornerShape {
   let closed: Bool
+  let roundingStyle: CornerStyle.RoundingStyle
   var insetAmount: CGFloat = 0
 
   func corners(in rect: CGRect) -> [Corner] {
     rect[.topLeft]
-        .rounded(radius: .relative(0.3))
+        .rounded(
+            radius: .relative(0.3),
+            style: roundingStyle
+        )
 
     rect[.center]
         .straight(radius: .relative(0.1))
@@ -56,19 +61,28 @@ struct TestClosedShape: CornerShape {
 
 struct CornerShapeExample: View {
     @State private var closed = true
+    @State private var roundingStyle = CornerStyle.RoundingStyle.circular
     @State private var insetAmount: CGFloat = 0
     
     var body: some View {
         VStack {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("Build `CornerShape` from an array of `Corner` elements easily generated from relative `RectAnchor` positions and it automatically cornforms to `InsettableShape`.")
+                    Text("Build `CornerShape` from an array of `Corner` elements easily generated from relative `RectAnchor` positions and it automatically conforms to `InsettableShape`.")
                     
                     ZStack {
-                        TestClosedShape(closed: closed, insetAmount: insetAmount)
+                        TestClosedShape(
+                            closed: closed,
+                            roundingStyle: roundingStyle,
+                            insetAmount: insetAmount
+                        )
                             .fill(Color.suCyan)
                         
-                        TestClosedShape(closed: closed, insetAmount: insetAmount)
+                        TestClosedShape(
+                            closed: closed,
+                            roundingStyle: roundingStyle,
+                            insetAmount: insetAmount
+                        )
                             .stroke(Color.suPink, lineWidth: 12)
                     }
                     .frame(width: 200, height: 150)
@@ -89,6 +103,12 @@ struct CornerShapeExample: View {
                     Picker("Shape Options", selection: $closed) {
                         Text("Closed").tag(true)
                         Text("Open").tag(false)
+                    }
+                    .pickerStyle(.segmented)
+
+                    Picker("Rounding Style", selection: $roundingStyle) {
+                        Text("Circular").tag(CornerStyle.RoundingStyle.circular)
+                        Text("Continuous").tag(CornerStyle.RoundingStyle.continuous)
                     }
                     .pickerStyle(.segmented)
                     
