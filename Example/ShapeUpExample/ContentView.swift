@@ -44,12 +44,12 @@ struct ContentView: View {
                 Label("Inset Continuity", systemImage: "angle")
             }
 
-            NavigationLink(destination: ContinuousCornerExample()) {
-                Label("Continuous Corners", systemImage: "square.on.square")
-            }
-
             if #available(iOS 16, macOS 13, tvOS 16, watchOS 9, *) {
-                NavigationLink(destination: RoundedRectangleRenderingProbe()) {
+                NavigationLink(destination: ContinuousCornerMatchExample()) {
+                    Label("Continuous Corners", systemImage: "square.on.square")
+                }
+
+                NavigationLink(destination: RoundedRectangleContinuousCornerPathMismatch()) {
                     Label("Rounded Rectangle Rendering", systemImage: "square.dashed.inset.filled")
                 }
             }

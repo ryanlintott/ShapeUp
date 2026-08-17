@@ -49,7 +49,6 @@ struct CornerExample: View {
     let shapes = ExampleShape.allCases
     
     let styles: [CornerStyle] = [
-        .automatic,
         .point,
         .rounded(radius: .zero),
         .rounded(radius: .zero, style: .continuous),
@@ -101,7 +100,7 @@ struct CornerExample: View {
                     Text(style.exampleName)
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.menu)
             
             VStack {
                 HStack {
