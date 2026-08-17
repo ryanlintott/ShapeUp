@@ -94,6 +94,33 @@ enum CubicPathTestSupport {
         (point.vector - other.vector).magnitude
     }
 
+    /// Returns the distance from a point to the nearest position on a polyline.
+    ///
+    /// Measuring against the whole polyline rather than matching parameters
+    /// keeps this a test of shape, not of how a curve is parameterized.
+    static func distance(from point: CGPoint, toPolyline polyline: [CGPoint]) -> CGFloat {
+        zip(polyline, polyline.dropFirst())
+            .map { distance(from: point, toSegmentFrom: $0, to: $1) }
+            .min() ?? .infinity
+    }
+
+    static func distance(
+        from point: CGPoint,
+        toSegmentFrom start: CGPoint,
+        to end: CGPoint
+    ) -> CGFloat {
+        let segment = end.vector - start.vector
+        let lengthSquared = segment.magnitudeSquared
+        guard lengthSquared > 0 else { return distance(from: point, to: start) }
+
+        let offset = point.vector - start.vector
+        let projection = (
+            (offset.dx * segment.dx) + (offset.dy * segment.dy)
+        ) / lengthSquared
+        let clamped = min(max(projection, 0), 1)
+        return (offset - (segment * clamped)).magnitude
+    }
+
     static func distance(
         from point: CGPoint,
         toLineFrom start: CGPoint,

@@ -130,13 +130,20 @@ struct CornerDimensionsPathTests {
                 ]
             }
 
-        var previous: CGPoint { CGPoint(x: 100, y: 0) }
+        var previous: CGPoint { previous(arm: 100) }
 
-        var next: CGPoint {
+        var next: CGPoint { next(arm: 100) }
+
+        func previous(arm: CGFloat) -> CGPoint { CGPoint(x: arm, y: 0) }
+
+        /// The corner is scale-free, so lengthening the arms scales the whole
+        /// configuration and lets a large radius be measured without being
+        /// fitted down to the shorter adjacent segment.
+        func next(arm: CGFloat) -> CGPoint {
             let angle = Angle.degrees(degrees * (reflex ? -1 : 1))
             return CGPoint(
-                x: 100 * cos(angle.radians),
-                y: 100 * sin(angle.radians)
+                x: arm * cos(angle.radians),
+                y: arm * sin(angle.radians)
             )
         }
     }
@@ -388,179 +395,134 @@ struct CornerDimensionsPathTests {
         }
     }
 
-    @Test("The continuous reference profile is symmetric")
-    func continuousReferenceProfileIsSymmetric() {
-        let corner = Corner(
-            .rounded(radius: .absolute(20), style: .continuous),
-            point: CGPoint(x: 100, y: 100)
-        )
-        let dimensions = corner.dimensions(
+    @Test("A 90-degree continuous corner uses SwiftUI's measured edge length")
+    func rightAngleContinuousCornerUsesSwiftUIEdgeLength() {
+        let radius: CGFloat = 20
+        let dimensions = Corner(
+            .rounded(radius: .absolute(radius), style: .continuous),
+            point: CGPoint.zero
+        ).dimensions(
             previousPoint: CGPoint(x: 100, y: 0),
             nextPoint: CGPoint(x: 0, y: 100)
         )
 
-        for step in 0...64 {
-            let parameter = CGFloat(step) / 64
-            let first = dimensions.continuousCornerPoint(at: parameter)
-            let mirrored = dimensions.continuousCornerPoint(at: 1 - parameter)
-            let firstOffset = CGPoint(
-                x: abs(first.x - corner.point.x),
-                y: abs(first.y - corner.point.y)
-            )
-            let mirroredOffset = CGPoint(
-                x: abs(mirrored.x - corner.point.x),
-                y: abs(mirrored.y - corner.point.y)
-            )
+        // SwiftUI's continuous 90-degree corner reaches this many times as far
+        // along each edge as a circular corner of the same radius. The whole
+        // profile is calibrated to this one measurement.
+        #expect(dimensions.cutLength.isApproximatelyEqual(
+            to: radius * 1.5286649465560913,
+            tolerance: 1e-9
+        ))
+    }
 
-            #expect(abs(firstOffset.x - mirroredOffset.y) <= 1e-9)
-            #expect(abs(firstOffset.y - mirroredOffset.x) <= 1e-9)
+    @Test("The continuous profile turns symmetrically about its midpoint")
+    func continuousProfileIsSymmetric() {
+        for step in 0...32 {
+            let parameter = CGFloat(step) / 32
+            let turn = ContinuousCornerProfile.turnFraction(at: parameter)
+            let mirroredTurn = ContinuousCornerProfile.turnFraction(at: 1 - parameter)
+
+            #expect(abs(turn + mirroredTurn - 1) <= 1e-12)
         }
     }
 
     @Test(
-        "Rounding styles resolve the same nominal radius",
-        arguments: RadiusCase.all
+        "Rounding styles resolve the same nominal radius at every angle",
+        arguments: RadiusCase.all,
+        ContinuousCornerAngleCase.all
     )
-    func roundingStylesResolveTheSameNominalRadius(radius: RadiusCase) {
+    func roundingStylesResolveTheSameNominalRadius(
+        radius: RadiusCase,
+        angle: ContinuousCornerAngleCase
+    ) {
         let circular = Corner(
             .rounded(radius: radius.value),
             point: CGPoint.zero
-        ).dimensions(
-            previousPoint: CGPoint(x: 0, y: 100),
-            nextPoint: CGPoint(x: 100, y: 0)
-        )
+        ).dimensions(previousPoint: angle.previous, nextPoint: angle.next)
         let continuous = Corner(
             .rounded(radius: radius.value, style: .continuous),
             point: CGPoint.zero
-        ).dimensions(
-            previousPoint: CGPoint(x: 0, y: 100),
-            nextPoint: CGPoint(x: 100, y: 0)
-        )
+        ).dimensions(previousPoint: angle.previous, nextPoint: angle.next)
 
-        #expect(continuous.absoluteRadius.isApproximatelyEqual(
-            to: circular.absoluteRadius,
-            tolerance: 1e-10
-        ))
-        let multiplier = Corner.Dimensions.continuousCutLengthMultiplier(
-            for: continuous.angle
-        )
-        #expect(continuous.cutLength.isApproximatelyEqual(
-            to: circular.cutLength * multiplier,
-            tolerance: 1e-10
-        ))
+        if continuous.cutLength < continuous.maxCutLength,
+           circular.cutLength < circular.maxCutLength {
+            #expect(continuous.absoluteRadius.isApproximatelyEqual(
+                to: circular.absoluteRadius,
+                tolerance: 1e-8
+            ))
+        } else {
+            // A radius too large for its corner is fitted to the shorter
+            // adjacent segment. A continuous corner spends more of that segment
+            // on the same radius, so it reaches the limit first.
+            #expect(continuous.absoluteRadius <= circular.absoluteRadius)
+        }
     }
 
     @Test(
-        "A relative continuous radius retains its nominal scale at arbitrary angles",
+        "Continuous corners hold their curvature scale at every angle",
         arguments: ContinuousCornerAngleCase.all
     )
-    func relativeContinuousRadiusRetainsNominalScale(angle: ContinuousCornerAngleCase) {
-        let radius = RelatableValue.relative(0.25)
-        let circular = Corner(
-            .rounded(radius: radius),
-            point: CGPoint.zero
-        ).dimensions(previousPoint: angle.previous, nextPoint: angle.next)
-        let continuous = Corner(
-            .rounded(radius: radius, style: .continuous),
+    func continuousCornersHoldCurvatureScale(angle: ContinuousCornerAngleCase) throws {
+        let dimensions = Corner(
+            .rounded(radius: .absolute(25), style: .continuous),
             point: CGPoint.zero
         ).dimensions(previousPoint: angle.previous, nextPoint: angle.next)
 
-        #expect(continuous.absoluteRadius.isApproximatelyEqual(
-            to: circular.absoluteRadius,
-            tolerance: 1e-8
-        ))
-        let multiplier = Corner.Dimensions.continuousCutLengthMultiplier(
-            for: continuous.angle
-        )
-        #expect(continuous.cutLength.isApproximatelyEqual(
-            to: circular.cutLength * multiplier,
-            tolerance: 1e-8
-        ))
+        // The tightest curvature of a circular corner is its radius. A
+        // continuous corner instead reaches a fixed fraction of it, and that
+        // fraction is what has to stay put as the angle changes.
+        let tightestCurvatureRadius = CubicPathTestSupport
+            .segments(in: path(for: dimensions))
+            .flatMap { segment in
+                (0...8).map { segment.curvatureRadius(at: CGFloat($0) / 8) }
+            }
+            .min()
+        let ratio = try #require(tightestCurvatureRadius) / dimensions.absoluteRadius
+
+        #expect(abs(ratio - 0.8) <= 0.02)
     }
 
     @Test(
-        "Continuous corners retain SwiftUI's curvature scale at arbitrary angles",
-        arguments: [
-            CGFloat(15), 30, 60, 68.19859051364818, 89,
-            91, 111.80140948635182, 120, 150, 165
-        ]
+        "The cubic path stays on the continuous corner curve",
+        arguments: ContinuousCornerAngleCase.all,
+        [CGFloat(20), 500]
     )
-    func continuousCornersRetainSwiftUICurvatureScale(degrees: CGFloat) throws {
-        let radius: CGFloat = 25
-        let reference = Corner(
-            .rounded(radius: .absolute(radius), style: .continuous),
-            point: CGPoint.zero
-        ).dimensions(
-            previousPoint: CGPoint(x: 100, y: 0),
-            nextPoint: CGPoint(x: 0, y: 100)
-        )
-        let angle = Angle.degrees(degrees)
+    func continuousCornerPathStaysOnItsCurve(
+        angle: ContinuousCornerAngleCase,
+        radius: CGFloat
+    ) throws {
+        // Arms long enough that even the sharpest corner keeps its full
+        // radius. Two radii an order of magnitude apart check that nothing in
+        // the corner depends on absolute scale.
+        let arm = radius * 200
         let dimensions = Corner(
             .rounded(radius: .absolute(radius), style: .continuous),
             point: CGPoint.zero
         ).dimensions(
-            previousPoint: CGPoint(x: 100, y: 0),
-            nextPoint: CGPoint(
-                x: 100 * cos(angle.radians),
-                y: 100 * sin(angle.radians)
-            )
+            previousPoint: angle.previous(arm: arm),
+            nextPoint: angle.next(arm: arm)
         )
-
-        let referenceSegments = CubicPathTestSupport.segments(
-            in: path(for: reference)
-        )
-        let segments = CubicPathTestSupport.segments(
-            in: path(for: dimensions)
-        )
-        let referenceMiddle = try #require(referenceSegments.dropFirst(6).first)
-        let middle = try #require(segments.dropFirst(6).first)
-        let referenceRatio = referenceMiddle.curvatureRadius(at: 0.5)
-            / reference.absoluteRadius
-        let ratio = middle.curvatureRadius(at: 0.5)
-            / dimensions.absoluteRadius
-        let difference: CGFloat = abs(ratio - referenceRatio)
-
-        #expect(difference <= 0.02)
-    }
-
-    @Test(
-        "Continuous-corner approximation stays within tolerance",
-        arguments: [CGFloat(15), 45, 135, 165]
-    )
-    func continuousCornerApproximationStaysWithinTolerance(degrees: CGFloat) throws {
-        let angle = Angle.degrees(degrees)
-        let dimensions = Corner(
-            .rounded(radius: 20, style: .continuous),
-            point: CGPoint.zero
-        ).dimensions(
-            previousPoint: CGPoint(x: 100, y: 0),
-            nextPoint: CGPoint(
-                x: 100 * cos(angle.radians),
-                y: 100 * sin(angle.radians)
-            )
-        )
-        var path = Path()
-        dimensions.addCornerShape(to: &path, moveToStart: true)
-        let segments = CubicPathTestSupport.segments(in: path)
-        try #require(segments.count == 16)
-        // Keep the cubic path within 0.2% of the corner footprint, with a
-        // 0.01-point floor for very small corners and Path storage precision.
-        let tolerance = max(dimensions.cutLength * 2e-3, 0.01)
-
-        let errors = (0...64).map { step in
-            let parameter = CGFloat(step) / 64
-            let scaledParameter = parameter * CGFloat(segments.count)
-            let index = min(Int(scaledParameter), segments.count - 1)
-            let localParameter = scaledParameter - CGFloat(index)
-            let actual = segments[index].point(at: localParameter)
-            let expected = dimensions.continuousCornerPoint(at: parameter)
-            return CubicPathTestSupport.distance(
-                from: actual,
-                to: expected
-            )
+        let curve = (0...1024).map {
+            dimensions.continuousCornerPoint(at: CGFloat($0) / 1024)
         }
-        let maxError = try #require(errors.max())
-        #expect(maxError <= tolerance)
+
+        // The deviation of a cubic path from its curve is a fixed fraction of
+        // the radius, not a fixed distance, so the limit has to be a fraction
+        // too. Sixteen segments hold about 3e-5 of the radius; this leaves room
+        // for arithmetic differences while still failing if the curve is
+        // tessellated more coarsely.
+        let tolerance = dimensions.absoluteRadius * 1e-4
+
+        let deviation = CubicPathTestSupport
+            .segments(in: path(for: dimensions))
+            .flatMap { segment in
+                (0...16).map { segment.point(at: CGFloat($0) / 16) }
+            }
+            .map { CubicPathTestSupport.distance(from: $0, toPolyline: curve) }
+            .max()
+
+        #expect(dimensions.absoluteRadius.isApproximatelyEqual(to: radius, tolerance: 1e-9))
+        #expect(try #require(deviation) <= tolerance)
     }
 
     @Test(

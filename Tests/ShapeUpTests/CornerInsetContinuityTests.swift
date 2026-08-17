@@ -96,54 +96,6 @@ struct CornerInsetContinuityTests {
             }
     }
 
-    struct SwiftUIContinuousRectangleCase: CustomTestStringConvertible, Sendable {
-        let name: String
-        let size: CGSize
-        let radius: CGFloat
-        let inset: CGFloat
-
-        var testDescription: String { name }
-
-        static let all: [Self] = [
-            .init(
-                name: "square",
-                size: CGSize(width: 100, height: 100),
-                radius: 20,
-                inset: 0
-            ),
-            .init(
-                name: "inset square",
-                size: CGSize(width: 100, height: 100),
-                radius: 20,
-                inset: 5
-            ),
-            .init(
-                name: "example rectangle",
-                size: CGSize(width: 358, height: 358 / 1.5),
-                radius: 50,
-                inset: 10
-            ),
-            .init(
-                name: "outset rectangle",
-                size: CGSize(width: 358, height: 358 / 1.5),
-                radius: 50,
-                inset: -20
-            ),
-            .init(
-                name: "large unconstrained radius",
-                size: CGSize(width: 358, height: 358 / 1.5),
-                radius: 80,
-                inset: 10
-            ),
-            .init(
-                name: "large unconstrained square",
-                size: CGSize(width: 329, height: 329),
-                radius: 91,
-                inset: 2
-            )
-        ]
-    }
-
     @Test(
         "Insets stay finite for every style around 0 and 180 degrees",
         arguments: StyleKind.allCases,
@@ -321,113 +273,38 @@ struct CornerInsetContinuityTests {
         #expect(continuousInset.cutLength <= continuousInset.maxCutLength)
     }
 
-    #if os(macOS)
+    /// Insetting only has to produce another continuous corner with the
+    /// expected nominal radius. Everything that curve then guarantees is
+    /// covered by the continuous corner tests in `CornerDimensionsPathTests`.
     @Test(
-        "Unconstrained continuous rectangles approximate SwiftUI's rendering",
-        arguments: SwiftUIContinuousRectangleCase.all
-    )
-    @available(macOS 13, *)
-    @MainActor
-    func continuousRectangleApproximatesSwiftUIRendering(
-        sample: SwiftUIContinuousRectangleCase
-    ) throws {
-        let scale: CGFloat = 4
-        let directMask = try RenderedShapeTestSupport.mask(scale: scale) {
-            RoundedRectangle(
-                cornerRadius: sample.radius,
-                style: SwiftUI.RoundedCornerStyle.continuous
-            )
-            .inset(by: sample.inset)
-            .fill(.white)
-            .frame(width: sample.size.width, height: sample.size.height)
-            .background(.black)
-        }
-        let shapeUpMask = try RenderedShapeTestSupport.mask(scale: scale) {
-            CornerRectangle()
-                .defaultCornerStyle(
-                    .rounded(
-                        radius: .absolute(sample.radius),
-                        style: .continuous
-                    )
-                )
-                .inset(by: sample.inset)
-                .fill(.white)
-                .frame(width: sample.size.width, height: sample.size.height)
-                .background(.black)
-        }
-        let difference = RenderedShapeTestSupport.difference(
-            between: directMask,
-            and: shapeUpMask
-        )
-        let materialPixelLimit = Int(Double(directMask.count) * 0.006)
-
-        #expect(
-            difference.materiallyChangedPixels <= materialPixelLimit,
-            "Changed: \(difference.changedPixels), material: \(difference.materiallyChangedPixels), max: \(difference.maximumDifference)"
-        )
-        #expect(difference.maximumDifference <= 160)
-    }
-    #endif
-
-    @Test(
-        "Inset continuous corners retain zero-curvature joins at arbitrary angles",
+        "Insetting a continuous corner keeps its style and nominal radius",
         arguments: ContinuousCornerInsetCase.all
     )
-    func insetContinuousCornersRetainZeroCurvatureJoins(sample: ContinuousCornerInsetCase) throws {
+    func insettingContinuousCornersKeepsStyleAndNominalRadius(
+        sample: ContinuousCornerInsetCase
+    ) {
         let angle = Angle.degrees(sample.degrees)
         let points = [
             CGPoint(x: 100, y: 0),
             CGPoint.zero,
             CGPoint(x: 100 * cos(angle.radians), y: 100 * sin(angle.radians))
         ]
-        let corner = Corner(
+        let dimensions = Corner(
             .rounded(radius: 20, style: .continuous),
             point: points[1]
-        )
-        let dimensions = corner.dimensions(
-            previousPoint: points[0],
-            nextPoint: points[2]
-        )
-        let insetPoints = points.insetPoints(sample.inset)
+        ).dimensions(previousPoint: points[0], nextPoint: points[2])
         let insetCorner = dimensions.corner(inset: sample.inset)
-        let insetDimensions = insetCorner.dimensions(
-            previousPoint: insetPoints[0],
-            nextPoint: insetPoints[2]
-        )
-        let segments = CubicPathTestSupport.segments(
-            in: path(for: insetDimensions)
-        )
-        let first = try #require(segments.first)
-        let last = try #require(segments.last)
-        let tolerance = max(insetDimensions.cutLength * 1e-6, 1e-6)
 
-        #expect(insetCorner.point.isApproximatelyEqual(to: insetPoints[1], tolerance: 1e-10))
+        #expect(insetCorner.point.isApproximatelyEqual(
+            to: points.insetPoints(sample.inset)[1],
+            tolerance: 1e-10
+        ))
         #expect(insetCorner.style == .rounded(
             radius: .absolute(
                 dimensions.absoluteRadius - (sample.inset * dimensions.reflexMultiplier)
             ),
             style: .continuous
         ))
-        #expect(CubicPathTestSupport.distance(
-            from: first.control1,
-            toLineFrom: first.start,
-            through: insetCorner.point
-        ) <= tolerance)
-        #expect(CubicPathTestSupport.distance(
-            from: first.control2,
-            toLineFrom: first.start,
-            through: insetCorner.point
-        ) <= tolerance)
-        #expect(CubicPathTestSupport.distance(
-            from: last.control1,
-            toLineFrom: insetCorner.point,
-            through: last.end
-        ) <= tolerance)
-        #expect(CubicPathTestSupport.distance(
-            from: last.control2,
-            toLineFrom: insetCorner.point,
-            through: last.end
-        ) <= tolerance)
     }
 
     private func path(for dimensions: Corner.Dimensions) -> Path {

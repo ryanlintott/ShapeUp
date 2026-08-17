@@ -8,393 +8,128 @@
 import SwiftUI
 
 extension Corner.Dimensions {
+    /// The angle the corner curve turns through.
+    ///
+    /// Zero at a straight corner and 180 degrees at a zero-degree corner.
+    internal var turnAngle: CGFloat {
+        abs(halvedRadiusAngle.radians * 2)
+    }
+
+    /// The arc length of the corner curve.
+    ///
+    /// A circular corner has an arc length of `absoluteRadius * turnAngle`.
+    /// This is the same law scaled by the profile constant, which is what keeps
+    /// the corner's curvature, and so its visual radius, matched to a circular
+    /// corner at every angle.
+    private var continuousArcLength: CGFloat {
+        ContinuousCornerProfile.arcLengthPerRadiusRadian * absoluteRadius * turnAngle
+    }
+
     /// Adds a continuous corner.
     ///
-    /// A symmetric curvature profile fitted to SwiftUI's continuous rounded 90-degree
-    /// corner. Scaling its tangent rotation and
-    /// arc length by the requested turning angle produces an intrinsic curve
-    /// without shearing the reference profile. The result retains the measured
-    /// curvature scale and zero-curvature edge joins at every angle.
+    /// The corner is a length of ``ContinuousCornerProfile`` positioned in this
+    /// corner, then approximated by evenly spaced cubic curves.
     internal func addContinuousCorner(to path: inout Path) {
-        let radiusAngle = abs(halvedRadiusAngle.radians * 2)
-
         let segmentCount = 16
-        let segmentSpan = 1 / CGFloat(segmentCount)
-        let normalizedCutLength = Self.normalizedContinuousCutLength(
-            radiusAngle: radiusAngle
-        )
-        let scale = normalizedCutLength > 1e-12
-            ? cutLength / normalizedCutLength
-            : 0
-        let samples = (0...segmentCount).map {
-            continuousCornerSample(
-                at: CGFloat($0) * segmentSpan,
-                radiusAngle: radiusAngle,
-                scale: scale
-            )
-        }
+        let samples = continuousCornerSamples(count: segmentCount)
+        // A cubic matching the curve's tangents spans a third of a segment.
+        let controlLength = continuousArcLength / CGFloat(segmentCount * 3)
 
         for index in 0..<segmentCount {
             let start = samples[index]
             let end = samples[index + 1]
-            var control1 = start.point.moved(
-                start.derivative * (segmentSpan / 3)
-            )
-            var control2 = end.point.moved(
-                -end.derivative * (segmentSpan / 3)
-            )
+            var control1 = start.point.moved(start.tangent * controlLength)
+            var control2 = end.point.moved(-end.tangent * controlLength)
 
+            // The profile starts and ends with zero curvature. Placing both
+            // control points of the first and last segments on their edge line
+            // carries that through to the cubic, so the corner meets its edges
+            // without a curvature jump.
             if index == 0 {
                 control2 = start.tangentIntersection(with: end) ?? control2
             } else if index == segmentCount - 1 {
                 control1 = start.tangentIntersection(with: end) ?? control1
             }
 
-            path.addCurve(
-                to: end.point,
-                control1: control1,
-                control2: control2
-            )
+            path.addCurve(to: end.point, control1: control1, control2: control2)
         }
     }
 
-    /// Returns the edge-length ratio between an intrinsic continuous corner and
-    /// a circular corner with the same nominal radius and angle.
+    /// Returns a point on the corner curve before its cubic approximation.
+    /// - Parameter parameter: Position along the curve as a fraction of its arc
+    ///   length.
+    /// - Returns: A point on the corner curve.
+    internal func continuousCornerPoint(at parameter: CGFloat) -> CGPoint {
+        let offset = ContinuousCornerProfile.offset(
+            at: parameter,
+            turnAngle: signedTurnAngle
+        )
+        return positioned(offset: offset)
+    }
+
+    /// Returns the edge-length ratio between a continuous corner and a circular
+    /// corner with the same nominal radius and angle.
+    /// - Parameter angle: Corner angle.
+    /// - Returns: A multiple of the circular corner's edge length.
     internal static func continuousCutLengthMultiplier(for angle: Angle) -> CGFloat {
         let cornerAngle = angle.nonReflexCoterminal.positive.radians
-        let radiusAngle = min(max(.pi - cornerAngle, 0), .pi)
-
-        if radiusAngle <= 1e-12 {
-            return straightCornerCutLengthMultiplier
-        }
-
-        if .pi - radiusAngle <= 1e-12 {
-            return zeroCornerCutLengthMultiplier
-        }
-
-        let circularCutLength = tan(radiusAngle / 2)
-        let continuousCutLength = continuousCutLengthPerRadius
-            * normalizedContinuousCutLength(radiusAngle: radiusAngle)
-        return continuousCutLength / circularCutLength
-    }
-
-    /// Returns a point on the intrinsic curve before cubic approximation.
-    internal func continuousCornerPoint(at parameter: CGFloat) -> CGPoint {
-        let radiusAngle = abs(halvedRadiusAngle.radians * 2)
-        let normalizedCutLength = Self.normalizedContinuousCutLength(
-            radiusAngle: radiusAngle
+        return ContinuousCornerProfile.cutLengthMultiplier(
+            turnAngle: min(max(.pi - cornerAngle, 0), .pi)
         )
-        let scale = normalizedCutLength > 1e-12
-            ? cutLength / normalizedCutLength
-            : 0
-        return continuousCornerSample(
-            at: parameter,
-            radiusAngle: radiusAngle,
-            scale: scale
-        ).point
     }
 }
 
 private extension Corner.Dimensions {
-    /// Edge length at SwiftUI's measured 90-degree constraint threshold for a
-    /// nominal radius of one point.
-    static let continuousCutLengthPerRadius: CGFloat = 1.5286649465560913
-
-    /// Cut-length multiplier at a straight corner, where the turning angle is
-    /// zero.
-    static let straightCornerCutLengthMultiplier =
-        continuousCutLengthPerRadius
-        * 2
-        * normalizedStraightCutLengthSlope
-
-    /// Cut-length multiplier at a zero-degree corner, where the turning angle
-    /// is 180 degrees.
-    static let zeroCornerCutLengthMultiplier: CGFloat = {
-        let end = integratedContinuousVector(
-            through: 1,
-            signedRadiusAngle: .pi
-        )
-        return continuousCutLengthPerRadius * end.dy / 2
-    }()
-
-    /// Curvature samples fitted to an unconstrained 128-point SwiftUI corner
-    /// rendered at 8x across four quarter-pixel phases. The samples are
-    /// symmetric, and their zero endpoints produce zero-curvature edge joins.
-    static let referenceCurvatureSamples: [CGFloat] = [
-        0,
-        0.126143061267713,
-        0.130089752883054,
-        0.612090852614914,
-        0.877096759961826,
-        1.5369790112525,
-        2.0743885519563,
-        1.77042874091634,
-        1.72155742814922,
-        1.77042874091634,
-        2.0743885519563,
-        1.5369790112525,
-        0.877096759961826,
-        0.612090852614914,
-        0.130089752883054,
-        0.126143061267713,
-        0
-    ]
-
-    static let referenceParameterNodes: [CGFloat] =
-        referenceCurvatureSamples.indices.map {
-            CGFloat($0) / CGFloat(referenceCurvatureSamples.count - 1)
-        }
-
-    static let referenceCurvatureIntegral = integratedReferenceCurvature(
-        through: 1
-    )
-
-    /// Normalizes the 90-degree profile endpoint to `(1, 1)`.
-    static let normalizedReferenceSpeed: CGFloat = {
-        let end = integratedUnitReferenceVector(through: 1)
-        return 2 / (end.dx + end.dy)
-    }()
-
-    /// Nodes and weights for eight-point Gauss-Legendre integration.
-    static let integrationNodes: [CGFloat] = [
-        -0.9602898564975363,
-        -0.7966664774136267,
-        -0.525532409916329,
-        -0.1834346424956498,
-        0.1834346424956498,
-        0.525532409916329,
-        0.7966664774136267,
-        0.9602898564975363
-    ]
-
-    static let integrationWeights: [CGFloat] = [
-        0.1012285362903763,
-        0.2223810344533745,
-        0.3137066458778873,
-        0.362683783378362,
-        0.362683783378362,
-        0.3137066458778873,
-        0.2223810344533745,
-        0.1012285362903763
-    ]
-
-    /// Evaluates the intrinsic continuous corner and its derivative.
-    func continuousCornerSample(
-        at parameter: CGFloat,
-        radiusAngle: CGFloat,
-        scale: CGFloat
-    ) -> CurveSample {
-        let signedRadiusAngle = radiusAngle * reflexMultiplier
-        let rotation = startVector.direction ?? .zero
-        let localPoint = Self.integratedContinuousVector(
-            through: parameter,
-            signedRadiusAngle: signedRadiusAngle
-        )
-        let localDerivative = Self.continuousDerivative(
-            at: parameter,
-            signedRadiusAngle: signedRadiusAngle
-        )
-
-        return CurveSample(
-            point: cornerStart.moved(
-                (localPoint * scale).rotated(rotation)
-            ),
-            derivative: (localDerivative * scale).rotated(rotation)
-        )
+    /// The turn angle signed so that reflex corners turn clockwise.
+    var signedTurnAngle: CGFloat {
+        turnAngle * reflexMultiplier
     }
 
-    static func normalizedContinuousCutLength(radiusAngle: CGFloat) -> CGFloat {
-        guard radiusAngle > 1e-12 else { return 0 }
-
-        if radiusAngle < 1e-6 {
-            return radiusAngle * normalizedStraightCutLengthSlope
-        }
-
-        let end = integratedContinuousVector(
-            through: 1,
-            signedRadiusAngle: radiusAngle
-        )
-        let radiusAngleSine = sin(radiusAngle)
-        guard abs(radiusAngleSine) > 1e-12 else { return .infinity }
-        return end.dx - (end.dy * cos(radiusAngle) / radiusAngleSine)
+    /// The rotation from the profile's reference frame into this corner.
+    var profileRotation: Angle {
+        startVector.direction ?? .zero
     }
 
-    static var normalizedStraightCutLengthSlope: CGFloat {
-        let length = integratedReferenceValue { derivative in
-            derivative.magnitude
-        }
-        let tangentMoment = integratedReferenceValue { derivative in
-            derivative.magnitude * atan2(derivative.dy, derivative.dx)
-        }
-        return ((2 / .pi) * length)
-            - ((4 / (.pi * .pi)) * tangentMoment)
+    /// Returns a profile offset positioned in this corner.
+    /// - Parameter offset: An offset as a fraction of the curve's arc length.
+    /// - Returns: A point on the corner curve.
+    func positioned(offset: Vector2) -> CGPoint {
+        cornerStart.moved((offset * continuousArcLength).rotated(profileRotation))
     }
 
-    /// Integrates the transformed reference velocity to produce a point on the
-    /// normalized curve.
-    static func integratedContinuousVector(
-        through parameter: CGFloat,
-        signedRadiusAngle: CGFloat
-    ) -> Vector2 {
-        integratedReferenceVector(through: parameter) { derivative in
-            // Applying the same factor to tangent rotation and arc length keeps
-            // curvature (turning per unit length) at the reference scale.
-            let angleScale = signedRadiusAngle / (.pi / 2)
-            let targetTangent = atan2(derivative.dy, derivative.dx)
-                * angleScale
-            let targetSpeed = derivative.magnitude * abs(angleScale)
-            return Vector2(
-                dx: targetSpeed * cos(targetTangent),
-                dy: targetSpeed * sin(targetTangent)
-            )
-        }
-    }
+    /// Returns evenly spaced points and unit tangents along the corner curve.
+    /// - Parameter count: The number of equal spans to divide the curve into.
+    ///   One more sample than this is returned.
+    /// - Returns: Points on the corner curve paired with unit tangents.
+    func continuousCornerSamples(count: Int) -> [CurveSample] {
+        let rotation = profileRotation
 
-    static func continuousDerivative(
-        at parameter: CGFloat,
-        signedRadiusAngle: CGFloat
-    ) -> Vector2 {
-        let derivative = referenceDerivative(at: parameter)
-        let angleScale = signedRadiusAngle / (.pi / 2)
-        let targetTangent = atan2(derivative.dy, derivative.dx)
-            * angleScale
-        let targetSpeed = derivative.magnitude * abs(angleScale)
-        return Vector2(
-            dx: targetSpeed * cos(targetTangent),
-            dy: targetSpeed * sin(targetTangent)
-        )
-    }
-
-    static func referenceDerivative(at parameter: CGFloat) -> Vector2 {
-        unitReferenceDerivative(at: parameter) * normalizedReferenceSpeed
-    }
-
-    static func unitReferenceDerivative(at parameter: CGFloat) -> Vector2 {
-        let tangent = referenceTangentFraction(at: parameter) * (.pi / 2)
-        return Vector2(dx: cos(tangent), dy: sin(tangent))
-    }
-
-    static func referenceTangentFraction(at parameter: CGFloat) -> CGFloat {
-        integratedReferenceCurvature(through: parameter)
-            / referenceCurvatureIntegral
-    }
-
-    static func integratedReferenceCurvature(
-        through parameter: CGFloat
-    ) -> CGFloat {
-        let upperBound = min(max(parameter, 0), 1)
-        var result: CGFloat = 0
-
-        for index in 0..<(referenceParameterNodes.count - 1) {
-            let lower = referenceParameterNodes[index]
-            let upper = referenceParameterNodes[index + 1]
-            guard upperBound > lower else { break }
-
-            let span = min(upperBound, upper) - lower
-            let nodeSpan = upper - lower
-            let lowerCurvature = referenceCurvatureSamples[index]
-            let curvatureSlope = (
-                referenceCurvatureSamples[index + 1] - lowerCurvature
-            ) / nodeSpan
-            result += (lowerCurvature * span)
-                + (curvatureSlope * span * span / 2)
-
-            if upperBound <= upper { break }
-        }
-        return result
-    }
-
-    static func integratedUnitReferenceVector(
-        through parameter: CGFloat
-    ) -> Vector2 {
-        let upperBound = min(max(parameter, 0), 1)
-        guard upperBound > 0 else { return .zero }
-
-        var result = Vector2.zero
-        for index in 0..<(referenceParameterNodes.count - 1) {
-            let lower = referenceParameterNodes[index]
-            let upper = min(referenceParameterNodes[index + 1], upperBound)
-            guard upper > lower else { continue }
-            result += integrateVector(from: lower, to: upper) {
-                unitReferenceDerivative(at: $0)
+        return ContinuousCornerProfile
+            .samples(count: count, turnAngle: signedTurnAngle)
+            .map {
+                CurveSample(
+                    point: positioned(offset: $0.offset),
+                    tangent: $0.tangent.rotated(rotation)
+                )
             }
-            if upper == upperBound { break }
-        }
-        return result
-    }
-
-    static func integratedReferenceVector(
-        through parameter: CGFloat,
-        transform: (Vector2) -> Vector2
-    ) -> Vector2 {
-        let upperBound = min(max(parameter, 0), 1)
-        guard upperBound > 0 else { return .zero }
-
-        var result = Vector2.zero
-        let breakpoints = referenceParameterNodes
-        for index in 0..<(breakpoints.count - 1) {
-            let lower = breakpoints[index]
-            let upper = min(breakpoints[index + 1], upperBound)
-            guard upper > lower else { continue }
-            result += integrateVector(from: lower, to: upper) {
-                transform(referenceDerivative(at: $0))
-            }
-            if upper == upperBound { break }
-        }
-        return result
-    }
-
-    static func integratedReferenceValue(
-        transform: (Vector2) -> CGFloat
-    ) -> CGFloat {
-        var result: CGFloat = 0
-        let breakpoints = referenceParameterNodes
-        for index in 0..<(breakpoints.count - 1) {
-            result += integrateValue(
-                from: breakpoints[index],
-                to: breakpoints[index + 1]
-            ) {
-                transform(referenceDerivative(at: $0))
-            }
-        }
-        return result
-    }
-
-    static func integrateVector(
-        from lowerBound: CGFloat,
-        to upperBound: CGFloat,
-        value: (CGFloat) -> Vector2
-    ) -> Vector2 {
-        let midpoint = (lowerBound + upperBound) / 2
-        let halfSpan = (upperBound - lowerBound) / 2
-        return zip(integrationNodes, integrationWeights).reduce(.zero) {
-            $0 + (value(midpoint + (halfSpan * $1.0)) * $1.1)
-        } * halfSpan
-    }
-
-    static func integrateValue(
-        from lowerBound: CGFloat,
-        to upperBound: CGFloat,
-        value: (CGFloat) -> CGFloat
-    ) -> CGFloat {
-        let midpoint = (lowerBound + upperBound) / 2
-        let halfSpan = (upperBound - lowerBound) / 2
-        return zip(integrationNodes, integrationWeights).reduce(0) {
-            $0 + (value(midpoint + (halfSpan * $1.0)) * $1.1)
-        } * halfSpan
     }
 }
 
 private struct CurveSample {
     let point: CGPoint
-    let derivative: Vector2
+    let tangent: Vector2
 
+    /// Returns the point where this sample's tangent line crosses another's.
+    ///
+    /// A nil value means the two tangents are parallel.
+    /// - Parameter other: Another sample on the same curve.
+    /// - Returns: The point where the two tangent lines cross.
     func tangentIntersection(with other: Self) -> CGPoint? {
-        let denominator = derivative.crossProduct(with: other.derivative)
+        let denominator = tangent.crossProduct(with: other.tangent)
         guard abs(denominator) > 1e-12 else { return nil }
 
         let tangentScale = (other.point.vector - point.vector)
-            .crossProduct(with: other.derivative) / denominator
-        return point.moved(derivative * tangentScale)
+            .crossProduct(with: other.tangent) / denominator
+        return point.moved(tangent * tangentScale)
     }
 }
