@@ -625,7 +625,7 @@ private extension Corner.Dimensions {
             angle.radians,
             reflexMultiplier,
             halvedNonReflexAngle.radians,
-            halvedRadiusAngle.radians,
+            halvedTurnAngle.radians,
             maxCutLength,
             maxRadius,
             absoluteRadius,

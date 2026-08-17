@@ -25,6 +25,33 @@ import SwiftUI
 /// travelling along the positive x axis, is measured by arc length as a
 /// fraction of its total, and has unit speed.
 internal enum ContinuousCornerProfile {
+    /// An offset paired with the unit tangent at that offset.
+    internal struct Sample {
+        let offset: Vector2
+        let tangent: Vector2
+    }
+
+    /// A point on the curve, placed and rotated into a path, paired with the
+    /// tangent at that point.
+    private struct PlacedSample {
+        let point: CGPoint
+        let tangent: Vector2
+
+        /// Returns the point where this sample's tangent line crosses another's.
+        ///
+        /// A nil value means the two tangents are parallel.
+        /// - Parameter other: Another sample on the same curve.
+        /// - Returns: The point where the two tangent lines cross.
+        func tangentIntersection(with other: Self) -> CGPoint? {
+            let denominator = tangent.crossProduct(with: other.tangent)
+            guard abs(denominator) > 1e-12 else { return nil }
+
+            let tangentScale = (other.point.vector - point.vector)
+                .crossProduct(with: other.tangent) / denominator
+            return point.moved(tangent * tangentScale)
+        }
+    }
+
     /// Curvature of the reference profile at evenly spaced positions from the
     /// start of the curve to its midpoint.
     ///
@@ -168,10 +195,10 @@ internal enum ContinuousCornerProfile {
     internal static func samples(
         count: Int,
         turnAngle: CGFloat
-    ) -> [(offset: Vector2, tangent: Vector2)] {
+    ) -> [Sample] {
         let spanLength = 1 / CGFloat(count)
         var offset = Vector2.zero
-        var samples = [(offset: offset, tangent: tangent(at: 0, turnAngle: turnAngle))]
+        var samples = [Sample(offset: offset, tangent: tangent(at: 0, turnAngle: turnAngle))]
 
         // Accumulate one span at a time so the whole curve is integrated once.
         for index in 0..<count {
@@ -180,7 +207,7 @@ internal enum ContinuousCornerProfile {
                 tangent(at: $0, turnAngle: turnAngle)
             }
             samples.append(
-                (offset: offset, tangent: tangent(at: parameter, turnAngle: turnAngle))
+                Sample(offset: offset, tangent: tangent(at: parameter, turnAngle: turnAngle))
             )
         }
         return samples
@@ -206,6 +233,56 @@ internal enum ContinuousCornerProfile {
 
         return arcLengthPerRadiusRadian * 2 * remainingTurn
             / (halfTurnSinc * halfTurnSinc)
+    }
+
+    /// Adds a continuous corner curve to a path.
+    ///
+    /// The curve begins at `start`, travels initially in `direction`, and
+    /// turns through `turnAngle` while holding a fixed nominal `radius`. It's
+    /// approximated with evenly spaced cubic curves.
+    /// - Parameters:
+    ///   - path: The path the curve is added to.
+    ///   - start: The point where the curve begins.
+    ///   - direction: The direction of travel at the start of the curve.
+    ///   - turnAngle: The signed angle the curve turns through. Negative
+    ///     values turn clockwise.
+    ///   - radius: The nominal radius of the curve.
+    internal static func addCurve(
+        to path: inout Path,
+        from start: CGPoint,
+        direction: Angle,
+        turnAngle: CGFloat,
+        radius: CGFloat
+    ) {
+        let segmentCount = 16
+        let arcLength = arcLengthPerRadiusRadian * radius * abs(turnAngle)
+        let placedSamples = samples(count: segmentCount, turnAngle: turnAngle).map {
+            PlacedSample(
+                point: start.moved(($0.offset * arcLength).rotated(direction)),
+                tangent: $0.tangent.rotated(direction)
+            )
+        }
+        // A cubic matching the curve's tangents spans a third of a segment.
+        let controlLength = arcLength / CGFloat(segmentCount * 3)
+
+        for index in 0..<segmentCount {
+            let start = placedSamples[index]
+            let end = placedSamples[index + 1]
+            var control1 = start.point.moved(start.tangent * controlLength)
+            var control2 = end.point.moved(-end.tangent * controlLength)
+
+            // The profile starts and ends with zero curvature. Placing both
+            // control points of the first and last segments on their edge
+            // line carries that through to the cubic, so the corner meets
+            // its edges without a curvature jump.
+            if index == 0 {
+                control2 = start.tangentIntersection(with: end) ?? control2
+            } else if index == segmentCount - 1 {
+                control1 = start.tangentIntersection(with: end) ?? control1
+            }
+
+            path.addCurve(to: end.point, control1: control1, control2: control2)
+        }
     }
 
     /// Returns `sin(x) / x`, which is continuous at zero.

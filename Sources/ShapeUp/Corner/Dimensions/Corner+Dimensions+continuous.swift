@@ -8,13 +8,6 @@
 import SwiftUI
 
 extension Corner.Dimensions {
-    /// The angle the corner curve turns through.
-    ///
-    /// Zero at a straight corner and 180 degrees at a zero-degree corner.
-    internal var turnAngle: CGFloat {
-        abs(halvedRadiusAngle.radians * 2)
-    }
-
     /// The arc length of the corner curve.
     ///
     /// A circular corner has an arc length of `absoluteRadius * turnAngle`.
@@ -22,37 +15,7 @@ extension Corner.Dimensions {
     /// the corner's curvature, and so its visual radius, matched to a circular
     /// corner at every angle.
     private var continuousArcLength: CGFloat {
-        ContinuousCornerProfile.arcLengthPerRadiusRadian * absoluteRadius * turnAngle
-    }
-
-    /// Adds a continuous corner.
-    ///
-    /// The corner is a length of ``ContinuousCornerProfile`` positioned in this
-    /// corner, then approximated by evenly spaced cubic curves.
-    internal func addContinuousCorner(to path: inout Path) {
-        let segmentCount = 16
-        let samples = continuousCornerSamples(count: segmentCount)
-        // A cubic matching the curve's tangents spans a third of a segment.
-        let controlLength = continuousArcLength / CGFloat(segmentCount * 3)
-
-        for index in 0..<segmentCount {
-            let start = samples[index]
-            let end = samples[index + 1]
-            var control1 = start.point.moved(start.tangent * controlLength)
-            var control2 = end.point.moved(-end.tangent * controlLength)
-
-            // The profile starts and ends with zero curvature. Placing both
-            // control points of the first and last segments on their edge line
-            // carries that through to the cubic, so the corner meets its edges
-            // without a curvature jump.
-            if index == 0 {
-                control2 = start.tangentIntersection(with: end) ?? control2
-            } else if index == segmentCount - 1 {
-                control1 = start.tangentIntersection(with: end) ?? control1
-            }
-
-            path.addCurve(to: end.point, control1: control1, control2: control2)
-        }
+        ContinuousCornerProfile.arcLengthPerRadiusRadian * absoluteRadius * turnAngle.radians
     }
 
     /// Returns a point on the corner curve before its cubic approximation.
@@ -80,9 +43,13 @@ extension Corner.Dimensions {
 }
 
 private extension Corner.Dimensions {
-    /// The turn angle signed so that reflex corners turn clockwise.
+    /// The turn angle in radians, signed so that reflex corners turn
+    /// clockwise.
+    ///
+    /// ``ContinuousCornerProfile`` works in raw radians rather than ``Angle``
+    /// since it's a self-contained numerical curve, not corner geometry.
     var signedTurnAngle: CGFloat {
-        turnAngle * reflexMultiplier
+        turnAngle.radians * reflexMultiplier
     }
 
     /// The rotation from the profile's reference frame into this corner.
@@ -95,41 +62,5 @@ private extension Corner.Dimensions {
     /// - Returns: A point on the corner curve.
     func positioned(offset: Vector2) -> CGPoint {
         cornerStart.moved((offset * continuousArcLength).rotated(profileRotation))
-    }
-
-    /// Returns evenly spaced points and unit tangents along the corner curve.
-    /// - Parameter count: The number of equal spans to divide the curve into.
-    ///   One more sample than this is returned.
-    /// - Returns: Points on the corner curve paired with unit tangents.
-    func continuousCornerSamples(count: Int) -> [CurveSample] {
-        let rotation = profileRotation
-
-        return ContinuousCornerProfile
-            .samples(count: count, turnAngle: signedTurnAngle)
-            .map {
-                CurveSample(
-                    point: positioned(offset: $0.offset),
-                    tangent: $0.tangent.rotated(rotation)
-                )
-            }
-    }
-}
-
-private struct CurveSample {
-    let point: CGPoint
-    let tangent: Vector2
-
-    /// Returns the point where this sample's tangent line crosses another's.
-    ///
-    /// A nil value means the two tangents are parallel.
-    /// - Parameter other: Another sample on the same curve.
-    /// - Returns: The point where the two tangent lines cross.
-    func tangentIntersection(with other: Self) -> CGPoint? {
-        let denominator = tangent.crossProduct(with: other.tangent)
-        guard abs(denominator) > 1e-12 else { return nil }
-
-        let tangentScale = (other.point.vector - point.vector)
-            .crossProduct(with: other.tangent) / denominator
-        return point.moved(tangent * tangentScale)
     }
 }

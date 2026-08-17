@@ -56,6 +56,10 @@ internal extension Angle {
     var halved: Angle {
         _angle.halved
     }
+    
+    var doubled: Angle {
+        _angle.doubled
+    }
 
     var halfAngleSine: Double {
         _angle.halfAngleSine

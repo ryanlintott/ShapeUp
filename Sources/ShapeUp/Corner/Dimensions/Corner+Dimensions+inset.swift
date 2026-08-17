@@ -44,8 +44,8 @@ extension Corner.Dimensions {
             let insetStraightCutSignMultiplier = straightCutSignMultiplier * insetStraightCutSignMatchingMultiplier
             // The positive length of the line between inset start and end
             let straightCutLength = (insetEnd.vector - insetStart.vector).magnitude * insetStraightCutSignMultiplier
-            // The radius angle will be the same for the inset. It can be used with half the straight cut line to determine the inset radius
-            let radiusAngleSine = abs(sin(halvedRadiusAngle.radians))
+            // The turn angle will be the same for the inset. It can be used with half the straight cut line to determine the inset radius
+            let radiusAngleSine = abs(sin(halvedTurnAngle.radians))
             return radiusAngleSine > 1e-12
                 ? (straightCutLength * 0.5) / radiusAngleSine
                 : absoluteRadius

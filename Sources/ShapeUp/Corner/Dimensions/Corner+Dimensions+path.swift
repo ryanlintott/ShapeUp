@@ -48,7 +48,12 @@ extension Corner.Dimensions {
             } else if isZero == false {
                 switch style {
                 case .continuous:
-                    addContinuousCorner(to: &path)
+                    // Draw a continuous curve from cornerStart to cornerEnd.
+                    path.addContinuousCurve(
+                        tangent1End: corner.point,
+                        tangent2End: cornerEnd,
+                        radius: absoluteRadius
+                    )
                 case .circular:
                     if angle.isApproximatelyStraight(tolerance: 0.01) {
                         // SwiftUI's tangent arc becomes numerically unstable when
@@ -176,7 +181,7 @@ extension Corner.Dimensions {
     /// finite as the corner approaches 180 degrees and its circular radius
     /// approaches infinity.
     private var cubicArcControlLength: CGFloat {
-        let quarterArcTangent = tan(halvedRadiusAngle.halved.radians)
+        let quarterArcTangent = tan(halvedTurnAngle.halved.radians)
         return (2 * cutLength / 3) * (1 - (quarterArcTangent * quarterArcTangent))
     }
 

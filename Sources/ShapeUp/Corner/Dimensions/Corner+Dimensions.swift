@@ -30,8 +30,9 @@ extension Corner {
         /// Half of the non-reflex version of the corner angle.
         let halvedNonReflexAngle: Angle
         
-        /// Half of the angle from corner start to corner end with the anchor at radius center
-        let halvedRadiusAngle: Angle
+        /// Half of the angle the corner curve turns through, from the incoming
+        /// tangent direction to the outgoing one.
+        let halvedTurnAngle: Angle
         
         /// Vector from the corner to the previous corner
         let previousVector: Vector2
@@ -101,7 +102,7 @@ extension Corner {
             
             halvedNonReflexAngle = Self.halvedNonReflexAngle(angle: angle)
             
-            halvedRadiusAngle = Self.halvedRadiusAngle(halvedNonReflexAngle: halvedNonReflexAngle)
+            halvedTurnAngle = Self.halvedTurnAngle(halvedNonReflexAngle: halvedNonReflexAngle)
             
             previousVector = Self.previousVector(
                 previousPoint: self.previousPoint,
@@ -125,7 +126,7 @@ extension Corner {
 
             maxRadius = Self.maxRadius(
                 maxCutLength: maxCutLength,
-                halvedRadiusAngle: halvedRadiusAngle
+                halvedTurnAngle: halvedTurnAngle
             ) / cutLengthMultiplier
             
             cutLength = Self.cutLength(
@@ -240,12 +241,13 @@ extension Corner.Dimensions {
         angle.nonReflexCoterminal.positive.halved
     }
     
-    /// Returns an angle that is half of the angle from corner start to corner end with the anchor at radius center.
+    /// Returns half of the angle the corner curve turns through, from the
+    /// incoming tangent direction to the outgoing one.
     ///
     /// Positive values between 0 and 90 degrees
     /// - Parameter halvedNonReflexAngle: Half of the non-reflex version of the corner angle.
-    /// - Returns: An angle that is half of the angle from corner start to corner end with the anchor at radius center.
-    static func halvedRadiusAngle(halvedNonReflexAngle: Angle) -> Angle {
+    /// - Returns: Half of the angle the corner curve turns through.
+    static func halvedTurnAngle(halvedNonReflexAngle: Angle) -> Angle {
         halvedNonReflexAngle.complementary
     }
     
@@ -279,28 +281,10 @@ extension Corner.Dimensions {
     /// Returns the maximum radius that can be applied to this corner using the max cut length.
     /// - Parameters:
     ///   - maxCutLength: Maximum length that a corner can cut off.
-    ///   - halvedRadiusAngle: Half of the angle from corner start to corner end with the anchor at radius center.
+    ///   - halvedTurnAngle: Half of the angle the corner curve turns through.
     /// - Returns: The maximum radius that can be applied to this corner using the max cut length.
-    static func maxRadius(maxCutLength: CGFloat, halvedRadiusAngle: Angle) -> CGFloat {
-        maxCutLength * abs(tan(halvedRadiusAngle.complementary.radians))
-    }
-    
-    /// Returns the radius as a non-relative value.
-    /// - Parameters:
-    ///   - radius: Relatable radius value.
-    ///   - maxRadius: The maximum radius that can be applied to this corner. (The length of the shorter of the two lines from the corner point)
-    /// - Returns: The radius as a non-relative value.
-    static func absoluteRadius(radius: RelatableValue, maxRadius: CGFloat) -> CGFloat {
-        radius.value(using: maxRadius)
-    }
-    
-    /// Returns the length from the corner point to the corner start or end.
-    /// - Parameters:
-    ///   - absoluteRadius: Radius as a non-relative value.
-    ///   - halvedNonReflexAngle: Half of the non-reflex corner angle.
-    /// - Returns: The length from the corner point to the corner start or end.
-    static func cutLength(absoluteRadius: CGFloat, halvedNonReflexAngle: Angle) -> CGFloat {
-        absoluteRadius / abs(tan(halvedNonReflexAngle.radians))
+    static func maxRadius(maxCutLength: CGFloat, halvedTurnAngle: Angle) -> CGFloat {
+        maxCutLength * abs(tan(halvedTurnAngle.complementary.radians))
     }
     
     /// Returns the point where the corner shape starts.

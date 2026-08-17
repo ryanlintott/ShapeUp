@@ -24,6 +24,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 ### New Features
 
 - Added `CornerStyle.RoundingStyle` with `.circular` and `.continuous` options. `CornerStyle.rounded(radius:style:)` defaults to `.circular`. Continuous corners preserve the requested nominal radius with zero-curvature edge joins at any supplied angle and use a profile fitted to SwiftUI's continuous rounded corner at 90 degrees.
+- Added `Path.addContinuousCurve(tangent1End:tangent2End:radius:)`, a continuous-curve counterpart to SwiftUI's `Path.addArc(tangent1End:tangent2End:radius:)`. It draws the same curve continuous corners use, so a continuous corner can be added to any path without going through `Corner`.
 - Added a new case `RectAnchor.relative(x:y:)` for storing relative positions.
 - Added `RelativeCorner`, a type similar to `Corner` but with a `RectAnchor` position and an absolute offset along frame axes. It has convenience initializers similar to `RectAnchor` such as `.topLeft`, `.top`, `.right`, `.bottom`, `.center`, and `.relative(x:y:)`. Also, similar to `Corner` there are methods for moving, rotating, flipping, scaling, and changing corner styles for either single instances or arrays.
 - Added `RelativeCornerCustom`, a version of `CornerCustom` that uses relative corners and can take animated State variables within its closure creating an animatable shape.

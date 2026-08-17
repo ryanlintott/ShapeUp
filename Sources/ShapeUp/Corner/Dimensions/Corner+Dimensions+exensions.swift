@@ -8,6 +8,16 @@
 import SwiftUI
 
 extension Corner.Dimensions {
+    /// The angle the corner curve turns through, from the incoming tangent
+    /// direction to the outgoing one.
+    ///
+    /// Zero at a straight corner and 180 degrees at a zero-degree corner. This
+    /// is the same turn angle whether the corner is drawn as a circular arc,
+    /// a continuous curve, or any other style.
+    var turnAngle: Angle {
+        halvedTurnAngle.doubled
+    }
+
     /// The coordinate frame used to position nested corners.
     var frame: CGFrame {
         .init(

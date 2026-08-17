@@ -45,6 +45,11 @@ public extension AngleRepresentable {
     var halved: Angle {
         angle / 2
     }
+    
+    /// An angle double the size keeping it's sign.
+    var doubled: Angle {
+        angle * 2
+    }
 
     /// The sine of half this angle.
     ///
