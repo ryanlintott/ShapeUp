@@ -21,7 +21,7 @@ extension Corner.Dimensions {
     /// - Parameters:
     ///   - path: Path where corner shape is added.
     ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner.
-    public func addCornerShape(to path: inout Path, moveToStart: Bool) {
+    internal func addCornerShape(to path: inout Path, moveToStart: Bool) {
         if cutLength <= 0 {
             // A non-positive effective radius has no styled geometry.
             startCornerShape(on: &path, at: corner.point, moveToStart: moveToStart)

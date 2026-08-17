@@ -60,7 +60,7 @@ extension Corner.Dimensions {
     /// Some corner styles may change to .point if the radius drops below zero
     /// - Parameter inset: Amount of the inset.
     /// - Returns: An inset version of this corner.
-    public func corner(inset: CGFloat) -> Corner {
+    internal func corner(inset: CGFloat) -> Corner {
         if inset == 0 || angle.isApproximatelyZero() { return corner }
 
         let insetPoint = corner.insetPoint(

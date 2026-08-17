@@ -17,7 +17,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 - `NotchStyle.cornerStyles` now returns resolved, non-optional styles; stored nil values are represented by `.automatic`.
 - Replaced the closure-based `NotchStyle.custom(corners:)` enum case with `NotchStyle.custom(relativeCorners:)`. A deprecated factory converts closure-based custom notches when possible.
 - Changed the concrete `AnimatableData` associated types of existing animatable types, including `Corner`, `CornerStyle`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `SketchyLine`, as their animated properties expanded.
-- Replaced `Corner.Dimensions.radiusOffset` with `concaveInset` and changed or removed several public calculation helpers. `Corner.Dimensions` is now deprecated in favor of the higher-level path and inset APIs.
+- `Corner.Dimensions` is now internal. This cached geometry type was an implementation detail of drawing and insetting, and keeping it public constrained how corners could be calculated. Use `[Corner].path(closed:)`, `[Corner].inset(by:previousPoint:nextPoint:)`, `Path.addOpenCornerShape`, or `Path.addClosedCornerShape` instead. The `Corner.dimensions(previousPoint:nextPoint:)` and `[Corner].dimensions` accessors are internal for the same reason.
 - `RectAnchor` no longer conforms to `CaseIterable`.
 - `AnchorType` removed.
 
@@ -66,7 +66,6 @@ This release introduces a new way to construct corner arrays and shapes using re
 
 ### Deprecations
 
-- Deprecated `Corner.Dimensions`. This cached geometry type will become internal in a future release; use `[Corner].path(closed:)`, `[Corner].inset(by:previousPoint:nextPoint:)`, `Path.addOpenCornerShape`, or `Path.addClosedCornerShape` instead.
 - Deprecated `CGRect` properties `edgeAnchors` and `vertexAnchors`.
 - Deprecated `CGRect` methods `point(_:)`, `point(relativeLocation:)`, and `points(relativeLocations:)`. Use subscript and builder-based APIs, such as `rect[anchor]`, `rect[x, y]`, and `rect.points { ... }`.
 - Deprecated `NotchStyle.custom(corners:)`. Use relative-corner-based `NotchStyle.custom { ... }` instead.

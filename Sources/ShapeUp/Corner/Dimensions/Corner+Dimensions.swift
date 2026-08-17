@@ -11,81 +11,72 @@ extension Corner {
     /// A collection of calculated dimensions relating to corner with known previous and next points.
     ///
     /// Used for creating paths, insetting, flattening, etc.
-    ///
-    /// - Warning: This type is deprecated and will become internal in a future
-    ///   release. Use `Array<Corner>.path(closed:)`, `Array<Corner>.inset(by:)`,
-    ///   or the `Path` corner-shape methods instead.
-    @available(
-        *,
-        deprecated,
-        message: "Corner.Dimensions will become internal in a future release. Use Array<Corner>.path(closed:), Array<Corner>.inset(by:), or Path corner-shape methods instead."
-    )
-    public struct Dimensions: Sendable {
+    struct Dimensions: Sendable {
         /// The corner used to create these dimensions.
-        public let corner: Corner
+        let corner: Corner
         
         /// The point before the corner.
-        public let previousPoint: CGPoint
+        let previousPoint: CGPoint
         
         /// The point after the corner.
-        public let nextPoint: CGPoint
+        let nextPoint: CGPoint
         
         /// Angle of the corner from previous point to corner to next point.
-        public let angle: Angle
+        let angle: Angle
         
         /// A multiplier that is -1 for reflex angles and +1 for non-reflex angles.
-        public let reflexMultiplier: CGFloat
+        let reflexMultiplier: CGFloat
         
         /// Half of the non-reflex version of the corner angle.
-        public let halvedNonReflexAngle: Angle
+        let halvedNonReflexAngle: Angle
         
         /// Half of the angle from corner start to corner end with the anchor at radius center
-        public let halvedRadiusAngle: Angle
+        let halvedRadiusAngle: Angle
         
         /// Vector from the corner to the previous corner
-        public let previousVector: Vector2
+        let previousVector: Vector2
         
         /// Vector from the corner to the next corner
-        public let nextVector: Vector2
+        let nextVector: Vector2
         
         /// The maximum length that a corner can cut off. (The length of the shorter of the two lines from the corner point)
-        public let maxCutLength: CGFloat
+        let maxCutLength: CGFloat
         
         /// The maximum radius that can be applied to this corner using the max cut length.
-        public let maxRadius: CGFloat
+        let maxRadius: CGFloat
         
         /// The effective radius as a non-relative value, fitted to the adjacent segments.
-        public let absoluteRadius: CGFloat
+        let absoluteRadius: CGFloat
         
         /// The length from the corner point to the corner start or end.
-        public let cutLength: CGFloat
+        let cutLength: CGFloat
         
         /// The point where the corner shape starts.
-        public let cornerStart: CGPoint
+        let cornerStart: CGPoint
         
         /// The point where the corner shape ends.
-        public let cornerEnd: CGPoint
+        let cornerEnd: CGPoint
         
         /// Center point of the radius used to cut the corner.
-        public let radiusCenter: CGPoint
+        let radiusCenter: CGPoint
         
         /// The inset value for a concave corner. This is required for drawing inset concave corners and is not used for other corner types.
-        public let concaveInset: CGFloat
+        let concaveInset: CGFloat
         
         /// The radius of the concave cut arc.
-        public let concaveRadius: CGFloat
+        let concaveRadius: CGFloat
         
         /// The point where some corner shapes cut in to. Also used to draw concave arcs
-        public let cutoutPoint: CGPoint
+        let cutoutPoint: CGPoint
         
         /// The point where the concave arc starts when the corner start does not intersect the concave radius. Nil value if not used or same as the corner start.
-        public let concaveStart: CGPoint?
+        let concaveStart: CGPoint?
         
         /// The point where the concave arc ends when the corner end does not intersect the concave radius. Nil value if not used or same as the corner end.
-        public let concaveEnd: CGPoint?
+        let concaveEnd: CGPoint?
         
         /// Center point of circle that forms a concave cut. This will be the corner point for non-concave corners.
-        public let concaveRadiusCenter: CGPoint
+        let concaveRadiusCenter: CGPoint
         
         /// Creates a set of saved dimensions based on the corner style and provided previous and next points.
         ///
@@ -96,7 +87,7 @@ extension Corner {
         ///   - corner: Corner between previous and next point.
         ///   - previousPoint: Point before the corner.
         ///   - nextPoint: Point after the corner.
-        public init(corner: Corner, previousPoint: some Vector2Representable, nextPoint: some Vector2Representable) {
+        init(corner: Corner, previousPoint: some Vector2Representable, nextPoint: some Vector2Representable) {
             self.corner = corner
             
             self.previousPoint = previousPoint.point
@@ -232,7 +223,7 @@ extension Corner {
     }
 }
 
-public extension Corner.Dimensions {
+extension Corner.Dimensions {
     /// Returns a multiplier that is -1 for reflex angles and +1 for non-reflex angles.
     /// - Parameter angle: Corner angle
     /// - Returns: A multiplier that is -1 for reflex angles and +1 for non-reflex angles.

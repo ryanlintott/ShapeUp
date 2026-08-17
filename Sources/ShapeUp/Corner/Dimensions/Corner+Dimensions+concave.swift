@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Formulas used to backsolve inset concave corners.
-public extension Corner.Dimensions {
+extension Corner.Dimensions {
     /// Difference between the corner radius (used to determine the cut length) and the concave radius (used to draw a concave cut arc). Zero is default.
     /// - Parameter style: Corner style.
     /// - Returns: Difference between the corner radius (used to determine the cut length) and the concave radius (used to draw a concave cut arc). Zero is default.

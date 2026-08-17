@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public extension Array where Element == Corner.Dimensions {
+extension Array where Element == Corner.Dimensions {
     /// The corners represented by these dimensions.
     var corners: [Corner] {
         map { $0.corner }
