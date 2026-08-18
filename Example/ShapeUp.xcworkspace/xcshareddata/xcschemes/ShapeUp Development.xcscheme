@@ -17,7 +17,7 @@
                BlueprintIdentifier = "CF2FE2EC26C7061A0040A985"
                BuildableName = "ShapeUpExample.app"
                BlueprintName = "ShapeUpExample"
-               ReferencedContainer = "container:Example/ShapeUpExample.xcodeproj">
+               ReferencedContainer = "container:ShapeUpExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "ShapeUpTests"
                BuildableName = "ShapeUpTests"
                BlueprintName = "ShapeUpTests"
-               ReferencedContainer = "container:">
+               ReferencedContainer = "container:..">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,7 +57,7 @@
             BlueprintIdentifier = "CF2FE2EC26C7061A0040A985"
             BuildableName = "ShapeUpExample.app"
             BlueprintName = "ShapeUpExample"
-            ReferencedContainer = "container:Example/ShapeUpExample.xcodeproj">
+            ReferencedContainer = "container:ShapeUpExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -74,7 +74,7 @@
             BlueprintIdentifier = "CF2FE2EC26C7061A0040A985"
             BuildableName = "ShapeUpExample.app"
             BlueprintName = "ShapeUpExample"
-            ReferencedContainer = "container:Example/ShapeUpExample.xcodeproj">
+            ReferencedContainer = "container:ShapeUpExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

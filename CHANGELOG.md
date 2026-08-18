@@ -89,6 +89,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 - Fixed `Shape.scaleToFit(_:aspectRatio:)` producing an incorrect horizontal scale when fitting a narrower aspect ratio into a wider frame.
 - Fixed visionOS example compilation where the glass effect API was unavailable.
 - Fixed transitions between different `CornerStyle` cases interpolating unrelated animation data, which could make custom subcorners slide in from the corner's start point. Different styles now switch immediately, while properties within the same style continue to animate.
+- Moved the xcworkspace file inside the example app so Swift Package Index and xcodebuild-based CI build the package directly instead of resolving the wrong scheme.
 
 ### Tests
 

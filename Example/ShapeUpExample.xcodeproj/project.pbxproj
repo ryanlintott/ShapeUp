@@ -177,7 +177,7 @@
 			);
 			mainGroup = CF2FE2E426C7061A0040A985;
 			packageReferences = (
-				CF1AB2A62CB5B7B10049E553 /* XCLocalSwiftPackageReference "../../ShapeUp" */,
+				CF1AB2A62CB5B7B10049E553 /* XCLocalSwiftPackageReference ".." */,
 			);
 			productRefGroup = CF2FE2EE26C7061A0040A985 /* Products */;
 			projectDirPath = "";
@@ -531,16 +531,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		CF1AB2A62CB5B7B10049E553 /* XCLocalSwiftPackageReference "../../ShapeUp" */ = {
+		CF1AB2A62CB5B7B10049E553 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../ShapeUp;
+			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		CF1AB2A82CB5B7FE0049E553 /* ShapeUp */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CF1AB2A62CB5B7B10049E553 /* XCLocalSwiftPackageReference "../../ShapeUp" */;
+			package = CF1AB2A62CB5B7B10049E553 /* XCLocalSwiftPackageReference ".." */;
 			productName = ShapeUp;
 		};
 		CF765EA22B93C745003E3FBE /* ShapeUp */ = {
