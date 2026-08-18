@@ -52,6 +52,10 @@ struct ContentView: View {
                 NavigationLink(destination: RoundedRectangleContinuousCornerPathMismatch()) {
                     Label("Rounded Rectangle Rendering", systemImage: "square.dashed.inset.filled")
                 }
+
+                NavigationLink(destination: ContinuousCornerCurveMeasurement()) {
+                    Label("Corner Curve Measurement", systemImage: "ruler")
+                }
             }
             
             
