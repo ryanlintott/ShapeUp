@@ -5,17 +5,21 @@
 ![License - MIT](https://img.shields.io/github/license/ryanlintott/ShapeUp)
 ![Version](https://img.shields.io/github/v/tag/ryanlintott/ShapeUp?label=version)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ryanlintott/ShapeUp)
+[![Documentation](https://img.shields.io/badge/documentation-Swift%20Package%20Index-blue)](https://swiftpackageindex.com/ryanlintott/ShapeUp/documentation/shapeup)
 [![Mastodon](https://img.shields.io/badge/mastodon-@ryanlintott-5c4ee4.svg?style=flat)](https://mastodon.social/@ryanlintott)
 [![Bluesky](https://img.shields.io/badge/bluesky-@ryanlintott-0285FF.svg?style=flat)](https://bsky.app/profile/ryanlintott.bsky.social)
 
 # Overview
-A Swift Package that makes SwiftUI shapes easier to build. (The logo above was created in 100 lines + SwiftUI Text)
+A Swift Package that makes SwiftUI shapes easier to build, transform, inset, and animate.
+
+Create corners using relative anchor points, apply corner styles, move/rotate/scale/mirror them with ease, add notches along any edge, and wrap them in a CornerShape that is automatically insettable and animatable
+
 
 Features:
-- [`RectAnchor`](#rectanchor), an enum for major anchor points in a rectangle or coordinate frame. Used for transform functions.
-- Extensions to [`CGPoint`](#cgpoint), [`CGRect`](#cgrect), and [`CGSize`](#cgsize)
+- [`RectAnchor`](#rectanchor), an enum for major anchor points in a rectangle or coordinate frame.
+- Extensions to quickly transform [`CGPoint`](#cgpoint), [`CGRect`](#cgrect), and [`CGSize`](#cgsize)
 - [`Corner`](#corner), a `CGPoint` with `style`.
-- [`CornerStyle`](#cornerstyle) options: `.automatic`, `.point`, `.rounded`, `.straight`, `.cutout`, `.concave`, and `.custom`
+- [`CornerStyle`](#cornerstyle) options: `.automatic`, `.point`, `.rounded`, `.straight`, `.cutout`, `.concave`, and `.custom`. 
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
 - [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners.
 - [`CornerCustom`](#cornercustom), for building corner shapes inline without making a new type.
@@ -43,6 +47,9 @@ This package is compatible with iOS 15+, macOS 12+, watchOS 9+, tvOS 15+, and vi
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/ShapeUp` and select by version.
 3. Import the package using `import ShapeUp`
+
+# Documentation
+Full API documentation is hosted on the [Swift Package Index](https://swiftpackageindex.com/ryanlintott/ShapeUp/documentation/shapeup).
 
 # Is this Production-Ready?
 Really it's up to you. I currently use this package in my own [Old English Wordhord app](https://oldenglishwordhord.com/app).

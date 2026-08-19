@@ -11,6 +11,10 @@ import SwiftUI
 struct NotchedExamples: View {
     var body: some View {
         Section {
+            NavigationLink(destination: NotchedCornerShapeExample()) {
+                Label("NotchedCornerShape", systemImage: "n.square")
+            }
+            
             NavigationLink(destination: NotchedRectangleExample()) {
                 Label("NotchedRectangle", systemImage: "rectangle")
             }
