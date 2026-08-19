@@ -110,18 +110,6 @@ public extension SketchyLine {
             path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
         }
     }
-    
-    /// Creates the line path using a specified draw amount.
-    /// - Parameters:
-    ///   - rect: The rectangle in which to draw the line.
-    ///   - drawAmount: The proportion of the line to draw.
-    /// - Returns: The resulting line path.
-    @available(*, deprecated, message: "Adjust the draw amount manually and then use path(in:) instead.")
-    func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
-        var copy = self
-        copy.drawAmount = drawAmount
-        return copy.path(in: rect)
-    }
 }
 
 extension SketchyLine: AnimatableProperties {

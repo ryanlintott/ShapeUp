@@ -23,45 +23,6 @@ public extension CGRect {
         points(.vertices)
     }
     
-    /// Creates an array of points at relative coordinates in the rectangle.
-    ///
-    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
-    /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
-    /// - Returns: The points at the relative coordinates.
-    @available(*, deprecated, message: "Use `points { }` instead.")
-    func points(relativeLocations: [(x: CGFloat, y: CGFloat)]) -> [CGPoint] {
-        relativeLocations.map { self[$0.x, $0.y] }
-    }
-    
-    /// Creates an array of points at the relative coordinates in the rectangle.
-    ///
-    /// Values outside the 0.0 to 1.0 range will project to relative coordinates outside the rectangle.
-    /// - Parameter relativeLocations: An array of tuples with relative x and y coordinates respectively.
-    /// - Returns: The points at the relative coordinates.
-    @available(*, deprecated, message: "Use `points { }` instead.")
-    func points(relativeLocations: (x: CGFloat, y: CGFloat)...) -> [CGPoint] {
-        points(relativeLocations: relativeLocations)
-    }
-    
-    /// Creates a point in the location of an anchor.
-    /// - Parameter anchor: Anchor where the point is located
-    /// - Returns: A point where the anchor is located.
-    @available(*, deprecated, message: "Use `rect[anchor]` instead.")
-    func point(_ anchor: RectAnchor) -> CGPoint {
-        self[anchor]
-    }
-    
-    /// Creates a point at the relative location inside this CGRect.
-    ///
-    /// Relative x values are multiplied by the width and positioned that distance from minX.
-    /// Relative y values are multiplied by the height and positioned that distance from minY.
-    /// - Parameter relativeLocation: A tuple with relative x and y coordinates respectively.
-    /// - Returns: A point at the relative location inside this CGRect.
-    @available(*, deprecated, message: "Use `rect[x, y]` instead.")
-    func point(relativeLocation: (CGFloat, CGFloat)) -> CGPoint {
-        self[relativeLocation.0, relativeLocation.1]
-    }
-    
     /// Moves the origin.
     /// - Parameter distance: A vector representing the movement.
     /// - Returns: A rectangle of the same size, moved by the provided distance.

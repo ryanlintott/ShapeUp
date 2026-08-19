@@ -28,12 +28,6 @@ extension AngleRepresentable {
 }
 
 public extension AngleRepresentable {
-    /// The angle type based on its magnitude.
-    @available(*, deprecated, message: "Angle type is no longer in use as it added complexity and was prone to error when trying to equate Double values.")
-    var type: AngleType {
-        AngleType.type(of: angle)
-    }
-    
     /// Positive magnitude of an angle.
     ///
     /// Negative angles are made positive, positive angles are untouched. Full rotations are included.
@@ -153,12 +147,6 @@ public extension AngleRepresentable {
     /// Values between -180 and +180 degrees.
     var nonReflexCoterminal: Angle {
         minRotation(from: .zero)
-    }
-
-    /// The positive angle that's the shortest distance back to zero
-    @available(*, deprecated, message: "Use nonReflexCoterminal.positive instead or look for another solution.")
-    var interior: Angle {
-        nonReflexCoterminal.positive
     }
     
     /// Returns the positive angle formed by connecting 3 points.

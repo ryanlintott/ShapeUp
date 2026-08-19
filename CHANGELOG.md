@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0 - 2026-08-19
+
+### Breaking Changes
+
+- Removed deprecated apis.
+
 ## 0.6.0 - 2026-08-19
 
 Changes since the previous versioned release, `0.5.3`.

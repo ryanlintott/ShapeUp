@@ -160,46 +160,6 @@ struct CornerStyleApplicationTests {
         ])
     }
 
-    @Test("Deprecated array style replacement still overwrites every style")
-    func deprecatedArrayStyleReplacementOverwritesEveryStyle() {
-        let corners = [
-            Corner(.point, x: 0, y: 0),
-            Corner(.concave(radius: 3), x: 1, y: 0)
-        ]
-
-        let styledCorners = corners.applyingStyle(defaultStyle)
-
-        #expect(styledCorners.cornerStyles == [defaultStyle, defaultStyle])
-    }
-
-    @Test("Deprecated enumerated shape style replacement still overwrites every style")
-    func deprecatedEnumeratedShapeStyleReplacementOverwritesEveryStyle() {
-        let shape = CornerRectangle([.topRight: .point])
-            .applyingStyle(defaultStyle)
-
-        #expect(shape.styles == [
-            .topLeft: defaultStyle,
-            .topRight: defaultStyle,
-            .bottomRight: defaultStyle,
-            .bottomLeft: defaultStyle
-        ])
-    }
-
-    @Test("Deprecated mutating array style updates retain their behavior")
-    func deprecatedMutatingArrayStyleUpdatesRetainBehavior() {
-        var corners = [
-            Corner(.point, x: 0, y: 0),
-            Corner(.concave(radius: 3), x: 1, y: 0),
-            Corner(.straight(radius: 4), x: 1, y: 1)
-        ]
-
-        corners.applyStyles([defaultStyle, nil])
-        #expect(corners.cornerStyles == [defaultStyle, .concave(radius: 3), .straight(radius: 4)])
-
-        corners.applyStyle(.point)
-        #expect(corners.cornerStyles == [.point, .point, .point])
-    }
-
     @Test("Custom shapes apply stored corner style transformations")
     func customShapesApplyStoredTransformations() {
         let rect = CGRect(x: 0, y: 0, width: 100, height: 100)

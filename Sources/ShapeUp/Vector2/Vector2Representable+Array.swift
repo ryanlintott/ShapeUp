@@ -62,20 +62,6 @@ public extension Array where Element: Vector2Representable {
         return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
     
-    /// Creates a point in the location of an anchor on the bounds.
-    /// - Parameter anchor: Bounds anchor where the point is located.
-    /// - Returns: The point where the bounds anchor is located.
-    @available(*, deprecated, message: "Use bounds[anchor] instead.")
-    func anchorPoint(_ anchor: RectAnchor) -> CGPoint {
-        bounds[anchor]
-    }
-    
-    /// Center point of the bounds rectangle containing all points in the array.
-    @available(*, deprecated, message: "Use bounds[.center] instead.")
-    var center: CGPoint {
-        bounds[.center]
-    }
-    
     /// An array of angles occuring at each point assuming points are connected in a closed shape.
     var angles: [Angle] {
         guard self.count >= 3 else {

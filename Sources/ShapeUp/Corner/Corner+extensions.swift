@@ -41,9 +41,4 @@ public extension Corner {
     internal func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
     }
-    
-    @available(*, deprecated, renamed: "cornerStyle(_:)")
-    func applyingStyle(_ newStyle: CornerStyle) -> Self {
-        cornerStyle(newStyle)
-    }
 }

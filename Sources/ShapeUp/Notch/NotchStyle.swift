@@ -25,6 +25,19 @@ public enum NotchStyle: Sendable {
 }
 
 public extension NotchStyle {
+    /// A triangular shaped notch with default corner styles.
+    static let triangle: Self = .triangle()
+    
+    /// A rectangular shaped notch with default corner styles.
+    static let rectangle: Self = .rectangle()
+    
+    /// A custom shaped notch defined by relative corners.
+    /// - Parameter relativeCorners: Relative corners that define the notch shape.
+    /// - Returns: A NotchStyle configured as a custom shape.
+    static func custom(@RelativeCornerArrayBuilder relativeCorners: () -> [RelativeCorner]) -> Self {
+        .custom(relativeCorners: relativeCorners())
+    }
+    
     /// Relative corners for all corners of the notch.
     internal(set) var relativeCorners: [RelativeCorner] {
         get {
