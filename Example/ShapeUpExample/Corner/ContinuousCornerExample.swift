@@ -102,9 +102,8 @@ The visible pink edges show the difference between a RoundedRectangle with conti
                 Toggle("Antialiased", isOn: $antialiased)
             }
         }
-        
         .padding()
-        .navigationTitle("Continuous Corner")
+        .navigationTitle("Continuous Corners")
     }
 }
 

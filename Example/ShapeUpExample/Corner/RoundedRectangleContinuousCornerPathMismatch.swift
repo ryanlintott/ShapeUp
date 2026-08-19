@@ -13,15 +13,6 @@ import SwiftUI
 // differently depending on whether the returned `Path` is used directly
 // or rebuilt from its own elements (via `Path.forEach`) into a brand new
 // `Path` containing the exact same sequence of moves/lines/curves.
-//
-// Three layers are stacked back to front:
-//   pink   - the path rebuilt from the elements `Path.forEach` reports
-//   cyan   - the true continuous path from private CoreGraphics
-//   black  - the `RoundedRectangle` path drawn directly
-//
-// Cyan showing means the reported elements are geometrically wrong.
-// Pink showing where cyan does not means SwiftUI rasterizes its own
-// `.roundedRect` storage differently from any explicit element list.
 @available(iOS 16, macOS 13, tvOS 16, watchOS 9, *)
 struct RoundedRectangleContinuousCornerPathMismatch: View {
     @State private var radius: CGFloat = 91
@@ -31,7 +22,7 @@ struct RoundedRectangleContinuousCornerPathMismatch: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(
 """
-Continuous corners drawn directly do not match path elements.
+SwiftUI RoundedRectangle continuous corners drawn directly do not match path elements.
 
 The cyan lines show the difference between the two shapes. The path element one being slightly larger.
 """
@@ -72,7 +63,7 @@ The cyan lines show the difference between the two shapes. The path element one 
         }
         
         .padding()
-        .navigationTitle("RoundedRectangle Path")
+        .navigationTitle("RoundedRectangle")
     }
 }
 

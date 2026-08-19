@@ -88,7 +88,7 @@ internal enum ContinuousCornerProfile {
     /// The area under these samples is found by treating them as a series of straight ramps and adding up the trapezoids beneath: each pair of neighbours contributes `(first + second) / 2 * width`. Dividing every sample by that total is what makes ``turnFraction(at:)`` able to just add samples up, instead of adding them up and then dividing by a total each time.
     private static let normalizedCurvatureSamples: [CGFloat] = {
         let mirrored = halfCurvatureSamples + halfCurvatureSamples.dropLast().reversed()
-        let intervalLength = 1 / CGFloat(mirrored.count - 1)
+        let intervalLength: CGFloat = 1 / CGFloat(mirrored.count - 1)
         let total = zip(mirrored, mirrored.dropFirst())
             .reduce(0) { $0 + (($1.0 + $1.1) * intervalLength / 2) }
         return mirrored.map { $0 / total }
@@ -194,7 +194,7 @@ internal enum ContinuousCornerProfile {
         count: Int,
         turnAngle: CGFloat
     ) -> [Sample] {
-        let spanLength = 1 / CGFloat(count)
+        let spanLength: CGFloat = 1 / CGFloat(count)
         var offset = Vector2.zero
         var samples = [Sample(offset: offset, tangent: tangent(at: 0, turnAngle: turnAngle))]
 

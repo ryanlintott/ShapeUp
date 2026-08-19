@@ -71,7 +71,7 @@ struct CornerInsetContinuityExample: View {
                         Text(style.insetPickerLabel)
                     }
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
 
                 CrossPlatformSlider(
                     label: "Angle",

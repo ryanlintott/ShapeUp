@@ -42,6 +42,10 @@ extension RelatableValue: AdditiveArithmetic {
 }
 
 public extension RelatableValue {
+    /// RelatableValue multiplication
+    ///
+    /// - Note: Disfavoured so a bare numeric literal on the left is never read as a `RelatableValue`. Without it, `1 * someCGFloat` has two equally good readings, and Swift 6.0 calls that ambiguous.
+    @_disfavoredOverload
     static func * (lhs: RelatableValue, rhs: CGFloat) -> RelatableValue {
         switch lhs {
         case let .absolute(lhsValue):
@@ -55,6 +59,10 @@ public extension RelatableValue {
         }
     }
     
+    /// RelatableValue division
+    ///
+    /// - Note: Disfavoured for the same reason as ``*(_:_:)``.
+    @_disfavoredOverload
     static func / (lhs: RelatableValue, rhs: CGFloat) -> RelatableValue {
         lhs * (1 / rhs)
     }
