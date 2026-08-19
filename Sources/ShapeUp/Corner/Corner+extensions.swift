@@ -15,7 +15,7 @@ extension Corner: Vector2Transformable {
     public init(vector: Vector2) {
         x = vector.dx
         y = vector.dy
-        style = .point
+        style = .automatic
     }
     
     public func repositioned(to point: some Vector2Representable) -> Corner {
@@ -23,30 +23,12 @@ extension Corner: Vector2Transformable {
     }
 }
 
-extension Corner {
-    /// Radius of corner based on the style.
-    public var radius: RelatableValue {
-        style.radius
-    }
-    
-    /// Creates a corner at the same position but with the supplied style.
-    /// - Parameter style: Corner style to apply.
-    /// - Returns: A corner at the same position but with the supplied style.
-    public func applyingStyle(_ style: CornerStyle) -> Corner {
-        if style == self.style {
-            return self
-        }
-        return Corner(style, point: point)
-    }
-    
-    /// Creates a corner with the same style at the same position but with a new supplied radius.
-    /// - Parameter radius: Radius to apply to the corner.
-    /// - Returns: A corner with the same style at the same position but with a new supplied radius.
-    public func changingRadius(to radius: RelatableValue) -> Corner {
-        if radius == self.radius {
-            return self
-        }
-        return applyingStyle(style.changingRadius(to: radius))
+public extension Corner {
+    /// Converts this object to one that is relative to the specified frame.
+    /// - Parameter frame: Frame used for relative position.
+    /// - Returns: A relative version of this object anchored to the specified frame.
+    func relative(to frame: some CGFrameRepresentable) -> RelativeCorner {
+        point.relative(to: frame).relativeCorner.cornerStyle(style)
     }
     
     /// Creates a set of saved dimensions based on the corner style and provided previous and next points.
@@ -56,7 +38,12 @@ extension Corner {
     ///   - previousPoint: Point before the corner.
     ///   - nextPoint: Point after the corner.
     /// - Returns: A set of saved dimensions based on the corner style and provided previous and next points.
-    public func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
+    internal func dimensions(previousPoint: CGPoint, nextPoint: CGPoint) -> Self.Dimensions {
         .init(corner: self, previousPoint: previousPoint, nextPoint: nextPoint)
+    }
+    
+    @available(*, deprecated, renamed: "cornerStyle(_:)")
+    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        cornerStyle(newStyle)
     }
 }

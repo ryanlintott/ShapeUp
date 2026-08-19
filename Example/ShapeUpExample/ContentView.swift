@@ -39,6 +39,24 @@ struct ContentView: View {
             NavigationLink(destination: AddOpenCornerShapeExample()) {
                 Label("AddOpenCornerShape", systemImage: "scribble")
             }
+
+            NavigationLink(destination: CornerInsetContinuityExample()) {
+                Label("Inset Continuity", systemImage: "angle")
+            }
+
+            if #available(iOS 16, macOS 13, tvOS 16, watchOS 9, *) {
+                NavigationLink(destination: ContinuousCornerMatchExample()) {
+                    Label("Continuous Corners", systemImage: "square.on.square")
+                }
+
+                NavigationLink(destination: RoundedRectangleContinuousCornerPathMismatch()) {
+                    Label("Rounded Rectangle Rendering", systemImage: "square.dashed.inset.filled")
+                }
+
+                NavigationLink(destination: ContinuousCornerCurveMeasurement()) {
+                    Label("Corner Curve Measurement", systemImage: "ruler")
+                }
+            }
             
             
         } header: {
@@ -76,13 +94,11 @@ struct ContentView: View {
             
             /// AnimatablePack uses parameter pack iteration that is only available in swift 6.0
             /// https://forums.swift.org/t/pitch-enable-pack-iteration/66168
-            #if compiler(>=6.0)
             if #available(iOS 17, macOS 14, watchOS 10, tvOS 17, *) {
                 NavigationLink(destination: AnimatablePackExample()) {
                     Label("AnimatablePack", systemImage: "slider.horizontal.3")
                 }
             }
-            #endif
         } header: {
             Text("Other Tools")
         }

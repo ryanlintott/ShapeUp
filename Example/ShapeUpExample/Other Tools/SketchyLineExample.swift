@@ -16,7 +16,7 @@ struct SketchyLineExample: View {
             VStack(alignment: .leading) {
                 Text("An easy way to draw lines with edges that extend beyond the frame.")
                 Text("Adjust the extension amount and offset of each line using `RelatableValue.absolute` or `.relative`.")
-                Text("Animate the `drawAmount` and set the `drawDirection`")
+                Text("The extensions, offset, and `drawAmount` can all animate; `drawDirection` controls which end draws first.")
             }
             
             Spacer()

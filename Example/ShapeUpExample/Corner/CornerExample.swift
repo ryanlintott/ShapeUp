@@ -8,16 +8,64 @@
 import ShapeUp
 import SwiftUI
 
+struct CustomCornerShapeExample: CornerShape, AnimatableProperties {
+    let closed: Bool = true
+    var insetAmount: CGFloat = 0
+    var style: CornerStyle
+    
+    init(style: CornerStyle) {
+        self.style = style
+    }
+    
+    static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.style
+    }
+    
+    func corners(in rect: CGRect) -> [Corner] {
+        rect.corners {
+            (0, 0.2)
+            (0.5, 0)
+            (1, 0.2)
+            (1, 0.5)
+            (1, 1)
+            (0.5, 0.8)
+            (0, 1)
+        }
+        .defaultCornerStyle(style)
+    }
+}
+
 struct CornerExample: View {
-    let shapes = ["Rectangle", "Triangle", "Pentagon"]
-    let styles: [CornerStyle] = [.point, .rounded(radius: .zero), .concave(radius: .zero), .straight(radius: .zero), .cutout(radius: .zero)]
+    enum ExampleShape: String, CaseIterable, Identifiable {
+        case rectangle
+        case triangle
+        case pentagon
+        case custom
+        
+        var id: Self { self }
+    }
+    
+    let shapes = ExampleShape.allCases
+    
+    let styles: [CornerStyle] = [
+        .point,
+        .rounded(radius: .zero),
+        .rounded(radius: .zero, style: .continuous),
+        .concave(radius: .zero),
+        .straight(radius: .zero),
+        .cutout(radius: .zero),
+        .custom(radius: .zero, relativeCorners: [.topLeft, .left, .center, .bottomLeft, .bottomRight])
+    ]
     let radii: [RelatableValue] = [.absolute(.zero), .relative(.zero)]
     
-    @State private var shape = "Rectangle"
-    @State private var style = CornerStyle.rounded(radius: .zero)
+    @State private var shape: ExampleShape = .custom
+    @State private var style: CornerStyle = .concave(radius: 0)
     @State private var relativeRadius = true
     @State private var relative = 0.2
     @State private var absolute = 25.0
+    @State private var inset = -10.0
+    @State private var shapeStyle: ShapeStyle = .regular
     
     var adjustedStyle: CornerStyle {
         style.changingRadius(to: relativeRadius ? .relative(relative) : .absolute(absolute))
@@ -29,49 +77,42 @@ struct CornerExample: View {
                 Text("Make shapes using `Corner`, pick a `style` and set the `radius` using either `absolute` or `relative` values.")
             }
             
-            Color.clear.overlay(
-                Group {
-                    switch shape {
-                    case "Rectangle":
-                        CornerRectangle()
-                            .applyingStyle(adjustedStyle)
-                    case "Triangle":
-                        CornerTriangle()
-                            .applyingStyle(adjustedStyle)
-                    default:
-                        CornerPentagon(pointHeight: .relative(0.3), bottomTaper: .relative(0.2))
-                            .applyingStyle(adjustedStyle)
+            CornerExampleShapeView(shape: shape, adjustedStyle: adjustedStyle, inset: inset, shapeStyle: shapeStyle)
+            
+            if ShapeStyle.allCases.count > 1 {
+                Picker("Shape Style", selection: $shapeStyle) {
+                    ForEach(ShapeStyle.allCases) { shapeStyle in
+                        Text(shapeStyle.rawValue)
                     }
                 }
-            )
-            .foregroundColor(Color.suPink)
-            .padding()
+                .pickerStyle(.segmented)
+            }
             
             Picker("Base Shape", selection: $shape) {
-                ForEach(shapes, id: \.self) { shape in
-                    Text(shape)
+                ForEach(shapes) { shape in
+                    Text(shape.rawValue)
                 }
             }
             .pickerStyle(.segmented)
             
             Picker("CornerStyle", selection: $style) {
                 ForEach(styles, id: \.self) { style in
-                    Text(style.name)
+                    Text(style.exampleName)
                 }
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.menu)
             
-            Group {
-                Section {
-                    Picker("Radius", selection: $relativeRadius) {
-                        Text("Relative").tag(true)
-                        Text("Absolute").tag(false)
+            VStack {
+                HStack {
+                    Button {
+                        relativeRadius.toggle()
+                    } label: {
+                        Text(relativeRadius ? "Relative" : "Absolute")
                     }
-                    .pickerStyle(.segmented)
-                } header: {
+                    
                     if relativeRadius {
                         CrossPlatformStepper(
-                            label: "Radius",
+                            label: "",
                             value: $relative,
                             minValue: 0,
                             maxValue: 1,
@@ -80,7 +121,7 @@ struct CornerExample: View {
                         )
                     } else {
                         CrossPlatformStepper(
-                            label: "Radius",
+                            label: "",
                             value: $absolute,
                             minValue: 0,
                             maxValue: 300,
@@ -110,11 +151,47 @@ struct CornerExample: View {
                 }
                 #endif
             }
-            .disabled(style == .point)
+            .disabled(style == .automatic || style == .point)
+            
+            CrossPlatformStepper(
+                label: "Inset: ",
+                value: $inset,
+                minValue: -50,
+                maxValue: 50,
+                step: 5,
+                decimalPlaces: 0
+            )
+            
+            #if !os(tvOS)
+            Slider(value: $inset, in: -50...50) {
+                Text("Inset")
+            } minimumValueLabel: {
+                Text("-50")
+            } maximumValueLabel: {
+                Text("50")
+            }
+            #endif
 
         }
+        .accentColor(.suPink)
+        .animation(.default, value: inset)
+        .animation(.default, value: shape)
+        .animation(.default, value: style)
+        .animation(.default, value: relativeRadius)
+        .animation(.default, value: relative)
+        .animation(.default, value: absolute)
         .padding()
         .navigationTitle("Corner")
+    }
+}
+
+private extension CornerStyle {
+    var exampleName: String {
+        if case let .rounded(_, style) = self {
+            "rounded \(style.rawValue)"
+        } else {
+            name
+        }
     }
 }
 

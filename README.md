@@ -5,40 +5,51 @@
 ![License - MIT](https://img.shields.io/github/license/ryanlintott/ShapeUp)
 ![Version](https://img.shields.io/github/v/tag/ryanlintott/ShapeUp?label=version)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ryanlintott/ShapeUp)
-[![Mastodon](https://img.shields.io/badge/mastodon-@ryanlintott-5c4ee4.svg?style=flat)](http://mastodon.social/@ryanlintott)
-[![Twitter](https://img.shields.io/badge/twitter-@ryanlintott-blue.svg?style=flat)](http://twitter.com/ryanlintott)
+[![Documentation](https://img.shields.io/badge/documentation-Swift%20Package%20Index-blue)](https://swiftpackageindex.com/ryanlintott/ShapeUp/documentation/shapeup)
+[![Mastodon](https://img.shields.io/badge/mastodon-@ryanlintott-5c4ee4.svg?style=flat)](https://mastodon.social/@ryanlintott)
+[![Bluesky](https://img.shields.io/badge/bluesky-@ryanlintott-0285FF.svg?style=flat)](https://bsky.app/profile/ryanlintott.bsky.social)
 
 # Overview
-A Swift Package that makes SwiftUI shapes easier to make by redefining them as an array of styled corners. (The logo above was created in 100 lines + SwiftUI Text)
+A Swift Package that makes SwiftUI shapes easier to build, transform, inset, and animate.
+
+Create corners using relative anchor points, apply corner styles, move/rotate/scale/mirror them with ease, add notches along any edge, and wrap them in a CornerShape that is automatically insettable and animatable
+
 
 Features:
+- [`RectAnchor`](#rectanchor), an enum for major anchor points in a rectangle or coordinate frame.
+- Extensions to quickly transform [`CGPoint`](#cgpoint), [`CGRect`](#cgrect), and [`CGSize`](#cgsize)
 - [`Corner`](#corner), a `CGPoint` with `style`.
-- [`CornerStyle`](#cornerstyle) options: `.point`, `.rounded`, `.straight`, `.cutout`, and `.concave`
+- [`CornerStyle`](#cornerstyle) options: `.automatic`, `.point`, `.rounded`, `.straight`, `.cutout`, `.concave`, and `.custom`. 
 - Basic shapes like [`CornerRectangle`](#basic-shapes), [`CornerTriangle`](#basic-shapes), and [`CornerPentagon`](#basic-shapes) with stylable corners.
 - [`CornerShape`](#cornershape), a protocol for making your own open or closed shapes out of an array of Corners.
 - [`CornerCustom`](#cornercustom), for building corner shapes inline without making a new type.
-- Add a [`Notch`](#notch) of any `NotchStyle` inbetween two corners.
+- [`RelativeCornerCustom`](#relativecornercustom), for building animatable corner shapes from relative positions.
+- Add a [`Notch`](#notch) of any `NotchStyle` between two corners.
 - [`.addOpenCornerShape()`](#add-cornershape) or [`.addClosedCornerShape()`](#add-cornershape) for adding a few corners to a SwiftUI `Path`
-- [`Vector2`](#vector2), a new type similar to `CGPoint` but used to do vector math.
+- [`.addContinuousCurve()`](#add-continuous-curve), a `Path` method for adding a single continuous corner curve between two tangent lines.
+- [`Vector2`](#vector2), a type similar to `CGPoint` but used to do vector math.
 - [`Vector2Representable`](#vector2representable) protocol that adds a `.vector` property needed to conform to other Vector2-related protocols.
 - [`Vector2Algebraic`](#vector2algebraic) protocol used to add vector algebra capabilities to `Vector2`
 - [`Vector2Transformable`](#vector2transformable) protocol with methods for transforming arrays of points.
-- [`RectAnchor`](#rectanchor), an enum for all major anchor points on a rectangle. Used for transform functions.
 - [`RelatableValue`](#relatablevalue), an enum used to store `.relative` or `.absolute` values.
+- [`CGFrame`](#cgframe), a coordinate space or rhombus defined by an origin and vectors for each axis
 - [`SketchyLine`](#sketchyline), an animatable line `Shape` that aligns to frame edges and can extend beyond the frame.
 - [`.emboss()` or `.deboss()`](#emboss-or-deboss) any SwiftUI `Shape` or `View`.
-- [`AnimatablePack`](#animatablepack) as an alternative to `AnimatablePair` that takes any number of properties.
-
+- [`AnimatableProperties`](#animatableproperties) for synthesizing animation data from writable key paths and [`AnimatablePropertyGroup`](#animatablepropertygroup) for preventing interpolation between unrelated variants.
+- [`AnimatableArray`](#animatablearray), [`AnimatableDictionary`](#animatabledictionary), and [`AnimatablePack`](#animatablepack) to more easily construct complex `animatableData` properties.
 
 # Demo App
 The `Example` folder has an app that demonstrates the features of this package.
 
 # Installation and Usage
-This package is compatible with iOS 14+, macOS 11+, watchOS 7+, tvOS 14+, and visionOS.
+This package is compatible with iOS 15+, macOS 12+, watchOS 9+, tvOS 15+, and visionOS 1+.
 
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/ShapeUp` and select by version.
 3. Import the package using `import ShapeUp`
+
+# Documentation
+Full API documentation is hosted on the [Swift Package Index](https://swiftpackageindex.com/ryanlintott/ShapeUp/documentation/shapeup).
 
 # Is this Production-Ready?
 Really it's up to you. I currently use this package in my own [Old English Wordhord app](https://oldenglishwordhord.com/app).
@@ -55,43 +66,279 @@ Or you can buy a t-shirt with the ShapeUp logo
 <a href="https://cottonbureau.com/p/JBYGB7/shirt/shapeup#/20149802"><img width="256" alt="ShapeUp T-Shirt" src="https://cottonbureau.com/mockup?vid=20149802&hash=6UJM&w=512"></a>
 - - -
 # Features
+## RectAnchor
+`RectAnchor` references a relative location in a `CGRect` like `.topLeft`, `.bottomRight`, and `.relative(x: 0.2, y: 0.8)`. It's similar to `UnitPoint` but it uses left and right instead of leading and trailing as it cannot respond to locale changes.
+
+Inside the `path(in:)` method of a SwiftUI `Shape`, points often use positions relative to the `rect` parameter. `ShapeUp` adds a subscript on `CGRect` that uses `RectAnchor` to clarify this code.
+
+```swift
+func path(in rect: CGRect) -> Path {
+    // Current method
+    let point1 = CGPoint(x: rect.minX, y: rect.minY)
+    let point2 = CGPoint(x: rect.minX + (rect.width * 0.4), y: rect.minY + (rect.height * 0.7))
+    
+    // ShapeUp method
+    let point1 = rect[.topLeft]
+    let point2 = rect[0.4, 0.7]
+    ...
+}
+```
+
+When you need several points, `points(_:)` accepts a `RectAnchorArrayBuilder` closure containing anchors or relative coordinate tuples.
+
+```swift
+let points = rect.points {
+    .topLeft
+    (0.4, 0.7)
+    .bottomRight
+}
+```
+
+## CGPoint
+`CGPoint` conforms to [`Vector2Transformable`](#vector2transformable), so single points or arrays can be moved, rotated, flipped, scaled, or inset. Convert the transformed points to corners to create a `Path` that draws lines between them.
+
+```swift
+func path(in rect: CGRect) -> Path {
+    [
+        rect[.topLeft].moved(dx: 10),
+        rect[.right],
+        rect[0.7, 1.0]
+    ]
+    .moved(dx: 100, dy: 50)
+    .rotated(.degrees(45), anchor: .center)
+    .flipped(mirrorLineStart: .topLeft, mirrorLineEnd: .bottomLeft)
+    .scaledPositions(2.5, anchor: .bottomRight)
+    .insetPoints(5)
+    .corners
+    .path()
+}
+```
+
 ## Corner
-A point with a specified `CornerStyle` used to draw paths and create shapes.
+What if you wanted to turn those points into rounded corners? Just add a `.rounded` style!
 
 ```swift
-Corner(.rounded(radius: 5), x: 0, y: 10)
+func path(in rect: CGRect) -> Path {
+    [
+        rect[.topLeft].moved(dx: 10),
+        rect[.right],
+        rect[0.7, 1.0]
+    ]
+    .corners(.rounded(radius: 20))
+    .path()
+}
 ```
 
-Corners store no information about their orientation or where the previous and next points are located. When they're put into an array their order is assumed to be their drawing order. This means you can generate a `Path` from this array. By default this path is assumed to be closed with the last point connecting back to the first.
+Adding a `CornerStyle` to an array of `CGPoint` changes it into an array of `Corner`. You can also apply different styles to individual corners.
 
 ```swift
-[
-    Corner(.rounded(radius: 10), x: 0, y: 0),
-    Corner(.cutout(radius: 5), x: 10, y: 0),
-    Corner(.straight(radius: 5), x: 5, y: 10)
-].path()
+func path(in rect: CGRect) -> Path {
+    [
+        rect[.topLeft]
+            .moved(dx: 10)
+            .rounded(radius: 20),
+            
+        rect[.right],
+        
+        rect[0.7, 1.0]
+            .cutout(radius: .relative(0.4))
+    ]
+    .path()
+}
 ```
+
+Arrays of corners with styles can be awkward to format. `Corners` can build an array of corners using `CornerArrayBuilder` (similar to `ViewBuilder`) so you can omit all those commas. You can also include a `Notch`, which is added between the nearest corners before and after it. Corner lookup is cyclic, so a leading or trailing notch is added between the last and first corners.
+
+```swift
+func path(in rect: CGRect) -> Path {
+    Corners {
+        rect[.topLeft]
+            .moved(dx: 10)
+            .rounded(radius: 20)
+            
+        rect[.right]
+        
+        rect[0.7, 1.0]
+            .cutout(radius: .relative(0.4))
+    }
+    .path()
+}
+```
+
+```swift
+let corners = Corners {
+    rect[.topLeft]
+    rect[.topRight]
+    Notch(.triangle, length: 30, depth: 15)
+    rect[.bottomRight]
+    rect[.bottomLeft]
+}
+```
+
 
 ## CornerStyle
-An enum storing style information for a `Corner`. In all cases, the radius is a [`RelatableValue`](#relatablevalue) that can either be an absolue value or relative to the length of the shortest line from that corner.
+Many different styles can be used on a `Corner` to define its shape.
+
+`.automatic`
+The initial style for corners created without an explicit style. It renders as a point unless resolved by `defaultCornerStyle(_:)`.
 
 <img width="50" alt="Pink triangle with a point corner" src="https://user-images.githubusercontent.com/2143656/157761591-2341d07c-5f0e-4434-ad19-22873f7357d9.svg"> `.point`
-A simple point corner with no properties.
+An explicit point corner with no properties. Unlike `.automatic`, it is preserved when applying a default style.
 
-<img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue)`
-A rounded corner with a radius.
+<img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue, style: CornerStyle.RoundingStyle = .circular)`
+A rounded corner with a radius and `.circular` or `.continuous` rounding.
 
-<img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, radiusOffset: CGFloat)`
-A concave corner where the radius determines the start and end points of the cut and the radius offeset is the difference between the concave radius and the radius. The radiusOffset is mainly used when insetting a concave corner and is often left with the default value of zero.
+`.continuous` corners preserve the requested nominal radius with zero-curvature joins where the corner meets its edges. At 90 degrees its unconstrained profile is fitted to SwiftUI's rendered continuous rounded rectangle — a very close approximation, not an exact match — and at other angles its curvature distribution is generalized from there to preserve the same nominal radius. See [`.addContinuousCurve()`](#add-continuous-curve) if you want to draw the same curve directly on a `Path`.
+
+Edge joins of a continuous corner sit farther from the corner point than a circular corner with the same radius, so on small or tightly packed shapes they can reach past a neighbouring corner's edge join and cause artifacts.
+
+<img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, concaveInset: CGFloat = 0)`
+A concave corner is like an inverted rounded corner where the radius determines the start and end points of the cut. The concave inset value is the inset of the concave radius and is automatically adjusted when insetting this corner.
 
 <img width="50" alt="Pink triangle with a straight cut corner" src="https://user-images.githubusercontent.com/2143656/157762299-437bcec4-2fc8-475b-bbbb-ed810d86ca7f.svg"> `.straight(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
-A straight chamfer corner where the radius determines the start and end points of the cut. Additional cornerstyles can be used on the two resulting corners of the chamfer. (You can continue nesting recursively.)
+A straight chamfer corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the two resulting corners of the chamfer. (You can continue nesting recursively.)
 
 <img width="50" alt="Pink triangle with a cutout corner" src="https://user-images.githubusercontent.com/2143656/157762313-c4015f99-7c53-4571-93b5-a8b476c9f5da.svg"> `.cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])`
-A cutout corner where the radius determines the start and end points of the cut. Additional cornerstyles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
+A cutout corner where the radius determines the start and end points of the cut. Additional corner styles can be used on the three resulting corners of the cut. (Again, you can continue nesting recursively.)
+
+Lastly, a custom corner uses the radius to determine the top left and bottom right corners of a rhombus in which you can add any number of relative corners to draw your shape.
+
+```swift
+.custom(radius: 20) {
+    RelativeCorner.topLeft
+    RelativeCorner.bottom.rounded(radius: .relative(0.4))
+    RelativeCorner.topRight
+}
+```
+
+Use `cornerStyle(_:)` to replace the style on an individual corner or selected shape corners. Use `defaultCornerStyle(_:)` on a value containing multiple corners to style automatic corners while preserving explicit styles.
+
+```swift
+CornerRectangle()
+    .cornerStyle(.point, shapeCorner: .topRight)
+    .defaultCornerStyle(.rounded(radius: 20))
+```
+
+Types conforming to `CornerStylable` implement `transformCornerStyles(_:)` once, which supplies `defaultCornerStyle(_:)`. The narrower `CornerStyled` protocol supplies `cornerStyle(_:)` and `changingRadius(to:)` to `Corner` and `RelativeCorner` that contain a single style. Arrays of these values provide indexed style replacement, `cornerStyles(_:)`, and the `cornerStyles` property. Transformations apply to each direct style contained by the value without separately visiting nested styles.
+
+
+## RelatableValue
+The corner radius for any corner style uses a `RelatableValue`. This is a value that stores either an absolute or a relative value. This type is used in several other ShapeUp types and you can use it in your types to add a relative option to your parameters.
+
+When setting a corner radius you might want a fixed value like 20 or you might want a value that's 20% of the maximum radius so that it will scale proportionally.
+
+```swift
+let cornerStyle1: CornerStyle = .rounded(radius: .absolute(20))
+let cornerStyle2: CornerStyle = .rounded(radius: .relative(0.2))
+```
+
+`RelatableValue` conforms to `ExpressibleByIntegerLiteral` and `ExpressibleByFloatLiteral`. This means you can omit `.absolute()` when writing absolute values.
+```swift
+let cornerStyle1: CornerStyle = .rounded(radius: 20)
+let cornerStyle2: CornerStyle = .rounded(radius: .relative(0.2))
+```
+
+Internally, the final value is determined by running the `value(using total:)` function. Absolute values are unchanged and relative values are calculated using the maximum radius that would fit the corner given the length of the two sides and the angle.
+
+
+## CornerShape
+An alternative to SwiftUI `Shape` where shapes are built from an array of `Corner`s. The resulting shape automatically conforms to `InsettableShape` with no additional work.
+
+`CornerShape` only draws straight lines between its styled corners, so if you want Bezier curves between corners you will need to use `Shape` and `addOpenCornerShape` instead.
+
+### How to build a CornerShape
+- Set `insetAmount` to zero (this property is used to automatically inset the CornerShape).
+- The `closed` property determines if your path will close or be left open.
+- Write a method that returns an array of corners.
+
+```swift
+struct MyCornerShape: CornerShape {
+    var insetAmount: CGFloat = .zero
+    var closed = true
+   
+    func corners(in rect: CGRect) -> [Corner] {
+        rect[.topLeft]
+            .moved(dx: 10)
+            .rounded(radius: 20)
+            
+        rect[.right]
+        
+        rect[0.7, 1.0]
+            .cutout(radius: .relative(0.4))
+    }
+}
+```
+
+### Using A CornerShape
+A `CornerShape` can be used in SwiftUI Views the same way as `RoundedRectangle` or similar.
+```swift
+MyCornerShape()
+    .fill()
+```
+
+The corners can also be accessed directly for use in a regular SwiftUI `Shape`
+```swift
+func path(in rect: CGRect) -> Path {
+    var path = Path()
+    
+    // ...Draw some quad curves or similar complex shapes
+    
+    let corners: [Corner] = MyCornerShape()
+        .corners(in: rect)
+        .inset(by: 10)
+        .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
+        
+    path.addOpenCornerShape(
+        corners,
+        previousPoint: path.currentPoint,
+        nextPoint: rect[.center],
+        moveToStart: false
+    )
+    
+    // ...Draw some more
+    
+    return path
+}
+```
+
+## CornerCustom
+Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s.
+
+The closure is `@Sendable`, so captured view state will not drive animation the way it can with `RelativeCornerCustom`.
+
+```swift
+CornerCustom { rect in
+    rect[.topLeft]
+        .moved(dx: 10)
+        .rounded(radius: 20)
+        
+    rect[.right]
+    
+    rect[0.7, 1.0]
+        .cutout(radius: .relative(0.4))
+}
+.fill()
+```
+
+## RelativeCornerCustom
+An alternative to `CornerCustom` that can use `@State` values and can therefore be animated. This shape takes an array of `RelativeCorner`, a type similar to `Corner` except its position is a relative anchor point with an absolute offset.
+
+```swift
+RelativeCornerCustom {
+    RelativeCorner.topLeft
+        .moved(dx: 10)  // absolute offsets are still possible
+        .rounded(radius: 20)
+        
+    RelativeCorner.right
+    
+    RelativeCorner(x: 0.7, y: 1.0)
+        .cutout(radius: .relative(0.4))
+}
+.fill()
+```
 
 ## Basic Shapes
-`CornerRectangle`, `CornerTriangle`, and `CornerPentagon` are pre-built shapes where you can customize the style of any corner.
+`CornerRectangle`, `CornerTriangle`, and `CornerPentagon` are pre-built corner shapes where you can customize the style of any corner. Some parameters in these shapes also use `RelatableValue` to define point locations by relative values.
 
 Examples:
 ```swift
@@ -125,58 +372,6 @@ CornerPentagon(
 .fill()
 ```
 
-## CornerShape
-A protocol for creating shapes built from an array of `Corner`s. The path and inset functions needed to conform to SwiftUI InsettableShape are already implemented.
-
-### How to build a CornerShape
-- Set insetAbount zero (this property is used if the shape inset).
-- Set the closed property to define if your shape should be closed or left open.
-- Write a function that returns an array of corners.
-```swift
-public struct MyShape: CornerShape {
-    public var insetAmount: CGFloat = .zero
-    public let closed = true
-   
-    public func corners(in rect: CGRect) -> [Corner] {
-        [
-            Corner(x: rect.midX, y: rect.minY),
-            Corner(.rounded(radius: 5), x: rect.maxX, y: rect.maxY),
-            Corner(.rounded(radius: 5), x: rect.minX, y: rect.maxY)
-        ]
-    }
-}
-```
-
-### Using A CornerShape
-A `CornerShape` can be used in SwiftUI Views the same way as `RoundedRectangle` or similar.
-```swift
-MyShape()
-    .fill()
-```
-
-The corners can also be accessed directly for use in a more complex shape
-```swift
-public func corners(in rect: CGRect) -> [Corner] {
-    MyShape()
-        .corners(in: rect)
-        .inset(by: 10)
-        .addingNotch(Notch(.rectangle, depth: 5), afterCornerIndex: 0)
-}
-```
-
-## CornerCustom
-Sometimes you might want to make a shape inline without defining a new struct. `CornerCustom` is a `CornerShape` that takes a closure that returns an array of `Corner`s. The closure itself needs to be `Sendable` so that it can be used to generate a path for a SwiftUI `Shape`.
-
-```swift
-CornerCustom { rect in
-    [
-        Corner(x: rect.midX, y: rect.minY),
-        Corner(.rounded(radius: 10), x: rect.maxX, y: rect.maxY),
-        Corner(.rounded(radius: 10), x: rect.minX, y: rect.maxY)
-    ]
-}
-.strokeBorder(lineWidth: 5)
-```
 
 ## Notch
 Sometimes you want to cut a notch in the side of a shape. This can be tricky to do when the line is at an odd angle but `Notch` makes it easy. A `Notch` has a `NotchStyle`, position, length and depth.
@@ -184,34 +379,73 @@ Sometimes you want to cut a notch in the side of a shape. This can be tricky to 
 The following code adds a rectangular notch between the second and third corner. The `addingNotch()` function makes all the necessary calculations to add the corners representing that notch into the `Corner` array.
 
 ```swift
-let notch = Notch(.rectangle, position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1))
+let notch = Notch(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1))
 
 let corners = corners.addingNotch(notch, afterCornerIndex: 1)
 ```
+
 ### NotchStyle
-Two basic styles are `.triangle` and `.rectangle` and both allow customization of the corner styles for the 2 or 3 resulting notch corners.
+Rectangular is the default style but triangular notches are just as easy to make. Both styles can have custom corner styles applied to each corner.
+
 ```swift
 /// Specify styles for each corner
-let notch1 = .triangle(cornerStyles: [.rounded(radius: 10), .point, .straight(radius: 5)])
+Notch(.triangle, depth: 20)
+    .cornerStyles([.rounded(radius: 10), .point, .straight(radius: 5)])
+
 /// Or specify one style for all
-let notch2 = .rectangle(cornerStyle: .rounded(radius: .relative(0.2))
+Notch(length: .relative(0.2), depth: 50)
+    .defaultCornerStyle(.rounded(radius: .relative(0.2)))
 ```
 
-There is also a `.custom` notch style that takes a closure that returns an array of `Corner`s based on a `CGRect` that matches the size and orientation of the notch.
+### Custom NotchStyle
+Notch styles are essentially arrays of `RelativeCorner` so you can create any shape you like.
 ```swift
-let notch = .custom { rect in
-    [
-        Corner(x: rect.minX, y: rect.minY),
-        Corner(x: rect.minX, y: rect.midY),
-        Corner(.rounded(radius: 15), x: rect.midX, y: rect.maxY),
-        Corner(x: rect.maxX, y: rect.midY),
-        Corner(x: rect.maxX, y: rect.minY)
-    ]
+Notch(depth: .relative(0.1)) {
+    RelativeCorner.topLeft
+    RelativeCorner.left
+    RelativeCorner.bottom.rounded(radius: 15)
+    RelativeCorner.right
+    RelativeCorner.topRight
 }
 ```
 
+
 ## Add CornerShape
-Shapes made completely with corners have their limitations. Only straight lines and arcs are possible. If you want to use corners to draw only a portion of your shape you can do that too with `.addOpenCornerShape()` and `.addClosedCornerShape()` functions added to `Path`
+If you have a more complex shape with curves but still want to add corners you can use the `.addOpenCornerShape()` and `.addClosedCornerShape()` functions added to `Path`.
+
+Both functions accept an array or a trailing `CornerArrayBuilder` closure:
+
+```swift
+var path = Path()
+
+path.addOpenCornerShape(
+    previousPoint: path.currentPoint,
+    nextPoint: rect[.bottomRight]
+) {
+    rect[.topLeft]
+    rect[.top].rounded(radius: 12)
+    rect[.right]
+}
+
+path.addClosedCornerShape {
+    rect[.topLeft]
+    rect[.topRight]
+    rect[.bottom].rounded(radius: 20)
+}
+```
+
+## Add Continuous Curve
+`.addContinuousCurve(tangent1End:tangent2End:radius:)` adds a single continuous corner curve to a `Path`, the same way `.addArc(tangent1End:tangent2End:radius:transform:)` adds a circular one. It's useful when you're building a path by hand and want a `.continuous`-style corner without going through `Corner` or `CornerShape`.
+
+```swift
+var path = Path()
+path.move(to: rect[.topLeft])
+path.addContinuousCurve(
+    tangent1End: rect[.top],
+    tangent2End: rect[.right],
+    radius: 20
+)
+```
 
 ## Vector2
 A vector type used as an alternative to CGPoint that conforms to all the Vector2 protocols.
@@ -219,77 +453,81 @@ A vector type used as an alternative to CGPoint that conforms to all the Vector2
 ## Vector2Representable
 A protocol that adds the `vector: Vector2` property. `Vector2`, `CGPoint`, and `Corner` all conform to this and it's required for any other Vector2 protocols.
 
-Other properties and methods:
+Properties and methods:
 ```swift
 point: CGPoint
 corner(_ style:) -> Corner
+corner: Corner
 ```
 
 Array extensions:
 ```swift
-points: [CGPoint]
 vectors: [Vector2]
+points: [CGPoint]
 corners(_ style: CornerStyle?) -> [Corner]
 corners(_ styles: [CornerStyle?]) -> [Corner]
+corners: [Corner]
 bounds: CGRect
-center: CGPoint
-anchorPoint(_ anchor: RectAnchor) -> CGPoint
 angles: [Angle]
 ```
 
 ## Vector2Algebraic
-A protocol that adds vector math. Only applied to `Vector2` by default but can be added to any other `Vector2Representable` if need be.
+A protocol that adds vector math and adds conformance to `AdditiveArithmetic`. Only applied to `Vector2` by default but can be added to any other `Vector2Representable` type if need be.
 
-Functions include: magnitude, direction, normalized, addition, subtraction, and multiplication or division with scalars.
+Functions include: magnitude, magnitudeSquared, direction, normalized, addition, subtraction, multiplication or division with scalars, cross product, dot product, scalar projection, parallel component and perpendicular component.
 
 ## Vector2Transformable
-A protocol that adds transformation functions (move, rotate, flip, inset) to any `Vector2Representable` or array of that type. Applied to `Vector2`, `CGPoint`, and `Corner`.
+A protocol that adds transformation functions (move, rotate, flip, inset, scale) to any `Vector2Representable` or array of that type. Applied to `Vector2`, `CGPoint`, and `Corner`.
 
-## RectAnchor
-An enum to indicate one of 9 anchor locations on a rectangle. It's primarily used to quickly get `CGPoint` values from `CGRect`
 
+## CGRect
+Create a `CGPoint` or `Corner` from a relative anchor position `RectAnchor` of a `CGRect`.
 ```swift
-// Current method
-let point = CGPoint(x: rect.minX, y: rect.minY)
-// ShapeUp method
-let point = rect.point(.topLeft)
+/// Default will return a CGPoint
+let point = rect[.topRight]
+
+/// When a Corner type is required there is an overload that will return a Corner instead
+let corners = Corners {
+    rect[.topRight]
+    rect[1.0, 0.2]
+    rect[.bottom].rounded(radius: 20)
+}
 ```
 
-This is especially helpful when getting an array of points
-
+Scale and move `CGRect`
 ```swift
-// Current method
-let points = [
-    CGPoint(x: rect.minX, y: rect.midY),
-    CGPoint(x: rect.midX, y: rect.midY),
-    CGPoint(x: rect.maxX, y: rect.maxY)
-]
-// ShapeUp method
-let points = rect.points(.left, .center, .bottomRight)
+let transformedRect = rect
+    .moved(dx: 40, dy: 2.5)
+    .scaled(x: 2, y: 1.5, anchor: .center)
 ```
 
-## RelatableValue
-A handy enum that represents either a relative or absolute value. This is used in lots of situations throughout ShapeUp to give flexibility when defining parameters.
-
-When setting a corner radius you might want a fixed value like 20 or you might want a value that's 20% of the maximum so that it will scale proportionally. `RelatableValue` gives you both of those options.
+## CGSize
+Scale
 ```swift
-let absolute = RelatableValue.absolute(20)
-let relative = RelatableValue.relative(0.2)
+let scaledSize: CGSize = size.scaled(3)
 ```
 
-Later, the value is determined by running the `value(using total:)` function. Absolute values will always be the same but any relative values will be calculated. In the case of a corner radius, the total would be the maximum radius that would fit that corner given the length of the two lines and the angle of the corner.
+## CGFrame
+A coordinate frame defined by an origin and a vector for each axis. Similar to `CGRect` you can use it to convert `RectAnchor` positions within the frame to absolute points and is used internally to draw custom corner styles.
+
 ```swift
-let radius = relatableRadius.value(using: maxRadius)
+let frame = CGFrame(origin: .zero, xAxis: Vector2(dx: 10, dy: 0), yAxis: Vector2(dx: 10, dy: 8))
+let center: CGPoint = frame[.center]
+let edgeMidpoints = [RectAnchor.top, .right, .bottom, .left].points(in: frame)
+let relativePoint: CGPoint = frame[1.0, 0.666]
+let relativePoints = [
+    RectAnchor.relative(x: 0.0, y: 0.7),
+    .relative(x: 0.3, y: 1.0),
+    .relative(x: 1.0, y: 0.0)
+].points(in: frame)
 ```
 
-For ease of use, `RelatableValue` conforms to `ExpressibleByIntegerLiteral` and `ExpressibleByFloatLiteral`. This means in many cases you can omit `.absolute()` when writing absolute values.
 ```swift
-// Both are the same
-let cornerStyle = .rounded(radius: .absolute(5))
-let cornerStyle = .rounded(radius: 5)
+CGFrame(origin: .zero, size: CGSize(width: 10, height: 20), rotation: .degrees(45))
 ```
+
 ## SketchyLine
-A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
+An animatable line `Shape` with ends that can extend and a position that can offset perpendicular to its direction.
 
 <img width="195" alt="image" src="https://user-images.githubusercontent.com/2143656/157765981-3f48e2bb-50c8-46ba-b2b3-80d7491f1473.png">
 
@@ -314,26 +552,108 @@ Extensions for `InsettableShape` and `View` that create an embossed or debossed 
 
 <img width="205" alt="image" src="https://user-images.githubusercontent.com/2143656/157765787-a8bcdee3-fec3-40f8-8414-1c66ca073db6.png">
 
-## AnimatablePack
+## AnimatableProperties
+Synthesize a type's `animatableData` using writable key paths.
+
+Conforming to the `Animatable` protocol can be simple with the `@Animatable` macro but only properties conforming to `VectorArithmetic` will be animatable. Types that are not animatable will only warn you at runtime.
+
+```swift
+@Animatable
+struct NotchedPolygon: Shape {
+    // Animated by @Animatable
+    var cornerRadius: CGFloat
+
+    // Not animated by @Animatable. SwiftUI logs a runtime warning for these properties.
+    var notch: Notch?
+    var corners: [RelativeCorner]
+
+    // ...
+}
+```
+
+With `AnimatableProperties` you can conform to `Animatable` and animate types that conform to `VectorArithmetic` or `Animatable` (including other `AnimatableProperties` types) and any `Optional` wrappers or `Array`/`Dictionary` collections of those types.
+
+```swift
+struct NotchedPolygon: Shape, AnimatableProperties {
+    var cornerRadius: CGFloat
+    var notch: Notch?
+    var corners: [RelativeCorner]
+
+    static var animatableProperties: some AnimatableProperty<Self> {
+        // All properties listed here will be animated. Unsupported properties will show compiler errors.
+        \.cornerRadius
+        \.notch
+        \.corners
+    }
+
+    // ...
+}
+```
+
+### AnimatablePropertyGroup
+Use `AnimatablePropertyGroup` when a set of properties should animate only while an identifier remains unchanged. When the identifier changes, the grouped properties keep their current values instead of receiving interpolated data. This is useful for enum-like types whose cases store different values.
+
+```swift
+enum StyleKind: Hashable {
+    case rounded
+    case concave
+}
+
+struct AnimatedStyle: AnimatableProperties {
+    var kind: StyleKind
+    var radius: CGFloat
+    var inset: CGFloat
+
+    static var animatableProperties: some AnimatableProperty<Self> {
+        AnimatablePropertyGroup(id: \.kind) {
+            \.radius
+            \.inset
+        }
+    }
+}
+```
+
+The identifier is included in the animation data and must conform to `Hashable`. In this example, `radius` and `inset` interpolate while `kind` remains the same. Changing `kind` applies its new values immediately. ShapeUp uses this behavior for corner styles so properties within the same style continue to animate without interpolating unrelated data when the style changes.
+
+If your animation values need custom logic you can build your own `animatableData` and use some of the tools below:
+
+### AnimatableArray
+Animate an array element by element using `AnimatableArray`. Arrays of `VectorArithmetic` values expose `animatableArray`, while arrays of `Animatable` values expose `animatableValueArray`.
+
+> **Note:** Only changes to existing elements can be animated. Adding or removing elements will not animate.
+
+```swift
+struct MyShape: Animatable {
+    var corners: [Corner]
+
+    var animatableData: AnimatableArray<Corner.AnimatableData> {
+        get { corners.animatableValueArray }
+        set { corners.animatableValueArray = newValue }
+    }
+}
+```
+
+### AnimatableDictionary
+Animate dictionary values by key using `AnimatableDictionary`. Dictionaries of `VectorArithmetic` values expose `animatableDictionary`, while dictionaries of `Animatable` values expose `animatableValueDictionary`.
+
+> **Note:** `animatableDictionary` and `animatableValueDictionary` update values for matching existing keys. They do not add or remove keys, so changes to the dictionary's keys are not animated.
+
+```swift
+struct MyShape: Animatable {
+    var styles: [CornerRectangle.ShapeCorner: CornerStyle]
+
+    var animatableData: AnimatableDictionary<CornerRectangle.ShapeCorner, CornerStyle.AnimatableData> {
+        get { styles.animatableValueDictionary }
+        set { styles.animatableValueDictionary = newValue }
+    }
+}
+```
+
+### AnimatablePack
 *\*Xcode 16+, iOS 17+, macOS 14+, watchOS 10+, tvOS 17+*
 
-Animate lots of properties in a `Shape` using `AnimatablePack` instead of nesting `AnimatablePair` types
+`AnimatablePack` is a back-deployable alternative to `SwiftUI.AnimatableValues` for animating any number of properties without nesting `AnimatablePair` types.
 
-Here is an example of animatableData using AnimatablePair:
- ```swift
- struct MyShape: Animatable {
-     var animatableData: AnimatablePair<CGFloat, AnimatablePair<RelatableValue, Double>> {
-         get { AnimatablePair(insetAmount, AnimatablePair(cornerRadius, rotation)) }
-         set {
-             insetAmount = newValue.first
-             cornerRadius = newValue.second.first
-             rotation = newValue.second.second
-         }
-     }
- }
- ```
- You can see how it would get quite large once you start adding more than a few properties.
- Here's how to use AnimatablePack instead:
  ```swift
  struct MyShape: Animatable {
      var animatableData: AnimatablePack<CGFloat, RelatableValue, Double> {

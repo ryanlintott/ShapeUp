@@ -20,12 +20,12 @@ struct CornerTriangleExample: View {
                 .frame(width: 200, height: 100)
             
             CornerTriangle(topPoint: .zero)
-                .applyingStyle(.concave(radius: 10))
+                .defaultCornerStyle(.concave(radius: 10))
                 .strokeBorder(Color.suPink, lineWidth: 8)
                 .frame(width: 200, height: 100)
             
             CornerTriangle()
-                .applyingStyle(.rounded(radius: 10), shapeCorners: [.top, .bottomRight])
+                .cornerStyle(.rounded(radius: 10), shapeCorners: [.top, .bottomRight])
                 .fill(Color.suYellow)
                 .frame(width: 200, height: 100)
         }
@@ -40,4 +40,3 @@ struct CornerTriangleExample_Previews: PreviewProvider {
         }
     }
 }
-

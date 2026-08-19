@@ -10,56 +10,95 @@ import SwiftUI
 
 struct OpenCornerShape: Shape {
     func path(in rect: CGRect) -> Path {
-        let corners = [
-            Corner(x: rect.minX, y: rect.minY),
-            Corner(x: rect.midX, y: rect.midY),
-            Corner(x: rect.maxX, y: rect.minY),
-            Corner(x: rect.maxX, y: rect.midY)
-        ]
-            .corners([
-                .straight(radius: .relative(0.2)),
-                .cutout(radius: .relative(0.2), cornerStyles: [
-                    .rounded(radius: .relative(0.4)),
-                    .point,
-                    .straight(radius: .relative(0.4))
-                ]),
-                .cutout(radius: .relative(0.2), cornerStyles: [.rounded(radius: .relative(0.2))]),
-                .rounded(radius: 20)
-            ])
-        
         var path = Path()
-        path.move(to: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.maxY))
-        path.addQuadCurve(to: CGPoint(x: rect.minX, y: rect.midY), control: CGPoint(x: rect.midX, y: rect.midY))
-        
-        path.addOpenCornerShape(
-            corners,
-            previousPoint: CGPoint(x: rect.minX, y: rect.midY),
-            nextPoint: CGPoint(x: rect.midX, y: rect.midY),
-            moveToStart: false
+        path.move(to: rect[0.25, 1])
+        path.addQuadCurve(
+            to: rect[.left],
+            control: rect[.center]
         )
         
-        path.addQuadCurve(to: CGPoint(x: rect.maxX - rect.width * 0.25, y: rect.maxY), control: CGPoint(x: rect.midX, y: rect.midY))
+        path.addOpenCornerShape(nextPoint: rect[.center]) {
+            rect[.topLeft].straight(radius: .relative(0.2))
+            
+            rect[.center].cutout(radius: .relative(0.2), cornerStyles: [
+                .rounded(radius: .relative(0.4)),
+                .point,
+                .straight(radius: .relative(0.4))
+            ])
+            
+            rect[.topRight].cutout(radius: .relative(0.2), cornerStyles: [
+                .rounded(radius: .relative(0.2))
+            ])
+            
+            rect[.right].rounded(radius: 20)
+        }
+        
+        path.addQuadCurve(
+            to: rect[0.75, 1],
+            control: rect[.center]
+        )
 
         return path
     }
 }
 
 struct AddOpenCornerShapeExample: View {
+    var code: String {
+"""
+var path = Path()
+path.move(to: rect[0.25, 1])
+path.addQuadCurve(
+    to: rect[.left],
+    control: rect[.center]
+)
+
+// nextPoint is required to draw the style of the last corner correctly.
+path.addOpenCornerShape(nextPoint: rect[.center]) {
+                        // Add corners here
+    rect[.topLeft]
+        .straight(radius: .relative(0.2))
+    
+    rect[.center]
+        .cutout(
+            radius: .relative(0.2),
+            cornerStyles: [
+                .rounded(radius: .relative(0.4)),
+                .point,
+                .straight(radius: .relative(0.4))
+            ]
+        )
+    
+    rect[.topRight]
+        .cutout(
+            radius: .relative(0.2),
+            cornerStyles: [
+                .rounded(radius: .relative(0.2))
+            ]
+        )
+    
+    rect[.right]
+        .rounded(radius: 20)
+}
+"""
+    }
+    
     var body: some View {
         VStack {
-            VStack(alignment: .leading) {
-                Text("`CornerShape` does not currently support curves but you can always use an array of `Corner` to draw a part of your path.")
-                
-                Text("Below is a SwiftUI `Shape` but some of the difficult corner details were added with `path.addOpenCornerShape()`")
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Text("Corners can also be added to any `Path`")
+                    
+                    OpenCornerShape()
+                        .stroke(Color.suPink, lineWidth: 10)
+                        .frame(width: 200, height: 200)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                    
+                    Text(code)
+                        .font(.system(size: 12, design: .monospaced))
+                        .padding(.vertical, 6)
+                }
             }
-            
-            Spacer()
-            
-            OpenCornerShape()
-                .stroke(Color.suPink, lineWidth: 10)
-                .frame(width: 200, height: 200)
-            
-            Spacer()
         }
         .padding()
         .navigationTitle("AddOpenCornerShape")

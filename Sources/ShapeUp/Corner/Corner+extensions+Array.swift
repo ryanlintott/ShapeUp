@@ -8,64 +8,8 @@
 import SwiftUI
 
 public extension Array where Element == Corner {
-    /// Array of corner styles used on each corner respectively.
-    var cornerStyles: [CornerStyle] {
-        self.map({ $0.style })
-    }
-    
-    /// Applies new styles to this array of corners.
-    /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
-    mutating func applyStyles(_ styles: [CornerStyle?]) {
-        self = self.applyingStyles(styles)
-    }
-    
-    /// Creates an array of corners with the same positions and specified styles.
-    /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
-    /// - Returns: An array of corners with the same positions and specified styles.
-    func applyingStyles(_ styles: [CornerStyle?]) -> [Corner] {
-        if styles.isEmpty { return self }
-        // Create an array of styles equal in length to the array of corners.
-        let styles = styles + Array<CornerStyle?>(repeating: nil, count: Swift.max(count - styles.count, 0))
-        
-        return zip(self, styles).map { corner, style in
-            // Apply a style if one is provided, otherwise use the current style.
-            corner.applyingStyle(style ?? corner.style)
-        }
-    }
-    
-    /// Applies a new style to all corners in the array.
-    /// - Parameter style: A style that will be applied to every corner.
-    mutating func applyStyle(_ style: CornerStyle) {
-        self = self.applyingStyle(style)
-    }
-    
-    /// Creates an array of corners with the same positions and a new specified style.
-    /// - Parameter style: A style that will be applied to every corner.
-    /// - Returns: An array of corners with the same positions and a new specified style.
-    func applyingStyle(_ style: CornerStyle) -> [Corner] {
-        self.map { $0.applyingStyle(style) }
-    }
-    
-    /// Creates an array of corners with the same positions and a new specified style applied to specified corners.
-    /// - Parameters:
-    ///   - style: A style that will be applied to specified corners.
-    ///   - indices: Indices of the corners with which to apply the new style.
-    /// - Returns: An array of corners with the same positions and a new specified style applied to specified corners.
-    func applyingStyle(_ style: CornerStyle, corners indices: [Self.Index]) -> [Corner] {
-        self.enumerated().map({ indices.contains($0) ? $1.applyingStyle(style) : $1 })
-    }
-    
-    /// Creates an array of corners with the same positions and a new specified style applied to a specified corner.
-    /// - Parameters:
-    ///   - style: A style that will be applied to a specified corner.
-    ///   - indices: Index of the corner with which to apply the new style.
-    /// - Returns: An array of corners with the same positions and a new specified style applied to a specified corner.
-    func applyingStyle(_ style: CornerStyle, corner index: Self.Index) -> [Corner] {
-        applyingStyle(style, corners: [index])
-    }
-    
     /// An array of corner dimensions used for drawing, insetting, and modifying points of a closed shape.
-    var dimensions: [Corner.Dimensions] {
+    internal var dimensions: [Corner.Dimensions] {
         dimensions()
     }
     
@@ -74,7 +18,7 @@ public extension Array where Element == Corner {
     ///   - previousPoint: Previous corner point. Default is the last point.
     ///   - nextPoint: Next corner point. Default is the first point.
     /// - Returns: An array of corner dimensions used for drawing, insetting, and modifying points.
-    func dimensions(previousPoint: CGPoint? = nil, nextPoint: CGPoint? = nil) -> [Corner.Dimensions] {
+    internal func dimensions(previousPoint: CGPoint? = nil, nextPoint: CGPoint? = nil) -> [Corner.Dimensions] {
         guard
             let beforeFirst = previousPoint ?? last?.point,
             let afterLast = nextPoint ?? first?.point
@@ -102,7 +46,7 @@ public extension Array where Element == Corner {
     /// Adds an open corner shape defined by this array of corners to the provided path.
     /// - Parameters:
     ///   - path: Path where corner shape is added.
-    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currrently is to the first corner.
+    ///   - moveToStart: A boolean value determining if the first point should be moved to. If this value is false a line will be added from wherever the path currently is to the first corner.
     func addOpenCornerShape(to path: inout Path, moveToStart: Bool) {
         dimensions.addOpenCornerShape(to: &path, moveToStart: moveToStart)
     }
@@ -131,33 +75,11 @@ public extension Array where Element == Corner {
             .corners(inset: insetAmount)
     }
     
-    /// A boolean check that determines if a corner array is flat. Flat corners are point, rounded, and concave with absolute radius values.
-    ///
-    /// If any corner uses relative radius values or allows nested corner styles, this value will be false.
-    internal var isFlat: Bool {
-        self.contains(where: { !$0.style.isFlat })
-    }
-    
-    /// An array of corners that's a flattened representation of the current array. Flat corners are point, rounded, and concave with absolute radius values.
-    ///
-    /// Relative radius values will be changed to absolute and corners with nested styles will change to an array of sub corners with those styles. This function is recursive and will flatten corners at all nested levels.
-    internal var flattened: [Corner] {
-        isFlat ? self : dimensions.flattened
-    }
-    
-    /// Returns a copy of this array of corners flattened by the number of levels provided.
-    ///
-    /// All corners on this level will have their radius changed to absolute values and corners with nested styles will change to an array of corners with those styles. For each level higher than one this process will be repeated for those new nested corners.
-    /// - Parameter levels: Number of levels to flatten.
-    /// - Returns: A copy of this array of corners flattened by the number of levels provided.
-    internal func flattened(levels: Int) -> [Corner] {
-        isFlat ? self : dimensions.flattened(levels: levels)
-    }
-    
     /// Adds corners based on the specified notches.
     ///
     /// The first notch will create corners between the first and second corner, the next will create corners between the second and third corners, etc. Nil values will create no additional corners.
     /// - Parameter notches: Notches that define additional corners to add in the gaps between each corner. Nil values will skip a gap and add no corners.
+    @available(*, deprecated, message: "Assign the result of `addingNotches(_:)` back to the array instead.")
     mutating func addNotches(_ notches: [Notch?]) {
         self = self.addingNotches(notches)
     }
@@ -189,6 +111,7 @@ public extension Array where Element == Corner {
     /// - Parameters:
     ///   - notch: Notch that define additional corners to add after the specified index.
     ///   - cornerIndex: Index after which the corners will be added.
+    @available(*, deprecated, message: "Assign the result of `addingNotch(_:afterCornerIndex:)` back to the array instead.")
     mutating func addNotch(_ notch: Notch, afterCornerIndex cornerIndex: Int) {
         self = self.addingNotch(notch, afterCornerIndex: cornerIndex)
     }
@@ -196,8 +119,8 @@ public extension Array where Element == Corner {
     /// Creates a copy of the corner array with additional corners based on the specified notch after the specified index.
     /// - Parameters:
     ///   - notch: Notch that define additional corners to add after the specified index.
-    ///   - cornerIndex: Index after which the corners will be added.
-    func addingNotch(_ notch: Notch, afterCornerIndex cornerIndex: Int) -> [Corner] {
+    ///   - cornerIndex: Index after which the corners will be added. Default is 0
+    func addingNotch(_ notch: Notch, afterCornerIndex cornerIndex: Int = 0) -> [Corner] {
         self.addingNotches(Array<Notch?>(repeating: nil, count: cornerIndex) + [notch])
     }
     
@@ -214,5 +137,39 @@ public extension Array where Element == Corner {
         }
         
         return self + (notch?.between(start: lastCorner, end: corner) ?? []) + [corner]
+    }
+
+    @available(*, deprecated, renamed: "cornerStyle(_:corners:)")
+    func applyingStyle(_ newStyle: CornerStyle, corners indices: [Int]) -> Self {
+        cornerStyle(newStyle, corners: indices)
+    }
+
+    @available(*, deprecated, renamed: "cornerStyle(_:corner:)")
+    func applyingStyle(_ newStyle: CornerStyle, corner index: Int) -> Self {
+        cornerStyle(newStyle, corner: index)
+    }
+
+    @available(*, deprecated, renamed: "cornerStyles(_:)")
+    func applyingStyles(_ newStyles: [CornerStyle?]) -> Self {
+        cornerStyles(newStyles)
+    }
+
+    @available(*, deprecated, message: "Use `defaultCornerStyle(_:)` to replace only automatic styles, or `transformCornerStyles { _ in style }` to replace every style.")
+    func applyingStyle(_ newStyle: CornerStyle) -> Self {
+        transformCornerStyles { _ in newStyle }
+    }
+
+    /// Applies new styles to this array of corners.
+    /// - Parameter styles: An array of styles that will be applied to each corner respecitvely. Nil values will keep current style.
+    @available(*, deprecated, message: "Assign the result of `cornerStyles(_:)` back to the array instead.")
+    mutating func applyStyles(_ styles: [CornerStyle?]) {
+        self = cornerStyles(styles)
+    }
+
+    /// Applies a new style to all corners in the array.
+    /// - Parameter style: A style that will be applied to every corner.
+    @available(*, deprecated, message: "Use `defaultCornerStyle(_:)` to replace only automatic styles, or assign the result of `transformCornerStyles { _ in style }` to replace every style.")
+    mutating func applyStyle(_ style: CornerStyle) {
+        self = transformCornerStyles { _ in style }
     }
 }

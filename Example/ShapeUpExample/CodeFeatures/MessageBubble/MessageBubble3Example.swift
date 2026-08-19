@@ -20,11 +20,12 @@ struct MessageBubble3: CornerShape {
         rect
             .corners(.rounded(radius: cornerRadius))
             .addingNotch(
-                .triangle(depth: -pointSize, cornerStyles: [
-                    .rounded(radius: pointRadius),
-                    .point,
-                    .rounded(radius: pointRadius)
-                ]),
+                Notch(.triangle, depth: -pointSize)
+                    .cornerStyles([
+                        .rounded(radius: pointRadius),
+                        .point,
+                        .rounded(radius: pointRadius)
+                    ]),
                 afterCornerIndex: 2
             )
     }
@@ -48,4 +49,3 @@ struct MessageBubble3Example_Previews: PreviewProvider {
         MessageBubble3Example()
     }
 }
-

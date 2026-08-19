@@ -10,8 +10,8 @@ import SwiftUI
 
 struct RectangleExample2: View {
     var body: some View {
-        Rectangle()
-            .applyingStyles([
+        CornerRectangle()
+            .cornerStyles([
                 .topLeft: .rounded(radius: 100),
                 .topRight: .concave(radius: 80),
                 .bottomRight: .straight(radius: 50),

@@ -1,5 +1,5 @@
 //
-//  Angle+AngleRepresentable.swift
+//  Angle+extensions.swift
 //  ShapeUp
 //
 //  Created by Ryan Lintott on 2022-02-08.
@@ -15,10 +15,6 @@ fileprivate struct _Angle: AngleRepresentable {
 internal extension Angle {
     fileprivate var _angle: _Angle {
         _Angle(radians: radians)
-    }
-
-    var type: AngleType {
-        _angle.type
     }
     
     var positive: Angle {
@@ -59,6 +55,22 @@ internal extension Angle {
     
     var halved: Angle {
         _angle.halved
+    }
+    
+    var doubled: Angle {
+        _angle.doubled
+    }
+
+    var halfAngleSine: Double {
+        _angle.halfAngleSine
+    }
+
+    func isApproximatelyZero(tolerance: Double = 1e-12) -> Bool {
+        _angle.isApproximatelyZero(tolerance: tolerance)
+    }
+
+    func isApproximatelyStraight(tolerance: Double = 1e-12) -> Bool {
+        _angle.isApproximatelyStraight(tolerance: tolerance)
     }
     
     static func threePoint(_ initialPoint: some Vector2Representable, _ anchor: some Vector2Representable, _ terminalPoint: some Vector2Representable) -> Angle {

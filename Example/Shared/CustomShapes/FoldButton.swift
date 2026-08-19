@@ -11,28 +11,21 @@ import SwiftUI
 struct FoldButton: View {
     var body: some View {
         ZStack(alignment: .trailing) {
-            Rectangle()
-                .applyingStyle(.rounded(radius: .relative(0.5)))
-                .applyingStyle(.point, shapeCorners: [.topRight])
+            CornerRectangle()
+                .cornerStyle(.point, shapeCorner: .topRight)
+                .defaultCornerStyle(.rounded(radius: .relative(0.5)))
                 .fill(.purple)
                 .frame(width: 300)
             
-            CornerCustom { rect in
-                rect
-                    .points(relativeLocations: [
-                        (0,0),
-                        (1,0),
-                        (1,-0.5),
-                        (1,1),
-                        (0,1)
-                    ])
-                    .corners([
-                        .rounded(radius: .absolute(rect.height * 0.5)),
-                        .rounded(radius: .relative(1)),
-                        .point,
-                        .rounded(radius: .absolute(rect.height * 0.5)),
-                        .rounded(radius: .absolute(rect.height * 0.5))
-                    ])
+            RelativeCornerCustom {
+                [
+                    .topLeft.rounded(radius: .relative(0.5)),
+                    .topRight.rounded(radius: .relative(1.0)),
+                    .relative(x: 1, y: -0.5),
+                    .topRight,
+                    .bottomRight.rounded(radius: .relative(0.5)),
+                    .bottomLeft.rounded(radius: .relative(0.4))
+                ]
             }
             .fill(.blue)
             .frame(width: 100)

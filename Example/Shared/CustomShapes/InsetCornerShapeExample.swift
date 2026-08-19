@@ -13,14 +13,14 @@ struct InsetCornerShape: CornerShape {
     var insetAmount: CGFloat = 0
     
     func corners(in rect: CGRect) -> [Corner] {
-        [
-            Corner(x: rect.minX, y: rect.minY),
-            Corner(x: rect.midX, y: rect.midY),
-            Corner(x: rect.maxX, y: rect.minY),
-            Corner(x: rect.maxX, y: rect.maxY),
-            Corner(x: rect.minX, y: rect.maxY)
-        ]
-            .applyingStyle(.concave(radius: 25))
+        rect.points(
+            .topLeft,
+            .center,
+            .topRight,
+            .bottomRight,
+            .bottomLeft
+        )
+            .corners(.concave(radius: 25))
     }
 }
 

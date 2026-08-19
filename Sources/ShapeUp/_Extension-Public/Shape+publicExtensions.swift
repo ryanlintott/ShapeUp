@@ -13,10 +13,19 @@ public extension Shape {
     ///   - frame: Frame to fit.
     ///   - aspectRatio: Aspect ratio of the shape.
     /// - Returns: A shape scaled to fit a specified aspect ratio inside a specified frame.
+    @available(
+        *,
+        deprecated,
+        message: "This was a very old method I haven't used in a long time. If you need this functionality use SwiftUI Shape's scale modifier and check the code for this method. This will be removed in the next major version."
+    )
     func scaleToFit(_ frame: CGSize, aspectRatio: CGFloat) -> some Shape {
         let frameRatio = frame.width / frame.height
         
         return self
-            .scale(x: aspectRatio > frameRatio ? 1 : frameRatio * aspectRatio, y: aspectRatio > frameRatio ? frameRatio / aspectRatio : 1, anchor: .center)
+            .scale(
+                x: aspectRatio > frameRatio ? 1 : aspectRatio / frameRatio,
+                y: aspectRatio > frameRatio ? frameRatio / aspectRatio : 1,
+                anchor: .center
+            )
     }
 }

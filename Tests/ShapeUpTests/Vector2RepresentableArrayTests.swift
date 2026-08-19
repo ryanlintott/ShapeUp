@@ -31,20 +31,4 @@ class Vector2RepresentableArrayTests: XCTestCase {
     func testVector2ArrayBoundsMatchCGRect() throws {
         XCTAssertEqual(Self.testVectors.bounds, Self.testMatchingRect)
     }
-    
-    func testAnchorPointMatchesBoundsAnchorPoint() throws {
-        RectAnchor.allCases.forEach { rectAnchor in
-            XCTAssertEqual(
-                Self.testVectors.anchorPoint(rectAnchor),
-                Self.testVectors.bounds.point(rectAnchor)
-            )
-        }
-    }
-    
-    func testCenterMatchesAnchorPointCenter() throws {
-        XCTAssertEqual(
-            Self.testVectors.center,
-            Self.testVectors.anchorPoint(.center)
-        )
-    }
 }

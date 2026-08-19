@@ -5,14 +5,16 @@
 //  Created by Ryan Lintott on 2022-03-09.
 //
 
-import SwiftUI
-
 import ShapeUp
 import SwiftUI
 
 struct NotchedExamples: View {
     var body: some View {
         Section {
+            NavigationLink(destination: NotchedCornerShapeExample()) {
+                Label("NotchedCornerShape", systemImage: "n.square")
+            }
+            
             NavigationLink(destination: NotchedRectangleExample()) {
                 Label("NotchedRectangle", systemImage: "rectangle")
             }
@@ -23,6 +25,10 @@ struct NotchedExamples: View {
             
             NavigationLink(destination: NotchedPentagonExample()) {
                 Label("NotchedPentagon", systemImage: "pentagon")
+            }
+
+            NavigationLink(destination: NotchedKeyExample()) {
+                Label("Notched Key", systemImage: "key.fill")
             }
         } header: {
             Text("Notched")

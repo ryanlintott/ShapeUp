@@ -10,11 +10,11 @@ import SwiftUI
 public extension SketchyLine {
     /// Creates a sketchy line shape on the top edge.
     /// - Parameters:
-    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
-    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
-    ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
-    ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
-    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
+    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero. Animatable.
+    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero. Animatable.
+    ///   - offset: Perpendicular displacement from the top edge. Relative values use the frame height. Default is zero. Animatable.
+    ///   - drawAmount: Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line. Animatable.
+    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     static func top(
         startExtension: RelatableValue = .zero,
         endExtension: RelatableValue = .zero,
@@ -34,11 +34,11 @@ public extension SketchyLine {
     
     /// Creates a sketchy line shape on the bottom edge.
     /// - Parameters:
-    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
-    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
-    ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
-    ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
-    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
+    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero. Animatable.
+    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero. Animatable.
+    ///   - offset: Perpendicular displacement from the bottom edge. Relative values use the frame height. Default is zero. Animatable.
+    ///   - drawAmount: Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line. Animatable.
+    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     static func bottom(
         startExtension: RelatableValue = .zero,
         endExtension: RelatableValue = .zero,
@@ -58,11 +58,11 @@ public extension SketchyLine {
     
     /// Creates a sketchy line shape on the leading edge.
     /// - Parameters:
-    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
-    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
-    ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
-    ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
-    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
+    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero. Animatable.
+    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero. Animatable.
+    ///   - offset: Perpendicular displacement from the leading edge. Relative values use the frame width. Default is zero. Animatable.
+    ///   - drawAmount: Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line. Animatable.
+    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     static func leading(
         startExtension: RelatableValue = .zero,
         endExtension: RelatableValue = .zero,
@@ -82,11 +82,11 @@ public extension SketchyLine {
     
     /// Creates a sketchy line shape on the trailing edge.
     /// - Parameters:
-    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
-    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
-    ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
-    ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
-    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
+    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero. Animatable.
+    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero. Animatable.
+    ///   - offset: Perpendicular displacement from the trailing edge. Relative values use the frame width. Default is zero. Animatable.
+    ///   - drawAmount: Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line. Animatable.
+    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     static func trailing(
         startExtension: RelatableValue = .zero,
         endExtension: RelatableValue = .zero,

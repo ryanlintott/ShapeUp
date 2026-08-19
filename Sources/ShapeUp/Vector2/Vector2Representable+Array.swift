@@ -19,20 +19,29 @@ public extension Array where Element: Vector2Representable {
     }
     
     /// Returns an array of corners matching the positions of the points with an applied corner style.
-    /// - Parameter style: Style applied to all corners.
+    ///
+    /// If the style is nil and the array contains ``Corner`` the existing style will remain.
+    /// - Parameter style: Style applied to all corners. Default is nil, which creates automatic corners that render as `CornerStyle.point` when no default style is supplied.
     /// - Returns: An array of corners matching the positions of the points with an applied corner style.
     func corners(_ style: CornerStyle? = nil) -> [Corner] {
-        map({ $0.corner(style) })
+        map { $0.corner(style) }
     }
     
-    /// Returns an array of corners matching the positions of the points
+    /// Returns an array of corners matching the positions of the points with the array of corner styles applied.
     ///
-    /// Nil corner style values apply default styles. Styles array can be smaller than the point array. If it's larger extra values will be ignored.
+    /// Nil style values will use existing styles if available. Styles array can be smaller than the point array. If it's larger extra values will be ignored.
     /// - Parameter styles: Styles applied to each point in order.
-    /// - Returns: description
+    /// - Returns: An array of corners matching the positions of the points with the array of corner styles applied.
     func corners(_ styles: [CornerStyle?]) -> [Corner] {
         corners()
-            .applyingStyles(styles)
+            .cornerStyles(styles)
+    }
+    
+    /// An array of corners matching the positions of the points.
+    ///
+    /// If the array contains ``Corner`` the existing style will remain otherwise a point style will be used.
+    var corners: [Corner] {
+        map(\.corner)
     }
     
     /// A bounding frame containing all the points in the array.
@@ -56,13 +65,15 @@ public extension Array where Element: Vector2Representable {
     /// Creates a point in the location of an anchor on the bounds.
     /// - Parameter anchor: Bounds anchor where the point is located.
     /// - Returns: The point where the bounds anchor is located.
+    @available(*, deprecated, message: "Use bounds[anchor] instead.")
     func anchorPoint(_ anchor: RectAnchor) -> CGPoint {
-        bounds.point(anchor)
+        bounds[anchor]
     }
     
     /// Center point of the bounds rectangle containing all points in the array.
+    @available(*, deprecated, message: "Use bounds[.center] instead.")
     var center: CGPoint {
-        anchorPoint(.center)
+        bounds[.center]
     }
     
     /// An array of angles occuring at each point assuming points are connected in a closed shape.

@@ -18,16 +18,16 @@ internal enum GeoMath {
         let centerToP1 = line.point1.vector - circle.center.vector
         
         let a = pow(deltaLine.dx,2) + pow(deltaLine.dy,2)
-        let b = 2 * (deltaLine.dx * centerToP1.dx + deltaLine.dy * centerToP1.dy)
+        let b: CGFloat = 2 * (deltaLine.dx * centerToP1.dx + deltaLine.dy * centerToP1.dy)
         let c = pow(centerToP1.dx, 2) + pow(centerToP1.dy, 2) - pow(circle.radius, 2)
         
-        let det = b * b - 4 * a * c
+        let det: CGFloat = b * b - 4 * a * c
         var detRoot = [CGFloat]()
-        if a <= 0.000001 || det < 0 {
+        if a <= 1e-12 || det < 0 {
             // No real solutions
             return []
         } else if det == 0 {
-            // One solution
+            // One solution (tangent case)
             detRoot += [0]
         } else {
             let root = sqrt(det)

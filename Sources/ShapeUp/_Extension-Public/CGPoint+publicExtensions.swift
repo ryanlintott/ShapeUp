@@ -23,4 +23,3 @@ extension CGPoint: Vector2Transformable {
         point.point
     }
 }
-

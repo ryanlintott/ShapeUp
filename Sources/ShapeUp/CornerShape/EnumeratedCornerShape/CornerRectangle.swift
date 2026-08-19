@@ -40,29 +40,29 @@ public struct CornerRectangle: EnumeratedCornerShape {
         case bottomLeft
     }
     
-    public var styles: [ShapeCorner : CornerStyle?]
+    public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d rectangular shape with specified styles for each corner.
     /// - Parameters:
-    ///   - styles: A dictionary describing the style of each shape corner.
+    ///   - styles: A dictionary describing the style of each shape corner. Missing entries use ``CornerStyle/automatic``.
     public init(_ styles: [ShapeCorner: CornerStyle] = [:]) {
         self.styles = styles
     }
     
     public func points(in rect: CGRect) -> [ShapeCorner : CGPoint] {
         [
-            .topLeft: rect.point(.topLeft),
-            .topRight: rect.point(.topRight),
-            .bottomRight: rect.point(.bottomRight),
-            .bottomLeft: rect.point(.bottomLeft)
+            .topLeft: rect[.topLeft],
+            .topRight: rect[.topRight],
+            .bottomRight: rect[.bottomRight],
+            .bottomLeft: rect[.bottomLeft]
         ]
     }
 }
 
 /// Animatable Extension
-extension CornerRectangle {
-    public var animatableData: CGFloat {
-        get { insetAmount }
-        set { insetAmount = newValue }
+extension CornerRectangle: AnimatableProperties {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.styles
     }
 }

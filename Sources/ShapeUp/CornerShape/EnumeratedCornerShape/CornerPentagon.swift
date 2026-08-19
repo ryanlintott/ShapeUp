@@ -45,16 +45,31 @@ public struct CornerPentagon: EnumeratedCornerShape {
         case bottomLeft
     }
     
+    /// The downward distance from the top vertex to the two shoulder vertices.
+    ///
+    /// Relative values use the full frame height. Values are not clamped.
     public var pointHeight: RelatableValue
+
+    /// The horizontal inset of each shoulder vertex from its adjacent side.
+    ///
+    /// Relative values use half the frame width, so `0` leaves the vertices at the sides
+    /// and `1` moves both vertices to the horizontal center. Values are not clamped.
     public var topTaper: RelatableValue
+
+    /// The horizontal inset of each bottom vertex from its adjacent side.
+    ///
+    /// Relative values use half the frame width, so `0` leaves the vertices at the sides
+    /// and `1` moves both vertices to the horizontal center. Values are not clamped.
     public var bottomTaper: RelatableValue
-    public var styles: [ShapeCorner: CornerStyle?]
+    
+    public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a pentagon shape with corners that can be styled.
     /// - Parameters:
-    ///   - pointHeight: The vertical distance from the central point to the two points on either side.
-    ///   - topTaper: The horizontal inset of the two points closest to the top.
-    ///   - bottomTaper: The horizontal inset of the bottom two points.
+    ///   - pointHeight: Downward distance from the top vertex to the two shoulder vertices. Relative values use the full frame height and are not clamped.
+    ///   - topTaper: Horizontal inset of each shoulder vertex from its adjacent side. Relative values use half the frame width and are not clamped.
+    ///   - bottomTaper: Horizontal inset of each bottom vertex from its adjacent side. Relative values use half the frame width and are not clamped.
+    ///   - styles: A dictionary of corner styles keyed to ``ShapeCorner``. Missing entries use ``CornerStyle/automatic``.
     public init(pointHeight: RelatableValue, topTaper: RelatableValue = .zero, bottomTaper: RelatableValue = .zero, styles: [ShapeCorner: CornerStyle] = [:]) {
         self.pointHeight = pointHeight
         self.topTaper = topTaper
@@ -68,47 +83,22 @@ public struct CornerPentagon: EnumeratedCornerShape {
         let pointHeight = pointHeight.value(using: rect.height)
         
         return [
-            .bottomLeft: rect.point(.bottomLeft).moved(dx: bottomInset),
-            .bottomRight: rect.point(.bottomRight).moved(dx: -bottomInset),
-            .topLeft: rect.point(.topLeft).moved(dx: topInset, dy: pointHeight),
-            .topRight: rect.point(.topRight).moved(dx: -topInset, dy: pointHeight),
-            .top: rect.point(.top)
+            .bottomLeft: rect[.bottomLeft].moved(dx: bottomInset),
+            .bottomRight: rect[.bottomRight].moved(dx: -bottomInset),
+            .topLeft: rect[.topLeft].moved(dx: topInset, dy: pointHeight),
+            .topRight: rect[.topRight].moved(dx: -topInset, dy: pointHeight),
+            .top: rect[.top]
         ]
     }
 }
 
 /// Animatable Extension
-extension CornerPentagon {
-    public typealias AnimatableData =
-    AnimatablePair<
-        CGFloat,
-        AnimatablePair<
-            RelatableValue,
-            AnimatablePair<
-                RelatableValue,
-                RelatableValue
-    >
-    >
-    >
-    
-    public var animatableData: AnimatableData {
-        get {
-            .init(
-                insetAmount,
-                .init(
-                    pointHeight,
-                    .init(
-                        topTaper,
-                        bottomTaper
-                    )
-                )
-            )
-        }
-        set {
-            insetAmount = newValue.first
-            pointHeight = newValue.second.first
-            topTaper = newValue.second.second.first
-            bottomTaper = newValue.second.second.second
-        }
+extension CornerPentagon: AnimatableProperties {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.pointHeight
+        \.topTaper
+        \.bottomTaper
+        \.styles
     }
 }

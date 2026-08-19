@@ -22,7 +22,7 @@ struct CornerStyleExampleOld: View {
             ForEach(styles, id: \.self) { style in
                 ZStack {
                     CornerTriangle()
-                        .applyingStyles([.top: style])
+                        .cornerStyles([.top: style])
                         .fill(Color.suPink)
                     
                     Text(style.name)

@@ -9,21 +9,31 @@ import ShapeUp
 import SwiftUI
 
 struct SwiftUIBasicShape: Shape {
+    var radius: CGFloat
+    
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        path.move(to: CGPoint(x: rect.minX, y: rect.midY))
-        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.minY + rect.height * 0.25))
-        
-        let cutLengthSquared: Double = sqrt(pow(rect.width * 0.25, 2) + pow(rect.height * 0.25, 2))
-        let radius = (rect.width / rect.height) * cutLengthSquared
-
+        path.move(to: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.minY + rect.height * 0.5))
         path.addArc(
             tangent1End: CGPoint(x: rect.midX, y: rect.minY),
-            tangent2End: CGPoint(x: rect.minX + rect.width * 0.75, y: rect.minY + rect.height * 0.25),
+            tangent2End: CGPoint(x: rect.maxX, y: rect.maxY),
             radius: radius
         )
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+        path.addArc(
+            tangent1End: CGPoint(x: rect.maxX, y: rect.maxY),
+            tangent2End: CGPoint(x: rect.midX, y: rect.minY + rect.height * 0.7),
+            radius: radius
+        )
+        path.addArc(
+            tangent1End: CGPoint(x: rect.midX, y: rect.minY + rect.height * 0.7),
+            tangent2End: CGPoint(x: rect.minX, y: rect.maxY),
+            radius: radius
+        )
+        path.addArc(
+            tangent1End: CGPoint(x: rect.minX, y: rect.maxY),
+            tangent2End: CGPoint(x: rect.midX, y: rect.minY),
+            radius: radius
+        )
         path.closeSubpath()
         return path
     }
@@ -32,34 +42,39 @@ struct SwiftUIBasicShape: Shape {
 struct ShapeUpBasicShape: CornerShape {
     let closed: Bool = true
     var insetAmount: CGFloat = 0
+    var radius: RelatableValue
     
     func corners(in rect: CGRect) -> [Corner] {
-        [
-            Corner(x: rect.minX, y: rect.midY),
-            Corner(.rounded(radius: .relative(0.5)), x: rect.midX, y: rect.minY),
-            Corner(x: rect.maxX, y: rect.midY),
-            Corner(x: rect.midX, y: rect.maxY)
-        ]
+        rect.points(
+            .bottomLeft,
+            .top,
+            .bottomRight,
+            .relative(x: 0.5, y: 0.7)
+        )
+        .corners(.rounded(radius: radius))
     }
 }
 
 struct BasicCompareExample: View {
+    var radius: CGFloat = 20
+    
     var body: some View {
         VStack {
-            SwiftUIBasicShape()
+            SwiftUIBasicShape(radius: radius)
                 .fill(Color.suPurple)
             
             Text("SwiftUI Shape - 30 lines of code\n(Not insettable)")
             
-            ShapeUpBasicShape()
+            ShapeUpBasicShape(radius: .absolute(radius))
                 .fill(Color.suPink)
             
-            Text("ShapeUp CornerShape - 12 lines of code\n(Insettable)")
+            Text("ShapeUp CornerShape - 12 lines of code\n(Insettable with Animation)")
             
-            CornerCustom { $0.points(.top, .right, .bottom, .left).corners([.rounded(radius: .relative(0.5))]) }
+            RelativeCornerCustom(.bottomLeft, .top, .bottomRight, .relative(x: 0.5, y: 0.8))
+                .defaultCornerStyle(.rounded(radius: .absolute(radius)))
                 .fill(Color.suCyan)
             
-            Text("ShapeUp CornerCustom - 1 line of code\n(Insettable)")
+            Text("ShapeUp RelativeCornerShape - 2 lines of code\n(Insettable & Fully Animatable)")
         }
         .multilineTextAlignment(.center)
         .padding()

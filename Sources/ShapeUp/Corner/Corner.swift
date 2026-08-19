@@ -20,7 +20,7 @@ import SwiftUI
 ///     }
 ///     .fill()
 ///
-/// They can generate a path using ``Foundation/Array/Corner/path()``also be easily added to a path in a SwiftUI `Shape` using ``SwiftUICore/Path/addClosedCornerShape(_:)``, ``SwiftUICore/Path/addOpenCornerShape(_:previousPoint:nextPoint:moveToStart:)``.
+/// They can generate a path using ``Swift/Array/path(closed:)`` and can also be easily added to a path in a SwiftUI `Shape` using ``SwiftUICore/Path/addClosedCornerShape(_:)`` or ``SwiftUICore/Path/addOpenCornerShape(_:previousPoint:nextPoint:moveToStart:)``.
 ///
 ///     struct MyShape: Shape {
 ///         let corners: [Corner]
@@ -60,29 +60,33 @@ import SwiftUI
 ///         }
 ///     }
 ///
-public struct Corner: Hashable, Codable, Sendable {
+public struct Corner: Hashable, Codable, Sendable, CornerStyled {
+    /// The x coordinate of the corner.
     public var x: CGFloat
+    /// The y coordinate of the corner.
     public var y: CGFloat
     public var style: CornerStyle
     
     /// Create a corner with a specified style and two-dimensional point.
+    /// - Note: As an alternative you can use method chaining to add a style `Corner(x: 0, y: 0).rounded(20)`
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
+    ///   - style: Corner style. Default is .automatic, which renders as .point when no default style is supplied.
     ///   - x: x coordinate of corner.
     ///   - y: y coordinate of corner.
     public init(_ style: CornerStyle? = nil, x: CGFloat, y: CGFloat) {
         self.x = x
         self.y = y
-        self.style = style ?? .point
+        self.style = style ?? .automatic
     }
     
     /// Create a corner with a specified style and two-dimensional point.
+    /// - Note: As an alternative you can use method chaining to add a style `point.corner.rounded(20)`
     /// - Parameters:
-    ///   - style: Corner style. Default is .point.
+    ///   - style: Corner style. Default is .automatic, which renders as .point when no default style is supplied.
     ///   - point: Location of corner.
     public init(_ style: CornerStyle? = nil, point: some Vector2Representable) {
         x = point.vector.dx
         y = point.vector.dy
-        self.style = style ?? .point
+        self.style = style ?? .automatic
     }
 }

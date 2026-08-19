@@ -16,6 +16,7 @@ import SwiftUI
 ///     extension Angle: AngleRepresentable { }
 ///
 public protocol AngleRepresentable {
+    /// The angle in radians.
     var radians: Double { get }
 }
 
@@ -27,7 +28,8 @@ extension AngleRepresentable {
 }
 
 public extension AngleRepresentable {
-    /// Type of an angle based on its magnitude
+    /// The angle type based on its magnitude.
+    @available(*, deprecated, message: "Angle type is no longer in use as it added complexity and was prone to error when trying to equate Double values.")
     var type: AngleType {
         AngleType.type(of: angle)
     }
@@ -42,6 +44,45 @@ public extension AngleRepresentable {
     /// An angle half the size keeping it's sign.
     var halved: Angle {
         angle / 2
+    }
+    
+    /// An angle double the size keeping it's sign.
+    var doubled: Angle {
+        angle * 2
+    }
+
+    /// The sine of half this angle.
+    ///
+    /// This is equivalent to `sin(radians / 2)` and preserves the sign of the
+    /// angle. It is commonly used when calculating miters and other geometry
+    /// based on two segments meeting at an angle.
+    var halfAngleSine: Double {
+        sin(radians / 2)
+    }
+
+    /// Returns whether this angle is approximately zero.
+    ///
+    /// Coterminal rotations are ignored, so values near any whole rotation are
+    /// treated as being near zero.
+    ///
+    /// - Parameter tolerance: The maximum difference from zero, in degrees.
+    /// - Returns: `true` when the non-reflex angle is within the tolerance of
+    ///   zero degrees.
+    func isApproximatelyZero(tolerance: Double = 1e-12) -> Bool {
+        nonReflexCoterminal.positive.degrees < tolerance
+    }
+
+    /// Returns whether this angle is approximately straight.
+    ///
+    /// Coterminal rotations are ignored, so positive, negative, and reflex
+    /// representations of a straight angle are treated equivalently.
+    ///
+    /// - Parameter tolerance: The maximum difference from 180 degrees, in
+    ///   degrees.
+    /// - Returns: `true` when the non-reflex angle is within the tolerance of
+    ///   180 degrees.
+    func isApproximatelyStraight(tolerance: Double = 1e-12) -> Bool {
+        180 - nonReflexCoterminal.positive.degrees < tolerance
     }
 
     /// An angle equal to 90 degrees minus the angle.
@@ -86,9 +127,14 @@ public extension AngleRepresentable {
         // Possible values between 0 and 360
         let rotation = (self.angle - angle).minPositiveCoterminal
         // If it's reflex, return the negative expementary version.
-        return rotation.type == .reflex ? -rotation.explementary : rotation
+        return rotation > .degrees(180) ? -rotation.explementary : rotation
     }
 
+    /// Maximum rotation required to turn from a specified angle position to this one.
+    ///
+    /// The result follows the longer rotation between the two angles.
+    /// - Parameter angle: The angle to rotate from.
+    /// - Returns: The maximum rotation from the specified angle to this angle.
     func maxRotation(from angle: Angle) -> Angle {
         let minRotation = minRotation(from: angle)
         let maxRotationSign: Double = minRotation.radians >= 0 ? -1 : 1

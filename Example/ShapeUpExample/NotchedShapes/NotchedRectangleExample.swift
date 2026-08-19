@@ -20,16 +20,14 @@ struct NotchedRectangleExample: View {
                 ])
                 .addingNotches(
                     [
-                        .rectangle(depth: 50, cornerStyle: .rounded(radius: 10)),
+                        Notch(depth: 50).defaultCornerStyle(.rounded(radius: 10)),
                         nil,
-                        .triangle(position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)),
-                        .custom(depth: 60) { rect in                            
-                            [
-                                Corner(x: rect.midX, y: rect.minY),
-                                Corner(x: rect.minX, y: rect.maxY),
-                                Corner(.rounded(radius: 15), x: rect.midX, y: rect.maxY),
-                                Corner(x: rect.maxX, y: rect.minY)
-                            ]
+                        Notch(.triangle, position: .relative(0.5), length: .relative(0.2), depth: .relative(0.1)),
+                        Notch(depth: 60) {
+                            RelativeCorner.top
+                            RelativeCorner.bottomLeft
+                            RelativeCorner.bottom.rounded(radius: 15)
+                            RelativeCorner.topRight
                         }
                     ]
                 )

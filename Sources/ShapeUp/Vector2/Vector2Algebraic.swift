@@ -80,7 +80,7 @@ public extension Vector2Algebraic {
     ///
     /// X and Y components of both vectors are added.
     ///
-    /// Both vectors are placed head-to-tail. The result is a vector form the free tail to the free head.
+    /// Both vectors are placed head-to-tail. The result is a vector from the free tail to the free head.
     /// - Parameters:
     ///   - lhs: First vector.
     ///   - rhs: Second vector.
@@ -170,5 +170,58 @@ public extension Vector2Algebraic {
     /// Scalar-vector multiplication assignment
     static func *= (lhs: inout Self, rhs: CGFloat) {
         lhs = lhs * rhs
+    }
+    
+    /// Calculates the cross product of this vector with another vector.
+    ///
+    /// The cross product is a scalar value that represents the area of the parallelogram formed by the two vectors.
+    /// It can be used to determine the orientation of the vectors (positive for counterclockwise, negative for clockwise).
+    /// - Parameter b: The other vector to calculate the cross product with.
+    /// - Returns: The cross product as a scalar value.
+    func crossProduct(with b: some Vector2Representable) -> CGFloat {
+        (vector.dx * b.vector.dy) - (vector.dy * b.vector.dx)
+    }
+    
+    /// Calculates the dot product of this vector with another vector.
+    ///
+    /// The dot product is a scalar value that represents how much one vector extends in the direction of another.
+    /// It can be used to determine the angle between vectors (positive for acute, zero for orthogonal, negative for obtuse),
+    /// or to project one vector onto another.
+    /// - Parameter b: The other vector to calculate the dot product with.
+    /// - Returns: The dot product as a scalar value.
+    func dotProduct(with b: some Vector2Representable) -> CGFloat {
+        (vector.dx * b.vector.dx) + (vector.dy * b.vector.dy)
+    }
+    
+    /// Calculates the scalar projection of this vector onto another vector.
+    ///
+    /// The scalar projection represents the length of the shadow cast by this vector onto the other vector.
+    /// It can be positive (same general direction) or negative (opposite general direction).
+    /// - Parameter b: The vector to project onto. If this vector has zero magnitude, the scalar projection is zero.
+    /// - Returns: The scalar projection value.
+    func scalarProjection(onto b: some Vector2Representable) -> CGFloat {
+        let magnitude = b.vector.magnitude
+        guard magnitude != 0 else { return 0 }
+        return dotProduct(with: b) / magnitude
+    }
+    
+    /// Calculates the parallel component of this vector relative to another vector.
+    ///
+    /// This returns the vector component that lies in the same direction as the reference vector.
+    /// The result is a vector that, when added to the perpendicular component, equals the original vector.
+    /// - Parameter b: The reference vector to find the parallel component relative to.
+    /// - Returns: The parallel component as a vector.
+    func parallelComponent(to b: some Vector2Representable) -> Self {
+        .init(vector: b.vector.normalized.scaled(by: vector.scalarProjection(onto: b)))
+    }
+    
+    /// Calculates the perpendicular component of this vector relative to another vector.
+    ///
+    /// This returns the vector component that is orthogonal (perpendicular) to the reference vector.
+    /// The result is a vector that, when added to the parallel component, equals the original vector.
+    /// - Parameter b: The reference vector to find the perpendicular component relative to.
+    /// - Returns: The perpendicular component as a vector.
+    func perpendicularComponent(to b: some Vector2Representable) -> Self {
+        self - parallelComponent(to: b)
     }
 }

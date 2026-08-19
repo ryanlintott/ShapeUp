@@ -41,13 +41,18 @@ public struct CornerTriangle: EnumeratedCornerShape {
         case bottomLeft
     }
     
+    /// The horizontal offset of the top vertex from the frame's minimum x-coordinate.
+    ///
+    /// Relative values use the full frame width, so `0` aligns with the left edge, `0.5`
+    /// aligns with the center, and `1` aligns with the right edge. Values are not clamped.
     public var topPoint: RelatableValue
-    public var styles: [ShapeCorner: CornerStyle?]
+    
+    public var styles: [ShapeCorner: CornerStyle]
     
     /// Creates a 2d triangular shape with specified top point and styles for each corner.
     /// - Parameters:
-    ///   - topPoint: Position of the top point from the top left corner of the frame. Relative values are relative to width.
-    ///   - styles: A dictionary describing the style of each shape corner.
+    ///   - topPoint: Horizontal offset of the top vertex from the frame's minimum x-coordinate. Relative values use the full frame width and are not clamped.
+    ///   - styles: A dictionary describing the style of each shape corner. Missing entries use ``CornerStyle/automatic``.
     public init(topPoint: RelatableValue = .relative(0.5), styles: [ShapeCorner: CornerStyle] = [:]) {
         self.topPoint = topPoint
         self.styles = styles
@@ -55,22 +60,18 @@ public struct CornerTriangle: EnumeratedCornerShape {
     
     public func points(in rect: CGRect) -> [ShapeCorner: CGPoint] {
         [
-            .top: rect.point(.topLeft).moved(dx: topPoint.value(using: rect.width)),
-            .bottomRight: rect.point(.bottomRight),
-            .bottomLeft: rect.point(.bottomLeft)
+            .top: rect[.topLeft].moved(dx: topPoint.value(using: rect.width)),
+            .bottomRight: rect[.bottomRight],
+            .bottomLeft: rect[.bottomLeft]
         ]
     }
 }
 
 /// Animatable Extension
-extension CornerTriangle {
-    public var animatableData: AnimatablePair<CGFloat, RelatableValue> {
-        get {
-            .init(insetAmount, topPoint)
-        }
-        set {
-            insetAmount = newValue.first
-            topPoint = newValue.second
-        }
+extension CornerTriangle: AnimatableProperties {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        \.insetAmount
+        \.topPoint
+        \.styles
     }
 }

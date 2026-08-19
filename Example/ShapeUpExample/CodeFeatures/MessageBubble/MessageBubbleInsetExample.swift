@@ -1,5 +1,5 @@
 //
-//  MessageBubble5Example.swift
+//  MessageBubbleInsetExample.swift
 //  ShapeUpExample
 //
 //  Created by Ryan Lintott on 2022-03-24.
@@ -13,11 +13,12 @@ struct MessageBubbleInsetExample: View {
         CornerCustom { rect in
             rect.corners(.rounded(radius: 20))
                 .addingNotch(
-                    .triangle(depth: -20, cornerStyles: [
-                        .rounded(radius: 10),
-                        .point,
-                        .rounded(radius: 10)
-                    ]),
+                    Notch(.triangle, depth: -20)
+                        .cornerStyles([
+                            .rounded(radius: 10),
+                            .point,
+                            .rounded(radius: 10)
+                        ]),
                     afterCornerIndex: 2
                 )
         }

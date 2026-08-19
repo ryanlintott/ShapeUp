@@ -7,13 +7,12 @@
 
 /// AnimatablePack uses parameter pack iteration that is only available when using the Swift 6.0 compiler (Xcode 16+)
 /// https://forums.swift.org/t/pitch-enable-pack-iteration/66168
-#if compiler(>=6.0)
 import SwiftUI
 
 /**
- A parameter pack implementation of `AnimatablePair`
+ A parameter pack implementation of `AnimatablePair` or a back-deployed version of `AnimatableValues`.
  
- Conforming to Animatable with AnimatablePair:
+ ## Conforming to Animatable with AnimatablePair
 
  ```swift
  struct MyShape: Animatable {
@@ -28,7 +27,8 @@ import SwiftUI
  }
  ```
  
- Conforming to Animatable with AnimatablePack:
+ ## Conforming to Animatable with AnimatablePack
+ 
  ```swift
  struct MyShape: Animatable {
      var animatableData: AnimatablePack<CGFloat, RelatableValue, Double> {
@@ -37,20 +37,23 @@ import SwiftUI
      }
  }
  ```
+ 
+ > Note: Use ``AnimatableProperties``or the `@Animatable` macro to more easily conform to `Animatable` unless you require custom logic inside `animatableData`.
  */
 @available(iOS 17, macOS 14, watchOS 10, tvOS 17, *)
 @dynamicMemberLookup
 public struct AnimatablePack<each Item: VectorArithmetic>: VectorArithmetic {
-    /// Pack of items that conform to ``VectorArithmetic``
+    /// Pack of items that conform to `VectorArithmetic`
     public var item: (repeat each Item)
     
     /// Creates an `Animatable` pack of items
-    /// - Parameter item: Pack of items that conform to ``VectorArithmetic``
+    /// - Parameter item: Pack of items that conform to `VectorArithmetic`
     public init(_ item: repeat each Item) {
         self.item = (repeat each item)
     }
     
-    /// Access elements in the same was as a tuple using pack.1, pack.2, etc...
+    /// Access elements in the same way as a tuple using pack.1, pack.2, etc...
+    /// - Parameter keyPath: A writable key path to an item in the pack.
     public subscript<V>(dynamicMember keyPath: WritableKeyPath<(repeat each Item), V>) -> V {
         get { item[keyPath: keyPath] }
         set { item[keyPath: keyPath] = newValue }
@@ -96,4 +99,3 @@ public extension AnimatablePack {
         return value
     }
 }
-#endif

@@ -13,18 +13,15 @@ struct QuickHexagonExample: View {
     let taper: CGFloat
     
     var body: some View {
-            CornerCustom { rect in
-                rect
-                    .points(relativeLocations: [
-                        (taper, 0),
-                        (1 - taper, 0),
-                        (1, 0.5),
-                        (1 - taper, 1),
-                        (taper, 1),
-                        (0, 0.5)
-                    ])
-                    .corners(.rounded(radius: 20))
-            }
+        RelativeCornerCustom {
+            (taper, 0)
+            (1 - taper, 0)
+            (1, 0.5)
+            (1 - taper, 1)
+            (taper, 1)
+            (0, 0.5)
+        }
+        .defaultCornerStyle(.rounded(radius: 20))
     }
 }
 

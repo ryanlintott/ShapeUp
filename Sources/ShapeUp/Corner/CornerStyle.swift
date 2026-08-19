@@ -9,21 +9,41 @@ import SwiftUI
 
 /// An enum describing a corner style including subproperties.
 public enum CornerStyle: Hashable, Codable, Sendable {
-    /// A simple point corner with no additional styling. This is the default style if none has been provided.
+    /// The curve used to draw a rounded corner.
+    public enum RoundingStyle: String, Hashable, Codable, Sendable {
+        /// A circular arc.
+        case circular
+
+        /// A continuous corner curve with zero-curvature edge joins.
+        ///
+        /// At 90 degrees, its unconstrained profile is fitted to SwiftUI's
+        /// rendered continuous rounded rectangle. At other angles, its
+        /// curvature distribution is generalized to preserve the
+        /// same nominal radius.
+        ///
+        /// - Note: Edge joins of a continuous curve corner are farther away from the corner point than a circular corner. This may cause artifacts if they go beyond the edge joins of a neighbouring corner.
+        case continuous
+    }
+
+    /// An automatic style that resolves to ``point`` when no default is supplied.
+    case automatic
+
+    /// An explicit point corner with no additional styling.
     case point
     
-    /// A rounded corner style with a specified radius.
+    /// A rounded corner style with a specified radius and rounding style.
     ///  - Parameters:
     ///   - radius: Radius of a circle used to round this corner. Relative values relate to the shortest of the two lines from this corner.
-    case rounded(radius: RelatableValue)
+    ///   - style: Shape of the rounded corner. Defaults to ``RoundingStyle/circular``.
+    case rounded(radius: RelatableValue, style: RoundingStyle = .circular)
     
     /// A concave corner style with a specified radius.
     ///
     /// With zero radius offset, this corner style looks like a rounded corner flipped, but with the same start and end points. The radius offset is used to compensate for shape insetting. By default the center point of the circle describing the radius can be found by flipping the center point of the rounded corner circle across the line described by the arc endpoints. When a shape is inset, this point needs to remain in the same location leading to a non-zero radius offset.
     ///  - Parameters:
     ///   - radius: Radius of the circle used to cutout this corner. Relative values relate to the shortest of the two lines from this corner.
-    ///   - radiusOffset: Added to radius to create concave curve radius. Default is zero.
-    case concave(radius: RelatableValue, radiusOffset: CGFloat = 0)
+    ///   - concaveInset: Inset for the concave radius. Default is 0. This value changes when insetting the corner.
+    case concave(radius: RelatableValue, concaveInset: CGFloat = 0)
     
     /// A straight chamfer corner style with a specified radius. Additional corner styles can be used on the two resulting corners of the chamfer.
     ///  - Parameters:
@@ -37,29 +57,24 @@ public enum CornerStyle: Hashable, Codable, Sendable {
     ///   - cornerStyles: Corner styles for the three resulting corners of the cutout.
     case cutout(radius: RelatableValue, cornerStyles: [CornerStyle] = [])
     
-    /// A custom corner style with a specified radius. Additional corners are used to determine the shape.
-    ///
-    /// Additional corners are drawn based on a rectangular shape that will be scaled and skewed to fit the corner. The top left anchor is positioned on the corner point, the bottom left and top right on the start and end of the corner as determined by the radius and the bottom right anchor ma
+    /// A custom corner style with a specified radius. Additional anchor points with corner styles are used to determine the corner shape.
     ///  - Parameters:
-    ///   - radius: Radius of circle used to determine the start, and end corners of the custom shape. Relative values relate to the shortest of the two lines from this corner.
-    ///   - corners: A closure used to create corners in a rectangle that will be stretched and skewed to fit the corner. Start and end points are at the bottom left and top right and do not need to be included.
-//    case custom(radius: RelatableValue, corners: FramedCorners)
+    ///   - radius: Radius of circle used to determine the start and end points of the custom shape. Relative values relate to the shortest of the two lines from this corner.
+    ///   - relativeCorners: These corners define the corner shape. Their position is determined relative to a ``CGFrame`` defined by the radius.
+    case custom(radius: RelatableValue, relativeCorners: [RelativeCorner])
 }
 
 public extension CornerStyle {
     /// A string with the name of this corner style.
     var name: String {
         switch self {
-        case .point:
-            return "point"
-        case .rounded:
-            return "rounded"
-        case .concave:
-            return "concave"
-        case .straight:
-            return "straight"
-        case .cutout:
-            return "cutout"
+        case .automatic: "automatic"
+        case .point: "point"
+        case .rounded: "rounded"
+        case .concave: "concave"
+        case .straight: "straight"
+        case .cutout: "cutout"
+        case .custom: "custom"
         }
     }
     
@@ -79,22 +94,51 @@ public extension CornerStyle {
         .cutout(radius: radius, cornerStyles: [cornerStyle, cornerStyle, cornerStyle])
     }
     
+    /// A custom corner style with a specified radius and relative corners supplied by a result builder.
+    ///  - Parameters:
+    ///   - radius: Radius of circle used to determine the start and end points of the custom shape. Relative values relate to the shortest of the two lines from this corner.
+    ///   - relativeCorners: Relative corners that define the corner shape.
+    /// - Returns: A custom corner style using the supplied relative corners.
+    static func custom(radius: RelatableValue, @RelativeCornerArrayBuilder relativeCorners: () -> [RelativeCorner]) -> Self {
+        .custom(radius: radius, relativeCorners: relativeCorners())
+    }
     
     /// Radius of the corner.
     ///
     /// A circle with this radius determines the start and end points of any corner shape except concave that may be effected by radius offset.
     var radius: RelatableValue {
-        switch self {
-        case .point:
-            return .zero
-        case let .rounded(radius):
-            return radius
-        case let .concave(radius, _):
-            return radius
-        case let .straight(radius, _):
-            return radius
-        case let .cutout(radius, _):
-            return radius
+        get {
+            switch self {
+            case .automatic, .point: .zero
+            case let .rounded(radius, _): radius
+            case let .concave(radius, _): radius
+            case let .straight(radius, _): radius
+            case let .cutout(radius, _): radius
+            case let .custom(radius, _): radius
+            }
+        }
+        set {
+            self = self.changingRadius(to: newValue)
+        }
+    }
+    
+    /// Radius offset of the corner
+    internal var concaveInset: CGFloat {
+        get {
+            switch self {
+            case .automatic, .point, .rounded, .straight, .cutout, .custom:
+                .zero
+            case let .concave(_, concaveInset):
+                concaveInset
+            }
+        }
+        set {
+            switch self {
+            case .automatic, .point, .rounded, .straight, .cutout, .custom:
+                break
+            case .concave:
+                self = .concave(radius: radius, concaveInset: newValue)
+            }
         }
     }
     
@@ -103,12 +147,38 @@ public extension CornerStyle {
     /// Some corners styles have no nested corners, others may have several and this nesting can continue to multiple levels.
     var cornerStyles: [CornerStyle] {
         switch self {
-        case .point, .rounded, .concave:
-            return []
-        case let .straight(_, cornerStyles):
-            return cornerStyles
-        case let .cutout(_, cornerStyles):
-            return cornerStyles
+        case .automatic, .point, .rounded, .concave: []
+        case let .straight(_, cornerStyles): cornerStyles
+        case let .cutout(_, cornerStyles): cornerStyles
+        case .custom: relativeCorners.map(\.style)
+        }
+    }
+    
+    /// Relative corner setting is only used for animatableData
+    internal var relativeCorners: [RelativeCorner] {
+        get {
+            switch self {
+            case .automatic, .point, .rounded, .concave:
+                []
+            case .straight:
+                [.topLeft, .bottomRight].cornerStyles(cornerStyles)
+            case .cutout:
+                [.topLeft, .bottomLeft, .bottomRight].cornerStyles(cornerStyles)
+            case let .custom(_, relativeCorners):
+                relativeCorners
+            }
+        }
+        set {
+            switch self {
+            case .automatic, .point, .rounded, .concave:
+                break
+            case .straight:
+                self = .straight(radius: radius, cornerStyles: newValue.cornerStyles)
+            case .cutout:
+                self = .cutout(radius: radius, cornerStyles: newValue.cornerStyles)
+            case .custom:
+                self = .custom(radius: radius, relativeCorners: newValue)
+            }
         }
     }
     
@@ -117,14 +187,14 @@ public extension CornerStyle {
     /// If a corner uses relative radius values or allows nested corner styles, this value will be false.
     var isFlat: Bool {
         switch self {
-        case .point:
+        case .automatic, .point:
             return true
         case .rounded, .concave:
             if case .absolute = radius {
                 return true
             }
             return false
-        case .straight, .cutout:
+        case .straight, .cutout, .custom:
             return false
         }
     }
@@ -134,23 +204,25 @@ public extension CornerStyle {
     /// - Returns: A corner style matching this style but with a new radius.
     func changingRadius(to radius: RelatableValue) -> CornerStyle {
         switch self {
-        case .point:
-            return self
-        case .rounded:
-            return .rounded(radius: radius)
-        case let .concave(_, radiusOffset):
-            return .concave(radius: radius, radiusOffset: radiusOffset)
+        case .automatic, .point:
+            self
+        case let .rounded(_, style):
+            .rounded(radius: radius, style: style)
+        case let .concave(_, concaveInset):
+            .concave(radius: radius, concaveInset: concaveInset)
         case let .straight(_, cornerStyles):
-            return .straight(radius: radius, cornerStyles: cornerStyles)
+            .straight(radius: radius, cornerStyles: cornerStyles)
         case let .cutout(_, cornerStyles):
-            return .cutout(radius: radius, cornerStyles: cornerStyles)
+            .cutout(radius: radius, cornerStyles: cornerStyles)
+        case let .custom(_, relativeCorners):
+            .custom(radius: radius, relativeCorners: relativeCorners)
         }
     }
     
     /// Create a corner style matching this style but with an absolute value radius.
     ///
     /// All relative values will be changed to absolute based on the supplied total.
-    /// - Parameter total: Relative values will use this total to determine their absolute values.
+    /// - Parameter maxRadius: Relative radius values will use this value to determine their absolute values.
     /// - Returns: A corner style matching this style but with an absolute value radius.
     func absolute(using maxRadius: CGFloat) -> Self {
         changingRadius(to: .absolute(radius.value(using: maxRadius)))

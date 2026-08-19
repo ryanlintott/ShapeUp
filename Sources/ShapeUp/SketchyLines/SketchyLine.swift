@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// A animatable line Shape with ends that can extend and a position that can offset perpendicular to its direction.
+/// An animatable line shape with ends that can extend and a position that can offset perpendicular to its direction.
 public struct SketchyLine: Shape {
     /// Edges where the line can be drawn
     public enum SketchyEdge: Hashable, Codable, Sendable {
@@ -21,29 +21,31 @@ public struct SketchyLine: Shape {
         /// Drawing will start at the bottom or trailing end and draw to the top or leading end.
         case toTopLeading
         
+        /// The default drawing direction `.toBottomTrailing`
         public static let `default`: DrawDirection = .toBottomTrailing
     }
     
-    public var animatableData: CGFloat {
-        get { drawAmount }
-        set { self.drawAmount = newValue }
-    }
-    
+    /// The edge on which the line is drawn.
     public let edge: SketchyEdge
-    public let startExtension: RelatableValue
-    public let endExtension: RelatableValue
-    public let offset: RelatableValue
+    /// The amount the start extends beyond the start point.
+    public var startExtension: RelatableValue
+    /// The amount the end extends beyond the end point.
+    public var endExtension: RelatableValue
+    /// The perpendicular offset from the edge.
+    public var offset: RelatableValue
+    /// The proportion of the line to draw.
     public var drawAmount: CGFloat
+    /// The direction in which the line is drawn.
     public let drawDirection: DrawDirection
     
     /// Creates a sketchy line shape.
     /// - Parameters:
-    ///   - edge: Edge to draw the line on. Text edges require an instance of the UIFont
-    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero.
-    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero.
-    ///   - offset: Amount of the line to draw measured as a percent of the length including extensions. 1 is the entire line. Default is zero.
-    ///   - drawAmount: Animatable. Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line.
-    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailling.
+    ///   - edge: Edge on which to draw the line.
+    ///   - startExtension: Amount the line start extends relative to the length of the line. Default is zero. Animatable.
+    ///   - endExtension: Amount the line end extends relative to the length of the line. Default is zero. Animatable.
+    ///   - offset: Perpendicular displacement from the selected edge. Relative values use the frame width for leading and trailing edges, and the frame height for top and bottom edges. Default is zero. Animatable.
+    ///   - drawAmount: Amount of the line to draw measured as a percent of the length including extensions. Default is 1 for the entire line. Animatable.
+    ///   - drawDirection: Direction to draw the line. Default is .toBottomTrailing.
     public init(edge: SketchyEdge, startExtension: RelatableValue = .zero, endExtension: RelatableValue = .zero, offset: RelatableValue = .zero, drawAmount: CGFloat = 1, drawDirection: DrawDirection = .default) {
         self.edge = edge
         self.startExtension = startExtension
@@ -59,15 +61,15 @@ public extension SketchyLine {
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line starts in the given rectangle.
     func startPoint(in rect: CGRect) -> CGPoint {
-        switch edge {
+        return switch edge {
         case .top:
-            return CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.minY)
+            CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.minY)
         case .bottom:
-            return CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.maxY)
+            CGPoint(x: rect.minX - startExtension.value(using: rect.width), y: rect.maxY)
         case .leading:
-            return CGPoint(x: rect.minX, y: rect.minY - startExtension.value(using: rect.height))
+            CGPoint(x: rect.minX, y: rect.minY - startExtension.value(using: rect.height))
         case .trailing:
-            return CGPoint(x: rect.maxX, y: rect.minY - startExtension.value(using: rect.height))
+            CGPoint(x: rect.maxX, y: rect.minY - startExtension.value(using: rect.height))
         }
     }
     
@@ -75,15 +77,15 @@ public extension SketchyLine {
     /// - Parameter rect: Rectangle in which the line is drawn.
     /// - Returns: Point where the line ends in the given rectangle.
     func endPoint(in rect: CGRect) -> CGPoint {
-        switch edge {
+        return switch edge {
         case .top:
-            return CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.minY)
+            CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.minY)
         case .bottom:
-            return CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.maxY)
+            CGPoint(x: rect.maxX + endExtension.value(using: rect.width), y: rect.maxY)
         case .leading:
-            return CGPoint(x: rect.minX, y: rect.maxY + endExtension.value(using: rect.height))
+            CGPoint(x: rect.minX, y: rect.maxY + endExtension.value(using: rect.height))
         default:
-            return CGPoint(x: rect.maxX, y: rect.maxY + endExtension.value(using: rect.height))
+            CGPoint(x: rect.maxX, y: rect.maxY + endExtension.value(using: rect.height))
         }
     }
     
@@ -101,17 +103,36 @@ public extension SketchyLine {
         var path = Path()
         path.addLines(points)
         
-        switch edge {
+        return switch edge {
         case .leading, .trailing:
-            return path.offsetBy(dx: offset.value(using: rect.width), dy: 0)
+            path.offsetBy(dx: offset.value(using: rect.width), dy: 0)
         default:
-            return path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
+            path.offsetBy(dx: 0, dy: offset.value(using: rect.height))
         }
     }
     
+    /// Creates the line path using a specified draw amount.
+    /// - Parameters:
+    ///   - rect: The rectangle in which to draw the line.
+    ///   - drawAmount: The proportion of the line to draw.
+    /// - Returns: The resulting line path.
+    @available(*, deprecated, message: "Adjust the draw amount manually and then use path(in:) instead.")
     func path(in rect: CGRect, drawAmount: CGFloat) -> Path {
         var copy = self
         copy.drawAmount = drawAmount
         return copy.path(in: rect)
+    }
+}
+
+extension SketchyLine: AnimatableProperties {
+    public static var animatableProperties: some AnimatableProperty<Self> {
+        AnimatablePropertyGroup(id: \.edge) {
+            AnimatablePropertyGroup(id: \.drawDirection) {
+                \.startExtension
+                \.endExtension
+                \.offset
+                \.drawAmount
+            }
+        }
     }
 }

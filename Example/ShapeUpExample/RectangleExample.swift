@@ -19,8 +19,8 @@ struct RectangleExample: View {
     var body: some View {
         VStack {
             ForEach(styles, id: \.self) { style in
-                Rectangle()
-                    .applyingStyle(style)
+                CornerRectangle()
+                    .defaultCornerStyle(style)
                     .fill(Color.suPurple)
                     .padding()
             }
