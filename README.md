@@ -22,6 +22,7 @@ Features:
 - [`RelativeCornerCustom`](#relativecornercustom), for building animatable corner shapes from relative positions.
 - Add a [`Notch`](#notch) of any `NotchStyle` between two corners.
 - [`.addOpenCornerShape()`](#add-cornershape) or [`.addClosedCornerShape()`](#add-cornershape) for adding a few corners to a SwiftUI `Path`
+- [`.addContinuousCurve()`](#add-continuous-curve), a `Path` method for adding a single continuous corner curve between two tangent lines.
 - [`Vector2`](#vector2), a type similar to `CGPoint` but used to do vector math.
 - [`Vector2Representable`](#vector2representable) protocol that adds a `.vector` property needed to conform to other Vector2-related protocols.
 - [`Vector2Algebraic`](#vector2algebraic) protocol used to add vector algebra capabilities to `Vector2`
@@ -182,7 +183,11 @@ The initial style for corners created without an explicit style. It renders as a
 An explicit point corner with no properties. Unlike `.automatic`, it is preserved when applying a default style.
 
 <img width="50" alt="Pink triangle with a rounded corner" src="https://user-images.githubusercontent.com/2143656/157762280-630dddf9-4cd4-4779-84e6-43f2f834e6b0.svg"> `.rounded(radius: RelatableValue, style: CornerStyle.RoundingStyle = .circular)`
-A rounded corner with a radius and `.circular` or `.continuous` rounding. The continuous profile is fitted to SwiftUI's continuous rounded corner at 90 degrees and generalized to work at any angle.
+A rounded corner with a radius and `.circular` or `.continuous` rounding.
+
+`.continuous` corners preserve the requested nominal radius with zero-curvature joins where the corner meets its edges. At 90 degrees its unconstrained profile is fitted to SwiftUI's rendered continuous rounded rectangle — a very close approximation, not an exact match — and at other angles its curvature distribution is generalized from there to preserve the same nominal radius. See [`.addContinuousCurve()`](#add-continuous-curve) if you want to draw the same curve directly on a `Path`.
+
+Edge joins of a continuous corner sit farther from the corner point than a circular corner with the same radius, so on small or tightly packed shapes they can reach past a neighbouring corner's edge join and cause artifacts.
 
 <img width="50" alt="Pink triangle with a concave cut corner" src="https://user-images.githubusercontent.com/2143656/157762293-ac45ea61-6427-4def-b560-060944ac2c1a.svg"> `.concave(radius: RelatableValue, concaveInset: CGFloat = 0)`
 A concave corner is like an inverted rounded corner where the radius determines the start and end points of the cut. The concave inset value is the inset of the concave radius and is automatically adjusted when insetting this corner.
@@ -424,6 +429,19 @@ path.addClosedCornerShape {
     rect[.topRight]
     rect[.bottom].rounded(radius: 20)
 }
+```
+
+## Add Continuous Curve
+`.addContinuousCurve(tangent1End:tangent2End:radius:)` adds a single continuous corner curve to a `Path`, the same way `.addArc(tangent1End:tangent2End:radius:transform:)` adds a circular one. It's useful when you're building a path by hand and want a `.continuous`-style corner without going through `Corner` or `CornerShape`.
+
+```swift
+var path = Path()
+path.move(to: rect[.topLeft])
+path.addContinuousCurve(
+    tangent1End: rect[.top],
+    tangent2End: rect[.right],
+    radius: 20
+)
 ```
 
 ## Vector2

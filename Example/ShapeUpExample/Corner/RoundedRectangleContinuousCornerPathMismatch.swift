@@ -33,7 +33,7 @@ struct RoundedRectangleContinuousCornerPathMismatch: View {
 """
 Continuous corners drawn directly do not match path elements.
 
-Pink shows the path rebuilt from the elements SwiftUI reports. Cyan shows the true continuous path from private CoreGraphics. Black is the RoundedRectangle drawn directly.
+The cyan lines show the difference between the two shapes. The path element one being slightly larger.
 """
             )
             .font(.callout)
@@ -42,27 +42,21 @@ Pink shows the path rebuilt from the elements SwiftUI reports. Cyan shows the tr
                 let rect = CGRect(origin: .zero, size: geometry.size)
                 
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .path(in: rect)
-                    .rebuiltFromElements()
-                    .fill(
-                        .suPink,
-                        style: FillStyle(antialiased: antialiased)
-                    )
-                
-                if let truePath = Path.trueContinuousRoundedRect(in: rect, cornerRadius: radius) {
-                    truePath
+                    RoundedRectangle(cornerRadius: radius, style: .continuous)
+                        .path(in: rect)
+                        .rebuiltFromElements()
                         .fill(
                             .suCyan,
                             style: FillStyle(antialiased: antialiased)
                         )
-                }
+
+                    RoundedRectangle(cornerRadius: radius, style: .continuous)
+                        .path(in: rect)
+                        .fill(
+                            .suBlack,
+                            style: FillStyle(antialiased: antialiased)
+                        )
                 
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .path(in: rect)
-                    .fill(
-                        .suBlack,
-                        style: FillStyle(antialiased: antialiased)
-                    )
             }
             .padding()
             .background(.suBlack)
@@ -78,35 +72,7 @@ Pink shows the path rebuilt from the elements SwiftUI reports. Cyan shows the tr
         }
         
         .padding()
-        .navigationTitle("Continuous Corner Path")
-    }
-}
-
-extension Path {
-    /// The true continuous rounded rectangle path, the one Core Animation uses for
-    /// `CACornerCurve.continuous` and the one SwiftUI's renderer draws.
-    ///
-    /// The elements reported by `Path.forEach` match this exactly until the corner
-    /// radius passes `min(width, height) / 2 / 1.528665`, the point where adjacent
-    /// corners start to overlap. Past that the reported elements clamp to a flat
-    /// tangent at the midpoint while the real path blends the two corners together.
-    ///
-    /// - Warning: This calls a private CoreGraphics symbol. It is here to work out
-    ///   what the real path is, and must not ship in the ShapeUp package itself.
-    static func trueContinuousRoundedRect(in rect: CGRect, cornerRadius: CGFloat) -> Path? {
-        typealias MakePath = @convention(c) (CGRect, CGFloat, CGFloat, UnsafePointer<CGAffineTransform>?) -> Unmanaged<CGPath>?
-        
-        guard
-            let handle = dlopen("/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics", RTLD_LAZY),
-            let symbol = dlsym(handle, "CGPathCreateWithContinuousRoundedRect")
-        else { return nil }
-        
-        let makePath = unsafeBitCast(symbol, to: MakePath.self)
-        let radius = min(cornerRadius, min(rect.width, rect.height) / 2)
-        
-        guard let cgPath = makePath(rect, radius, radius, nil)?.takeRetainedValue() else { return nil }
-        
-        return Path(cgPath)
+        .navigationTitle("RoundedRectangle Path")
     }
 }
 
