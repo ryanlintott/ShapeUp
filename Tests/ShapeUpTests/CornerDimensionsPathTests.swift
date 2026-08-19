@@ -142,8 +142,8 @@ struct CornerDimensionsPathTests {
         func next(arm: CGFloat) -> CGPoint {
             let angle = Angle.degrees(degrees * (reflex ? -1 : 1))
             return CGPoint(
-                x: arm * cos(angle.radians),
-                y: arm * sin(angle.radians)
+                x: arm * CGFloat(cos(angle.radians)),
+                y: arm * CGFloat(sin(angle.radians))
             )
         }
     }

@@ -23,7 +23,7 @@ struct PathContinuousCurveTests {
         let previous = CGPoint(x: arm, y: 0)
         let vertex = CGPoint.zero
         let angle = Angle.degrees(degrees * (reflex ? -1 : 1))
-        let next = CGPoint(x: arm * cos(angle.radians), y: arm * sin(angle.radians))
+        let next = CGPoint(x: arm * CGFloat(cos(angle.radians)), y: arm * CGFloat(sin(angle.radians)))
 
         var direct = Path()
         direct.move(to: previous)
