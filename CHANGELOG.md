@@ -16,8 +16,10 @@ This release introduces a new way to construct corner arrays and shapes using re
 - `CornerRectangle`, `CornerTriangle`, and `CornerPentagon` now use non-optional styles for each corner to support animation.
 - `NotchStyle.cornerStyles` now returns resolved, non-optional styles; stored nil values are represented by `.automatic`.
 - Replaced the closure-based `NotchStyle.custom(corners:)` enum case with `NotchStyle.custom(relativeCorners:)`. A deprecated factory converts closure-based custom notches when possible.
-- Changed the concrete `AnimatableData` associated types of existing animatable types, including `Corner`, `CornerStyle`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, and `SketchyLine`, as their animated properties expanded.
+- Changed the concrete `AnimatableData` associated types of existing animatable types, including `Corner`, `CornerStyle`, `CornerCustom`, `CornerRectangle`, `CornerTriangle`, `CornerPentagon`, `SketchyLine`, and `SketchyLines`, as their animated properties expanded.
 - `Corner.Dimensions` is now internal. This cached geometry type was an implementation detail of drawing and insetting, and keeping it public constrained how corners could be calculated. Use `[Corner].path(closed:)`, `[Corner].inset(by:previousPoint:nextPoint:)`, `Path.addOpenCornerShape`, or `Path.addClosedCornerShape` instead. The `Corner.dimensions(previousPoint:nextPoint:)` and `[Corner].dimensions` accessors are internal for the same reason.
+- Added cases to two public enums: `CornerStyle.automatic` and `CornerStyle.custom`, and `RectAnchor.relative`. Exhaustive switches over either type need to handle the new cases.
+- `SketchyLines.drawAmount` and its initializer parameter changed from `CGFloat` to `CGFloat?` so each `SketchyLine` keeps its own draw amount unless an override is supplied.
 - `RectAnchor` no longer conforms to `CaseIterable`.
 - `AnchorType` removed.
 
@@ -42,7 +44,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 - Added public `AnimatablePropertyGroup` for grouping properties that should animate only while a `Hashable` identifier remains unchanged. When the identifier changes, the grouped properties keep their current values instead of receiving interpolated data.
 - Added `AnimatableArray` and `AnimatableDictionary` helpers for animating arrays and dictionaries. Arrays expose public `animatableArray` and `animatableValueArray` properties, while dictionaries expose `animatableDictionary` and `animatableValueDictionary`.
 - Added `CGFrame` for describing coordinate frames with an origin, an x-axis vector, and a y-axis vector. This is used internally to draw custom corners at any angle, not just 90 degrees.
-- Added methods to easily convert `CGPoint` to `RectAnchor` and `Corner` to `RelativeCorner` given a `CGRect` or `CGFrame`.
+- Added `Corner.relative(to:)` for converting a `Corner` into a `RelativeCorner` positioned in a `CGRect` or `CGFrame`.
 - Added `CGSize.scaled(_:)` and `CGSize.scaled(x:y:)` helpers.
 - Added `CGRect` move and scale helpers that use `RectAnchor` values as anchors.
 - Added `Vector2Algebraic.crossProduct(with:)`, `dotProduct(with:)`, `scalarProjection`, `parallelComponent`, and `perpendicularComponent`.
@@ -61,14 +63,13 @@ This release introduces a new way to construct corner arrays and shapes using re
 - Changed the `CornerShape.corners(in:)` method to use `CornerArrayBuilder`.
 - Changed `CornerCustom` init to use `CornerArrayBuilder` and added a helper for `closed(_:)`.
 - Changed enumerated corner shape `styles` dictionaries to store non-optional `CornerStyle` values.
-- Updated `SketchyLines` to animate its lines and optional shared draw amount. The shared draw amount now defaults to `nil`, preserving each `SketchyLine` draw amount unless an override is supplied.
+- Updated `SketchyLines` to animate its lines. The shared draw amount now defaults to `nil`, preserving each `SketchyLine` draw amount unless an override is supplied.
 - Added a shared `ShapeUp.xcworkspace` and shared `ShapeUp Development` scheme for working with the package tests and example app from one workspace.
 - Updated the example app with new interactive shape examples that also show the code.
 - `RelatableValue` now compares by its absolute and relative components rather than by case, so `.absolute(5)` and `.mixed(absolute: 5, relative: 0)` are equal and hash equally. Adding values of different cases produces a `.mixed` result, so without this `value + .zero` did not equal `value`, breaking the `AdditiveArithmetic` and `VectorArithmetic` laws it relies on for animation.
 
 ### Deprecations
 
-- Deprecated `CGRect` properties `edgeAnchors` and `vertexAnchors`.
 - Deprecated `CGRect` methods `point(_:)`, `point(relativeLocation:)`, and `points(relativeLocations:)`. Use subscript and builder-based APIs, such as `rect[anchor]`, `rect[x, y]`, and `rect.points { ... }`.
 - Deprecated `NotchStyle.custom(corners:)`. Use relative-corner-based `NotchStyle.custom { ... }` instead.
 - Deprecated notch factory methods like `Notch.rectangle(...)`, `Notch.triangle(...)`, and `Notch.custom(...)`. Instead use `Notch(...)`, `Notch(.triangle, ...)`, and `Notch(...) { }`.
@@ -77,7 +78,8 @@ This release introduces a new way to construct corner arrays and shapes using re
 - `RectAnchor.edgeAnchors` and `RectAnchor.vertexAnchors` are deprecated in favor of `RectAnchor.vertices` and explicit anchor builders.
 - Deprecated the `Array<Vector2Representable>` method `anchorPoint(_:)` and property `center`. Use `bounds[anchor]` and `bounds[.center]` instead.
 - `Array<Vector2>` methods `scaledPositions(scale:)` and `scaledPositions(width:height:)` were renamed to `scaledPositions(_:)` and `scaledPositions(x:y:)`.
-- `AngleType` is deprecated because equating angle classifications through floating-point values was error-prone.
+- `AngleType` and `AngleRepresentable.type` are deprecated because equating angle classifications through floating-point values was error-prone. `AngleRepresentable.interior` is deprecated in favour of `nonReflexCoterminal.positive`.
+- The single-value `scaledPosition(scale:)` and `scaledPosition(width:height:)` were renamed to `scaledPosition(_:)` and `scaledPosition(x:y:)`, matching the array versions above.
 - `Rectangle.applyingStyle` convenience methods are deprecated in favor of using `CornerRectangle` instead.
 - Deprecated `SketchyLine.path(in:drawAmount:)`; set `drawAmount` on the line and call `path(in:)` instead.
 - Deprecated `Shape.scaleToFit(_:aspectRatio:)`. This was a very old method I haven't used in a long time. If you need this functionality use SwiftUI Shape's scale modifier and check the code for this method. This will be removed in the next major version.
