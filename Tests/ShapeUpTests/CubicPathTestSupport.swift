@@ -31,26 +31,26 @@ enum CubicPathTestSupport {
 
         func derivative(at parameter: CGFloat) -> Vector2 {
             let inverse = 1 - parameter
-            return (
-                ((control1.vector - start.vector) * pow(inverse, 2))
-                    + ((control2.vector - control1.vector) * (2 * inverse * parameter))
-                    + ((end.vector - control2.vector) * pow(parameter, 2))
-            ) * 3
+            let startLeg: Vector2 = control1.vector - start.vector
+            let middleLeg: Vector2 = control2.vector - control1.vector
+            let endLeg: Vector2 = end.vector - control2.vector
+            let middleWeight: CGFloat = 2 * inverse * parameter
+            let weighted: Vector2 = startLeg * pow(inverse, 2)
+            let weightedMiddle: Vector2 = middleLeg * middleWeight
+            let weightedEnd: Vector2 = endLeg * pow(parameter, 2)
+            let sum: Vector2 = weighted + weightedMiddle
+            return (sum + weightedEnd) * 3
         }
 
         func secondDerivative(at parameter: CGFloat) -> Vector2 {
             let inverse = 1 - parameter
-            return ((
-                (
-                    control2.vector
-                        - (control1.vector * 2)
-                        + start.vector
-                ) * inverse
-            ) + (
-                end.vector
-                    - (control2.vector * 2)
-                    + control1.vector
-            ) * parameter) * 6
+            let startDifference: Vector2 = control2.vector - (control1.vector * 2)
+            let startTerm: Vector2 = startDifference + start.vector
+            let endDifference: Vector2 = end.vector - (control2.vector * 2)
+            let endTerm: Vector2 = endDifference + control1.vector
+            let weightedStart: Vector2 = startTerm * inverse
+            let weightedEnd: Vector2 = endTerm * parameter
+            return (weightedStart + weightedEnd) * 6
         }
 
         func curvatureRadius(at parameter: CGFloat) -> CGFloat {

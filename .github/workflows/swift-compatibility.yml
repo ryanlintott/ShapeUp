@@ -35,8 +35,12 @@ jobs:
           xcodebuild -version
           swift --version
 
-      - name: Test on macOS
-        run: swift test
+      # Only the library is built here. This job guards the minimum Swift
+      # version the package claims to support, which is a promise about the
+      # code consumers compile. The test target is exercised by the
+      # current-swift job instead.
+      - name: Build the library on macOS
+        run: swift build
 
   current-swift:
     name: Current Swift tests and platform builds

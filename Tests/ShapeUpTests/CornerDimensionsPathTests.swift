@@ -475,13 +475,17 @@ struct CornerDimensionsPathTests {
             case let .line(to: point): current = point
             case let .curve(to: point, control1: c1, control2: c2):
                 if max(current.x, point.x) < 300, max(current.y, point.y) < 300 {
+                    let segment = CubicPathTestSupport.CubicBezierSegment(
+                        start: current,
+                        end: point,
+                        control1: c1,
+                        control2: c2
+                    )
                     for step in 0...400 {
-                        let t = CGFloat(step) / 400, m = 1 - t
+                        let curvePoint = segment.point(at: CGFloat(step) / 400)
                         elements.append(CGPoint(
-                            x: (m * m * m * current.x + 3 * m * m * t * c1.x
-                                + 3 * m * t * t * c2.x + t * t * t * point.x) / 100,
-                            y: (m * m * m * current.y + 3 * m * m * t * c1.y
-                                + 3 * m * t * t * c2.y + t * t * t * point.y) / 100
+                            x: curvePoint.x / 100,
+                            y: curvePoint.y / 100
                         ))
                     }
                 }
