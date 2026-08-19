@@ -23,13 +23,8 @@ public extension InsettableShape {
         let offsetX = size * 1.5 * CGFloat(cos(angle.radians))
         let offsetY = size * 1.5 * CGFloat(sin(angle.radians))
         
-        var inset: CGFloat {
-            -max(1, size * 1.5)
-        }
-        
-        var lineWidth: CGFloat {
-            max(1, size)
-        }
+        let inset = -max(1, size * 1.5)
+        let lineWidth = max(1, size)
         
         return self
             .fill(backgroundColor)

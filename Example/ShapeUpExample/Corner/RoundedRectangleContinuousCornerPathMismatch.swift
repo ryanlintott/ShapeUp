@@ -32,7 +32,7 @@ The cyan lines show the difference between the two shapes. The path element one 
             GeometryReader { geometry in
                 let rect = CGRect(origin: .zero, size: geometry.size)
                 
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                ZStack {
                     RoundedRectangle(cornerRadius: radius, style: .continuous)
                         .path(in: rect)
                         .rebuiltFromElements()
@@ -47,7 +47,7 @@ The cyan lines show the difference between the two shapes. The path element one 
                             .suBlack,
                             style: FillStyle(antialiased: antialiased)
                         )
-                
+                }
             }
             .padding()
             .background(.suBlack)

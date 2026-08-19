@@ -75,29 +75,6 @@ public extension Array where Element == Corner {
             .corners(inset: insetAmount)
     }
     
-    /// A boolean check that determines if a corner array is flat. Flat corners are point, rounded, and concave with absolute radius values.
-    ///
-    /// If any corner uses relative radius values or allows nested corner styles, this value will be false.
-    internal var isFlat: Bool {
-        allSatisfy { $0.style.isFlat }
-    }
-    
-    /// An array of corners that's a flattened representation of the current array. Flat corners are point, rounded, and concave with absolute radius values.
-    ///
-    /// Relative radius values will be changed to absolute and corners with nested styles will change to an array of sub corners with those styles. This function is recursive and will flatten corners at all nested levels.
-    internal var flattened: [Corner] {
-        isFlat ? self : dimensions.flattened
-    }
-    
-    /// Returns a copy of this array of corners flattened by the number of levels provided.
-    ///
-    /// All corners on this level will have their radius changed to absolute values and corners with nested styles will change to an array of corners with those styles. For each level higher than one this process will be repeated for those new nested corners.
-    /// - Parameter levels: Number of levels to flatten.
-    /// - Returns: A copy of this array of corners flattened by the number of levels provided.
-    internal func flattened(levels: Int) -> [Corner] {
-        isFlat ? self : dimensions.flattened(levels: levels)
-    }
-    
     /// Adds corners based on the specified notches.
     ///
     /// The first notch will create corners between the first and second corner, the next will create corners between the second and third corners, etc. Nil values will create no additional corners.

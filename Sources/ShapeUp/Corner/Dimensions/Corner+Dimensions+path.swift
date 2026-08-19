@@ -125,16 +125,19 @@ extension Corner.Dimensions {
                 if abs(concaveInset) <= 1e-12,
                    angle.isApproximatelyStraight(tolerance: 0.01) {
                     // Match the cubic used by near-straight rounded corners,
-                    // with the tangents reversed to form the concave arc.
+                    // with the two tangents swapped and negated to bend the
+                    // other way. A zero concave inset puts the concave start
+                    // and end on the corner start and end.
                     path.addCurve(
                         to: concaveEnd,
-                        control1: cornerStart.moved(endVector.normalized * cubicArcControlLength),
-                        control2: cornerEnd.moved(previousVector.normalized * cubicArcControlLength)
+                        control1: concaveStart.moved(endVector.normalized * cubicArcControlLength),
+                        control2: concaveEnd.moved(-startVector.normalized * cubicArcControlLength)
                     )
                 } else {
                     path.addArc(tangent1End: cutoutPoint, tangent2End: concaveEnd, radius: concaveRadius)
+                    // The tangent arc stops short of its second tangent point.
+                    path.addLine(to: concaveEnd)
                 }
-                path.addLine(to: concaveEnd)
                 path.addLine(to: cornerEnd)
             }
         case let .straight(_, cornerStyles):

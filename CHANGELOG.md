@@ -11,7 +11,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 ### Breaking Changes
 
 - `CornerStyle.rounded` now includes a `style` associated value. Existing construction continues to default to `.circular`, but pattern matching this case must account for the new value.
-- Updated the package to Swift tools version 6.0 and raised the minimum supported versions to iOS 15, macOS 12, watchOS 8, and tvOS 15. The visionOS minimum remains version 1.
+- Updated the package to Swift tools version 6.0 and raised the minimum supported versions to iOS 15, macOS 12, watchOS 9, and tvOS 15. The visionOS minimum remains version 1.
 - Changed `CornerStyle.concave(radius:radiusOffset:)` to `CornerStyle.concave(radius:concaveInset:)` to correct drawing errors and allow animation.
 - `CornerRectangle`, `CornerTriangle`, and `CornerPentagon` now use non-optional styles for each corner to support animation.
 - `NotchStyle.cornerStyles` now returns resolved, non-optional styles; stored nil values are represented by `.automatic`.
@@ -64,6 +64,7 @@ This release introduces a new way to construct corner arrays and shapes using re
 - Updated `SketchyLines` to animate its lines and optional shared draw amount. The shared draw amount now defaults to `nil`, preserving each `SketchyLine` draw amount unless an override is supplied.
 - Added a shared `ShapeUp.xcworkspace` and shared `ShapeUp Development` scheme for working with the package tests and example app from one workspace.
 - Updated the example app with new interactive shape examples that also show the code.
+- `RelatableValue` now compares by its absolute and relative components rather than by case, so `.absolute(5)` and `.mixed(absolute: 5, relative: 0)` are equal and hash equally. Adding values of different cases produces a `.mixed` result, so without this `value + .zero` did not equal `value`, breaking the `AdditiveArithmetic` and `VectorArithmetic` laws it relies on for animation.
 
 ### Deprecations
 
@@ -94,3 +95,4 @@ This release introduces a new way to construct corner arrays and shapes using re
 ### Tests
 
 - Expanded test coverage for corner construction, styling, paths, and insetting; relative coordinates and anchors; animation helpers; vector and angle math; and shape scaling.
+- Added coverage for `RelatableValue` equality, arithmetic, and animation conformances, and for the degenerate angles handled by `Path.addContinuousCurve`.

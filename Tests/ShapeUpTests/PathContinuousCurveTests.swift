@@ -91,6 +91,72 @@ struct PathContinuousCurveTests {
         #expect(lineCount == 0)
     }
 
+    /// A corner folded back on itself has tangent points infinitely far away,
+    /// and a straight one has a curve of no length. Neither describes a curve at
+    /// any finite radius, so both collapse to a line, the same way `addArc`
+    /// does with collinear points.
+    @Test(
+        "Collinear points add a line instead of a curve",
+        arguments: [
+            // Zero degrees: the previous and next points share a direction.
+            CGPoint(x: 100, y: 0),
+            // 180 degrees: the corner does not turn at all.
+            CGPoint(x: -100, y: 0)
+        ]
+    )
+    func collinearPointsAddALine(tangent2End: CGPoint) {
+        let start = CGPoint(x: 100, y: 0)
+        let vertex = CGPoint.zero
+
+        var path = Path()
+        path.move(to: start)
+        path.addContinuousCurve(
+            tangent1End: vertex,
+            tangent2End: tangent2End,
+            radius: 20
+        )
+
+        #expect(CubicPathTestSupport.segments(in: path).isEmpty)
+        #expect(path.currentPoint == vertex)
+        #expect(path.boundingRect.isApproximatelyEqual(
+            to: CGRect(x: 0, y: 0, width: 100, height: 0),
+            tolerance: 1e-9
+        ))
+    }
+
+    @Test(
+        "A non-positive radius adds a line instead of a curve",
+        arguments: [CGFloat(0), -20]
+    )
+    func nonPositiveRadiusAddsALine(radius: CGFloat) {
+        var path = Path()
+        path.move(to: CGPoint(x: 100, y: 0))
+        path.addContinuousCurve(
+            tangent1End: CGPoint.zero,
+            tangent2End: CGPoint(x: 0, y: 100),
+            radius: radius
+        )
+
+        #expect(CubicPathTestSupport.segments(in: path).isEmpty)
+        #expect(path.currentPoint == CGPoint.zero)
+    }
+
+    @Test("A zero length tangent line adds nothing")
+    func zeroLengthTangentLineAddsNothing() {
+        let vertex = CGPoint.zero
+
+        var path = Path()
+        path.move(to: vertex)
+        path.addContinuousCurve(
+            tangent1End: vertex,
+            tangent2End: CGPoint(x: 0, y: 100),
+            radius: 20
+        )
+
+        #expect(CubicPathTestSupport.segments(in: path).isEmpty)
+        #expect(path.currentPoint == vertex)
+    }
+
     @Test("Adding a continuous curve with no current point moves to the first tangent point")
     func noCurrentPointMovesToTangent1End() {
         var path = Path()

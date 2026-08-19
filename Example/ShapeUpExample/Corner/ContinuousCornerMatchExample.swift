@@ -1,5 +1,5 @@
 //
-//  ContinuousCornerExample.swift
+//  ContinuousCornerMatchExample.swift
 //  ShapeUpExample
 //
 //  Created by Ryan Lintott on 2026-08-13.

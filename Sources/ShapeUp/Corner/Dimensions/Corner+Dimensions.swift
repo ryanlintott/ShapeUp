@@ -126,7 +126,7 @@ extension Corner {
 
             maxRadius = Self.maxRadius(
                 maxCutLength: maxCutLength,
-                halvedTurnAngle: halvedTurnAngle
+                halvedNonReflexAngle: halvedNonReflexAngle
             ) / cutLengthMultiplier
             
             cutLength = Self.cutLength(
@@ -279,12 +279,14 @@ extension Corner.Dimensions {
     }
     
     /// Returns the maximum radius that can be applied to this corner using the max cut length.
+    ///
+    /// A cut length is `radius * tan(halvedTurnAngle)`, and the half turn angle is the complement of the halved non-reflex angle, so inverting that leaves a tangent of the halved non-reflex angle.
     /// - Parameters:
     ///   - maxCutLength: Maximum length that a corner can cut off.
-    ///   - halvedTurnAngle: Half of the angle the corner curve turns through.
+    ///   - halvedNonReflexAngle: Half of the non-reflex version of the corner angle.
     /// - Returns: The maximum radius that can be applied to this corner using the max cut length.
-    static func maxRadius(maxCutLength: CGFloat, halvedTurnAngle: Angle) -> CGFloat {
-        maxCutLength * abs(tan(halvedTurnAngle.complementary.radians))
+    static func maxRadius(maxCutLength: CGFloat, halvedNonReflexAngle: Angle) -> CGFloat {
+        maxCutLength * abs(tan(halvedNonReflexAngle.radians))
     }
     
     /// Returns the point where the corner shape starts.

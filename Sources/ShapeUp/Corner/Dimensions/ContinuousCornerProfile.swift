@@ -31,7 +31,7 @@ internal enum ContinuousCornerProfile {
     /// A position along the reference curve, paired with its direction of travel.
     ///
     /// The offset is a fraction of the curve's total length, so it needs scaling before it means anything in points.
-    internal struct Sample {
+    private struct Sample {
         let offset: Vector2
         let tangent: Vector2
     }
@@ -117,7 +117,7 @@ internal enum ContinuousCornerProfile {
     /// How far SwiftUI's continuous 90-degree corner reaches along each edge, per unit of nominal radius.
     ///
     /// A single measured number, and the only thing tying this curve to SwiftUI's. A circular 90-degree corner reaches exactly one radius along each edge, so this says SwiftUI's continuous corner reaches about 53% farther.
-    private static let swiftUICutLengthPerRadius: CGFloat = 1.5286649465560913
+    internal static let swiftUICutLengthPerRadius: CGFloat = 1.5286649465560913
 
     /// How far the reference curve reaches along its edge at 90 degrees, as a fraction of the curve's own length.
     ///
@@ -190,7 +190,7 @@ internal enum ContinuousCornerProfile {
     ///   - count: How many equal pieces to divide the curve into. One more sample than this is returned, since both ends are included.
     ///   - turnAngle: Total angle the curve turns through. Negative values turn clockwise.
     /// - Returns: Offsets, as fractions of the curve's total length, each paired with a direction of travel.
-    internal static func samples(
+    private static func samples(
         count: Int,
         turnAngle: CGFloat
     ) -> [Sample] {

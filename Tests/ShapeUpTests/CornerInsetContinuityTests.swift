@@ -12,88 +12,81 @@ import Testing
 struct CornerInsetContinuityTests {
     typealias StyleKind = CornerDimensionsPathTests.StyleKind
 
-    private struct CornerPoints: CustomTestStringConvertible, Sendable {
+    /// A corner sitting on or beside one of the two angle singularities, paired
+    /// with an inset, so a failure names the sample it came from.
+    struct SingularityCase: CustomTestStringConvertible, Sendable {
         let name: String
         let previous: CGPoint
         let next: CGPoint
+        let inset: CGFloat
 
-        var testDescription: String { name }
+        var testDescription: String { "\(name) inset \(inset)" }
 
-        static let singularitySamples: [Self] = [
-            .init(
-                name: "before zero",
-                previous: CGPoint(x: 100, y: -0.0001),
-                next: CGPoint(x: 100, y: 0.0001)
-            ),
-            .init(
-                name: "zero",
-                previous: CGPoint(x: 100, y: 0),
-                next: CGPoint(x: 100, y: 0)
-            ),
-            .init(
-                name: "after zero",
-                previous: CGPoint(x: 100, y: 0.0001),
-                next: CGPoint(x: 100, y: -0.0001)
-            ),
-            .init(
-                name: "before straight",
-                previous: CGPoint(x: -100, y: -0.0001),
-                next: CGPoint(x: 100, y: -0.0001)
-            ),
-            .init(
-                name: "straight",
-                previous: CGPoint(x: -100, y: 0),
-                next: CGPoint(x: 100, y: 0)
-            ),
-            .init(
-                name: "after straight",
-                previous: CGPoint(x: -100, y: 0.0001),
-                next: CGPoint(x: 100, y: 0.0001)
-            )
+        private static let positions: [(name: String, previous: CGPoint, next: CGPoint)] = [
+            ("before zero", CGPoint(x: 100, y: -0.0001), CGPoint(x: 100, y: 0.0001)),
+            ("zero", CGPoint(x: 100, y: 0), CGPoint(x: 100, y: 0)),
+            ("after zero", CGPoint(x: 100, y: 0.0001), CGPoint(x: 100, y: -0.0001)),
+            ("before straight", CGPoint(x: -100, y: -0.0001), CGPoint(x: 100, y: -0.0001)),
+            ("straight", CGPoint(x: -100, y: 0), CGPoint(x: 100, y: 0)),
+            ("after straight", CGPoint(x: -100, y: 0.0001), CGPoint(x: 100, y: 0.0001))
         ]
+
+        static let all: [Self] = positions.flatMap { position in
+            [CGFloat(12), -12].map {
+                Self(
+                    name: position.name,
+                    previous: position.previous,
+                    next: position.next,
+                    inset: $0
+                )
+            }
+        }
     }
 
     struct StraightCrossing: CustomTestStringConvertible, Sendable {
         let name: String
         let inset: CGFloat
-        let angles: [CGFloat]
 
         var testDescription: String { name }
 
+        /// Straddling 180 degrees. The middle angle is the exact singularity and
+        /// the outer two are the values the other two are compared against.
+        static let angles: [CGFloat] = [179.9999, 180, 180.0001]
+
         static let all: [Self] = [
-            .init(name: "straight inset", inset: 12, angles: [179.9999, 180, 180.0001]),
-            .init(name: "straight outset", inset: -12, angles: [179.9999, 180, 180.0001])
+            .init(name: "straight inset", inset: 12),
+            .init(name: "straight outset", inset: -12)
         ]
     }
 
-    struct ContinuousCornerInsetCase: CustomTestStringConvertible, Sendable {
+    /// A corner angle paired with an inset amount.
+    struct InsetAngleCase: CustomTestStringConvertible, Sendable {
         let degrees: CGFloat
         let inset: CGFloat
 
         var testDescription: String { "\(degrees) degrees inset \(inset)" }
 
-        static let all: [Self] = [CGFloat(15), 30, 60, 120, 150].flatMap { degrees in
-            [
-                .init(degrees: degrees, inset: 5),
-                .init(degrees: degrees, inset: -5)
-            ]
-        }
-    }
-
-    struct LowAngleInsetCase: CustomTestStringConvertible, Sendable {
-        let degrees: CGFloat
-        let inset: CGFloat
-
-        var testDescription: String { "\(degrees) degrees inset \(inset)" }
-
-        static let all: [Self] = [CGFloat(1), 5, 10, 15, 20, 25]
-            .flatMap { degrees in
-                [
-                    .init(degrees: degrees, inset: 0.1),
-                    .init(degrees: degrees, inset: 5),
-                    .init(degrees: degrees, inset: -5)
-                ]
+        private static func cases(
+            degrees: [CGFloat],
+            insets: [CGFloat]
+        ) -> [Self] {
+            degrees.flatMap { degrees in
+                insets.map { Self(degrees: degrees, inset: $0) }
             }
+        }
+
+        /// Angles spread across the usable range, inset both ways.
+        static let all: [Self] = cases(
+            degrees: [15, 30, 60, 120, 150],
+            insets: [5, -5]
+        )
+
+        /// Sharp corners, where an inset moves the corner point farthest and a
+        /// small inset is most likely to expose a scaling error.
+        static let lowAngles: [Self] = cases(
+            degrees: [1, 5, 10, 15, 20, 25],
+            insets: [0.1, 5, -5]
+        )
     }
 
     struct SwiftUIContinuousRectangleCase: CustomTestStringConvertible, Sendable {
@@ -147,30 +140,27 @@ struct CornerInsetContinuityTests {
     @Test(
         "Insets stay finite for every style around 0 and 180 degrees",
         arguments: StyleKind.allCases,
-        [CGFloat(12), -12]
+        SingularityCase.all
     )
-    func insetsStayFinite(styleKind: StyleKind, inset: CGFloat) {
+    func insetsStayFinite(styleKind: StyleKind, sample: SingularityCase) {
         let corner = Corner(
             styleKind.style(radius: .mixed(absolute: 10, relative: 0.25)),
             point: CGPoint.zero
         )
+        let insetCorner = corner
+            .dimensions(previousPoint: sample.previous, nextPoint: sample.next)
+            .corner(inset: sample.inset)
+        let insetDimensions = insetCorner.dimensions(
+            previousPoint: sample.previous,
+            nextPoint: sample.next
+        )
+        let path = path(for: insetDimensions)
 
-        for points in CornerPoints.singularitySamples {
-            let insetCorner = corner
-                .dimensions(previousPoint: points.previous, nextPoint: points.next)
-                .corner(inset: inset)
-            let insetDimensions = insetCorner.dimensions(
-                previousPoint: points.previous,
-                nextPoint: points.next
-            )
-            let path = path(for: insetDimensions)
-
-            #expect(insetCorner.point.isFinite)
-            #expect(insetCorner.style.finiteScalars.allSatisfy { $0.isFinite })
-            #expect(insetDimensions.finiteInsetScalars.allSatisfy { $0.isFinite })
-            #expect(path.insetPoints.allSatisfy { $0.isFinite })
-            #expect(path.hasFiniteInsetBounds)
-        }
+        #expect(insetCorner.point.isFinite)
+        #expect(insetCorner.style.finiteScalars.allSatisfy { $0.isFinite })
+        #expect(insetDimensions.finiteInsetScalars.allSatisfy { $0.isFinite })
+        #expect(path.points.allSatisfy { $0.isFinite })
+        #expect(path.hasFiniteBounds)
     }
 
     @Test(
@@ -182,7 +172,7 @@ struct CornerInsetContinuityTests {
         styleKind: StyleKind,
         crossing: StraightCrossing
     ) {
-        let bounds = crossing.angles.map { angle in
+        let bounds = StraightCrossing.angles.map { angle in
             animatedCorners(angleDegrees: angle, style: styleKind.simpleStyle)
                 .inset(by: crossing.inset)
                 .path()
@@ -287,10 +277,10 @@ struct CornerInsetContinuityTests {
 
     @Test(
         "Low-angle inset rounding styles retain the same nominal radius",
-        arguments: LowAngleInsetCase.all
+        arguments: InsetAngleCase.lowAngles
     )
     func lowAngleInsetRoundingStylesRetainNominalRadius(
-        sample: LowAngleInsetCase
+        sample: InsetAngleCase
     ) {
         let halfAngle = Angle.degrees(sample.degrees / 2)
         let points = [
@@ -326,10 +316,10 @@ struct CornerInsetContinuityTests {
     /// covered by the continuous corner tests in `CornerDimensionsPathTests`.
     @Test(
         "Insetting a continuous corner keeps its style and nominal radius",
-        arguments: ContinuousCornerInsetCase.all
+        arguments: InsetAngleCase.all
     )
     func insettingContinuousCornersKeepsStyleAndNominalRadius(
-        sample: ContinuousCornerInsetCase
+        sample: InsetAngleCase
     ) {
         let angle = Angle.degrees(sample.degrees)
         let points = [
@@ -455,57 +445,5 @@ private extension Corner.Dimensions {
             concaveInset,
             concaveRadius
         ]
-    }
-}
-
-private extension Path {
-    var insetPoints: [CGPoint] {
-        var points: [CGPoint] = []
-        forEach { element in
-            switch element {
-            case let .move(to: point), let .line(to: point):
-                points.append(point)
-            case let .quadCurve(to: point, control: control):
-                points.append(contentsOf: [point, control])
-            case let .curve(to: point, control1: control1, control2: control2):
-                points.append(contentsOf: [point, control1, control2])
-            case .closeSubpath:
-                break
-            }
-        }
-        return points
-    }
-
-    var hasFiniteInsetBounds: Bool {
-        let bounds = boundingRect
-        return bounds.isNull || [
-            bounds.minX,
-            bounds.minY,
-            bounds.width,
-            bounds.height
-        ].allSatisfy(\.isFinite)
-    }
-}
-
-private extension CGPoint {
-    var isFinite: Bool {
-        x.isFinite && y.isFinite
-    }
-
-    func isApproximatelyEqual(to other: Self, tolerance: CGFloat) -> Bool {
-        abs(x - other.x) <= tolerance && abs(y - other.y) <= tolerance
-    }
-}
-
-private extension CGRect {
-    func isApproximatelyEqual(to other: Self, tolerance: CGFloat) -> Bool {
-        if isNull || other.isNull {
-            return isNull == other.isNull
-        }
-
-        return abs(minX - other.minX) <= tolerance
-            && abs(minY - other.minY) <= tolerance
-            && abs(width - other.width) <= tolerance
-            && abs(height - other.height) <= tolerance
     }
 }

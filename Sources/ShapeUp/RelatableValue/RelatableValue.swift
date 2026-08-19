@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// An enumeration that represents either a relative or absolute value.
-public enum RelatableValue: Hashable, Codable, Sendable {
+public enum RelatableValue: Codable, Sendable {
     case absolute(_ value: CGFloat)
     case relative(_ value: CGFloat)
     case mixed(absolute: CGFloat, relative: CGFloat)
@@ -62,6 +62,25 @@ public extension RelatableValue {
         case let .mixed(absolute, relative):
             (absolute: absolute, relative: relative)
         }
+    }
+}
+
+extension RelatableValue: Equatable {
+    /// Returns a Boolean value indicating whether two values are equal.
+    ///
+    /// Values are compared by their ``components`` rather than by their case, so `.absolute(5)` and `.mixed(absolute: 5, relative: 0)` are equal.
+    ///
+    /// This is what makes the arithmetic below consistent. Adding two values of different cases produces a `.mixed` result, so without this `.relative(1) + .zero` would not equal `.relative(1)`, and `.relative(1) - .relative(1)` would not equal ``zero``.
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.components == rhs.components
+    }
+}
+
+extension RelatableValue: Hashable {
+    /// Hash value is based on the ``components`` instead of the case so that equal values hash equally.
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(components.absolute)
+        hasher.combine(components.relative)
     }
 }
 

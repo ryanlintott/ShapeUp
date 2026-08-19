@@ -156,26 +156,26 @@ struct CornerDimensionsPathTests {
     func animatedCornerPathsStayFinite(styleKind: StyleKind, radius: RadiusCase) {
         let corner = Corner(styleKind.style(radius: radius.value), point: CGPoint.zero)
 
-        let paths = CornerPoints.animationSamples.map { points in
-            path(for: corner.dimensions(previousPoint: points.previous, nextPoint: points.next))
-        }
-
-        for (points, path) in zip(CornerPoints.animationSamples, paths) {
+        let samples = CornerPoints.animationSamples.map { points in
             let dimensions = corner.dimensions(
                 previousPoint: points.previous,
                 nextPoint: points.next
             )
+            return (dimensions: dimensions, path: path(for: dimensions))
+        }
 
+        for (dimensions, path) in samples {
             #expect(dimensions.finiteScalars.allSatisfy { $0.isFinite })
             #expect(dimensions.finitePoints.allSatisfy { $0.isFinite })
             #expect(path.points.allSatisfy { $0.isFinite })
-            #expect(path.finiteBounds)
+            #expect(path.hasFiniteBounds)
         }
 
-        #expect(paths[0].boundingRect.isApproximatelyEqual(to: paths[1].boundingRect, tolerance: 0.001))
-        #expect(paths[2].boundingRect.isApproximatelyEqual(to: paths[1].boundingRect, tolerance: 0.001))
-        #expect(paths[3].boundingRect.isApproximatelyEqual(to: paths[4].boundingRect, tolerance: 0.001))
-        #expect(paths[5].boundingRect.isApproximatelyEqual(to: paths[4].boundingRect, tolerance: 0.001))
+        let bounds = samples.map(\.path.boundingRect)
+        #expect(bounds[0].isApproximatelyEqual(to: bounds[1], tolerance: 0.001))
+        #expect(bounds[2].isApproximatelyEqual(to: bounds[1], tolerance: 0.001))
+        #expect(bounds[3].isApproximatelyEqual(to: bounds[4], tolerance: 0.001))
+        #expect(bounds[5].isApproximatelyEqual(to: bounds[4], tolerance: 0.001))
     }
 
     @Test(
@@ -280,6 +280,7 @@ struct CornerDimensionsPathTests {
         case .rounded:
             expected.move(to: CGPoint(x: 50, y: 0))
         case .roundedContinuous:
+            // The path itself is pinned by the cut length check below.
             expected.move(to: dimensions.cornerStart)
         case .concave:
             expected.move(to: CGPoint(x: 50, y: 0))
@@ -298,6 +299,10 @@ struct CornerDimensionsPathTests {
 
         #expect(dimensions.angle.degrees == 0)
         #expect(path(for: dimensions) == expected)
+        #expect(dimensions.cutLength.isApproximatelyEqual(
+            to: styleKind.expectedCutLength(angle: .zero),
+            tolerance: 1e-9
+        ))
     }
 
     @Test("Every style uses its analytic 180-degree path", arguments: StyleKind.allCases)
@@ -316,6 +321,7 @@ struct CornerDimensionsPathTests {
             expected.move(to: CGPoint(x: -50, y: 0))
             expected.addLine(to: CGPoint(x: 50, y: 0))
         case .roundedContinuous:
+            // The path itself is pinned by the cut length check below.
             expected.move(to: dimensions.cornerStart)
             expected.addLine(to: dimensions.cornerEnd)
         case .cutout:
@@ -330,6 +336,10 @@ struct CornerDimensionsPathTests {
 
         #expect(dimensions.angle.degrees == 180)
         #expect(path(for: dimensions) == expected)
+        #expect(dimensions.cutLength.isApproximatelyEqual(
+            to: styleKind.expectedCutLength(angle: .degrees(180)),
+            tolerance: 1e-9
+        ))
     }
 
     @Test(
@@ -667,6 +677,26 @@ struct CornerDimensionsPathTests {
 }
 
 extension CornerDimensionsPathTests.StyleKind {
+    /// The cut length ``simpleStyle`` should resolve to, derived from the
+    /// relative radius rather than read back off the dimensions under test.
+    ///
+    /// Every style uses `.relative(0.5)` against a shortest adjacent segment of
+    /// 100, so half of that is the circular answer. A continuous corner spends
+    /// the profile's edge-reach multiplier more of the segment on the same
+    /// nominal radius.
+    /// - Parameter angle: The corner angle being drawn.
+    /// - Returns: The expected cut length, or zero for styles that draw a point.
+    func expectedCutLength(angle: Angle) -> CGFloat {
+        switch self {
+        case .automatic, .point:
+            0
+        case .roundedContinuous:
+            50 * Corner.Dimensions.continuousCutLengthMultiplier(for: angle)
+        case .rounded, .concave, .straight, .cutout, .custom:
+            50
+        }
+    }
+
     var simpleStyle: CornerStyle {
         let radius = RelatableValue.relative(0.5)
         return switch self {
@@ -726,62 +756,5 @@ private extension Corner.Dimensions {
             concaveEnd,
             concaveRadiusCenter
         ].compactMap { $0 }
-    }
-}
-
-private extension Path {
-    var points: [CGPoint] {
-        var points: [CGPoint] = []
-        forEach { element in
-            switch element {
-            case let .move(to: point), let .line(to: point):
-                points.append(point)
-            case let .quadCurve(to: point, control: control):
-                points.append(contentsOf: [point, control])
-            case let .curve(to: point, control1: control1, control2: control2):
-                points.append(contentsOf: [point, control1, control2])
-            case .closeSubpath:
-                break
-            }
-        }
-        return points
-    }
-
-    var finiteBounds: Bool {
-        let bounds = boundingRect
-        return bounds.isNull || [
-            bounds.origin.x,
-            bounds.origin.y,
-            bounds.size.width,
-            bounds.size.height
-        ].allSatisfy(\.isFinite)
-    }
-}
-
-private extension CGPoint {
-    var isFinite: Bool {
-        x.isFinite && y.isFinite
-    }
-
-    func isApproximatelyEqual(to other: Self, tolerance: CGFloat) -> Bool {
-        abs(x - other.x) <= tolerance && abs(y - other.y) <= tolerance
-    }
-}
-
-private extension CGFloat {
-    func isApproximatelyEqual(to other: Self, tolerance: Self) -> Bool {
-        abs(self - other) <= tolerance
-    }
-}
-
-private extension CGRect {
-    func isApproximatelyEqual(to other: Self, tolerance: CGFloat) -> Bool {
-        if isNull || other.isNull {
-            return isNull == other.isNull
-        }
-
-        return origin.isApproximatelyEqual(to: other.origin, tolerance: tolerance)
-            && width.isApproximatelyEqual(to: other.width, tolerance: tolerance)
-            && height.isApproximatelyEqual(to: other.height, tolerance: tolerance)
     }
 }

@@ -83,12 +83,16 @@ public extension Path {
     /// The current point, `tangent1End`, and `tangent2End` describe two
     /// tangent lines the same way they do for `addArc`. If the current point
     /// isn't already at the curve's starting tangent point, a straight line
-    /// is added to it first. If there's no current point, this moves to
-    /// `tangent1End` and returns without drawing a curve, the same as moving
-    /// to the start of any other shape.
+    /// is added to it first.
+    ///
+    /// When the three points are collinear there is no curve to draw, so a straight line is added to `tangent1End` instead, exactly as `addArc` does. A radius of zero or less draws that same line here, the way ``Corner`` treats it, rather than mirroring the curve onto the far side of the corner like `addArc` does.
+    /// With no current point this moves to `tangent1End` and returns, the same as moving to the start of any other shape, rather than drawing from the origin.
     ///
     /// - Note: A continuous curve reaches farther from `tangent1End` along
     ///   each tangent line than a circular arc with the same radius would.
+    ///   Unlike a corner drawn through ``Corner``, there are no adjacent
+    ///   segments to fit that reach to, so a corner folded back on itself
+    ///   places its tangent points arbitrarily far from `tangent1End`.
     /// - Parameters:
     ///   - tangent1End: A point that, with the current point, defines the
     ///     first tangent line.
@@ -108,6 +112,17 @@ public extension Path {
         // Matching Corner.Dimensions' convention, where the corner turns from
         // the next point back to the previous point.
         let angle = Angle.threePoint(tangent2End, tangent1End, currentPoint)
+
+        // Both analytic limits collapse to a straight line.
+        guard
+            radius > 0,
+            !angle.isApproximatelyZero(),
+            !angle.isApproximatelyStraight()
+        else {
+            if currentPoint != tangent1End { addLine(to: tangent1End) }
+            return
+        }
+
         let halvedNonReflexAngle = Corner.Dimensions.halvedNonReflexAngle(angle: angle)
         let halvedTurnAngle = Corner.Dimensions.halvedTurnAngle(
             halvedNonReflexAngle: halvedNonReflexAngle

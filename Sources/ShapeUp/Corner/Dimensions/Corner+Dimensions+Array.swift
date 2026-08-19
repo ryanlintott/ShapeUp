@@ -41,20 +41,4 @@ extension Array where Element == Corner.Dimensions {
             path.closeSubpath()
         }
     }
-    
-    /// A flattened array of corners based on these corner dimensions.
-    ///
-    /// All corners will have their radius changed to absolute values and corners with nested styles will change to an array of corners with those styles. This process is recursive leaving no corners with nested corner styles or relative radius values.
-    internal var flattened: [Corner] {
-        flatMap { $0.flattened }
-    }
-    
-    /// Returns an array of corners based on these corner dimensions flattened by the number of levels provided.
-    ///
-    /// All corners on this level will have their radius changed to absolute values and corners with nested styles will change to an array of corners with those styles. For each level higher than one this process will be repeated for those new nested corners.
-    /// - Parameter levels: Number of levels to flatten.
-    /// - Returns: An array of corners based on these corner dimensions flattened by the number of levels provided.
-    internal func flattened(levels: Int) -> [Corner] {
-        flatMap { $0.flattened(levels: levels)}
-    }
 }

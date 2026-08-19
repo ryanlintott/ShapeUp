@@ -26,14 +26,14 @@ public extension CGFrameRepresentable {
         anchor.point(in: self)
     }
     
-    /// Transforms a relative corner into a corner.
+    /// Creates a corner in the location of an anchor.
     ///
     /// - Note: The additional style parameter makes this subscript act as a disfavoured overload to the subscript that outputs a `CGPoint`.
     ///
     /// - Parameters:
-    ///   - anchor: Anchor where the point is located.
+    ///   - anchor: Anchor where the corner is located.
     ///   - style: The corner style to apply. (default is .automatic)
-    /// - Returns: A corner based on the relative corner.
+    /// - Returns: A corner where the anchor is located, with the applied style.
     subscript (_ anchor: RectAnchor, _ style: CornerStyle = .automatic) -> Corner {
         self[anchor].corner(style)
     }

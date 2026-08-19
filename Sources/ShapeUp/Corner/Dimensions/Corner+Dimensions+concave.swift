@@ -104,11 +104,10 @@ extension Corner.Dimensions {
                 circle: (center: concaveRadiusCenter, radius: concaveRadius)
             )
             
-            // Get the intersection along the line between the corner and the previous point by finding the first corner to intersection vector that points in the same direction as the previous vector.
+            // The circle crosses this line twice: once on the incoming edge and once on the extension past the corner. Keeping whichever intersection is nearer to the previous point than the corner is rules out that second root.
             return intersections
                 .filter {
-                    // make sure the intersection is on the line
-                    // There should be one or zero results
+                    // There should be one or zero results.
                     ($0.vector - previousPoint.vector).magnitudeSquared < (cornerPoint.vector - previousPoint.vector).magnitudeSquared
                 }
                 .first

@@ -38,7 +38,7 @@ Features:
 The `Example` folder has an app that demonstrates the features of this package.
 
 # Installation and Usage
-This package is compatible with iOS 15+, macOS 12+, watchOS 8+, tvOS 15+, and visionOS 1+.
+This package is compatible with iOS 15+, macOS 12+, watchOS 9+, tvOS 15+, and visionOS 1+.
 
 1. In Xcode go to `File -> Add Packages`
 2. Paste in the repo's url: `https://github.com/ryanlintott/ShapeUp` and select by version.
@@ -72,10 +72,6 @@ func path(in rect: CGRect) -> Path {
     
     // ShapeUp method
     let point1 = rect[.topLeft]
-    let point2 = rect[.relative(0.4, 0.7)]
-    
-    // or an even shorter version using relative locations
-    let point1 = rect[0, 0]
     let point2 = rect[0.4, 0.7]
     ...
 }

@@ -33,7 +33,7 @@ import Testing
 enum ContinuousCornerRasterProbe {
     /// One configuration to render and measure at.
     ///
-    /// - Warning: `side - 2 * pad` must exceed `2 * 1.528665 * radius`, or
+    /// - Warning: `side - 2 * pad` must exceed twice the corner's edge reach, or
     ///   neighbouring corners overlap and the shape being measured is no longer
     ///   an isolated corner. ``isUnconstrained`` checks this.
     struct Config {
@@ -42,7 +42,10 @@ enum ContinuousCornerRasterProbe {
         let side: CGFloat
         let scale: CGFloat
 
-        var isUnconstrained: Bool { (side - 2 * pad) > 2 * 1.528665 * radius }
+        var isUnconstrained: Bool {
+            (side - 2 * pad)
+                > 2 * ContinuousCornerProfile.swiftUICutLengthPerRadius * radius
+        }
 
         /// Corner radius in pixels. Measurement accuracy improves with this.
         var radiusInPixels: Double { Double(radius) * Double(scale) }
@@ -139,11 +142,10 @@ enum ContinuousCornerRasterProbe {
         configs: [Config] = Config.all
     ) throws -> [(x: Double, y: Double)] {
         let curves = try configs.map { try measure($0) }
-        guard let first = curves.first else { return [] }
+        guard !curves.isEmpty else { return [] }
 
         let lower = curves.map { $0.map(\.x).min()! }.max()!
         let upper = curves.map { $0.map(\.x).max()! }.min()!
-        _ = first
 
         // Sample each curve at shared x positions, then average.
         return (0...400).map { step in
@@ -210,10 +212,19 @@ struct ContinuousCornerRasterMeasurementTests {
         }
     }
 
-    /// Prints the measured shape. Not an assertion; run it when new samples are
-    /// wanted and paste the output.
+    /// Prints the measured boundary as points, in radii, measured from the
+    /// corner point.
+    ///
+    /// Not an assertion, and disabled so it does not print on every run. Enable
+    /// it to regenerate the `renderedSamples` list in `CornerDimensionsPathTests`
+    /// and paste the output there. `ContinuousCornerProfile.halfCurvatureSamples`
+    /// is refitted from the same measurement, but is a curvature profile rather
+    /// than points, so it is not what this prints.
     @MainActor
-    @Test("Print measured continuous corner samples")
+    @Test(
+        "Print measured continuous corner samples",
+        .disabled("Measurement utility. Enable to regenerate stored samples.")
+    )
     func printSamples() throws {
         guard #available(macOS 13, *) else { return }
         let curve = try ContinuousCornerRasterProbe.measuredCorner()
