@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.0 - Unreleased
+## 0.6.0 - 2026-08-19
 
 Changes since the previous versioned release, `0.5.3`.
 
