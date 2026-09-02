@@ -29,49 +29,49 @@ struct EmbossViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .opacity(baseColor == nil ? 1 : 0)
-            .overlay(
+            .overlay {
                 ZStack {
                     baseColor
                     
                     Color.white
                         .accessibilityIgnoresInvertColors()
-                        .mask(
+                        .mask {
                             Color.white
-                                .overlay(
+                                .overlay {
                                     Color.black
-                                        .mask(
+                                        .mask {
                                             content
                                                 .offset(x: offsetX, y: offsetY)
-                                        )
-                                )
+                                        }
+                                }
                                 .blur(radius: blur)
                                 .drawingGroup()
                                 .luminanceToAlpha()
-                        )
+                        }
                         .opacity(opacity)
                         .allowsHitTesting(false)
-                        .accessibility(hidden: true)
+                        .accessibilityHidden(true)
                     
                     Color.black
                         .accessibilityIgnoresInvertColors()
-                        .mask(
+                        .mask {
                             Color.white
-                                .overlay(
+                                .overlay {
                                     Color.black
-                                        .mask(
+                                        .mask {
                                             content
                                                 .offset(x: -offsetX, y: -offsetY)
-                                        )
-                                )
+                                        }
+                                }
                                 .blur(radius: blur)
                                 .drawingGroup()
                                 .luminanceToAlpha()
-                        )
+                        }
                         .opacity(opacity)
                         .allowsHitTesting(false)
-                        .accessibility(hidden: true)
+                        .accessibilityHidden(true)
                 }
-            )
-            .mask(content)
+            }
+            .mask { content }
     }
 }
