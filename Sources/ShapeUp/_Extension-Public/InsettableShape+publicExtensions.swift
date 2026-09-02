@@ -28,7 +28,7 @@ public extension InsettableShape {
         
         return self
             .fill(backgroundColor)
-            .overlay(
+            .overlay {
                 ZStack {
                     self
                         .inset(by: inset)
@@ -43,7 +43,7 @@ public extension InsettableShape {
                 .accessibilityIgnoresInvertColors()
                 .clipShape(self)
                 .blendMode(.overlay)
-            )
+            }
     }
     
     /// Returns a view with debossed edges that matches the parent shape.

@@ -21,11 +21,11 @@ public extension View {
     /// - Returns: The same view with an overlayed embossed effect using edges of a supplied shape.
     func emboss<S>(using shape: S, size: CGFloat, angle: Angle? = nil, opacity: Double? = nil) -> some View where S : InsettableShape {
         self
-            .overlay(
+            .overlay {
                 shape
                     .embossEdges(size: size, angle: angle, opacity: opacity)
                     .allowsHitTesting(false)
-            )
+            }
     }
     
     /// Returns the same view with an overlayed debossed effect using edges of a supplied shape.
@@ -41,11 +41,11 @@ public extension View {
     /// - Returns: The same view with an overlayed debossed effect using edges of a supplied shape.
     func deboss<S>(using shape: S, size: CGFloat, angle: Angle? = nil, opacity: Double? = nil) -> some View where S : InsettableShape {
         self
-            .overlay(
+            .overlay {
                 shape
                     .debossEdges(size: size, angle: angle, opacity: opacity)
                     .allowsHitTesting(false)
-            )
+            }
     }
     
     /// Returns the same view with an overlayed embossed effect.
