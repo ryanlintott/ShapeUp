@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 - 2026-09-03
+
+### Changes
+
+- Added `Sendable` conformance to `CGFrame`.
+- Updated emboss and deboss implementations to use modern SwiftUI overlay, mask, and accessibility APIs.
+
 ## 1.0.0 - 2026-08-19
 
 ### Breaking Changes
