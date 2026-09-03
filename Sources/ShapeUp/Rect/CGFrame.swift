@@ -113,7 +113,7 @@ public extension CGFrameRepresentable {
 
 
 /// A coordinate frame defined by an origin and a vector for each axis.
-public struct CGFrame: CGFrameRepresentable {
+public struct CGFrame: CGFrameRepresentable, Sendable {
     /// The origin point of the coordinate frame.
     public var origin: CGPoint
     /// The vector defining the x-axis direction and magnitude.
